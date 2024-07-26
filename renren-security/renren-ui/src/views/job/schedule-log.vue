@@ -11,7 +11,7 @@
     <el-table v-loading="state.dataListLoading" :data="state.dataList" border @sort-change="state.dataListSortChangeHandle" height="460" style="width: 100%">
       <el-table-column prop="jobId" label="Job ID" header-align="center" align="center" width="180"></el-table-column>
       <el-table-column prop="beanName" label="bean name" header-align="center" align="center"></el-table-column>
-      <el-table-column prop="params" label="Params"" header-align="center" align="center"></el-table-column>
+      <el-table-column prop="params" label="Params" header-align="center" align="center"></el-table-column>
       <el-table-column prop="status" label="Status" header-align="center" align="center">
         <template v-slot="scope">
           <el-tag v-if="scope.row.status === 1" size="small">Success</el-tag>

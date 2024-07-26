@@ -36,8 +36,8 @@ const view = reactive({
 const state = reactive({ ...useView(view), ...toRefs(view) });
 
 const infoHandle = (info: string) => {
-  ElMessageBox.alert(info, "异常信息", {
-    confirmButtonText: "确定"
+  ElMessageBox.alert(info, "Error message", {
+    confirmButtonText: "Confirm"
   });
 };
 </script>

@@ -106,7 +106,7 @@ const rules = ref({
   confirmPassword: [{ validator: validateConfirmPassword, trigger: "blur" }],
   realName: [{ required: true, message: "Require field can not be empty", trigger: "blur" }],
   email: [{ validator: validateEmail, trigger: "blur" }],
-  mobile: [{ validator: validateMobile, trigger: "blur" }]
+  // mobile: [{ validator: validateMobile, trigger: "blur" }]
 });
 
 const init = (id?: number) => {

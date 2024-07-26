@@ -1,22 +1,22 @@
 <template>
-  <el-dialog v-model="visible" :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false" :close-on-press-escape="false">
+  <el-dialog v-model="visible" :title="!dataForm.id ? 'Add' : 'Update'" :close-on-click-modal="false" :close-on-press-escape="false">
     <el-form :model="dataForm" :rules="rules" ref="dataFormRef" @keyup.enter="dataFormSubmitHandle()" label-width="120px">
-      <el-form-item prop="beanName" label="bean名称">
-        <el-input v-model="dataForm.beanName" placeholder="spring bean名称, 如: testTask"></el-input>
+      <el-form-item prop="beanName" label="bean name">
+        <el-input v-model="dataForm.beanName" placeholder="spring bean name, like: testTask"></el-input>
       </el-form-item>
-      <el-form-item prop="params" label="参数">
-        <el-input v-model="dataForm.params" placeholder="参数"></el-input>
+      <el-form-item prop="params" label="Params">
+        <el-input v-model="dataForm.params" placeholder="Params"></el-input>
       </el-form-item>
-      <el-form-item prop="cronExpression" label="cron表达式">
-        <el-input v-model="dataForm.cronExpression" placeholder="如: 0 0 12 * * ?"></el-input>
+      <el-form-item prop="cronExpression" label="cron expression">
+        <el-input v-model="dataForm.cronExpression" placeholder="Example: 0 0 12 * * ?"></el-input>
       </el-form-item>
-      <el-form-item prop="remark" label="备注">
-        <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
+      <el-form-item prop="remark" label="Remark">
+        <el-input v-model="dataForm.remark" placeholder="Remark"></el-input>
       </el-form-item>
     </el-form>
     <template v-slot:footer>
-      <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmitHandle()">确定</el-button>
+      <el-button @click="visible = false">Cancel</el-button>
+      <el-button type="primary" @click="dataFormSubmitHandle()">Confirm</el-button>
     </template>
   </el-dialog>
 </template>
@@ -74,7 +74,7 @@ const dataFormSubmitHandle = () => {
     const fn = !dataForm.id ? baseService.post("/sys/schedule", dataForm) : baseService.put("/sys/schedule", dataForm);
     fn.then((res) => {
       ElMessage.success({
-        message: "成功",
+        message: "Success",
         duration: 500,
         onClose: () => {
           visible.value = false;
