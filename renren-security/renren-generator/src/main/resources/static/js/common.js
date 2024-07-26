@@ -44,7 +44,7 @@ window.alert = function(msg, callback){
 
 //重写confirm式样框
 window.confirm = function(msg, callback){
-	parent.layer.confirm(msg, {btn: ['确定','取消']},
+	parent.layer.confirm(msg, {btn: ['Confirm','Cancel']},
 	function(){//确定事件
 		if(typeof(callback) === "function"){
 			callback("ok");
@@ -57,13 +57,13 @@ function getSelectedRow() {
     var grid = $("#jqGrid");
     var rowKey = grid.getGridParam("selrow");
     if(!rowKey){
-    	alert("请选择一条记录");
+    	alert("Please select one row");
     	return ;
     }
     
     var selectedIDs = grid.getGridParam("selarrrow");
     if(selectedIDs.length > 1){
-    	alert("只能选择一条记录");
+    	alert("Only one row can be selected");
     	return ;
     }
     
@@ -75,7 +75,7 @@ function getSelectedRows() {
     var grid = $("#jqGrid");
     var rowKey = grid.getGridParam("selrow");
     if(!rowKey){
-    	alert("请选择一条记录");
+    	alert("Please select rows");
     	return ;
     }
     

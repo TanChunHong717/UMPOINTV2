@@ -3,9 +3,9 @@ $(function () {
         url: 'sys/generator/list',
         datatype: "json",
         colModel: [			
-			{ label: '表名', name: 'tableName', width: 100, key: true },
-			{ label: '表备注', name: 'tableComment', width: 100 },
-			{ label: '创建时间', name: 'createTime', width: 100 }
+			{ label: 'Table name', name: 'tableName', width: 100, key: true },
+			{ label: 'Table comment', name: 'tableComment', width: 100 },
+			{ label: 'Create time', name: 'createTime', width: 100 }
         ],
 		viewrecords: true,
         height: 385,
