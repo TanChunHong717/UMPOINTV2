@@ -12,24 +12,24 @@ const routes: Array<RouteRecordRaw> = [
     path: "/",
     component: Layout,
     redirect: "/home",
-    meta: { title: "工作台", icon: "icon-desktop" },
+    meta: { title: "Workbench", icon: "icon-desktop" },
     children: [
       {
         path: "/home",
         component: () => import("@/views/home.vue"),
-        meta: { title: "主页", icon: "icon-home" }
+        meta: { title: "Home", icon: "icon-home" }
       }
     ]
   },
   {
     path: "/login",
     component: Login,
-    meta: { title: "登录", isNavigationMenu: false }
+    meta: { title: "Login", isNavigationMenu: false }
   },
   {
     path: "/user/password",
     component: () => import("@/views/sys/user-update-password.vue"),
-    meta: { title: "修改密码", requiresAuth: true, isNavigationMenu: false }
+    meta: { title: "Change Password", requiresAuth: true, isNavigationMenu: false }
   },
   {
     path: "/iframe/:id?",
@@ -40,7 +40,7 @@ const routes: Array<RouteRecordRaw> = [
     path: "/error",
     name: "error",
     component: Error,
-    meta: { title: "错误页面", isNavigationMenu: false }
+    meta: { title: "Error", isNavigationMenu: false }
   },
   {
     path: "/:path(.*)*",

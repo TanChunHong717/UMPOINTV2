@@ -150,14 +150,14 @@ const useView = (props: IViewHooksOptions | IObject): IViewHooks => {
           state.dataListSelections.length <= 0
         ) {
           ElMessage.warning({
-            message: "请选择操作项",
+            message: "Please select data",
             duration: 500
           });
           return;
         }
-        ElMessageBox.confirm("确定进行[删除]操作?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
+        ElMessageBox.confirm("Confrim to delete?", "Hint", {
+          confirmButtonText: "Confrim",
+          cancelButtonText: "Cancel",
           type: "warning"
         })
           .then(() => {
@@ -176,7 +176,7 @@ const useView = (props: IViewHooksOptions | IObject): IViewHooks => {
               )
               .then((res) => {
                 ElMessage.success({
-                  message: "成功",
+                  message: "Success",
                   duration: 500,
                   onClose: () => {
                     viewFns.query();

@@ -22,9 +22,9 @@ export default defineComponent({
   },
   setup(props) {
     const ops = [
-      { label: "关闭当前标签页", value: 5, icon: "close" },
-      { label: "关闭其他标签页", value: 1, icon: "close" },
-      { label: "关闭全部标签页", value: 4, icon: "circle-close" }
+      { label: "Close current tab", value: 5, icon: "close" },
+      { label: "Close other tabs", value: 1, icon: "close" },
+      { label: "Close all tabs", value: 4, icon: "circle-close" }
     ];
     const router = useRouter();
     const store = useAppStore();
@@ -72,7 +72,7 @@ export default defineComponent({
         }
         state.tabs.splice(index, 1);
       } else {
-        ElMessage({ type: "error", message: "只剩下一个标签页，不支持关闭", offset: 0 });
+        ElMessage({ type: "error", message: "Only one tab left, close is not supported", offset: 0 });
       }
     };
     const updateClosedTabs = (closedTabs: any[], isTransform = true) => {

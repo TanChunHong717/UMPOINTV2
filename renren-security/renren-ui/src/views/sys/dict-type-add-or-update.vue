@@ -1,22 +1,22 @@
 <template>
-  <el-dialog v-model="visible" :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false" :close-on-press-escape="false">
+  <el-dialog v-model="visible" :title="!dataForm.id ? 'Add' : 'Update'" :close-on-click-modal="false" :close-on-press-escape="false">
     <el-form :model="dataForm" :rules="rules" ref="dataFormRef" @keyup.enter="dataFormSubmitHandle()" label-width="120px">
-      <el-form-item prop="dictName" label="字典名称">
-        <el-input v-model="dataForm.dictName" placeholder="字典名称"></el-input>
+      <el-form-item prop="dictName" label="Dictionary name">
+        <el-input v-model="dataForm.dictName" placeholder="Dictionary name"></el-input>
       </el-form-item>
-      <el-form-item prop="dictType" label="字典类型">
-        <el-input v-model="dataForm.dictType" placeholder="字典类型"></el-input>
+      <el-form-item prop="dictType" label="Dictionary type">
+        <el-input v-model="dataForm.dictType" placeholder="Dictionary type"></el-input>
       </el-form-item>
-      <el-form-item prop="sort" label="排序">
-        <el-input-number v-model="dataForm.sort" controls-position="right" :min="0" label="排序"></el-input-number>
+      <el-form-item prop="sort" label="Sort">
+        <el-input-number v-model="dataForm.sort" controls-position="right" :min="0" label="Sort"></el-input-number>
       </el-form-item>
-      <el-form-item prop="remark" label="备注">
-        <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
+      <el-form-item prop="remark" label="Remark">
+        <el-input v-model="dataForm.remark" placeholder="Remark"></el-input>
       </el-form-item>
     </el-form>
     <template v-slot:footer>
-      <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmitHandle()">确定</el-button>
+      <el-button @click="visible = false">Cancel</el-button>
+      <el-button type="primary" @click="dataFormSubmitHandle()">Confirm</el-button>
     </template>
   </el-dialog>
 </template>
@@ -60,9 +60,9 @@ const getInfo = (id: number) => {
 };
 
 const rules = ref({
-  dictName: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
-  dictType: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
-  sort: [{ required: true, message: "必填项不能为空", trigger: "blur" }]
+  dictName: [{ required: true, message: "Require field can not be empty", trigger: "blur" }],
+  dictType: [{ required: true, message: "Require field can not be empty", trigger: "blur" }],
+  sort: [{ required: true, message: "Require field can not be empty", trigger: "blur" }]
 });
 
 // 表单提交

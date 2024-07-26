@@ -2,19 +2,19 @@
   <div class="mod-sys__log-error">
     <el-form :inline="true" :model="state.dataForm" @keyup.enter="state.getDataList()">
       <el-form-item>
-        <el-button type="info" @click="state.exportHandle()">导出</el-button>
+        <el-button type="info" @click="state.exportHandle()">Export</el-button>
       </el-form-item>
     </el-form>
     <el-table v-loading="state.dataListLoading" :data="state.dataList" border @sort-change="state.dataListSortChangeHandle" style="width: 100%">
-      <el-table-column prop="requestUri" label="请求URI" header-align="center" align="center"></el-table-column>
-      <el-table-column prop="requestMethod" label="请求方式" header-align="center" align="center"></el-table-column>
-      <el-table-column prop="requestParams" label="请求参数" header-align="center" align="center" width="150" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="ip" label="操作IP" header-align="center" align="center"></el-table-column>
-      <el-table-column prop="userAgent" label="用户代理" header-align="center" align="center" width="150" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="createDate" label="创建时间" sortable="custom" header-align="center" align="center" width="180"></el-table-column>
-      <el-table-column label="操作" fixed="right" header-align="center" align="center" width="150">
+      <el-table-column prop="requestUri" label="Request URI" header-align="center" align="center"></el-table-column>
+      <el-table-column prop="requestMethod" label="Request method" header-align="center" align="center"></el-table-column>
+      <el-table-column prop="requestParams" label="Request params" header-align="center" align="center" width="150" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="ip" label="IP" header-align="center" align="center"></el-table-column>
+      <el-table-column prop="userAgent" label="User agent" header-align="center" align="center" width="150" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="createDate" label="Create date" sortable="custom" header-align="center" align="center" width="180"></el-table-column>
+      <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="150">
         <template v-slot="scope">
-          <el-button type="primary" link @click="infoHandle(scope.row.errorInfo)">异常信息</el-button>
+          <el-button type="primary" link @click="infoHandle(scope.row.errorInfo)">Error info</el-button>
         </template>
       </el-table-column>
     </el-table>

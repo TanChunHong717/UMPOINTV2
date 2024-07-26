@@ -7,18 +7,18 @@
     </el-input>
     <el-dialog v-model="visibleTree" width="360px" :modal="false" :title="placeholder" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form size="small" :inline="true">
-        <el-form-item label="关键字">
+        <el-form-item label="Keyword">
           <el-input v-model="filterText" :style="{ width: '150px' }"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="default">查询</el-button>
+          <el-button type="default">Search</el-button>
         </el-form-item>
       </el-form>
       <el-tree class="filter-tree" :data="dataList" :default-expanded-keys="expandedKeys" :props="{ label: 'name', children: 'children' }" :expand-on-click-node="false" :filter-node-method="filterNode" :highlight-current="true" node-key="id" ref="treeRef"> </el-tree>
       <template v-slot:footer>
-        <el-button type="default" @click="cancelHandle()">取消</el-button>
-        <el-button type="info" @click="clearHandle()">清除</el-button>
-        <el-button type="primary" @click="commitHandle()">确定</el-button>
+        <el-button type="default" @click="cancelHandle()">Cancel</el-button>
+        <el-button type="info" @click="clearHandle()">Clear</el-button>
+        <el-button type="primary" @click="commitHandle()">Confirm</el-button>
       </template>
     </el-dialog>
   </div>
@@ -102,7 +102,7 @@ const clearHandle = () => {
 const commitHandle = () => {
   const node = treeRef.value.getCurrentNode();
   if (!node) {
-    ElMessage.error("请选择");
+    ElMessage.error("Please select");
     return;
   }
   emit("update:modelValue", node.id);

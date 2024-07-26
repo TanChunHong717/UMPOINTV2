@@ -2,37 +2,37 @@
   <div class="mod-sys__dict">
     <el-form :inline="true" :model="state.dataForm" @keyup.enter="state.getDataList()">
       <el-form-item>
-        <el-input v-model="state.dataForm.dictName" placeholder="字典名称" clearable></el-input>
+        <el-input v-model="state.dataForm.dictName" placeholder="Dictionary name" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="state.dataForm.dictType" placeholder="字典类型" clearable></el-input>
+        <el-input v-model="state.dataForm.dictType" placeholder="Dictionary type" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="state.getDataList()">查询</el-button>
+        <el-button @click="state.getDataList()">Search</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button v-if="state.hasPermission('sys:dict:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="state.hasPermission('sys:dict:save')" type="primary" @click="addOrUpdateHandle()">Add</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button v-if="state.hasPermission('sys:dict:delete')" type="danger" @click="state.deleteHandle()">删除</el-button>
+        <el-button v-if="state.hasPermission('sys:dict:delete')" type="danger" @click="state.deleteHandle()">Delete</el-button>
       </el-form-item>
     </el-form>
     <el-table v-loading="state.dataListLoading" :data="state.dataList" border @selection-change="state.dataListSelectionChangeHandle" @sort-change="state.dataListSortChangeHandle" style="width: 100%">
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="dictName" label="字典名称" header-align="center" align="center"></el-table-column>
-      <el-table-column prop="dictType" label="字典类型" header-align="center" align="center">
+      <el-table-column prop="dictName" label="Dictionary name" header-align="center" align="center"></el-table-column>
+      <el-table-column prop="dictType" label="Dictionary type" header-align="center" align="center">
         <template v-slot="scope">
           <el-button type="primary" link @click="showTypeList(scope.row)">{{ scope.row.dictType }}</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="sort" label="排序" sortable="custom" header-align="center" align="center"></el-table-column>
-      <el-table-column prop="remark" label="备注" header-align="center" align="center"></el-table-column>
-      <el-table-column prop="createDate" label="创建时间" sortable="custom" header-align="center" align="center" width="180"></el-table-column>
-      <el-table-column label="操作" fixed="right" header-align="center" align="center" width="180">
+      <el-table-column prop="sort" label="Sort" sortable="custom" header-align="center" align="center"></el-table-column>
+      <el-table-column prop="remark" label="Remark" header-align="center" align="center"></el-table-column>
+      <el-table-column prop="createDate" label="Create date" sortable="custom" header-align="center" align="center" width="180"></el-table-column>
+      <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="180">
         <template v-slot="scope">
-          <el-button type="primary" link @click="showTypeList(scope.row)">字典配置</el-button>
-          <el-button v-if="state.hasPermission('sys:dict:update')" type="primary" link @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-          <el-button v-if="state.hasPermission('sys:dict:delete')" type="primary" link @click="state.deleteHandle(scope.row.id)">删除</el-button>
+          <el-button type="primary" link @click="showTypeList(scope.row)">Dictionary config</el-button>
+          <el-button v-if="state.hasPermission('sys:dict:update')" type="primary" link @click="addOrUpdateHandle(scope.row.id)">Update</el-button>
+          <el-button v-if="state.hasPermission('sys:dict:delete')" type="primary" link @click="state.deleteHandle(scope.row.id)">Delete</el-button>
         </template>
       </el-table-column>
     </el-table>

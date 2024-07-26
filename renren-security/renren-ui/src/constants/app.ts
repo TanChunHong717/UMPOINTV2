@@ -12,7 +12,7 @@ export default {
   /**
    * 系统默认语言
    */
-  defaultLang: "zh-CN",
+  defaultLang: "en-us",
 
   /**
    * api请求地址，这里读取env环境变量中的VITE_APP_API，优先使用全局变量window.SITE_CONFIG.apiURL钩子，支持在index.html中配置

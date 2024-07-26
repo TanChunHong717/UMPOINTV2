@@ -29,9 +29,9 @@ export default defineComponent({
 
     const onClickUserMenus = (path: string) => {
       if (path === "/login") {
-        ElMessageBox.confirm("确定进行[退出]操作?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
+        ElMessageBox.confirm("Confirm to logout?", "Hint", {
+          confirmButtonText: "Confirm",
+          cancelButtonText: "Cancel",
           type: "warning"
         })
           .then(() => {

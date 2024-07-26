@@ -40,8 +40,8 @@ const dataForm = reactive({
 });
 
 const rules = ref({
-  beanName: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
-  cronExpression: [{ required: true, message: "必填项不能为空", trigger: "blur" }]
+  beanName: [{ required: true, message: "Required field can not be empty", trigger: "blur" }],
+  cronExpression: [{ required: true, message: "Required field can not be empty", trigger: "blur" }]
 });
 
 const init = (id?: number) => {

@@ -2,27 +2,27 @@
   <div class="mod-sys__role">
     <el-form :inline="true" :model="state.dataForm" @keyup.enter="state.getDataList()">
       <el-form-item>
-        <el-input v-model="state.dataForm.name" placeholder="名称" clearable></el-input>
+        <el-input v-model="state.dataForm.name" placeholder="Name" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="state.getDataList()">查询</el-button>
+        <el-button @click="state.getDataList()">Search</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button v-if="state.hasPermission('sys:role:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="state.hasPermission('sys:role:save')" type="primary" @click="addOrUpdateHandle()">Add</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button v-if="state.hasPermission('sys:role:delete')" type="danger" @click="state.deleteHandle()">删除</el-button>
+        <el-button v-if="state.hasPermission('sys:role:delete')" type="danger" @click="state.deleteHandle()">Delete</el-button>
       </el-form-item>
     </el-form>
     <el-table v-loading="state.dataListLoading" :data="state.dataList" border @selection-change="state.dataListSelectionChangeHandle" @sort-change="state.dataListSortChangeHandle" style="width: 100%">
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="name" label="名称" header-align="center" align="center"></el-table-column>
-      <el-table-column prop="remark" label="备注" header-align="center" align="center"></el-table-column>
-      <el-table-column prop="createDate" label="创建时间" sortable="custom" header-align="center" align="center" width="180"></el-table-column>
-      <el-table-column label="操作" fixed="right" header-align="center" align="center" width="150">
+      <el-table-column prop="name" label="Name" header-align="center" align="center"></el-table-column>
+      <el-table-column prop="remark" label="Remark" header-align="center" align="center"></el-table-column>
+      <el-table-column prop="createDate" label="Create data" sortable="custom" header-align="center" align="center" width="180"></el-table-column>
+      <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="150">
         <template v-slot="scope">
-          <el-button v-if="state.hasPermission('sys:role:update')" type="primary" link @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-          <el-button v-if="state.hasPermission('sys:role:delete')" type="primary" link @click="state.deleteHandle(scope.row.id)">删除</el-button>
+          <el-button v-if="state.hasPermission('sys:role:update')" type="primary" link @click="addOrUpdateHandle(scope.row.id)">Update</el-button>
+          <el-button v-if="state.hasPermission('sys:role:delete')" type="primary" link @click="state.deleteHandle(scope.row.id)">Delete</el-button>
         </template>
       </el-table-column>
     </el-table>

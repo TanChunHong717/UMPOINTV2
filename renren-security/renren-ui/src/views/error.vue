@@ -16,11 +16,11 @@ export default defineComponent({
     const tips: IObject = {
       404: {
         title: "404",
-        message: "访问页面不存在"
+        message: "Page not found"
       },
       error: {
-        title: "错误",
-        message: "访问出错了"
+        title: "Error",
+        message: "Request error"
       }
     };
     const tip: ITip = tips[to?.toString() ?? "error"];
@@ -49,8 +49,8 @@ export default defineComponent({
       </template>
       <template v-slot:extra>
         <el-space :size="30">
-          <el-button type="info" plain @click="onBack"> 返回 </el-button>
-          <el-button type="primary" @click="onToHome"> 主页 </el-button>
+          <el-button type="info" plain @click="onBack"> Back </el-button>
+          <el-button type="primary" @click="onToHome"> Home </el-button>
         </el-space>
       </template>
     </el-result>

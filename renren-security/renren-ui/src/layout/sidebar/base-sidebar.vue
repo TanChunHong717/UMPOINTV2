@@ -133,7 +133,7 @@ export default defineComponent({
             ? state.rawMenus.slice(0, index).concat({
                 path: "/__more",
                 component: Layout,
-                meta: { title: "更多菜单", icon: false, isMore: true },
+                meta: { title: "More", icon: false, isMore: true },
                 children: state.rawMenus.slice(index)
               })
             : state.rawMenus;

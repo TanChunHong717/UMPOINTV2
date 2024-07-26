@@ -1,22 +1,22 @@
 <template>
-  <el-dialog v-model="visible" :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false" :close-on-press-escape="false">
+  <el-dialog v-model="visible" :title="!dataForm.id ? 'Add' : 'Update'" :close-on-click-modal="false" :close-on-press-escape="false">
     <el-form :model="dataForm" :rules="rules" ref="dataFormRef" @keyup.enter="dataFormSubmitHandle()" label-width="120px">
-      <el-form-item prop="dictValue" label="字典值">
-        <el-input v-model="dataForm.dictValue" placeholder="字典值"></el-input>
+      <el-form-item prop="dictValue" label="Dictionary value">
+        <el-input v-model="dataForm.dictValue" placeholder="Dictionary value"></el-input>
       </el-form-item>
-      <el-form-item prop="dictLabel" label="字典标签">
-        <el-input v-model="dataForm.dictLabel" placeholder="字典标签"></el-input>
+      <el-form-item prop="dictLabel" label="Dictionary label">
+        <el-input v-model="dataForm.dictLabel" placeholder="Dictionary label"></el-input>
       </el-form-item>
-      <el-form-item prop="sort" label="排序">
-        <el-input-number v-model="dataForm.sort" controls-position="right" :min="0" label="排序"></el-input-number>
+      <el-form-item prop="sort" label="Sort">
+        <el-input-number v-model="dataForm.sort" controls-position="right" :min="0" label="Sort"></el-input-number>
       </el-form-item>
-      <el-form-item prop="remark" label="备注">
-        <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
+      <el-form-item prop="remark" label="Remark">
+        <el-input v-model="dataForm.remark" placeholder="Remark"></el-input>
       </el-form-item>
     </el-form>
     <template v-slot:footer>
-      <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmitHandle()">确定</el-button>
+      <el-button @click="visible = false">Cancel</el-button>
+      <el-button type="primary" @click="dataFormSubmitHandle()">Confirm</el-button>
     </template>
   </el-dialog>
 </template>
@@ -40,9 +40,9 @@ const dataForm = reactive({
 });
 
 const rules = ref({
-  dictLabel: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
-  dictValue: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
-  sort: [{ required: true, message: "必填项不能为空", trigger: "blur" }]
+  dictLabel: [{ required: true, message: "Require field can not be empty", trigger: "blur" }],
+  dictValue: [{ required: true, message: "Require field can not be empty", trigger: "blur" }],
+  sort: [{ required: true, message: "Require field can not be empty", trigger: "blur" }]
 });
 
 const init = (id?: number) => {

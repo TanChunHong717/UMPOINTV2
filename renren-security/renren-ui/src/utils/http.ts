@@ -52,25 +52,25 @@ http.interceptors.response.use(
   (error) => {
     const status = getValueByKeys(error, "response.status", 500);
     const httpCodeLabel: IObject<string> = {
-      400: "请求参数错误",
-      401: "未授权，请登录",
-      403: "拒绝访问",
-      404: `请求地址出错: ${getValueByKeys(error, "response.config.url", "")}`,
-      408: "请求超时",
-      500: "API接口报500错误",
-      501: "服务未实现",
-      502: "网关错误",
-      503: "服务不可用",
-      504: "网关超时",
-      505: "HTTP版本不受支持"
+      400: "Request params error",
+      401: "Unauthorized actions, please log in",
+      403: "Access denied",
+      404: `Request url error: ${getValueByKeys(error, "response.config.url", "")}`,
+      408: "Request timeout",
+      500: "API interface throw error 500",
+      501: "Unimplement service",
+      502: "Gateway error",
+      503: "Service not available",
+      504: "Gateway timeout",
+      505: "HTTP version not support"
     };
     if (error && error.response) {
-      console.error("请求错误", error.response.data);
+      console.error("Request error", error.response.data);
     }
     if (status === 401) {
       redirectLogin();
     }
-    return Promise.reject(new Error(httpCodeLabel[status] || "接口错误"));
+    return Promise.reject(new Error(httpCodeLabel[status] || "Interface error"));
   }
 );
 

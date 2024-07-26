@@ -1,19 +1,19 @@
 <template>
-  <el-dialog v-model="visible" :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false" :close-on-press-escape="false">
+  <el-dialog v-model="visible" :title="!dataForm.id ? 'Add' : 'Update'" :close-on-click-modal="false" :close-on-press-escape="false">
     <el-form :model="dataForm" :rules="rules" ref="dataFormRef" @keyup.enter="dataFormSubmitHandle()" label-width="120px">
-      <el-form-item prop="menuType" label="类型">
+      <el-form-item prop="menuType" label="Type">
         <el-radio-group v-model="dataForm.menuType" :disabled="!!dataForm.id">
-          <el-radio :label="0">菜单</el-radio>
-          <el-radio :label="1">按钮</el-radio>
+          <el-radio :label="0">Menu</el-radio>
+          <el-radio :label="1">Button</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item prop="name" label="名称">
-        <el-input v-model="dataForm.name" placeholder="名称"></el-input>
+      <el-form-item prop="name" label="Name">
+        <el-input v-model="dataForm.name" placeholder="Name"></el-input>
       </el-form-item>
-      <el-form-item prop="parentName" label="上级菜单" class="menu-list">
+      <el-form-item prop="parentName" label="Parent" class="menu-list">
         <el-popover ref="menuListPopover" placement="bottom-start" trigger="click" :width="400" popper-class="popover-pop">
           <template v-slot:reference>
-            <el-input v-model="dataForm.parentName" :readonly="true" placeholder="上级菜单">
+            <el-input v-model="dataForm.parentName" :readonly="true" placeholder="Parent">
               <template v-slot:suffix>
                 <el-icon v-if="dataForm.pid !== '0'" @click.stop="deptListTreeSetDefaultHandle()" class="el-input__icon"><circle-close /></el-icon
               ></template>
@@ -24,24 +24,24 @@
           </div>
         </el-popover>
       </el-form-item>
-      <el-form-item v-if="dataForm.menuType === 0" prop="url" label="路由">
-        <el-input v-model="dataForm.url" placeholder="路由"></el-input>
+      <el-form-item v-if="dataForm.menuType === 0" prop="url" label="Route">
+        <el-input v-model="dataForm.url" placeholder="Route"></el-input>
       </el-form-item>
-      <el-form-item prop="sort" label="排序">
-        <el-input-number v-model="dataForm.sort" controls-position="right" :min="0" label="排序"></el-input-number>
+      <el-form-item prop="sort" label="Sort">
+        <el-input-number v-model="dataForm.sort" controls-position="right" :min="0" label="Sort"></el-input-number>
       </el-form-item>
-      <el-form-item v-if="dataForm.menuType === 0" prop="openStyle" label="打开方式">
+      <el-form-item v-if="dataForm.menuType === 0" prop="openStyle" label="Open style">
         <el-radio-group v-model="dataForm.openStyle">
-          <el-radio :label="0">内部打开</el-radio>
-          <el-radio :label="1">外部打开</el-radio>
+          <el-radio :label="0">Internal</el-radio>
+          <el-radio :label="1">External</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item prop="permissions" label="授权标识">
-        <el-input v-model="dataForm.permissions" placeholder="多个用逗号分隔，如：sys:menu:save,sys:menu:update"></el-input>
+      <el-form-item prop="permissions" label="Permissions">
+        <el-input v-model="dataForm.permissions" placeholder="Seperate by ':'，like：sys:menu:save,sys:menu:update"></el-input>
       </el-form-item>
-      <el-form-item v-if="dataForm.menuType === 0" prop="icon" label="图标" class="icon-list">
+      <el-form-item v-if="dataForm.menuType === 0" prop="icon" label="Icon" class="icon-list">
         <el-popover ref="iconListPopover" placement="top-start" trigger="click" popper-class="popover-pop mod-sys__menu-icon-popover">
-          <template v-slot:reference> <el-input v-model="dataForm.icon" :readonly="true" placeholder="图标"></el-input></template>
+          <template v-slot:reference> <el-input v-model="dataForm.icon" :readonly="true" placeholder="Icon"></el-input></template>
           <div class="mod-sys__menu-icon-inner">
             <div class="mod-sys__menu-icon-list">
               <el-button v-for="(item, index) in iconList" :key="index" @click="iconListCurrentChangeHandle(item)" :class="{ 'is-active': dataForm.icon === item }">
@@ -53,8 +53,8 @@
       </el-form-item>
     </el-form>
     <template v-slot:footer>
-      <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmitHandle()">确定</el-button>
+      <el-button @click="visible = false">Cancel</el-button>
+      <el-button type="primary" @click="dataFormSubmitHandle()">Confirm</el-button>
     </template>
   </el-dialog>
 </template>
@@ -90,8 +90,8 @@ const dataForm = reactive({
 });
 
 const rules = ref({
-  name: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
-  parentName: [{ required: true, message: "必填项不能为空", trigger: "change" }]
+  name: [{ required: true, message: "Require field can not be empty", trigger: "blur" }],
+  parentName: [{ required: true, message: "Require field can not be empty", trigger: "change" }]
 });
 
 const init = (id: number) => {
@@ -105,8 +105,8 @@ const init = (id: number) => {
 
   iconList.value = getIconList();
 
-  dataForm.pid = "0";
-  dataForm.parentName = "一级菜单";
+  dataForm.pid = f"0";
+  dataForm.parentName = "First class menu";
 
   getMenuList().then(() => {
     if (id) {
@@ -153,7 +153,7 @@ const getInfo = (id: number) => {
 // 上级菜单树, 设置默认值
 const deptListTreeSetDefaultHandle = () => {
   dataForm.pid = "0";
-  dataForm.parentName = "一级菜单";
+  dataForm.parentName = "First class menu";
 };
 
 // 上级菜单树, 选中

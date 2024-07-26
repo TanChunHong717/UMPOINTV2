@@ -163,7 +163,7 @@ const matchedSysRouteComponent = (path: string): any => {
   const sysRouteMap = getSysRouteMap();
   const component = sysRouteMap[toSysViewComponentPath(path)];
   if (!component) {
-    console.error("实时注册动态路由失败，未找到组件路径", path);
+    console.error("Real time register path failed, component didnt found", path);
   }
   return component;
 };

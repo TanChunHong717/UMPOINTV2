@@ -1,13 +1,13 @@
 <template>
-  <el-dialog v-model="visible" :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false" :close-on-press-escape="false">
+  <el-dialog v-model="visible" :title="!dataForm.id ? 'Add' : 'Update'" :close-on-click-modal="false" :close-on-press-escape="false">
     <el-form :model="dataForm" :rules="rules" ref="dataFormRef" @keyup.enter="dataFormSubmitHandle()" label-width="120px">
-      <el-form-item prop="name" label="名称">
-        <el-input v-model="dataForm.name" placeholder="名称"></el-input>
+      <el-form-item prop="name" label="Name">
+        <el-input v-model="dataForm.name" placeholder="Name"></el-input>
       </el-form-item>
-      <el-form-item prop="parentName" label="上级部门" class="dept-list">
+      <el-form-item prop="parentName" label="Parent department" class="dept-list">
         <el-popover :width="400" ref="deptListPopover" placement="bottom-start" trigger="click" popper-class="popover-pop">
           <template v-slot:reference>
-            <el-input v-model="dataForm.parentName" :readonly="true" placeholder="上级部门">
+            <el-input v-model="dataForm.parentName" :readonly="true" placeholder="Parent department">
               <template v-slot:suffix>
                 <el-icon v-if="user.superAdmin === 1 && dataForm.pid !== '0'" @click.stop="deptListTreeSetDefaultHandle()" class="el-input__icon"><circle-close /></el-icon>
               </template> </el-input
@@ -15,13 +15,13 @@
           <div class="popover-pop-body"><el-tree :data="deptList" :props="{ label: 'name', children: 'children' }" node-key="id" ref="deptListTree" :highlight-current="true" :expand-on-click-node="false" accordion @current-change="deptListTreeCurrentChangeHandle"> </el-tree></div>
         </el-popover>
       </el-form-item>
-      <el-form-item prop="sort" label="排序">
-        <el-input-number v-model="dataForm.sort" controls-position="right" :min="0" label="排序"></el-input-number>
+      <el-form-item prop="sort" label="Sort">
+        <el-input-number v-model="dataForm.sort" controls-position="right" :min="0" label="Sort"></el-input-number>
       </el-form-item>
     </el-form>
     <template v-slot:footer>
-      <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmitHandle()">确定</el-button>
+      <el-button @click="visible = false">Cancel</el-button>
+      <el-button type="primary" @click="dataFormSubmitHandle()">Confirm</el-button>
     </template>
   </el-dialog>
 </template>
@@ -53,8 +53,8 @@ const dataForm = reactive({
 const user = computed(() => store.state.user);
 
 const rules = ref({
-  name: [{ required: true, message: "必填项不能为空", trigger: "blur" }],
-  parentName: [{ required: true, message: "必填项不能为空", trigger: "change" }]
+  name: [{ required: true, message: "Require field can not be empty", trigger: "blur" }],
+  parentName: [{ required: true, message: "Require field can not be empty", trigger: "change" }]
 });
 
 const init = (id?: number) => {
@@ -100,7 +100,7 @@ const getInfo = (id: number) => {
 // 上级部门树, 设置默认值
 const deptListTreeSetDefaultHandle = () => {
   dataForm.pid = "0";
-  dataForm.parentName = "一级部门";
+  dataForm.parentName = "First class department";
 };
 
 // 上级部门树, 选中
@@ -118,7 +118,7 @@ const dataFormSubmitHandle = () => {
     }
     (!dataForm.id ? baseService.post : baseService.put)("/sys/dept", dataForm).then((res) => {
       ElMessage.success({
-        message: "成功",
+        message: "Success",
         duration: 500,
         onClose: () => {
           visible.value = false;
