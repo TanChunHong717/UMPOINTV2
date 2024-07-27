@@ -10,8 +10,8 @@ spring:
     #MySQL配置
     driverClassName: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://192.168.15.100:3306/umpoint?useUnicode=true&characterEncoding=UTF-8&nullCatalogMeansCurrent=true
-    username: renren
-    password: 123456
+    username: root
+    password: root
     #达梦8
 #    driver-class-name: dm.jdbc.driver.DmDriver
 #    url: jdbc:dm://127.0.0.1:5236/renren_security?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&nullCatalogMeansCurrent=true
