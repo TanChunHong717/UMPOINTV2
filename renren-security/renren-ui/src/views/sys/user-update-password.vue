@@ -61,7 +61,7 @@ const dataFormSubmitHandle = () => {
     }
     baseService.put("/sys/user/password", dataForm).then((res) => {
       ElMessage.success({
-        message: "成功",
+        message: "Success",
         duration: 500,
         onClose: () => {
           router.replace("/login");
