@@ -16,10 +16,10 @@
     </el-form>
     <el-table v-loading="state.dataListLoading" :data="state.dataList" border @selection-change="state.dataListSelectionChangeHandle" style="width: 100%">
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="paramCode" label="编码" header-align="center" align="center"></el-table-column>
-      <el-table-column prop="paramValue" label="值" header-align="center" align="center"></el-table-column>
-      <el-table-column prop="remark" label="备注" header-align="center" align="center"></el-table-column>
-      <el-table-column label="操作" fixed="right" header-align="center" align="center" width="150">
+      <el-table-column prop="paramCode" label="Param code" header-align="center" align="center"></el-table-column>
+      <el-table-column prop="paramValue" label="Param Value" header-align="center" align="center"></el-table-column>
+      <el-table-column prop="remark" label="Remark" header-align="center" align="center"></el-table-column>
+      <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="150">
         <template v-slot="scope">
           <el-button v-if="state.hasPermission('sys:params:update')" type="primary" link @click="addOrUpdateHandle(scope.row.id)">Update</el-button>
           <el-button v-if="state.hasPermission('sys:params:delete')" type="primary" link @click="state.deleteHandle(scope.row.id)">Delete</el-button>

@@ -20,7 +20,7 @@
           <el-tag v-else type="info">Button</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="openStyle" label="打开方式" header-align="center" align="center">
+      <el-table-column prop="openStyle" label="Open style" header-align="center" align="center">
         <template v-slot="scope">
           <span v-if="scope.row.menuType !== 0"></span>
           <el-tag v-else-if="scope.row.openStyle === 1">External</el-tag>
@@ -30,7 +30,7 @@
       <el-table-column prop="sort" label="Sort" header-align="center" align="center"></el-table-column>
       <el-table-column prop="url" label="Route" header-align="center" align="center" width="150"></el-table-column>
       <el-table-column prop="permissions" label="Permissions" header-align="center" align="center" width="150"></el-table-column>
-      <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="170">
+      <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="200">
         <template v-slot="scope">
           <el-button v-if="state.hasPermission('sys:menu:save') && scope.row.menuType === 0" type="primary" link @click="addHandle(scope.row)">Add</el-button>
           <el-button v-if="state.hasPermission('sys:menu:update')" type="primary" link @click="addOrUpdateHandle(scope.row.id)">Update</el-button>

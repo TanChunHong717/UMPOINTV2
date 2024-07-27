@@ -59,16 +59,6 @@ export default defineComponent({
 </script>
 <template>
   <div class="rr-header-right-items">
-    <div>
-      <a href="https://www.renren.io/community" target="_blank">
-        <svg-icon name="icon-earth"></svg-icon>
-      </a>
-    </div>
-    <div>
-      <a href="https://gitee.com/renrenio/renren-security" target="_blank">
-        <svg-icon name="icon-gitee"></svg-icon>
-      </a>
-    </div>
     <div @click="toggle" class="hidden-xs-only">
       <span>
         <svg-icon :name="isFullscreen ? 'tuichuquanping' : 'fullscreen2'"></svg-icon>
@@ -79,8 +69,8 @@ export default defineComponent({
       <el-dropdown @command="onClickUserMenus">
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item icon="lock" command="/user/password"> 修改密码 </el-dropdown-item>
-            <el-dropdown-item icon="switch-button" divided command="/login"> 退出登录 </el-dropdown-item>
+            <el-dropdown-item icon="lock" command="/user/password"> Change password </el-dropdown-item>
+            <el-dropdown-item icon="switch-button" divided command="/login"> Logout </el-dropdown-item>
           </el-dropdown-menu>
         </template>
         <span class="el-dropdown-link" style="display: flex">

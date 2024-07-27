@@ -105,7 +105,7 @@ const init = (id: number) => {
 
   iconList.value = getIconList();
 
-  dataForm.pid = f"0";
+  dataForm.pid = "0";
   dataForm.parentName = "First class menu";
 
   getMenuList().then(() => {

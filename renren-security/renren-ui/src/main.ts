@@ -6,7 +6,6 @@ import RenSelect from "@/components/ren-select";
 import ElementPlus from "element-plus";
 import "element-plus/theme-chalk/display.css";
 import "element-plus/theme-chalk/index.css";
-import locale from "element-plus/es/locale/lang/zh-cn";
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import App from "./App.vue";
@@ -28,7 +27,7 @@ app
   .use(RenSelect)
   .use(RenDeptTree)
   .use(RenRegionTree)
-  .use(ElementPlus, { size: "default", locale: locale })
+  .use(ElementPlus, { size: "default" })
   .mount("#app");
 
 window.axios = axios;

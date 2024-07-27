@@ -10,10 +10,10 @@
           <h4 class="rr-login-right-main-title">Login</h4>
           <el-form ref="formRef" label-width="80px" :status-icon="true" :model="login" :rules="rules" @keyup.enter="onLogin">
             <el-form-item label-width="0" prop="username">
-              <el-input v-model="login.username" placeholder="用户名" prefix-icon="user" autocomplete="off"></el-input>
+              <el-input v-model="login.username" placeholder="Username" prefix-icon="user" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label-width="0" prop="password">
-              <el-input placeholder="密码" v-model="login.password" prefix-icon="lock" autocomplete="off" show-password></el-input>
+              <el-input placeholder="Password" v-model="login.password" prefix-icon="lock" autocomplete="off" show-password></el-input>
             </el-form-item>
             <el-form-item label-width="0" prop="captcha">
               <el-space class="rr-login-right-main-code">
