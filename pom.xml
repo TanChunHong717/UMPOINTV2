@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>renren-security</module>
+        <module>umpoint</module>
     </modules>
 
 </project>
