@@ -21,7 +21,7 @@ public class SysLogOperationConverter implements Converter<Integer> {
 
     @Override
     public Integer convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
-        if(cellData.getStringValue().equals("用户登录")){
+        if(cellData.getStringValue().equals("user login")){
             return 0;
         }else{
             return 1;
@@ -31,9 +31,9 @@ public class SysLogOperationConverter implements Converter<Integer> {
     @Override
     public WriteCellData<?> convertToExcelData(Integer value, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
        if(value == 0){
-           return new WriteCellData<>("用户登录");
+           return new WriteCellData<>("user login");
        }else{
-           return new WriteCellData<>("用户退出");
+           return new WriteCellData<>("user logout");
        }
     }
 

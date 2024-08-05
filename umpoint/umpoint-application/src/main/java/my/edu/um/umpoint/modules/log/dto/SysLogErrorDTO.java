@@ -1,45 +1,41 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- *
- * https://www.renren.io
- *
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.log.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * 异常日志
- *
- * @author Mark sunlightcs@gmail.com
- * @since 1.0.0
- */
 @Data
-@Schema(title = "异常日志")
+@Schema(title = "error log")
 public class SysLogErrorDTO implements Serializable {
-    private static final long serialVersionUID = 1L;
+
+	@Serial
+    private static final long serialVersionUID = -7616883403340856719L;
 
 	@Schema(title = "id")
 	private Long id;
-	@Schema(title = "请求URI")
+
+	@Schema(title = "request URI")
 	private String requestUri;
-	@Schema(title = "请求方式")
+
+	@Schema(title = "request method")
 	private String requestMethod;
-	@Schema(title = "请求参数")
+
+	@Schema(title = "request params")
 	private String requestParams;
-	@Schema(title = "用户代理")
+
+	@Schema(title = "user agent")
 	private String userAgent;
-	@Schema(title = "操作IP")
+
+	@Schema(title = "ip")
 	private String ip;
-	@Schema(title = "异常信息")
+
+	@Schema(title = "error info")
 	private String errorInfo;
-	@Schema(title = "创建时间")
+
+	@Schema(title = "create date")
 	private Date createDate;
 
 }

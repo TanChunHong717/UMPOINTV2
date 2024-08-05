@@ -49,8 +49,6 @@ public abstract class CrudServiceImpl<M extends BaseMapper<T>, T, D> extends Bas
     public void save(D dto) {
         T entity = ConvertUtils.sourceToTarget(dto, currentModelClass());
         insert(entity);
-
-        //copy主键值到dto
         BeanUtils.copyProperties(entity, dto);
     }
 

@@ -20,11 +20,11 @@ public class StatusConverter implements Converter<Integer> {
 
     @Override
     public Integer convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
-        return cellData.getStringValue().equals("正常") ? 1 : 0;
+        return cellData.getStringValue().equals("normal") ? 1 : 0;
     }
 
     @Override
     public WriteCellData<?> convertToExcelData(Integer value, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
-        return new WriteCellData<>(value == 1 ? "正常" : "停用");
+        return new WriteCellData<>(value == 1 ? "normal" : "suspend");
     }
 }

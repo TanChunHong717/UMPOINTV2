@@ -1,11 +1,3 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- *
- * https://www.renren.io
- *
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.job.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -19,44 +11,40 @@ import jakarta.validation.constraints.Null;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * 定时任务
- *
- * @author Mark sunlightcs@gmail.com
- * @since 1.0.0
- */
 @Data
-@Schema(title = "定时任务")
+@Schema(title = "Schedule Job")
 public class ScheduleJobDTO implements Serializable {
-    private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = -36053881056163033L;
 
     @Schema(title = "id")
     @Null(message="{id.null}", groups = AddGroup.class)
     @NotNull(message="{id.require}", groups = UpdateGroup.class)
     private Long id;
 
-    @Schema(title = "spring bean名称")
+    @Schema(title = "spring bean name")
     @NotBlank(message = "{schedule.bean.require}", groups = DefaultGroup.class)
     private String beanName;
 
-    @Schema(title = "参数")
+    @Schema(title = "params")
     private String params;
 
-    @Schema(title = "cron表达式")
+    @Schema(title = "cron expression")
     @NotBlank(message = "{schedule.cron.require}", groups = DefaultGroup.class)
     private String cronExpression;
 
-    @Schema(title = "任务状态  0：暂停  1：正常")
+    @Schema(title = "status 0:Stop 1:Run")
     @Range(min=0, max=1, message = "{schedule.status.range}", groups = DefaultGroup.class)
     private Integer status;
 
-    @Schema(title = "备注")
+    @Schema(title = "remark")
     private String remark;
 
-    @Schema(title = "创建时间")
+    @Schema(title = "create date")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Date createDate;
 

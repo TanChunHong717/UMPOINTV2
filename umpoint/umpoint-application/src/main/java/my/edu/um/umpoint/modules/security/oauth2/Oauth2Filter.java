@@ -1,11 +1,3 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- * <p>
- * https://www.renren.io
- * <p>
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.security.oauth2;
 
 import cn.hutool.core.util.StrUtil;
@@ -26,16 +18,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.io.IOException;
 
-/**
- * oauth2过滤器
- *
- * @author Mark sunlightcs@gmail.com
- */
 public class Oauth2Filter extends AuthenticatingFilter {
 
     @Override
     protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) throws Exception {
-        //获取请求token
+
         String token = getRequestToken((HttpServletRequest) request);
 
         if (StrUtil.isBlank(token)) {
@@ -56,7 +43,6 @@ public class Oauth2Filter extends AuthenticatingFilter {
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
-        //获取请求token，如果token不存在，直接返回401
         String token = getRequestToken((HttpServletRequest) request);
         if (StrUtil.isBlank(token)) {
             HttpServletResponse httpResponse = (HttpServletResponse) response;
@@ -81,7 +67,6 @@ public class Oauth2Filter extends AuthenticatingFilter {
         httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
         httpResponse.setHeader("Access-Control-Allow-Origin", HttpContextUtils.getOrigin());
         try {
-            //处理登录失败的异常
             Throwable throwable = e.getCause() == null ? e : e.getCause();
             Result r = new Result().error(HttpStatus.SC_UNAUTHORIZED, throwable.getMessage());
 
@@ -94,14 +79,9 @@ public class Oauth2Filter extends AuthenticatingFilter {
         return false;
     }
 
-    /**
-     * 获取请求的token
-     */
     private String getRequestToken(HttpServletRequest httpRequest) {
-        //从header中获取token
         String token = httpRequest.getHeader(Constant.TOKEN_HEADER);
 
-        //如果header中不存在token，则从参数中获取token
         if (StrUtil.isBlank(token)) {
             token = httpRequest.getParameter(Constant.TOKEN_HEADER);
         }

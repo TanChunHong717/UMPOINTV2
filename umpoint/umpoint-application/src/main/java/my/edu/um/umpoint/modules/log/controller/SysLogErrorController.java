@@ -1,11 +1,3 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- * <p>
- * https://www.renren.io
- * <p>
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.log.controller;
 
 import my.edu.um.umpoint.common.annotation.LogOperation;
@@ -32,27 +24,20 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
-
-/**
- * 异常日志
- *
- * @author Mark sunlightcs@gmail.com
- * @since 1.0.0
- */
 @RestController
 @RequestMapping("sys/log/error")
-@Tag(name = "异常日志")
+@Tag(name = "error log")
 @AllArgsConstructor
 public class SysLogErrorController {
     private final SysLogErrorService sysLogErrorService;
 
     @GetMapping("page")
-    @Operation(summary = "分页")
+    @Operation(summary = "page")
     @Parameters({
-            @Parameter(name = Constant.PAGE, description = "当前页码，从1开始", in = ParameterIn.QUERY, required = true, ref = "int"),
-            @Parameter(name = Constant.LIMIT, description = "每页显示记录数", in = ParameterIn.QUERY, required = true, ref = "int"),
-            @Parameter(name = Constant.ORDER_FIELD, description = "排序字段", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(name = Constant.ORDER, description = "排序方式，可选值(asc、desc)", in = ParameterIn.QUERY, ref = "String")
+            @Parameter(name = Constant.PAGE, description = "Current page number, starting from 1", in = ParameterIn.QUERY, required = true, ref="int") ,
+            @Parameter(name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY,required = true, ref="int") ,
+            @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, ref="String") ,
+            @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String")
     })
     @RequiresPermissions("sys:log:error")
     public Result<PageData<SysLogErrorDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params) {
@@ -62,13 +47,13 @@ public class SysLogErrorController {
     }
 
     @GetMapping("export")
-    @Operation(summary = "导出")
-    @LogOperation("导出")
+    @Operation(summary = "export")
+    @LogOperation("export")
     @RequiresPermissions("sys:log:error")
     public void export(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletResponse response) throws Exception {
         List<SysLogErrorDTO> list = sysLogErrorService.list(params);
 
-        ExcelUtils.exportExcelToTarget(response, null, "异常日志", list, SysLogErrorExcel.class);
+        ExcelUtils.exportExcelToTarget(response, null, "Error log", list, SysLogErrorExcel.class);
     }
 
 }

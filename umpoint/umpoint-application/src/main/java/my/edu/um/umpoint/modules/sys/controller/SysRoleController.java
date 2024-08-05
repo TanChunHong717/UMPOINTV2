@@ -1,11 +1,3 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- * <p>
- * https://www.renren.io
- * <p>
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.sys.controller;
 
 import my.edu.um.umpoint.common.annotation.LogOperation;
@@ -34,14 +26,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 角色管理
- *
- * @author Mark sunlightcs@gmail.com
- */
 @RestController
 @RequestMapping("/sys/role")
-@Tag(name = "角色管理")
+@Tag(name = "role management")
 @AllArgsConstructor
 public class SysRoleController {
     private final SysRoleService sysRoleService;
@@ -49,13 +36,13 @@ public class SysRoleController {
     private final SysRoleDataScopeService sysRoleDataScopeService;
 
     @GetMapping("page")
-    @Operation(summary = "分页")
+    @Operation(summary = "page")
     @Parameters({
-            @Parameter(name = Constant.PAGE, description = "当前页码，从1开始", in = ParameterIn.QUERY, required = true, ref = "int"),
-            @Parameter(name = Constant.LIMIT, description = "每页显示记录数", in = ParameterIn.QUERY, required = true, ref = "int"),
-            @Parameter(name = Constant.ORDER_FIELD, description = "排序字段", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(name = Constant.ORDER, description = "排序方式，可选值(asc、desc)", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(name = "name", description = "角色名", in = ParameterIn.QUERY, ref = "String")
+            @Parameter(name = Constant.PAGE, description = "Current page number, starting from 1", in = ParameterIn.QUERY, required = true, ref="int") ,
+            @Parameter(name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY,required = true, ref="int") ,
+            @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, ref="String") ,
+            @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String"),
+            @Parameter(name = "name", description = "Role name", in = ParameterIn.QUERY, ref = "String")
     })
     @RequiresPermissions("sys:role:page")
     public Result<PageData<SysRoleDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params) {
@@ -65,7 +52,7 @@ public class SysRoleController {
     }
 
     @GetMapping("list")
-    @Operation(summary = "列表")
+    @Operation(summary = "list")
     @RequiresPermissions("sys:role:list")
     public Result<List<SysRoleDTO>> list() {
         List<SysRoleDTO> data = sysRoleService.list(new HashMap<>(1));
@@ -74,16 +61,14 @@ public class SysRoleController {
     }
 
     @GetMapping("{id}")
-    @Operation(summary = "信息")
+    @Operation(summary = "info")
     @RequiresPermissions("sys:role:info")
     public Result<SysRoleDTO> get(@PathVariable("id") Long id) {
         SysRoleDTO data = sysRoleService.get(id);
 
-        //查询角色对应的菜单
         List<Long> menuIdList = sysRoleMenuService.getMenuIdList(id);
         data.setMenuIdList(menuIdList);
 
-        //查询角色对应的数据权限
         List<Long> deptIdList = sysRoleDataScopeService.getDeptIdList(id);
         data.setDeptIdList(deptIdList);
 
@@ -91,11 +76,10 @@ public class SysRoleController {
     }
 
     @PostMapping
-    @Operation(summary = "保存")
-    @LogOperation("保存")
+    @Operation(summary = "save")
+    @LogOperation("save")
     @RequiresPermissions("sys:role:save")
     public Result save(@RequestBody SysRoleDTO dto) {
-        //效验数据
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
 
         sysRoleService.save(dto);
@@ -104,11 +88,10 @@ public class SysRoleController {
     }
 
     @PutMapping
-    @Operation(summary = "修改")
-    @LogOperation("修改")
+    @Operation(summary = "update")
+    @LogOperation("update")
     @RequiresPermissions("sys:role:update")
     public Result update(@RequestBody SysRoleDTO dto) {
-        //效验数据
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
 
         sysRoleService.update(dto);
@@ -117,11 +100,10 @@ public class SysRoleController {
     }
 
     @DeleteMapping
-    @Operation(summary = "删除")
-    @LogOperation("删除")
+    @Operation(summary = "delete")
+    @LogOperation("delete")
     @RequiresPermissions("sys:role:delete")
     public Result delete(@RequestBody Long[] ids) {
-        //效验数据
         AssertUtils.isArrayEmpty(ids, "id");
 
         sysRoleService.delete(ids);

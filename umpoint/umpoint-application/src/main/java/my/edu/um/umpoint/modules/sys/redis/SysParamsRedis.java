@@ -1,11 +1,3 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- * <p>
- * https://www.renren.io
- * <p>
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.sys.redis;
 
 import my.edu.um.umpoint.common.redis.RedisKeys;
@@ -13,12 +5,6 @@ import my.edu.um.umpoint.common.redis.RedisUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-/**
- * 参数管理
- *
- * @author Mark sunlightcs@gmail.com
- * @since 1.0.0
- */
 @Component
 @AllArgsConstructor
 public class SysParamsRedis {

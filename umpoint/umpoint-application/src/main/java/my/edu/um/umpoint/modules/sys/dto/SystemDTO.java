@@ -1,29 +1,18 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- *
- * https://www.renren.io
- *
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.sys.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-/**
- * 系统数据
- *
- * @author Mark sunlightcs@gmail.com
- * @since 1.0.0
- */
 @Data
-@Schema(title = "系统数据")
+@Schema(title = "system data")
 public class SystemDTO implements Serializable {
-    private static final long serialVersionUID = 1L;
+
+    @Serial
+    private static final long serialVersionUID = -6914311566546757031L;
 
     private Long sysTime;
     private String osName;

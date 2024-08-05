@@ -29,12 +29,12 @@ public class ScheduleJobController {
     private final ScheduleJobService scheduleJobService;
 
     @GetMapping("page")
-    @Operation(summary = "分页")
+    @Operation(summary = "page")
     @Parameters({
-            @Parameter(name = Constant.PAGE, description = "当前页码，从1开始", in = ParameterIn.QUERY, required = true, ref = "int"),
-            @Parameter(name = Constant.LIMIT, description = "每页显示记录数", in = ParameterIn.QUERY, required = true, ref = "int"),
-            @Parameter(name = Constant.ORDER_FIELD, description = "排序字段", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(name = Constant.ORDER, description = "排序方式，可选值(asc、desc)", in = ParameterIn.QUERY, ref = "String"),
+            @Parameter(name = Constant.PAGE, description = "Current page number, starting from 1", in = ParameterIn.QUERY, required = true, ref="int") ,
+            @Parameter(name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY,required = true, ref="int") ,
+            @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, ref="String") ,
+            @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String") ,
             @Parameter(name = "beanName", description = "beanName", in = ParameterIn.QUERY, ref = "String")
     })
     @RequiresPermissions("sys:schedule:page")
@@ -45,7 +45,7 @@ public class ScheduleJobController {
     }
 
     @GetMapping("{id}")
-    @Operation(summary = "信息")
+    @Operation(summary = "info")
     @RequiresPermissions("sys:schedule:info")
     public Result<ScheduleJobDTO> info(@PathVariable("id") Long id) {
         ScheduleJobDTO schedule = scheduleJobService.get(id);
@@ -54,8 +54,8 @@ public class ScheduleJobController {
     }
 
     @PostMapping
-    @Operation(summary = "保存")
-    @LogOperation("保存")
+    @Operation(summary = "save")
+    @LogOperation("save")
     @RequiresPermissions("sys:schedule:save")
     public Result save(@RequestBody ScheduleJobDTO dto) {
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
@@ -66,8 +66,8 @@ public class ScheduleJobController {
     }
 
     @PutMapping
-    @Operation(summary = "修改")
-    @LogOperation("修改")
+    @Operation(summary = "update")
+    @LogOperation("update")
     @RequiresPermissions("sys:schedule:update")
     public Result update(@RequestBody ScheduleJobDTO dto) {
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
@@ -78,8 +78,8 @@ public class ScheduleJobController {
     }
 
     @DeleteMapping
-    @Operation(summary = "删除")
-    @LogOperation("删除")
+    @Operation(summary = "delete")
+    @LogOperation("delete")
     @RequiresPermissions("sys:schedule:delete")
     public Result delete(@RequestBody Long[] ids) {
         scheduleJobService.deleteBatch(ids);
@@ -88,8 +88,8 @@ public class ScheduleJobController {
     }
 
     @PutMapping("/run")
-    @Operation(summary = "立即执行")
-    @LogOperation("立即执行")
+    @Operation(summary = "run")
+    @LogOperation("run")
     @RequiresPermissions("sys:schedule:run")
     public Result run(@RequestBody Long[] ids) {
         scheduleJobService.run(ids);
@@ -98,8 +98,8 @@ public class ScheduleJobController {
     }
 
     @PutMapping("/pause")
-    @Operation(summary = "暂停")
-    @LogOperation("暂停")
+    @Operation(summary = "pause")
+    @LogOperation("pause")
     @RequiresPermissions("sys:schedule:pause")
     public Result pause(@RequestBody Long[] ids) {
         scheduleJobService.pause(ids);
@@ -108,8 +108,8 @@ public class ScheduleJobController {
     }
 
     @PutMapping("/resume")
-    @Operation(summary = "恢复")
-    @LogOperation("恢复")
+    @Operation(summary = "resume")
+    @LogOperation("resume")
     @RequiresPermissions("sys:schedule:resume")
     public Result resume(@RequestBody Long[] ids) {
         scheduleJobService.resume(ids);

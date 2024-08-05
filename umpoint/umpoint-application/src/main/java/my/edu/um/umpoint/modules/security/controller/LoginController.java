@@ -35,13 +35,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.util.Date;
 
-/**
- * 登录
- *
- * @author Mark sunlightcs@gmail.com
- */
 @RestController
-@Tag(name = "登录管理")
+@Tag(name = "Login controller")
 @AllArgsConstructor
 public class LoginController {
     private final SysUserService sysUserService;
@@ -50,29 +45,23 @@ public class LoginController {
     private final SysLogLoginService sysLogLoginService;
 
     @GetMapping("captcha")
-    @Operation(summary = "验证码")
+    @Operation(summary = "captcha")
     @Parameter(in = ParameterIn.QUERY, ref = "string", name = "uuid", required = true)
     public void captcha(HttpServletResponse response, String uuid) throws IOException {
-        //uuid不能为空
         AssertUtils.isBlank(uuid, ErrorCode.IDENTIFIER_NOT_NULL);
-
-        //生成验证码
         captchaService.create(response, uuid);
     }
 
     @PostMapping("login")
     @Operation(summary = "登录")
     public Result login(HttpServletRequest request, @RequestBody LoginDTO login) {
-        //效验数据
         ValidatorUtils.validateEntity(login);
 
-        //验证码是否正确
         boolean flag = captchaService.validate(login.getUuid(), login.getCaptcha());
         if (!flag) {
             return new Result().error(ErrorCode.CAPTCHA_ERROR);
         }
 
-        //用户信息
         SysUserDTO user = sysUserService.getByUsername(login.getUsername());
 
         SysLogLoginEntity log = new SysLogLoginEntity();
@@ -81,7 +70,6 @@ public class LoginController {
         log.setIp(IpUtils.getIpAddr(request));
         log.setUserAgent(request.getHeader(HttpHeaders.USER_AGENT));
 
-        //用户不存在
         if (user == null) {
             log.setStatus(LoginStatusEnum.FAIL.value());
             log.setCreatorName(login.getUsername());
@@ -90,7 +78,6 @@ public class LoginController {
             throw new RenException(ErrorCode.ACCOUNT_PASSWORD_ERROR);
         }
 
-        //密码错误
         if (!PasswordUtils.matches(login.getPassword(), user.getPassword())) {
             log.setStatus(LoginStatusEnum.FAIL.value());
             log.setCreator(user.getId());
@@ -100,7 +87,6 @@ public class LoginController {
             throw new RenException(ErrorCode.ACCOUNT_PASSWORD_ERROR);
         }
 
-        //账号停用
         if (user.getStatus() == UserStatusEnum.DISABLE.value()) {
             log.setStatus(LoginStatusEnum.LOCK.value());
             log.setCreator(user.getId());
@@ -110,7 +96,6 @@ public class LoginController {
             throw new RenException(ErrorCode.ACCOUNT_DISABLE);
         }
 
-        //登录成功
         log.setStatus(LoginStatusEnum.SUCCESS.value());
         log.setCreator(user.getId());
         log.setCreatorName(user.getUsername());
@@ -120,14 +105,12 @@ public class LoginController {
     }
 
     @PostMapping("logout")
-    @Operation(summary = "退出")
+    @Operation(summary = "logout")
     public Result logout(HttpServletRequest request) {
         UserDetail user = SecurityUser.getUser();
 
-        //退出
         sysUserTokenService.logout(user.getId());
 
-        //用户信息
         SysLogLoginEntity log = new SysLogLoginEntity();
         log.setOperation(LoginOperationEnum.LOGOUT.value());
         log.setIp(IpUtils.getIpAddr(request));

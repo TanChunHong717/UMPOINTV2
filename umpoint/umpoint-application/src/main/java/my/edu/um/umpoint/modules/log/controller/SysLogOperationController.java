@@ -1,11 +1,3 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- * <p>
- * https://www.renren.io
- * <p>
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.log.controller;
 
 import my.edu.um.umpoint.common.annotation.LogOperation;
@@ -32,28 +24,21 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
-
-/**
- * 操作日志
- *
- * @author Mark sunlightcs@gmail.com
- * @since 1.0.0
- */
 @RestController
 @RequestMapping("sys/log/operation")
-@Tag(name = "操作日志")
+@Tag(name = "operation log")
 @AllArgsConstructor
 public class SysLogOperationController {
     private final SysLogOperationService sysLogOperationService;
 
     @GetMapping("page")
-    @Operation(summary = "分页")
+    @Operation(summary = "page")
     @Parameters({
-            @Parameter(name = Constant.PAGE, description = "当前页码，从1开始", in = ParameterIn.QUERY, required = true, ref = "int"),
-            @Parameter(name = Constant.LIMIT, description = "每页显示记录数", in = ParameterIn.QUERY, required = true, ref = "int"),
-            @Parameter(name = Constant.ORDER_FIELD, description = "排序字段", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(name = Constant.ORDER, description = "排序方式，可选值(asc、desc)", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(name = "status", description = "状态  0：失败    1：成功", in = ParameterIn.QUERY, ref = "int")
+            @Parameter(name = Constant.PAGE, description = "Current page number, starting from 1", in = ParameterIn.QUERY, required = true, ref="int") ,
+            @Parameter(name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY,required = true, ref="int") ,
+            @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, ref="String") ,
+            @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String"),
+            @Parameter(name = "status", description = "Status 0:Failed 1:Success", in = ParameterIn.QUERY, ref = "int")
     })
     @RequiresPermissions("sys:log:operation")
     public Result<PageData<SysLogOperationDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params) {
@@ -63,13 +48,13 @@ public class SysLogOperationController {
     }
 
     @GetMapping("export")
-    @Operation(summary = "导出")
-    @LogOperation("导出")
+    @Operation(summary = "export")
+    @LogOperation("export")
     @RequiresPermissions("sys:log:operation")
     public void export(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletResponse response) throws Exception {
         List<SysLogOperationDTO> list = sysLogOperationService.list(params);
 
-        ExcelUtils.exportExcelToTarget(response, null, "操作日志", list, SysLogOperationExcel.class);
+        ExcelUtils.exportExcelToTarget(response, null, "Operation log", list, SysLogOperationExcel.class);
     }
 
 }

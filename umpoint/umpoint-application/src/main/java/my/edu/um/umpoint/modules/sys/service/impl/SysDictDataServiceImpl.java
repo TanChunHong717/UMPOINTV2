@@ -1,11 +1,3 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- *
- * https://www.renren.io
- *
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.sys.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -24,11 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.Map;
 
-/**
- * 字典类型
- *
- * @author Mark sunlightcs@gmail.com
- */
 @Service
 public class SysDictDataServiceImpl extends BaseServiceImpl<SysDictDataDao, SysDictDataEntity> implements SysDictDataService {
 
@@ -81,7 +68,6 @@ public class SysDictDataServiceImpl extends BaseServiceImpl<SysDictDataDao, SysD
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(Long[] ids) {
-        //删除
         deleteBatchIds(Arrays.asList(ids));
     }
 

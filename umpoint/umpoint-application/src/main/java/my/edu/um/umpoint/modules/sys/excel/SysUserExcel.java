@@ -1,11 +1,3 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- * <p>
- * https://www.renren.io
- * <p>
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.sys.excel;
 
 import com.alibaba.excel.annotation.ExcelProperty;
@@ -16,32 +8,35 @@ import lombok.Data;
 
 import java.util.Date;
 
-/**
- * 用户管理
- *
- * @author Mark sunlightcs@gmail.com
- * @since 1.0.0
- */
 @Data
 public class SysUserExcel {
-    @ExcelProperty("用户名")
+
+    @ExcelProperty("username")
     private String username;
-    @ExcelProperty("姓名")
+
+    @ExcelProperty("name")
     private String realName;
-    @ExcelProperty(value = "性别", converter = GenderConverter.class)
+
+    @ExcelProperty(value = "gender", converter = GenderConverter.class)
     private Integer gender;
-    @ExcelProperty("邮箱")
+
+    @ExcelProperty("email")
     private String email;
-    @ExcelProperty("手机号")
+
+    @ExcelProperty("mobile")
     private String mobile;
-    @ExcelProperty("部门名称")
+
+    @ExcelProperty("department name")
     private String deptName;
-    @ExcelProperty(value = "状态", converter = StatusConverter.class)
+
+    @ExcelProperty(value = "status", converter = StatusConverter.class)
     private Integer status;
-    @ExcelProperty("备注")
+
+    @ExcelProperty("remark")
     private String remark;
+
     @DateTimeFormat("yyyy-MM-dd HH:mm:ss")
-    @ExcelProperty("创建时间")
+    @ExcelProperty("create date")
     private Date createDate;
 
 }

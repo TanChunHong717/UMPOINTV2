@@ -1,61 +1,50 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- *
- * https://www.renren.io
- *
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.log.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * 操作日志
- *
- * @author Mark sunlightcs@gmail.com
- * @since 1.0.0
- */
 @Data
-@Schema(title = "操作日志")
+@Schema(title = "operation log")
 public class SysLogOperationDTO implements Serializable {
-    private static final long serialVersionUID = 1L;
+
+	@Serial
+    private static final long serialVersionUID = 7553003749818425440L;
 
 	@Schema(title = "id")
 	private Long id;
 
-	@Schema(title = "用户操作")
+	@Schema(title = "operation")
 	private String operation;
 
-	@Schema(title = "请求URI")
+	@Schema(title = "request URI")
 	private String requestUri;
 
-	@Schema(title = "请求方式")
+	@Schema(title = "request method")
 	private String requestMethod;
 
-	@Schema(title = "请求参数")
+	@Schema(title = "params")
 	private String requestParams;
 
-	@Schema(title = "请求时长(毫秒)")
+	@Schema(title = "times(ms)")
 	private Integer requestTime;
 
-	@Schema(title = "用户代理")
+	@Schema(title = "user agent")
 	private String userAgent;
 
-	@Schema(title = "操作IP")
+	@Schema(title = "IP")
 	private String ip;
 
-	@Schema(title = "状态  0：失败   1：成功")
+	@Schema(title = "status 0:failed 1:success")
 	private Integer status;
 
-	@Schema(title = "用户名")
+	@Schema(title = "username")
 	private String creatorName;
 
-	@Schema(title = "创建时间")
+	@Schema(title = "create date")
 	private Date createDate;
 
 }

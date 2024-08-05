@@ -1,11 +1,3 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- * <p>
- * https://www.renren.io
- * <p>
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.sys.service.impl;
 
 import my.edu.um.umpoint.common.constant.Constant;
@@ -46,7 +38,6 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
     public void save(SysMenuDTO dto) {
         SysMenuEntity entity = ConvertUtils.sourceToTarget(dto, SysMenuEntity.class);
 
-        //保存菜单
         insert(entity);
     }
 
@@ -55,22 +46,18 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
     public void update(SysMenuDTO dto) {
         SysMenuEntity entity = ConvertUtils.sourceToTarget(dto, SysMenuEntity.class);
 
-        //上级菜单不能为自身
         if (entity.getId().equals(entity.getPid())) {
             throw new RenException(ErrorCode.SUPERIOR_MENU_ERROR);
         }
 
-        //更新菜单
         updateById(entity);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(Long id) {
-        //删除菜单
         deleteById(id);
 
-        //删除角色菜单关系
         sysRoleMenuService.deleteByMenuId(id);
     }
 
@@ -87,7 +74,6 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
     public List<SysMenuDTO> getUserMenuList(UserDetail user, Integer menuType) {
         List<SysMenuEntity> menuList;
 
-        //系统管理员，拥有最高权限
         if (user.getSuperAdmin() == SuperAdminEnum.YES.value()) {
             menuList = baseDao.getMenuList(menuType);
         } else {

@@ -1,11 +1,3 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- * <p>
- * https://www.renren.io
- * <p>
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.security.service.impl;
 
 import cn.hutool.cache.Cache;
@@ -22,20 +14,12 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
-/**
- * 验证码
- *
- * @author Mark sunlightcs@gmail.com
- */
 @Service
 public class CaptchaServiceImpl implements CaptchaService {
     @Resource
     private RedisUtils redisUtils;
     @Value("${renren.redis.open: false}")
     private boolean open;
-    /**
-     * Local Cache  5分钟过期
-     */
     Cache<String, String> localCache = CacheUtil.newLRUCache(1000, 1000 * 60 * 5);
 
     @Override
@@ -45,22 +29,17 @@ public class CaptchaServiceImpl implements CaptchaService {
         response.setHeader("Cache-Control", "no-cache");
         response.setDateHeader("Expires", 0);
 
-        //生成验证码
         SpecCaptcha captcha = new SpecCaptcha(150, 40);
         captcha.setLen(5);
         captcha.setCharType(Captcha.TYPE_DEFAULT);
         captcha.out(response.getOutputStream());
 
-        //保存到缓存
         setCache(uuid, captcha.text());
     }
 
     @Override
     public boolean validate(String uuid, String code) {
-        //获取验证码
         String captcha = getCache(uuid);
-
-        //效验成功
         if (code.equalsIgnoreCase(captcha)) {
             return true;
         }
@@ -81,7 +60,6 @@ public class CaptchaServiceImpl implements CaptchaService {
         if (open) {
             key = RedisKeys.getCaptchaKey(key);
             String captcha = (String) redisUtils.get(key);
-            //删除验证码
             if (captcha != null) {
                 redisUtils.delete(key);
             }
@@ -90,7 +68,6 @@ public class CaptchaServiceImpl implements CaptchaService {
         }
 
         String captcha = localCache.get(key);
-        //删除验证码
         if (captcha != null) {
             localCache.remove(key);
         }

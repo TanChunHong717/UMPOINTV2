@@ -1,52 +1,41 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- *
- * https://www.renren.io
- *
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.job.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * 定时任务日志
- *
- * @author Mark sunlightcs@gmail.com
- * @since 1.0.0
- */
 @Data
-@Schema(title = "定时任务日志")
+@Schema(title = "Schedule Job Log")
 public class ScheduleJobLogDTO implements Serializable {
-    private static final long serialVersionUID = 1L;
+
+    @Serial
+    private static final long serialVersionUID = -6765306551122816895L;
 
     @Schema(title = "id")
     private Long id;
 
-    @Schema(title = "任务id")
+    @Schema(title = "job id")
     private Long jobId;
 
-    @Schema(title = "spring bean名称")
+    @Schema(title = "spring bean name")
     private String beanName;
 
-    @Schema(title = "参数")
+    @Schema(title = "params")
     private String params;
 
-    @Schema(title = "任务状态    0：失败    1：成功")
+    @Schema(title = "status 0:failed 1:success")
     private Integer status;
 
-    @Schema(title = "失败信息")
+    @Schema(title = "error")
     private String error;
 
-    @Schema(title = "耗时(单位：毫秒)")
+    @Schema(title = "times(ms)")
     private Integer times;
 
-    @Schema(title = "创建时间")
+    @Schema(title = "create date")
     private Date createDate;
 
 }

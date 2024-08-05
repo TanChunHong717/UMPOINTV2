@@ -1,11 +1,3 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- * <p>
- * https://www.renren.io
- * <p>
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.sys.controller;
 
 import my.edu.um.umpoint.common.annotation.LogOperation;
@@ -34,28 +26,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-
-/**
- * 参数管理
- *
- * @author Mark sunlightcs@gmail.com
- * @since 1.0.0
- */
 @RestController
 @RequestMapping("sys/params")
-@Tag(name = "参数管理")
+@Tag(name = "params")
 @AllArgsConstructor
 public class SysParamsController {
     private final SysParamsService sysParamsService;
 
     @GetMapping("page")
-    @Operation(summary = "分页")
+    @Operation(summary = "page")
     @Parameters({
-            @Parameter(name = Constant.PAGE, description = "当前页码，从1开始", in = ParameterIn.QUERY, required = true, ref = "int"),
-            @Parameter(name = Constant.LIMIT, description = "每页显示记录数", in = ParameterIn.QUERY, required = true, ref = "int"),
-            @Parameter(name = Constant.ORDER_FIELD, description = "排序字段", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(name = Constant.ORDER, description = "排序方式，可选值(asc、desc)", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(name = "paramCode", description = "参数编码", in = ParameterIn.QUERY, ref = "String")
+            @Parameter(name = Constant.PAGE, description = "Current page number, starting from 1", in = ParameterIn.QUERY, required = true, ref="int") ,
+            @Parameter(name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY,required = true, ref="int") ,
+            @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, ref="String") ,
+            @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String"),
+            @Parameter(name = "paramCode", description = "Param code", in = ParameterIn.QUERY, ref = "String")
     })
     @RequiresPermissions("sys:params:page")
     public Result<PageData<SysParamsDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params) {
@@ -65,7 +50,7 @@ public class SysParamsController {
     }
 
     @GetMapping("{id}")
-    @Operation(summary = "信息")
+    @Operation(summary = "info")
     @RequiresPermissions("sys:params:info")
     public Result<SysParamsDTO> get(@PathVariable("id") Long id) {
         SysParamsDTO data = sysParamsService.get(id);
@@ -74,11 +59,10 @@ public class SysParamsController {
     }
 
     @PostMapping
-    @Operation(summary = "保存")
-    @LogOperation("保存")
+    @Operation(summary = "save")
+    @LogOperation("save")
     @RequiresPermissions("sys:params:save")
     public Result save(@RequestBody SysParamsDTO dto) {
-        //效验数据
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
 
         sysParamsService.save(dto);
@@ -87,11 +71,10 @@ public class SysParamsController {
     }
 
     @PutMapping
-    @Operation(summary = "修改")
-    @LogOperation("修改")
+    @Operation(summary = "update")
+    @LogOperation("update")
     @RequiresPermissions("sys:params:update")
     public Result update(@RequestBody SysParamsDTO dto) {
-        //效验数据
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
 
         sysParamsService.update(dto);
@@ -100,11 +83,10 @@ public class SysParamsController {
     }
 
     @DeleteMapping
-    @Operation(summary = "删除")
-    @LogOperation("删除")
+    @Operation(summary = "delete")
+    @LogOperation("delete")
     @RequiresPermissions("sys:params:delete")
     public Result delete(@RequestBody Long[] ids) {
-        //效验数据
         AssertUtils.isArrayEmpty(ids, "id");
 
         sysParamsService.delete(ids);
@@ -113,14 +95,14 @@ public class SysParamsController {
     }
 
     @GetMapping("export")
-    @Operation(summary = "导出")
-    @LogOperation("导出")
+    @Operation(summary = "export")
+    @LogOperation("export")
     @RequiresPermissions("sys:params:export")
-    @Parameter(name = "paramCode", description = "参数编码", in = ParameterIn.QUERY, ref = "String")
+    @Parameter(name = "paramCode", description = "param code", in = ParameterIn.QUERY, ref = "String")
     public void export(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletResponse response) throws Exception {
         List<SysParamsDTO> list = sysParamsService.list(params);
 
-        ExcelUtils.exportExcelToTarget(response, null, "参数管理", list, SysParamsExcel.class);
+        ExcelUtils.exportExcelToTarget(response, null, "Para Management", list, SysParamsExcel.class);
     }
 
 }

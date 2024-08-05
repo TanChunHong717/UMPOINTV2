@@ -19,13 +19,7 @@ public interface Constant {
     String CLOUD_STORAGE_CONFIG_KEY = "CLOUD_STORAGE_CONFIG_KEY";
 
     enum ScheduleStatus {
-        /**
-         * 暂停
-         */
         PAUSE(0),
-        /**
-         * 正常
-         */
         NORMAL(1);
 
         private int value;

@@ -1,11 +1,3 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- * <p>
- * https://www.renren.io
- * <p>
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.sys.controller;
 
 import my.edu.um.umpoint.common.annotation.LogOperation;
@@ -31,11 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 字典类型
- *
- * @author Mark sunlightcs@gmail.com
- */
 @RestController
 @RequestMapping("sys/dict/type")
 @Tag(name = "字典类型")
@@ -44,25 +31,24 @@ public class SysDictTypeController {
     private final SysDictTypeService sysDictTypeService;
 
     @GetMapping("page")
-    @Operation(summary = "字典类型")
+    @Operation(summary = "page")
     @Parameters({
-            @Parameter(name = Constant.PAGE, description = "当前页码，从1开始", in = ParameterIn.QUERY, required = true, ref = "int"),
-            @Parameter(name = Constant.LIMIT, description = "每页显示记录数", in = ParameterIn.QUERY, required = true, ref = "int"),
-            @Parameter(name = Constant.ORDER_FIELD, description = "排序字段", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(name = Constant.ORDER, description = "排序方式，可选值(asc、desc)", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(name = "dictType", description = "字典类型", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(name = "dictName", description = "字典名称", in = ParameterIn.QUERY, ref = "String")
+            @Parameter(name = Constant.PAGE, description = "Current page number, starting from 1", in = ParameterIn.QUERY, required = true, ref="int") ,
+            @Parameter(name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY,required = true, ref="int") ,
+            @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, ref="String") ,
+            @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String"),
+            @Parameter(name = "dictType", description = "dict type", in = ParameterIn.QUERY, ref = "String"),
+            @Parameter(name = "dictName", description = "dict name", in = ParameterIn.QUERY, ref = "String")
     })
     @RequiresPermissions("sys:dict:page")
     public Result<PageData<SysDictTypeDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params) {
-        //字典类型
         PageData<SysDictTypeDTO> page = sysDictTypeService.page(params);
 
         return new Result<PageData<SysDictTypeDTO>>().ok(page);
     }
 
     @GetMapping("{id}")
-    @Operation(summary = "信息")
+    @Operation(summary = "info")
     @RequiresPermissions("sys:dict:info")
     public Result<SysDictTypeDTO> get(@PathVariable("id") Long id) {
         SysDictTypeDTO data = sysDictTypeService.get(id);
@@ -71,11 +57,10 @@ public class SysDictTypeController {
     }
 
     @PostMapping
-    @Operation(summary = "保存")
-    @LogOperation("保存")
+    @Operation(summary = "save")
+    @LogOperation("save")
     @RequiresPermissions("sys:dict:save")
     public Result save(@RequestBody SysDictTypeDTO dto) {
-        //效验数据
         ValidatorUtils.validateEntity(dto, DefaultGroup.class);
 
         sysDictTypeService.save(dto);
@@ -84,11 +69,10 @@ public class SysDictTypeController {
     }
 
     @PutMapping
-    @Operation(summary = "修改")
-    @LogOperation("修改")
+    @Operation(summary = "update")
+    @LogOperation("update")
     @RequiresPermissions("sys:dict:update")
     public Result update(@RequestBody SysDictTypeDTO dto) {
-        //效验数据
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
 
         sysDictTypeService.update(dto);
@@ -97,11 +81,10 @@ public class SysDictTypeController {
     }
 
     @DeleteMapping
-    @Operation(summary = "删除")
-    @LogOperation("删除")
+    @Operation(summary = "delete")
+    @LogOperation("delete")
     @RequiresPermissions("sys:dict:delete")
     public Result delete(@RequestBody Long[] ids) {
-        //效验数据
         AssertUtils.isArrayEmpty(ids, "id");
 
         sysDictTypeService.delete(ids);
@@ -110,7 +93,7 @@ public class SysDictTypeController {
     }
 
     @GetMapping("all")
-    @Operation(summary = "所有字典数据")
+    @Operation(summary = "all")
     public Result<List<DictType>> all() {
         List<DictType> list = sysDictTypeService.getAllList();
 

@@ -1,11 +1,3 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- *
- * https://www.renren.io
- *
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.sys.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -22,13 +14,8 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * 字典数据
- *
- * @author Mark sunlightcs@gmail.com
- */
 @Data
-@Schema(title = "字典数据")
+@Schema(title = "dict date")
 public class SysDictDataDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -37,29 +24,29 @@ public class SysDictDataDTO implements Serializable {
 	@NotNull(message="{id.require}", groups = UpdateGroup.class)
 	private Long id;
 
-	@Schema(title = "字典类型ID")
+	@Schema(title = "dict type ID")
 	@NotNull(message="{sysdict.type.require}", groups = DefaultGroup.class)
 	private Long dictTypeId;
 
-	@Schema(title = "字典标签")
+	@Schema(title = "dict label")
 	@NotBlank(message="{sysdict.label.require}", groups = DefaultGroup.class)
 	private String dictLabel;
 
-	@Schema(title = "字典值")
+	@Schema(title = "dict value")
 	private String dictValue;
 
-	@Schema(title = "备注")
+	@Schema(title = "remark")
 	private String remark;
 
-	@Schema(title = "排序")
+	@Schema(title = "sort")
 	@Min(value = 0, message = "{sort.number}", groups = DefaultGroup.class)
 	private Integer sort;
 
-	@Schema(title = "创建时间")
+	@Schema(title = "create date")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private Date createDate;
 
-	@Schema(title = "更新时间")
+	@Schema(title = "update date")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private Date updateDate;
 }

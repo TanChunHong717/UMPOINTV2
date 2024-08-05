@@ -1,11 +1,3 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- *
- * https://www.renren.io
- *
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.sys.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -24,15 +16,9 @@ import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * 部门管理
- *
- * @author Mark sunlightcs@gmail.com
- * @since 1.0.0
- */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Schema(title = "部门管理")
+@Schema(title = "dept management")
 public class SysDeptDTO extends TreeNode implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -41,23 +27,23 @@ public class SysDeptDTO extends TreeNode implements Serializable {
 	@NotNull(message="{id.require}", groups = UpdateGroup.class)
 	private Long id;
 
-	@Schema(title = "上级ID")
+	@Schema(title = "parent department ID")
 	@NotNull(message="{sysdept.pid.require}", groups = DefaultGroup.class)
 	private Long pid;
 
-	@Schema(title = "部门名称")
+	@Schema(title = "department name")
 	@NotBlank(message="{sysdept.name.require}", groups = DefaultGroup.class)
 	private String name;
 
-	@Schema(title = "排序")
+	@Schema(title = "sort")
 	@Min(value = 0, message = "{sort.number}", groups = DefaultGroup.class)
 	private Integer sort;
 
-	@Schema(title = "创建时间")
+	@Schema(title = "create date")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private Date createDate;
 
-	@Schema(title = "上级部门名称")
+	@Schema(title = "parent department name")
 	private String parentName;
 
 	@Override

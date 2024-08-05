@@ -3,6 +3,7 @@ package my.edu.um.umpoint.modules.space.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import lombok.Data;
+import my.edu.um.umpoint.modules.sys.dto.SysDeptDTO;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -31,8 +32,14 @@ public class SpaceDTO implements Serializable {
 	@SchemaProperty(name = "Category ID")
 	private Long catId;
 
+	@SchemaProperty(name = "Category Object")
+	private CategoryDTO category;
+
 	@SchemaProperty(name = "Department ID")
 	private Long deptId;
+
+	@SchemaProperty(name = "System Department Object")
+	private SysDeptDTO department;
 
 	@SchemaProperty(name = "Description")
 	private String description;

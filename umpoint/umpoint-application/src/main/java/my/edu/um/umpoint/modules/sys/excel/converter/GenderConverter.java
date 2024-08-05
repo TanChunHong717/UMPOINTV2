@@ -23,9 +23,9 @@ public class GenderConverter implements Converter<Integer> {
 
     @Override
     public Integer convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
-        if(cellData.getStringValue().equals("男")){
+        if(cellData.getStringValue().equals("male")){
             return 0;
-        }else if(cellData.getStringValue().equals("女")){
+        }else if(cellData.getStringValue().equals("female")){
             return 1;
         }else {
             return 2;
@@ -35,11 +35,11 @@ public class GenderConverter implements Converter<Integer> {
     @Override
     public WriteCellData<?> convertToExcelData(Integer value, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
         if(value == 0){
-            return new WriteCellData<>("男");
+            return new WriteCellData<>("male");
         }else if(value == 1){
-            return new WriteCellData<>("女");
+            return new WriteCellData<>("female");
         }else {
-            return new WriteCellData<>("保密");
+            return new WriteCellData<>("other");
         }
     }
 }

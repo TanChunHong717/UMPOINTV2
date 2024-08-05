@@ -1,42 +1,32 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- *
- * https://www.renren.io
- *
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.security.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * 登录表单
- *
- * @author Mark sunlightcs@gmail.com
- */
 @Data
 @Schema(title = "登录表单")
 public class LoginDTO implements Serializable {
-    private static final long serialVersionUID = 1L;
 
-    @Schema(title = "用户名", required = true)
+    @Serial
+    private static final long serialVersionUID = 1244986875041980916L;
+
+    @Schema(title = "username", required = true)
     @NotBlank(message="{sysuser.username.require}")
     private String username;
 
-    @Schema(title = "密码")
+    @Schema(title = "password")
     @NotBlank(message="{sysuser.password.require}")
     private String password;
 
-    @Schema(title = "验证码")
+    @Schema(title = "captcha")
     @NotBlank(message="{sysuser.captcha.require}")
     private String captcha;
 
-    @Schema(title = "唯一标识")
+    @Schema(title = "uuid")
     @NotBlank(message="{sysuser.uuid.require}")
     private String uuid;
 

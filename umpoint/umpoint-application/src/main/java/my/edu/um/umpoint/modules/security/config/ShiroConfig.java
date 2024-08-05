@@ -1,11 +1,3 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- *
- * https://www.renren.io
- *
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.security.config;
 
 import my.edu.um.umpoint.modules.security.oauth2.Oauth2Filter;
@@ -24,11 +16,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Shiro的配置文件
- *
- * @author Mark sunlightcs@gmail.com
- */
 @Configuration
 public class ShiroConfig {
 

@@ -1,11 +1,3 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- * <p>
- * https://www.renren.io
- * <p>
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.sys.service.impl;
 
 import cn.hutool.core.util.StrUtil;
@@ -31,12 +23,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 参数管理
- *
- * @author Mark sunlightcs@gmail.com
- * @since 1.0.0
- */
 @Service
 @AllArgsConstructor
 public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParamsEntity> implements SysParamsService {
@@ -97,12 +83,10 @@ public class SysParamsServiceImpl extends BaseServiceImpl<SysParamsDao, SysParam
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(Long[] ids) {
-        //删除Redis数据
         List<String> paramCodeList = baseDao.getParamCodeList(ids);
         String[] paramCodes = paramCodeList.toArray(new String[paramCodeList.size()]);
         sysParamsRedis.delete(paramCodes);
 
-        //删除
         deleteBatchIds(Arrays.asList(ids));
     }
 

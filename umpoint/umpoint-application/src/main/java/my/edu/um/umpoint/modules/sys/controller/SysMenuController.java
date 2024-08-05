@@ -1,11 +1,3 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- * <p>
- * https://www.renren.io
- * <p>
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.sys.controller;
 
 import my.edu.um.umpoint.common.annotation.LogOperation;
@@ -31,21 +23,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Set;
 
-/**
- * 菜单管理
- *
- * @author Mark sunlightcs@gmail.com
- */
 @RestController
 @RequestMapping("/sys/menu")
-@Tag(name = "菜单管理")
+@Tag(name = "system menu")
 @AllArgsConstructor
 public class SysMenuController {
     private final SysMenuService sysMenuService;
     private final ShiroService shiroService;
 
     @GetMapping("nav")
-    @Operation(summary = "导航")
+    @Operation(summary = "nav")
     public Result<List<SysMenuDTO>> nav() {
         UserDetail user = SecurityUser.getUser();
         List<SysMenuDTO> list = sysMenuService.getUserMenuList(user, MenuTypeEnum.MENU.value());
@@ -54,7 +41,7 @@ public class SysMenuController {
     }
 
     @GetMapping("permissions")
-    @Operation(summary = "权限标识")
+    @Operation(summary = "permissions")
     public Result<Set<String>> permissions() {
         UserDetail user = SecurityUser.getUser();
         Set<String> set = shiroService.getUserPermissions(user);
@@ -63,8 +50,8 @@ public class SysMenuController {
     }
 
     @GetMapping("list")
-    @Operation(summary = "列表")
-    @Parameter(name = "type", description = "菜单类型 0：菜单 1：按钮  null：全部", in = ParameterIn.QUERY, ref = "int")
+    @Operation(summary = "list")
+    @Parameter(name = "type", description = "type 0:menu 1:button", in = ParameterIn.QUERY, ref = "int")
     @RequiresPermissions("sys:menu:list")
     public Result<List<SysMenuDTO>> list(Integer type) {
         List<SysMenuDTO> list = sysMenuService.getAllMenuList(type);
@@ -73,7 +60,7 @@ public class SysMenuController {
     }
 
     @GetMapping("{id}")
-    @Operation(summary = "信息")
+    @Operation(summary = "info")
     @RequiresPermissions("sys:menu:info")
     public Result<SysMenuDTO> get(@PathVariable("id") Long id) {
         SysMenuDTO data = sysMenuService.get(id);
@@ -82,11 +69,10 @@ public class SysMenuController {
     }
 
     @PostMapping
-    @Operation(summary = "保存")
-    @LogOperation("保存")
+    @Operation(summary = "save")
+    @LogOperation("save")
     @RequiresPermissions("sys:menu:save")
     public Result save(@RequestBody SysMenuDTO dto) {
-        //效验数据
         ValidatorUtils.validateEntity(dto, DefaultGroup.class);
 
         sysMenuService.save(dto);
@@ -95,11 +81,10 @@ public class SysMenuController {
     }
 
     @PutMapping
-    @Operation(summary = "修改")
-    @LogOperation("修改")
+    @Operation(summary = "update")
+    @LogOperation("update")
     @RequiresPermissions("sys:menu:update")
     public Result update(@RequestBody SysMenuDTO dto) {
-        //效验数据
         ValidatorUtils.validateEntity(dto, DefaultGroup.class);
 
         sysMenuService.update(dto);
@@ -108,14 +93,12 @@ public class SysMenuController {
     }
 
     @DeleteMapping("{id}")
-    @Operation(summary = "删除")
-    @LogOperation("删除")
+    @Operation(summary = "delete")
+    @LogOperation("delete")
     @RequiresPermissions("sys:menu:delete")
     public Result delete(@PathVariable("id") Long id) {
-        //效验数据
         AssertUtils.isNull(id, "id");
 
-        //判断是否有子菜单或按钮
         List<SysMenuDTO> list = sysMenuService.getListPid(id);
         if (list.size() > 0) {
             return new Result().error(ErrorCode.SUB_MENU_EXIST);
@@ -127,7 +110,7 @@ public class SysMenuController {
     }
 
     @GetMapping("select")
-    @Operation(summary = "角色菜单权限")
+    @Operation(summary = "menu select")
     @RequiresPermissions("sys:menu:select")
     public Result<List<SysMenuDTO>> select() {
         UserDetail user = SecurityUser.getUser();

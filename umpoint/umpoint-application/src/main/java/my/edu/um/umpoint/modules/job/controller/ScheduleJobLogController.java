@@ -31,18 +31,18 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/sys/scheduleLog")
-@Tag(name = "定时任务日志")
+@Tag(name = "Schedule Job Log")
 @AllArgsConstructor
 public class ScheduleJobLogController {
     private final ScheduleJobLogService scheduleJobLogService;
 
     @GetMapping("page")
-    @Operation(summary = "分页")
+    @Operation(summary = "page")
     @Parameters({
-            @Parameter(name = Constant.PAGE, description = "当前页码，从1开始", in = ParameterIn.QUERY, required = true, ref = "int"),
-            @Parameter(name = Constant.LIMIT, description = "每页显示记录数", in = ParameterIn.QUERY, required = true, ref = "int"),
-            @Parameter(name = Constant.ORDER_FIELD, description = "排序字段", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(name = Constant.ORDER, description = "排序方式，可选值(asc、desc)", in = ParameterIn.QUERY, ref = "String"),
+            @Parameter(name = Constant.PAGE, description = "Current page number, starting from 1", in = ParameterIn.QUERY, required = true, ref="int") ,
+            @Parameter(name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY,required = true, ref="int") ,
+            @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, ref="String") ,
+            @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String"),
             @Parameter(name = "jobId", description = "jobId", in = ParameterIn.QUERY, ref = "String")
     })
     @RequiresPermissions("sys:schedule:log")
@@ -53,7 +53,7 @@ public class ScheduleJobLogController {
     }
 
     @GetMapping("{id}")
-    @Operation(summary = "信息")
+    @Operation(summary = "info")
     @RequiresPermissions("sys:schedule:log")
     public Result<ScheduleJobLogDTO> info(@PathVariable("id") Long id) {
         ScheduleJobLogDTO log = scheduleJobLogService.get(id);

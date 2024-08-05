@@ -1,11 +1,3 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- * <p>
- * https://www.renren.io
- * <p>
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.security.service.impl;
 
 import cn.hutool.core.util.StrUtil;
@@ -36,7 +28,6 @@ public class ShiroServiceImpl implements ShiroService {
 
     @Override
     public Set<String> getUserPermissions(UserDetail user) {
-        //系统管理员，拥有最高权限
         List<String> permissionsList;
         if (user.getSuperAdmin() == SuperAdminEnum.YES.value()) {
             permissionsList = sysMenuDao.getPermissionsList();
@@ -44,7 +35,6 @@ public class ShiroServiceImpl implements ShiroService {
             permissionsList = sysMenuDao.getUserPermissionsList(user.getId());
         }
 
-        //用户权限列表
         Set<String> permsSet = new HashSet<>();
         for (String permissions : permissionsList) {
             if (StrUtil.isBlank(permissions)) {

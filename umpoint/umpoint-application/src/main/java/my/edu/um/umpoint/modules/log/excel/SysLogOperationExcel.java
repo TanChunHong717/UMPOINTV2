@@ -1,11 +1,3 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- * <p>
- * https://www.renren.io
- * <p>
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.log.excel;
 
 import com.alibaba.excel.annotation.ExcelProperty;
@@ -17,45 +9,40 @@ import lombok.Data;
 
 import java.util.Date;
 
-/**
- * 操作日志
- *
- * @author Mark sunlightcs@gmail.com
- */
 @Data
 @ContentRowHeight(20)
 @HeadRowHeight(20)
 @ColumnWidth(25)
 public class SysLogOperationExcel {
-    @ExcelProperty("用户操作")
+    @ExcelProperty("operation")
     private String operation;
 
-    @ExcelProperty("请求URI")
+    @ExcelProperty("request URI")
     private String requestUri;
 
-    @ExcelProperty("请求方式")
+    @ExcelProperty("request method")
     private String requestMethod;
 
-    @ExcelProperty("请求参数")
+    @ExcelProperty("params")
     private String requestParams;
 
-    @ExcelProperty("请求时长(毫秒)")
+    @ExcelProperty("times(ms)")
     private Integer requestTime;
 
-    @ExcelProperty("User-Agent")
+    @ExcelProperty("user agent")
     private String userAgent;
 
-    @ExcelProperty("操作IP")
+    @ExcelProperty("IP")
     private String ip;
 
-    @ExcelProperty("状态")
+    @ExcelProperty("status")
     private Integer status;
 
-    @ExcelProperty("用户名")
+    @ExcelProperty("username")
     private String creatorName;
 
     @DateTimeFormat("yyyy-MM-dd HH:mm:ss")
-    @ExcelProperty("创建时间")
+    @ExcelProperty("create date")
     private Date createDate;
 
 }

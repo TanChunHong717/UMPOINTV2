@@ -1,26 +1,16 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- *
- * https://www.renren.io
- *
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.security.user;
 
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * 登录用户信息
- *
- * @author Mark sunlightcs@gmail.com
- */
 @Data
 public class UserDetail implements Serializable {
-    private static final long serialVersionUID = 1L;
+
+    @Serial
+    private static final long serialVersionUID = 8470528520565069794L;
 
     private Long id;
     private String username;
@@ -33,9 +23,6 @@ public class UserDetail implements Serializable {
     private String password;
     private Integer status;
     private Integer superAdmin;
-    /**
-     * 部门数据权限
-     */
-    private List<Long> deptIdList;
 
+    private List<Long> deptIdList;
 }

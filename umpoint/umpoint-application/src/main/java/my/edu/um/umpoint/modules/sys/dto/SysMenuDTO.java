@@ -1,11 +1,3 @@
-/**
- * Copyright (c) 2018 人人开源 All rights reserved.
- *
- * https://www.renren.io
- *
- * 版权所有，侵权必究！
- */
-
 package my.edu.um.umpoint.modules.sys.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -22,56 +14,53 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.validator.constraints.Range;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * 菜单管理
- *
- * @author Mark sunlightcs@gmail.com
- * @since 1.0.0
- */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Schema(title = "菜单管理")
+@Schema(title = "menu management")
 public class SysMenuDTO extends TreeNode<SysMenuDTO> implements Serializable {
-    private static final long serialVersionUID = 1L;
+
+	@Serial
+    private static final long serialVersionUID = 7579631684856540067L;
 
 	@Schema(title = "id")
 	@Null(message="{id.null}", groups = AddGroup.class)
 	@NotNull(message="{id.require}", groups = UpdateGroup.class)
 	private Long id;
 
-	@Schema(title = "上级ID")
+	@Schema(title = "parent ID")
 	@NotNull(message="{sysmenu.pid.require}", groups = DefaultGroup.class)
 	private Long pid;
 
-	@Schema(title = "菜单名称")
+	@Schema(title = "name")
 	@NotBlank(message="sysmenu.name.require", groups = DefaultGroup.class)
 	private String name;
 
-	@Schema(title = "菜单URL")
+	@Schema(title = "menu URL")
 	private String url;
 
-	@Schema(title = "类型  0：菜单   1：按钮")
+	@Schema(title = "menu type 0:menu 1:button")
 	@Range(min=0, max=1, message = "{sysmenu.type.range}", groups = DefaultGroup.class)
 	private Integer menuType;
 
-	@Schema(title = "菜单图标")
+	@Schema(title = "icon")
 	private String icon;
 
-	@Schema(title = "授权(多个用逗号分隔，如：sys:user:list,sys:user:save)")
+	@Schema(title = "permission(separate by comma, like: sys:user:list,sys:user:save)")
 	private String permissions;
 
-	@Schema(title = "排序")
+	@Schema(title = "sort")
 	@Min(value = 0, message = "{sort.number}", groups = DefaultGroup.class)
 	private Integer sort;
 
-	@Schema(title = "创建时间")
+	@Schema(title = "create date")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private Date createDate;
 
-	@Schema(title = "上级菜单名称")
+	@Schema(title = "parent name")
 	private String parentName;
 
 	@Override
