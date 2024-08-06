@@ -1,12 +1,14 @@
 package my.edu.um.umpoint.common.utils;
 
-import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ResourceBundleMessageSource;
 
 public class MessageUtils {
-    private static MessageSource messageSource;
-    static {
-        messageSource = (MessageSource)SpringContextUtils.getBean("messageSource");
+    private static ResourceBundleMessageSource getMessageSource() {
+        ResourceBundleMessageSource bundleMessageSource = new ResourceBundleMessageSource();
+        bundleMessageSource.setDefaultEncoding("UTF-8");
+        bundleMessageSource.setBasenames("i18n/message");
+        return bundleMessageSource;
     }
 
     public static String getMessage(int code){
@@ -14,6 +16,6 @@ public class MessageUtils {
     }
 
     public static String getMessage(int code, String... params){
-        return messageSource.getMessage(code+"", params, LocaleContextHolder.getLocale());
+        return getMessageSource().getMessage(code+"", params, LocaleContextHolder.getLocale());
     }
 }

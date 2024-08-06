@@ -17,6 +17,7 @@
 		<aliyun.oss.version>2.8.3</aliyun.oss.version>
 		<aliyun.core.version>3.2.2</aliyun.core.version>
 		<qcloud.cos.version>5.4.4</qcloud.cos.version>
+		<azure.cloud.version>5.14.0</azure.cloud.version>
 	</properties>
 
 	<dependencies>
@@ -104,6 +105,11 @@
 					<artifactId>slf4j-log4j12</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.azure.spring</groupId>
+			<artifactId>spring-cloud-azure-starter-storage-blob</artifactId>
+			<version>${azure.cloud.version}</version>
 		</dependency>
 	</dependencies>
 
