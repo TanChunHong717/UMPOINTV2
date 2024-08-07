@@ -1,14 +1,20 @@
 package my.edu.um.umpoint.modules.space.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import my.edu.um.umpoint.common.constant.Constant;
+import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
 import my.edu.um.umpoint.modules.space.dao.SpaceDao;
 import my.edu.um.umpoint.modules.space.dto.SpaceDTO;
 import my.edu.um.umpoint.modules.space.entity.SpaceEntity;
 import my.edu.um.umpoint.modules.space.service.SpaceService;
 import cn.hutool.core.util.StrUtil;
+import my.edu.um.umpoint.modules.sys.dto.SysUserDTO;
+import my.edu.um.umpoint.modules.sys.entity.SysUserEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,13 +28,22 @@ public class SpaceServiceImpl extends CrudServiceImpl<SpaceDao, SpaceEntity, Spa
 
     @Override
     public QueryWrapper<SpaceEntity> getWrapper(Map<String, Object> params){
-        String id = (String)params.get("id");
+        String name = (String)params.get("name");
 
         QueryWrapper<SpaceEntity> wrapper = new QueryWrapper<>();
-        wrapper.eq(StrUtil.isNotBlank(id), "id", id);
+        wrapper.eq(StrUtil.isNotBlank(name), "name", name);
 
         return wrapper;
     }
 
+    @Override
+    public PageData<SpaceDTO> page(Map<String, Object> params) {
+        paramsToLike(params, "name");
 
+        IPage<SpaceEntity> page = getPage(params, Constant.CREATE_DATE, false);
+
+        List<SpaceEntity> list = baseDao.getList(params);
+
+        return getPageData(list, page.getTotal(), SpaceDTO.class);
+    }
 }

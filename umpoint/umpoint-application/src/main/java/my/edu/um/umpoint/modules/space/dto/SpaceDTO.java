@@ -1,5 +1,6 @@
 package my.edu.um.umpoint.modules.space.dto;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import lombok.Data;
@@ -32,14 +33,8 @@ public class SpaceDTO implements Serializable {
 	@SchemaProperty(name = "Category ID")
 	private Long catId;
 
-	@SchemaProperty(name = "Category Object")
-	private CategoryDTO category;
-
 	@SchemaProperty(name = "Department ID")
 	private Long deptId;
-
-	@SchemaProperty(name = "System Department Object")
-	private SysDeptDTO department;
 
 	@SchemaProperty(name = "Description")
 	private String description;
@@ -47,6 +42,27 @@ public class SpaceDTO implements Serializable {
 	@SchemaProperty(name = "Facilities")
 	private String facilities;
 
-	@SchemaProperty(name = "Facilities")
-	private List<TagDTO> tagDTOList;
+	@SchemaProperty(name = "Creator")
+	private Long creator;
+
+	@SchemaProperty(name = "Create Date")
+	private Date createDate;
+
+	@SchemaProperty(name = "Updater")
+	private Long updater;
+
+	@SchemaProperty(name = "Update Date")
+	private Date updateDate;
+
+	@SchemaProperty(name = "Category Name")
+	private String category;
+
+	@SchemaProperty(name = "Department Name")
+	private String deptName;
+
+	@SchemaProperty(name = "Image Url List")
+	private List<String> imageUrls;
+
+	@SchemaProperty(name = "Tags")
+	private List<String> tags;
 }

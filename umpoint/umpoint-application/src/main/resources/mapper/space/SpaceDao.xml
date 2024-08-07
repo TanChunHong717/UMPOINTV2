@@ -4,13 +4,84 @@
 <mapper namespace="my.edu.um.umpoint.modules.space.dao.SpaceDao">
 
     <resultMap type="my.edu.um.umpoint.modules.space.entity.SpaceEntity" id="spaceMap">
-        <result property="id" column="id"/>
+        <id property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="catId" column="cat_id"/>
         <result property="deptId" column="dept_id"/>
         <result property="description" column="description"/>
         <result property="facilities" column="facilities"/>
+        <result property="creator" column="creator"/>
+        <result property="createDate" column="create_date"/>
+        <result property="updater" column="updater"/>
+        <result property="updateDate" column="update_date"/>
     </resultMap>
 
+    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpaceEntity" id="spaceSelectMap">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="catId" column="cat_id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="description" column="description"/>
+        <result property="facilities" column="facilities"/>
+        <result property="creator" column="creator"/>
+        <result property="createDate" column="create_date"/>
+        <result property="updater" column="updater"/>
+        <result property="updateDate" column="update_date"/>
+        <result column="category" property="category" />
+        <result column="dept_name" property="deptName" />
+        <collection property="imageUrls" ofType="String">
+            <result column="image_url"/>
+        </collection>
+        <collection property="tags" ofType="String">
+            <result column="tag_name"/>
+        </collection>
+    </resultMap>
 
+    <select id="getList" resultMap="spaceSelectMap">
+        SELECT
+            s.id,
+            s.name,
+            s.cat_id,
+            s.dept_id,
+            s.description,
+            s.facilities,
+            s.creator,
+            s.create_date,
+            s.updater,
+            s.update_date,
+            c.name AS category,
+            d.name AS dept_name,
+            i.image_url,
+            t.tag_name
+        FROM spc_space s
+                 LEFT JOIN spc_category c ON s.cat_id = c.id
+                 LEFT JOIN sys_dept d ON s.dept_id = d.id
+                 LEFT JOIN spc_image i ON s.id = i.space_id
+                 LEFT JOIN spc_space_tag st ON s.id = st.space_id
+                 LEFT JOIN spc_tag t ON st.tag_id = t.id
+    </select>
+    <select id="selectById" resultMap="spaceSelectMap">
+        SELECT
+            s.id,
+            s.name,
+            s.cat_id,
+            s.dept_id,
+            s.description,
+            s.facilities,
+            s.creator,
+            s.create_date,
+            s.updater,
+            s.update_date,
+            c.name AS category,
+            d.name AS dept_name,
+            i.image_url,
+            t.tag_name
+        FROM spc_space s
+                 LEFT JOIN spc_category c ON s.cat_id = c.id
+                 LEFT JOIN sys_dept d ON s.dept_id = d.id
+                 LEFT JOIN spc_image i ON s.id = i.space_id
+                 LEFT JOIN spc_space_tag st ON s.id = st.space_id
+                 LEFT JOIN spc_tag t ON st.tag_id = t.id
+        WHERE s.id = ${id}
+    </select>
 </mapper>

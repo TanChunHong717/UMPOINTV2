@@ -19,6 +19,10 @@ CREATE TABLE spc_space (
     dept_id bigint NOT NULL COMMENT 'Department ID',u
     description varchar(250) COMMENT 'Description',
     facilities varchar(250) COMMENT 'Facilities',
+    creator bigint NOT NULL COMMENT 'Creator',
+    create_date NOT NULL datetime COMMENT 'Create date',
+    updater NOT NULL bigint COMMENT 'Updater',
+    update_date NOT NULL datetime COMMENT 'Update date',
     PRIMARY KEY (id),
     FOREIGN KEY (cat_id) REFERENCES spc_category(id),
     FOREIGN KEY (dept_id) REFERENCES sys_dept(id)
@@ -35,7 +39,7 @@ CREATE TABLE spc_space_tag (
 CREATE TABLE spc_image (
     id bigint NOT NULL COMMENT 'ID',
     space_id bigint NOT NULL COMMENT 'Space ID',
-    space_url varchar(250) NOT NULL COMMENT 'Space url',
+    image_url varchar(250) NOT NULL COMMENT 'Image url',
     PRIMARY KEY (id),
     FOREIGN KEY (space_id) REFERENCES spc_space(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Space Image';
