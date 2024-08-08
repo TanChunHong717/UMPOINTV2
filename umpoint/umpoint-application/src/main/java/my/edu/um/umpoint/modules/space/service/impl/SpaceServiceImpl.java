@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
+import my.edu.um.umpoint.modules.security.user.SecurityUser;
+import my.edu.um.umpoint.modules.security.user.UserDetail;
 import my.edu.um.umpoint.modules.space.dao.SpaceDao;
 import my.edu.um.umpoint.modules.space.dto.SpaceDTO;
 import my.edu.um.umpoint.modules.space.entity.SpaceEntity;
@@ -38,6 +40,11 @@ public class SpaceServiceImpl extends CrudServiceImpl<SpaceDao, SpaceEntity, Spa
 
     @Override
     public PageData<SpaceDTO> page(Map<String, Object> params) {
+        UserDetail user = SecurityUser.getUser();
+        if (user.getSuperAdmin() == 0) {
+            params.put("deptId", user.getDeptId());
+        }
+
         paramsToLike(params, "name");
 
         IPage<SpaceEntity> page = getPage(params, Constant.CREATE_DATE, false);

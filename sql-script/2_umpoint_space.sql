@@ -16,7 +16,7 @@ CREATE TABLE spc_space (
     id bigint NOT NULL COMMENT 'ID',
     name varchar(50) NOT NULL COMMENT 'Name',
     cat_id bigint NOT NULL COMMENT 'Category ID',
-    dept_id bigint NOT NULL COMMENT 'Department ID',u
+    dept_id bigint NOT NULL COMMENT 'Department ID',
     description varchar(250) COMMENT 'Description',
     facilities varchar(250) COMMENT 'Facilities',
     creator bigint NOT NULL COMMENT 'Creator',

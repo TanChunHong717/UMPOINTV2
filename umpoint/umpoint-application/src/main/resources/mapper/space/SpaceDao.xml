@@ -59,6 +59,20 @@
                  LEFT JOIN spc_image i ON s.id = i.space_id
                  LEFT JOIN spc_space_tag st ON s.id = st.space_id
                  LEFT JOIN spc_tag t ON st.tag_id = t.id
+        <where>
+            <if test="name != null and name.trim() != ''">
+                and t1.username like #{name}
+            </if>
+            <if test="catId != null">
+                AND s.cat_id = #{catId}
+            </if>
+            <if test="deptId != null">
+                AND s.dept_id = #{deptId}
+            </if>
+            <if test="tagId != null">
+                AND st.tag_id = #{tagId}
+            </if>
+        </where>
     </select>
     <select id="selectById" resultMap="spaceSelectMap">
         SELECT
@@ -82,6 +96,6 @@
                  LEFT JOIN spc_image i ON s.id = i.space_id
                  LEFT JOIN spc_space_tag st ON s.id = st.space_id
                  LEFT JOIN spc_tag t ON st.tag_id = t.id
-        WHERE s.id = ${id}
+        WHERE s.id = #{id}
     </select>
 </mapper>
