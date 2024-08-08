@@ -22,10 +22,10 @@ public class TagServiceImpl extends CrudServiceImpl<TagDao, TagEntity, TagDTO> i
 
     @Override
     public QueryWrapper<TagEntity> getWrapper(Map<String, Object> params){
-        String id = (String)params.get("id");
+        String name = (String)params.get("name");
 
         QueryWrapper<TagEntity> wrapper = new QueryWrapper<>();
-        wrapper.eq(StrUtil.isNotBlank(id), "id", id);
+        wrapper.eq(StrUtil.isNotBlank(name), "name", name);
 
         return wrapper;
     }

@@ -2,7 +2,7 @@
   <div class="mod-space__category">
     <el-form :inline="true" :model="state.dataForm" @keyup.enter="state.getDataList()">
       <el-form-item>
-        <el-input v-model="state.dataForm.name" placeholder="name" clearable></el-input>
+        <el-input v-model="state.dataForm.name" placeholder="Name" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="state.getDataList()">Search</el-button>

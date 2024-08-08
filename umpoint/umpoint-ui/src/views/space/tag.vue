@@ -1,9 +1,8 @@
 <template>
   <div class="mod-space__tag">
     <el-form :inline="true" :model="state.dataForm" @keyup.enter="state.getDataList()">
-      <!-- Modify id to field you want -->
       <el-form-item>
-        <el-input v-model="state.dataForm.id" placeholder="ID" clearable></el-input>
+        <el-input v-model="state.dataForm.name" placeholder="Name" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="state.getDataList()">Search</el-button>

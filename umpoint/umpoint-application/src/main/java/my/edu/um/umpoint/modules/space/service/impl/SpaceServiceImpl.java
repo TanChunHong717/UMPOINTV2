@@ -14,6 +14,8 @@ import my.edu.um.umpoint.modules.space.service.SpaceService;
 import cn.hutool.core.util.StrUtil;
 import my.edu.um.umpoint.modules.sys.dto.SysUserDTO;
 import my.edu.um.umpoint.modules.sys.entity.SysUserEntity;
+import my.edu.um.umpoint.modules.sys.service.SysDeptService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,6 +29,9 @@ import java.util.Map;
  */
 @Service
 public class SpaceServiceImpl extends CrudServiceImpl<SpaceDao, SpaceEntity, SpaceDTO> implements SpaceService {
+
+    @Autowired
+    private SysDeptService sysDeptService;
 
     @Override
     public QueryWrapper<SpaceEntity> getWrapper(Map<String, Object> params){
@@ -42,7 +47,7 @@ public class SpaceServiceImpl extends CrudServiceImpl<SpaceDao, SpaceEntity, Spa
     public PageData<SpaceDTO> page(Map<String, Object> params) {
         UserDetail user = SecurityUser.getUser();
         if (user.getSuperAdmin() == 0) {
-            params.put("deptId", user.getDeptId());
+            params.put("deptIdList", sysDeptService.getSubDeptIdList(user.getDeptId()));
         }
 
         paramsToLike(params, "name");

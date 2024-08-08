@@ -11,5 +11,4 @@ import my.edu.um.umpoint.modules.space.entity.CategoryEntity;
  * @since 1.0.0 2024-08-03
  */
 public interface CategoryService extends CrudService<CategoryEntity, CategoryDTO> {
-    void test();
 }

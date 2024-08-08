@@ -66,11 +66,14 @@
             <if test="catId != null">
                 AND s.cat_id = #{catId}
             </if>
-            <if test="deptId != null">
-                AND s.dept_id = #{deptId}
-            </if>
             <if test="tagId != null">
                 AND st.tag_id = #{tagId}
+            </if>
+            <if test="deptId != null">
+                AND s.dept_id IN
+                <foreach item="id" collection="deptIdList" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
             </if>
         </where>
     </select>
