@@ -5,7 +5,7 @@
         <el-form-item>
           <el-input v-model="state.dataForm.name" placeholder="Name" clearable></el-input>
         </el-form-item>
-        <el-form-item label="Department" class="dept-list">
+        <el-form-item class="dept-list">
           <el-popover :width="400" ref="deptListPopover" placement="bottom-start" trigger="click" popper-class="popover-pop">
             <template v-slot:reference>
               <el-input v-model="currentChooseDepartment" placeholder="Department">
@@ -18,6 +18,34 @@
               <el-tree :data="deptList" :props="{ label: 'name', children: 'children' }" node-key="id" ref="deptListTree" :highlight-current="true" :expand-on-click-node="false" accordion @current-change="deptListTreeCurrentChangeHandle"></el-tree>
             </div>
           </el-popover>
+        </el-form-item>
+        <el-form-item>
+          <el-select
+            v-model="state.dataForm.catId"
+            placeholder="Category"
+            style="width: 240px"
+          >
+            <el-option
+              v-for="category in categoryList"
+              :key="category.id"
+              :label="category.name"
+              :value="category.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-select
+            v-model="state.dataForm.tagId"
+            placeholder="Tag"
+            style="width: 240px"
+          >
+            <el-option
+              v-for="tag in tagList"
+              :key="tag.id"
+              :label="tag.tagName"
+              :value="tag.id"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button @click="state.getDataList()">Search</el-button>
@@ -64,6 +92,8 @@ import {ElMessage} from "element-plus";
 const store = useAppStore();
 const user = computed(() => store.state.user);
 const deptList = ref([]);
+const categoryList = ref([]);
+const tagList = ref([]);
 const currentChooseDepartment = ref();
 
 const view = reactive({
@@ -100,7 +130,27 @@ const deptListTreeCurrentChangeHandle = (data: IObject) => {
   currentChooseDepartment.value = data.name;
 };
 
+const getCategoryList = () => {
+  return baseService.get("/space/category/list").then((res) => {
+    if (res.code !== 0) {
+      return ElMessage.error(res.msg);
+    }
+    categoryList.value = res.data;
+  });
+};
+
+const getTagList = () => {
+  return baseService.get("/space/tag/list").then((res) => {
+    if (res.code !== 0) {
+      return ElMessage.error(res.msg);
+    }
+    tagList.value = res.data;
+  });
+};
+
 getDeptList();
+getCategoryList();
+getTagList();
 </script>
 <style>
 .header-form {

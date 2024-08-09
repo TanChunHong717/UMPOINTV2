@@ -19,13 +19,12 @@ import java.util.Date;
 @Schema(name = "Space Tag")
 public class TagDTO implements Serializable {
 	@Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -6417179702850712420L;
 
 	@SchemaProperty(name = "ID")
 	private Long id;
 
 	@SchemaProperty(name = "Tag name")
 	private String tagName;
-
 
 }

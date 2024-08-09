@@ -27,5 +27,4 @@ public class CategoryDTO implements Serializable {
 	@SchemaProperty(name = "Name")
 	private String name;
 
-
 }

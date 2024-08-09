@@ -15,14 +15,13 @@ import java.util.Date;
 @Data
 @TableName("spc_tag")
 public class TagEntity {
-
     /**
      * ID
      */
-		@TableId
-		private Long id;
+	@TableId
+	private Long id;
     /**
      * Tag name
      */
-		private String tagName;
+	private String tagName;
 }

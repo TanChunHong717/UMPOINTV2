@@ -11,6 +11,7 @@ import my.edu.um.umpoint.common.validator.group.AddGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import my.edu.um.umpoint.modules.space.dto.CategoryDTO;
+import my.edu.um.umpoint.modules.space.dto.TagDTO;
 import my.edu.um.umpoint.modules.space.excel.CategoryExcel;
 import my.edu.um.umpoint.modules.space.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,6 +55,15 @@ public class CategoryController {
         PageData<CategoryDTO> page = categoryService.page(params);
 
         return new Result<PageData<CategoryDTO>>().ok(page);
+    }
+
+    @GetMapping("list")
+    @Operation(summary = "list")
+    @RequiresPermissions("space:category:list")
+    public Result<List<CategoryDTO>> list(){
+        List<CategoryDTO> page = categoryService.list(new HashMap<>());
+
+        return new Result<List<CategoryDTO>>().ok(page);
     }
 
     @GetMapping("{id}")
