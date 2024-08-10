@@ -8,5 +8,12 @@
         <result property="name" column="name"/>
     </resultMap>
 
+    <select id="filterList" resultMap="categoryMap">
+        SELECT DISTINCT
+            ct.id,
+            ct.name
+        FROM spc_category ct
+        RIGHT JOIN spc_space s ON ct.id = s.cat_id
+    </select>
 
 </mapper>

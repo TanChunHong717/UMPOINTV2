@@ -24,6 +24,7 @@
             v-model="state.dataForm.catId"
             placeholder="Category"
             style="width: 240px"
+            filterable
           >
             <el-option
               v-for="category in categoryList"
@@ -38,6 +39,7 @@
             v-model="state.dataForm.tagId"
             placeholder="Tag"
             style="width: 240px"
+            filterable
           >
             <el-option
               v-for="tag in tagList"
@@ -131,7 +133,7 @@ const deptListTreeCurrentChangeHandle = (data: IObject) => {
 };
 
 const getCategoryList = () => {
-  return baseService.get("/space/category/list").then((res) => {
+  return baseService.get("/space/category/list/filter").then((res) => {
     if (res.code !== 0) {
       return ElMessage.error(res.msg);
     }
@@ -140,7 +142,7 @@ const getCategoryList = () => {
 };
 
 const getTagList = () => {
-  return baseService.get("/space/tag/list").then((res) => {
+  return baseService.get("/space/tag/list/filter").then((res) => {
     if (res.code !== 0) {
       return ElMessage.error(res.msg);
     }

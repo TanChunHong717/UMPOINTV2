@@ -2,13 +2,16 @@ package my.edu.um.umpoint.modules.space.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
+import my.edu.um.umpoint.common.utils.ConvertUtils;
 import my.edu.um.umpoint.modules.space.dao.TagDao;
 import my.edu.um.umpoint.modules.space.dto.TagDTO;
+import my.edu.um.umpoint.modules.space.entity.CategoryEntity;
 import my.edu.um.umpoint.modules.space.entity.TagEntity;
 import my.edu.um.umpoint.modules.space.service.TagService;
 import cn.hutool.core.util.StrUtil;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,5 +33,13 @@ public class TagServiceImpl extends CrudServiceImpl<TagDao, TagEntity, TagDTO> i
         return wrapper;
     }
 
+    @Override
+    public List<TagDTO> list(Map<String, Object> params) {
+        if (params.get("filter") != null && (boolean)params.get("filter")) {
+            List<TagEntity> entityList = baseDao.filterList();
+            return ConvertUtils.sourceToTarget(entityList, currentDtoClass());
+        }
 
+        return super.list(params);
+    }
 }

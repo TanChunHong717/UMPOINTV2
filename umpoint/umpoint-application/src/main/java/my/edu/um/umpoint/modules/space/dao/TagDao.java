@@ -4,6 +4,8 @@ import my.edu.um.umpoint.common.dao.BaseDao;
 import my.edu.um.umpoint.modules.space.entity.TagEntity;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * Space Tag
  *
@@ -12,5 +14,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface TagDao extends BaseDao<TagEntity> {
-	
+
+    List<TagEntity> filterList();
 }

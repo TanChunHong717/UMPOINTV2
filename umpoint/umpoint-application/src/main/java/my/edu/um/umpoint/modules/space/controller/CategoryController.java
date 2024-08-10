@@ -66,6 +66,17 @@ public class CategoryController {
         return new Result<List<CategoryDTO>>().ok(page);
     }
 
+    @GetMapping("list/filter")
+    @Operation(summary = "list")
+    @RequiresPermissions("space:category:list")
+    public Result<List<CategoryDTO>> filterList(){
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("filter", true);
+        List<CategoryDTO> page = categoryService.list(params);
+
+        return new Result<List<CategoryDTO>>().ok(page);
+    }
+
     @GetMapping("{id}")
     @Operation(summary = "Information")
     @RequiresPermissions("space:category:info")

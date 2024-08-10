@@ -2,6 +2,7 @@ package my.edu.um.umpoint.modules.space.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
+import my.edu.um.umpoint.common.utils.ConvertUtils;
 import my.edu.um.umpoint.modules.space.dao.CategoryDao;
 import my.edu.um.umpoint.modules.space.dto.CategoryDTO;
 import my.edu.um.umpoint.modules.space.entity.CategoryEntity;
@@ -9,6 +10,7 @@ import my.edu.um.umpoint.modules.space.service.CategoryService;
 import cn.hutool.core.util.StrUtil;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,4 +32,13 @@ public class CategoryServiceImpl extends CrudServiceImpl<CategoryDao, CategoryEn
         return wrapper;
     }
 
+    @Override
+    public List<CategoryDTO> list(Map<String, Object> params) {
+        if (params.get("filter") != null && (boolean)params.get("filter")) {
+            List<CategoryEntity> entityList = baseDao.filterList();
+            return ConvertUtils.sourceToTarget(entityList, currentDtoClass());
+        }
+
+        return super.list(params);
+    }
 }

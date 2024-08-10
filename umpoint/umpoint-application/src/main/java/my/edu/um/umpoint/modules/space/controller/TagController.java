@@ -10,12 +10,14 @@ import my.edu.um.umpoint.common.validator.ValidatorUtils;
 import my.edu.um.umpoint.common.validator.group.AddGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
+import my.edu.um.umpoint.modules.space.dto.CategoryDTO;
 import my.edu.um.umpoint.modules.space.dto.TagDTO;
 import my.edu.um.umpoint.modules.space.excel.TagExcel;
 import my.edu.um.umpoint.modules.space.service.TagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -61,6 +63,17 @@ public class TagController {
     @RequiresPermissions("space:tag:list")
     public Result<List<TagDTO>> list(){
         List<TagDTO> page = tagService.list(new HashMap<>());
+
+        return new Result<List<TagDTO>>().ok(page);
+    }
+
+    @GetMapping("list/filter")
+    @Operation(summary = "list")
+    @RequiresPermissions("space:category:list")
+    public Result<List<TagDTO>> filterList(){
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("filter", true);
+        List<TagDTO> page = tagService.list(params);
 
         return new Result<List<TagDTO>>().ok(page);
     }
