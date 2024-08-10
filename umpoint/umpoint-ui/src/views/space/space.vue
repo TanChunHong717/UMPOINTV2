@@ -6,7 +6,7 @@
           <el-input v-model="state.dataForm.name" placeholder="Name" clearable></el-input>
         </el-form-item>
         <el-form-item class="dept-list">
-          <el-popover :width="400" ref="deptListPopover" placement="bottom-start" trigger="click" popper-class="popover-pop">
+          <el-popover :width="218" ref="deptListPopover" placement="bottom-start" trigger="click" popper-class="popover-pop">
             <template v-slot:reference>
               <el-input v-model="currentChooseDepartment" placeholder="Department">
                 <template v-slot:suffix>
@@ -23,7 +23,6 @@
           <el-select
             v-model="state.dataForm.catId"
             placeholder="Category"
-            style="width: 240px"
             filterable
           >
             <el-option
@@ -38,7 +37,6 @@
           <el-select
             v-model="state.dataForm.tagId"
             placeholder="Tag"
-            style="width: 240px"
             filterable
           >
             <el-option
@@ -57,27 +55,70 @@
         <el-button v-if="state.hasPermission('space:space:save')" type="primary" @click="addOrUpdateHandle()">Add</el-button>
       </el-form-item>
     </el-form>
-    <el-table v-loading="state.dataListLoading" :data="state.dataList" border @selection-change="state.dataListSelectionChangeHandle" style="width: 100%">
-      <el-table-column label="Image" header-align="center" align="center">
-        <template v-slot="scope">
-          <el-image v-if="scope.row.imageUrls && scope.row.imageUrls[0]" style="width: 100px; height: 100px" :src="scope.row.imageUrls[0]"/>
-          <div v-else>No Image Available</div>
-        </template>
-      </el-table-column>
-      <el-table-column prop="name" label="Name" header-align="center" align="center"></el-table-column>
-      <el-table-column prop="category" label="Category" header-align="center" align="center"></el-table-column>
-      <el-table-column prop="deptName" label="Department" header-align="center" align="center"></el-table-column>
-      <el-table-column prop="description" label="Description" header-align="center" align="center"></el-table-column>
-      <el-table-column prop="facilities" label="Facilities" header-align="center" align="center"></el-table-column>
-      <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="150">
-        <template v-slot="scope">
-          <el-button v-if="state.hasPermission('space:space:update')" type="primary" link @click="addOrUpdateHandle(scope.row.id)">Update</el-button>
-          <el-button v-if="state.hasPermission('space:space:delete')" type="primary" link @click="state.deleteHandle(scope.row.id)">Delete</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination :current-page="state.page" :page-sizes="[10, 20, 50, 100]" :page-size="state.limit" :total="state.total" layout="total, sizes, prev, pager, next, jumper" @size-change="state.pageSizeChangeHandle" @current-change="state.pageCurrentChangeHandle"> </el-pagination>
-    <!-- Popup, Add / Edit -->
+    <div v-for="space in state.dataList" :key="space.id" class="space-container">
+      <el-row align="middle" style="margin-bottom: 10px;" :gutter="10">
+        <el-col :span="5">
+          <div v-if="space.imageUrls && space.imageUrls.length > 0">
+            <el-image class="space-image" :src="space.imageUrls[0]" fit="cover"/>
+          </div>
+          <el-empty v-else :image-size="100" description="No Image"></el-empty>
+        </el-col>
+        <el-col :span="16">
+          <el-row class="in-col-row">
+            <el-col :span="24" class="title">{{ space.name }}</el-col>
+          </el-row>
+          <el-row class="in-col-row">
+            <el-col :span="8">
+              <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-apartment"></use></svg>
+              Department: {{ space.deptName }}
+            </el-col>
+            <el-col :span="8">
+              <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-appstore"></use></svg>
+              Category: {{ space.category }}
+            </el-col>
+            <el-col :span="8">
+              <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-team"></use></svg>
+              Capacity: {{ space.max_capacity }}
+            </el-col>
+          </el-row>
+          <el-row class="in-col-row">
+            <el-col :span="24">
+              <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-tag"></use></svg>
+              Tag: <el-tag v-for="tag in space.tags" type="primary">{{ tag }} </el-tag>
+            </el-col>
+          </el-row>
+          <el-row class="in-col-row">
+            <el-col :span="24">
+              <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-location"></use></svg>
+              Address: {{ space.location }}
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24">
+              <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-wrench"></use></svg>
+              Facilities: {{ space.facilities }}
+            </el-col>
+          </el-row>
+          <el-divider style="margin: 10px 0;"></el-divider>
+          <el-row>
+            <el-col :span="8">
+              <span class="hour_price">RM{{ space.hour_price }}</span> / Hour
+            </el-col>
+            <el-col :span="8" v-if="space.four_hour_price">
+              <span class="four_hour_price">RM{{ space.four_hour_price }}</span> / 4 Hours
+            </el-col>
+            <el-col :span="8" v-if="space.day_price">
+              <span class="day_price">RM{{ space.day_price }}</span> / Day
+            </el-col>
+          </el-row>
+        </el-col>
+        <el-col :span="3" class="button-column">
+          <el-button class="action-button">Details</el-button>
+          <el-button class="action-button bottom-button">Availability</el-button>
+        </el-col>
+      </el-row>
+    </div>
+    <el-pagination :current-page="state.page" :page-sizes="[10, 20, 50]" :page-size="state.limit" :total="state.total" layout="total, sizes, prev, pager, next, jumper" @size-change="state.pageSizeChangeHandle" @current-change="state.pageCurrentChangeHandle"> </el-pagination>
     <add-or-update ref="addOrUpdateRef" @refreshDataList="state.getDataList">Confirm</add-or-update>
   </div>
 </template>
@@ -159,10 +200,31 @@ getTagList();
   display:flex;
   justify-content: space-between;
 }
-.dept-list {
-  .el-input__inner,
-  .el-input__suffix {
-    cursor: pointer;
-  }
+.space-image {
+  width: 250px;
+  height: 150px;
+  padding: 0 10px;
+}
+.title {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+.in-col-row {
+  margin-bottom: 3px;
+}
+.button-column {
+  display: flex !important;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+.action-button {
+  width: 100px;
+  margin-left: 0 !important;
+}
+.bottom-button {
+  margin-top: 5px;
 }
 </style>
