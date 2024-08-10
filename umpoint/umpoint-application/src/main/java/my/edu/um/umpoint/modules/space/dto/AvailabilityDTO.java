@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 @Schema(name = "Space Image")
 public class AvailabilityDTO implements Serializable {
 	@Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -7799356344051686910L;
 
 	@SchemaProperty(name = "ID")
 	private Long id;

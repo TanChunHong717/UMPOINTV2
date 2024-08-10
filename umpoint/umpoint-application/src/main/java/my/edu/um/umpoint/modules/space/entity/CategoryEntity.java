@@ -19,10 +19,10 @@ public class CategoryEntity {
     /**
      * ID
      */
-		@TableId
-		private Long id;
+	@TableId
+	private Long id;
     /**
      * Name
      */
-		private String name;
+	private String name;
 }

@@ -23,12 +23,16 @@
         <result property="deptId" column="dept_id"/>
         <result property="description" column="description"/>
         <result property="facilities" column="facilities"/>
+        <result property="manager" column="manager"/>
         <result property="creator" column="creator"/>
         <result property="createDate" column="create_date"/>
         <result property="updater" column="updater"/>
         <result property="updateDate" column="update_date"/>
         <result column="category" property="category" />
         <result column="dept_name" property="deptName" />
+        <result column="manager_name" property="managerName" />
+        <result column="creator_name" property="creatorName" />
+        <result column="updater_name" property="updaterName" />
         <collection property="imageUrls" ofType="String">
             <result column="image_url"/>
         </collection>
@@ -45,12 +49,16 @@
             s.dept_id,
             s.description,
             s.facilities,
+            s.manager,
             s.creator,
             s.create_date,
             s.updater,
             s.update_date,
             c.name AS category,
             d.name AS dept_name,
+            m.username AS manager_name,
+            cr.username AS creator_name,
+            u.username AS updater_name,
             i.image_url,
             t.tag_name
         FROM spc_space s
@@ -59,6 +67,9 @@
                  LEFT JOIN spc_image i ON s.id = i.space_id
                  LEFT JOIN spc_space_tag st ON s.id = st.space_id
                  LEFT JOIN spc_tag t ON st.tag_id = t.id
+                 LEFT JOIN sys_user m ON s.manager = m.id
+                 LEFT JOIN sys_user cr ON s.creator = cr.id
+                 LEFT JOIN sys_user u ON s.updater = u.id
         <where>
             <if test="name != null and name.trim() != ''">
                 and t1.username like #{name}

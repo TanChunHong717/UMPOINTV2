@@ -2,6 +2,7 @@ package my.edu.um.umpoint.modules.sys.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import my.edu.um.umpoint.common.entity.BaseEntity;
 import lombok.Data;
@@ -36,6 +37,7 @@ public class SysUserEntity extends BaseEntity {
 
 	private Integer superAdmin;
 
+	@TableLogic(value = "1", delval = "0")
 	private Integer status;
 
 	@TableField(fill = FieldFill.INSERT_UPDATE)

@@ -19,14 +19,14 @@ public class ImageEntity {
     /**
      * ID
      */
-		@TableId
-		private Long id;
+	@TableId
+	private Long id;
     /**
      * Space ID
      */
-		private Long spaceId;
+	private Long spaceId;
     /**
      * Space url
      */
-		private String spaceUrl;
+	private String spaceUrl;
 }

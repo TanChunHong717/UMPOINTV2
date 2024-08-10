@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import my.edu.um.umpoint.common.entity.BaseEntity;
 
-import java.io.Serial;
 import java.util.Date;
 import java.util.List;
 
@@ -42,12 +41,16 @@ public class SpaceEntity extends BaseEntity {
      */
 	private String facilities;
 	/**
-	 * Updater
+	 * Manager ID
+	 */
+	private Long manager;
+	/**
+	 * Last updater
 	 */
 	@TableField(fill = FieldFill.INSERT_UPDATE)
 	private Long updater;
 	/**
-	 * Update date
+	 * Last update date
 	 */
 	@TableField(fill = FieldFill.INSERT_UPDATE)
 	private Date updateDate;
@@ -61,6 +64,21 @@ public class SpaceEntity extends BaseEntity {
 	 */
 	@TableField(exist = false)
 	private String deptName;
+	/**
+	 * Manager name
+	 */
+	@TableField(exist = false)
+	private String managerName;
+	/**
+	 * Creator name
+	 */
+	@TableField(exist = false)
+	private String creatorName;
+	/**
+	 * Last updater name
+	 */
+	@TableField(exist = false)
+	private String updaterName;
 	/**
 	 * Image url list
 	 */

@@ -19,13 +19,17 @@ CREATE TABLE spc_space (
     dept_id bigint NOT NULL COMMENT 'Department ID',
     description varchar(250) COMMENT 'Description',
     facilities varchar(250) COMMENT 'Facilities',
+    manager bigint NOT NULL COMMENT 'Manager ID',
     creator bigint NOT NULL COMMENT 'Creator',
     create_date datetime NOT NULL COMMENT 'Create date',
     updater bigint NOT NULL COMMENT 'Updater',
     update_date datetime NOT NULL COMMENT 'Update date',
     PRIMARY KEY (id),
     FOREIGN KEY (cat_id) REFERENCES spc_category(id),
-    FOREIGN KEY (dept_id) REFERENCES sys_dept(id)
+    FOREIGN KEY (dept_id) REFERENCES sys_dept(id),
+    FOREIGN KEY (dept_id) REFERENCES sys_user(id),
+    FOREIGN KEY (dept_id) REFERENCES sys_user(id),
+    FOREIGN KEY (dept_id) REFERENCES sys_user(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Space';
 
 CREATE TABLE spc_space_tag (
@@ -33,7 +37,7 @@ CREATE TABLE spc_space_tag (
     tag_id bigint NOT NULL COMMENT 'Tag ID',
     PRIMARY KEY (space_id, tag_id),
     FOREIGN KEY (space_id) REFERENCES spc_space(id),
-    FOREIGN KEY (tag_id) REFERENCES spc_tag(id)
+    FOREIGN KEY (tag_id) REFERENCES spc_tag(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Space tag relationship';
 
 CREATE TABLE spc_image (
@@ -48,5 +52,7 @@ CREATE TABLE spc_availability (
     id bigint NOT NULL COMMENT 'ID',
     space_id bigint NOT NULL COMMENT 'Space ID',
     year decimal(4,0) NOT NULL COMMENT 'Year',
-    availability BLOB NOT NULL COMMENT 'Availability of space, consist of 366*24*2 bit, 1 represent available in specific hour in one year'
+    availability BLOB NOT NULL COMMENT 'Availability of space, consist of 366*24*2 bit, 1 represent available in specific hour in one year',
+    PRIMARY KEY (id),
+    FOREIGN KEY (space_id) REFERENCES spc_space(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Space Availability';

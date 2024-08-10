@@ -20,18 +20,18 @@ public class AvailabilityEntity {
     /**
      * ID
      */
-		@TableId
-		private Long id;
+	@TableId
+	private Long id;
     /**
      * Space ID
      */
-		private Long spaceId;
+	private Long spaceId;
     /**
      * Year
      */
-		private BigDecimal year;
+	private BigDecimal year;
     /**
      * Availability of space, consist of 366*24 bit, 1 represent available in specific hour in one year
      */
-		private byte[] availability;
+	private byte[] availability;
 }

@@ -19,7 +19,7 @@ import java.util.Date;
 @Schema(name = "Space Image")
 public class ImageDTO implements Serializable {
 	@Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -3389885882502784485L;
 
 	@SchemaProperty(name = "ID")
 	private Long id;
