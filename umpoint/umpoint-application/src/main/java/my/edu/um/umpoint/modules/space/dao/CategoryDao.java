@@ -2,6 +2,7 @@ package my.edu.um.umpoint.modules.space.dao;
 
 import my.edu.um.umpoint.common.dao.BaseDao;
 import my.edu.um.umpoint.modules.space.entity.CategoryEntity;
+import my.edu.um.umpoint.modules.space.entity.TagEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -14,6 +15,6 @@ import java.util.List;
  */
 @Mapper
 public interface CategoryDao extends BaseDao<CategoryEntity> {
-
+    List<CategoryEntity> listWithCount();
     List<CategoryEntity> filterList();
 }

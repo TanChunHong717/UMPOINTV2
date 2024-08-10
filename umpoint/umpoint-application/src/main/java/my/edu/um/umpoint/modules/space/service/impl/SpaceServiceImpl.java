@@ -59,6 +59,6 @@ public class SpaceServiceImpl extends CrudServiceImpl<SpaceDao, SpaceEntity, Spa
 
         List<SpaceEntity> list = baseDao.getList(params);
 
-        return getPageData(list, page.getTotal(), SpaceDTO.class);
+        return getPageData(list, page.getTotal(), currentDtoClass());
     }
 }

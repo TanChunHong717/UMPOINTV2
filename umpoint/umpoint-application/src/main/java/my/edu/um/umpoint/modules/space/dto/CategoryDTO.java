@@ -27,4 +27,6 @@ public class CategoryDTO implements Serializable {
 	@SchemaProperty(name = "Name")
 	private String name;
 
+	@SchemaProperty(name = "Space count")
+	private Long spaceCount;
 }

@@ -1,9 +1,13 @@
 package my.edu.um.umpoint.modules.space.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import my.edu.um.umpoint.common.constant.Constant;
+import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
 import my.edu.um.umpoint.common.utils.ConvertUtils;
 import my.edu.um.umpoint.modules.space.dao.TagDao;
+import my.edu.um.umpoint.modules.space.dto.SpaceDTO;
 import my.edu.um.umpoint.modules.space.dto.TagDTO;
 import my.edu.um.umpoint.modules.space.entity.CategoryEntity;
 import my.edu.um.umpoint.modules.space.entity.TagEntity;
@@ -31,6 +35,17 @@ public class TagServiceImpl extends CrudServiceImpl<TagDao, TagEntity, TagDTO> i
         wrapper.eq(StrUtil.isNotBlank(name), "name", name);
 
         return wrapper;
+    }
+
+    @Override
+    public PageData<TagDTO> page(Map<String, Object> params) {
+        paramsToLike(params, "tagName");
+
+        IPage<TagEntity> page = getPage(params, "tagName", true);
+
+        List<TagEntity> list = baseDao.listWithCount();
+
+        return getPageData(list, page.getTotal(), currentDtoClass());
     }
 
     @Override

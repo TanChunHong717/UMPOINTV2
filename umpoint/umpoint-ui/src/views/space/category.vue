@@ -15,10 +15,10 @@
       </el-form-item>
     </el-form>
     <el-table v-loading="state.dataListLoading" :data="state.dataList" border @selection-change="state.dataListSelectionChangeHandle" style="width: 100%">
-      <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-              <el-table-column prop="id" label="ID" header-align="center" align="center"></el-table-column>
-              <el-table-column prop="name" label="Name" header-align="center" align="center"></el-table-column>
-            <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="150">
+      <el-table-column prop="id" label="ID" header-align="center" align="center"></el-table-column>
+      <el-table-column prop="name" label="Name" header-align="center" align="center"></el-table-column>
+      <el-table-column prop="spaceCount" label="Space count" header-align="center" align="center"></el-table-column>
+      <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="150">
         <template v-slot="scope">
           <el-button v-if="state.hasPermission('space:category:update')" type="primary" link @click="addOrUpdateHandle(scope.row.id)">Update</el-button>
           <el-button v-if="state.hasPermission('space:category:delete')" type="primary" link @click="state.deleteHandle(scope.row.id)">Delete</el-button>
@@ -37,7 +37,7 @@ import { reactive, ref, toRefs } from "vue";
 import AddOrUpdate from "./category-add-or-update.vue";
 
 const view = reactive({
-  deleteIsBatch: true,
+  deleteIsBatch: false,
   getDataListURL: "/space/category/page",
   getDataListIsPage: true,
   exportURL: "/space/category/export",

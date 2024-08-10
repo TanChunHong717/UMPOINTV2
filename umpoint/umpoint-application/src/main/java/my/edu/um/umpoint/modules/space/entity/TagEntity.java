@@ -1,5 +1,6 @@
 package my.edu.um.umpoint.modules.space.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -24,4 +25,9 @@ public class TagEntity {
      * Tag name
      */
 	private String tagName;
+	/**
+	 * Space Count
+	 */
+	@TableField(exist = false)
+	private Long spaceCount;
 }

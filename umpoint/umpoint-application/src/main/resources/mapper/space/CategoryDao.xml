@@ -16,4 +16,25 @@
         RIGHT JOIN spc_space s ON ct.id = s.cat_id
     </select>
 
+    <resultMap type="my.edu.um.umpoint.modules.space.entity.CategoryEntity" id="categoryMapWithCount">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="spaceCount" column="space_count"/>
+    </resultMap>
+
+    <select id="listWithCount" resultMap="categoryMapWithCount">
+        SELECT DISTINCT
+            ct.id,
+            ct.name,
+            COUNT(s.id) AS space_count
+        FROM spc_category ct
+        LEFT JOIN spc_space s ON ct.id = s.cat_id
+        <where>
+            <if test="name != null and name.trim() != ''">
+                and ct.name like #{name}
+            </if>
+        </where>
+        GROUP BY ct.id
+    </select>
+
 </mapper>

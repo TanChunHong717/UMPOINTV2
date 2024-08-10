@@ -16,4 +16,25 @@
         RIGHT JOIN spc_space_tag st ON t.id = st.tag_id
     </select>
 
+    <resultMap type="my.edu.um.umpoint.modules.space.entity.TagEntity" id="tagMapWithCount">
+        <result property="id" column="id"/>
+        <result property="tagName" column="tag_name"/>
+        <result property="spaceCount" column="space_count"/>
+    </resultMap>
+
+    <select id="listWithCount" resultMap="tagMapWithCount">
+        SELECT DISTINCT
+            t.id,
+            t.tag_name,
+            COUNT(st.space_id) AS space_count
+        FROM spc_tag t
+        LEFT JOIN spc_space_tag st ON t.id = st.tag_id
+        <where>
+            <if test="tagName != null and tagName.trim() != ''">
+                and t.tag_name like #{tagName}
+            </if>
+        </where>
+        GROUP BY t.id
+    </select>
+
 </mapper>

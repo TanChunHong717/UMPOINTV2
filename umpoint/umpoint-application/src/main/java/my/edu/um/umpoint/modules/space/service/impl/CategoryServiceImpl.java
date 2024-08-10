@@ -1,11 +1,15 @@
 package my.edu.um.umpoint.modules.space.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
 import my.edu.um.umpoint.common.utils.ConvertUtils;
 import my.edu.um.umpoint.modules.space.dao.CategoryDao;
 import my.edu.um.umpoint.modules.space.dto.CategoryDTO;
+import my.edu.um.umpoint.modules.space.dto.TagDTO;
 import my.edu.um.umpoint.modules.space.entity.CategoryEntity;
+import my.edu.um.umpoint.modules.space.entity.TagEntity;
 import my.edu.um.umpoint.modules.space.service.CategoryService;
 import cn.hutool.core.util.StrUtil;
 import org.springframework.stereotype.Service;
@@ -30,6 +34,17 @@ public class CategoryServiceImpl extends CrudServiceImpl<CategoryDao, CategoryEn
         wrapper.eq(StrUtil.isNotBlank(name), "name", name);
 
         return wrapper;
+    }
+
+    @Override
+    public PageData<CategoryDTO> page(Map<String, Object> params) {
+        paramsToLike(params, "name");
+
+        IPage<CategoryEntity> page = getPage(params, "name", true);
+
+        List<CategoryEntity> list = baseDao.listWithCount();
+
+        return getPageData(list, page.getTotal(), currentDtoClass());
     }
 
     @Override

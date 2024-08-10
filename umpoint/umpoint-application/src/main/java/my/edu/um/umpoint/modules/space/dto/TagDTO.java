@@ -27,4 +27,6 @@ public class TagDTO implements Serializable {
 	@SchemaProperty(name = "Tag name")
 	private String tagName;
 
+	@SchemaProperty(name = "Space count")
+	private Long spaceCount;
 }

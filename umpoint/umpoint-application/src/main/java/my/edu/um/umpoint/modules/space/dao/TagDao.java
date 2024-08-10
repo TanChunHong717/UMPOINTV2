@@ -14,6 +14,6 @@ import java.util.List;
  */
 @Mapper
 public interface TagDao extends BaseDao<TagEntity> {
-
+    List<TagEntity> listWithCount();
     List<TagEntity> filterList();
 }
