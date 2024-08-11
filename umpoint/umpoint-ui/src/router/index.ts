@@ -6,7 +6,7 @@ import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 import {
   createRouter,
-  createWebHashHistory,
+  createWebHistory,
   RouteLocationNormalized,
   RouteRecordRaw
 } from "vue-router";
@@ -23,7 +23,7 @@ interface dynamicRouteParams {
 NProgress.configure({ showSpinner: false });
 
 const router = createRouter({
-  history: createWebHashHistory(), //createWebHashHistory() hash模式
+  history: createWebHistory(),
   routes: baseRoutes
 });
 
