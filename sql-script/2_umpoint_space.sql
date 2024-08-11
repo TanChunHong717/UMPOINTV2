@@ -3,14 +3,14 @@ CREATE TABLE spc_category (
     name varchar(50) NOT NULL COMMENT 'Name',
     PRIMARY KEY (ID),
     UNIQUE INDEX (name)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Space Category';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space Category';
 
 CREATE TABLE spc_tag (
     id bigint NOT NULL COMMENT 'ID',
     tag_name varchar(20) NOT NULL COMMENT 'Tag name',
     PRIMARY KEY (id),
     UNIQUE INDEX (tag_name)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Space Tag';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space Tag';
 
 CREATE TABLE spc_space (
     id bigint NOT NULL COMMENT 'ID',
@@ -30,7 +30,7 @@ CREATE TABLE spc_space (
     FOREIGN KEY (dept_id) REFERENCES sys_user(id),
     FOREIGN KEY (dept_id) REFERENCES sys_user(id),
     FOREIGN KEY (dept_id) REFERENCES sys_user(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Space';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space';
 
 CREATE TABLE spc_space_tag (
     space_id bigint NOT NULL COMMENT 'Space ID',
@@ -38,7 +38,7 @@ CREATE TABLE spc_space_tag (
     PRIMARY KEY (space_id, tag_id),
     FOREIGN KEY (space_id) REFERENCES spc_space(id),
     FOREIGN KEY (tag_id) REFERENCES spc_tag(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Space tag relationship';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space tag relationship';
 
 CREATE TABLE spc_image (
     id bigint NOT NULL COMMENT 'ID',
@@ -46,7 +46,7 @@ CREATE TABLE spc_image (
     image_url varchar(250) NOT NULL COMMENT 'Image url',
     PRIMARY KEY (id),
     FOREIGN KEY (space_id) REFERENCES spc_space(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Space Image';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space Image';
 
 CREATE TABLE spc_availability (
     id bigint NOT NULL COMMENT 'ID',
@@ -55,4 +55,16 @@ CREATE TABLE spc_availability (
     availability BLOB NOT NULL COMMENT 'Availability of space, consist of 366*24*2 bit, 1 represent available in specific hour in one year',
     PRIMARY KEY (id),
     FOREIGN KEY (space_id) REFERENCES spc_space(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Space Availability';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space Availability';
+
+CREATE TABLE spc_booking_rule (
+    id bigint NOT NULL COMMENT 'ID',
+    hour_price decimal(10, 2) NOT NULL COMMENT 'Price for book an hour',
+    four_hours_price decimal(10, 2) NOT NULL COMMENT 'Price for book four hours',
+    day_price decimal(10, 2) NOT NULL COMMENT 'Price for book a day',
+    open_days_before_event decimal(5,0) NOT NULL COMMENT 'Days open for booking before event',
+    close_days_before_event decimal(5,0) NOT NULL COMMENT 'Days close for booking before event',
+    max_reservation_days decimal(5, 0) NOT NULL COMMENT 'Maximum reservation days',
+    approval_required BOOLEAN NOT NULL COMMENT 'Is booking require approve by manager',
+    min_booking_hours decimal(5, 0) NOT NULL COMMENT 'Minimum booking hours per day'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space Availability';
