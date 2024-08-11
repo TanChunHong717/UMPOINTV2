@@ -56,7 +56,7 @@
       </el-form-item>
     </el-form>
     <div v-for="space in state.dataList" :key="space.id" class="space-container">
-      <el-row align="middle" style="margin-bottom: 10px;" :gutter="10">
+      <el-row align="middle" justify="start" style="margin-bottom: 10px;" :gutter="10">
         <el-col :span="5">
           <div v-if="space.imageDTOList && space.imageDTOList.length > 0">
             <el-image class="space-image" :src="space.imageDTOList[0].imageUrl" fit="cover"/>
@@ -201,8 +201,9 @@ getTagList();
   justify-content: space-between;
 }
 .space-image {
-  width: 250px;
-  height: 150px;
+  width: 100%;
+  max-width: 250px;
+  max-height: 150px;
   padding: 0 10px;
 }
 .title {
