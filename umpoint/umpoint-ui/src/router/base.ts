@@ -46,6 +46,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/:path(.*)*",
     redirect: { path: "/error", query: { to: 404 }, replace: true },
     meta: { isNavigationMenu: false }
+  },
+  {
+    path: "/space-management/space-info",
+    component: () => import("@/views/space-management/space-info.vue"),
+    meta: { title: "Space Info", requiresAuth: true, isNavigationMenu: false }
   }
 ];
 

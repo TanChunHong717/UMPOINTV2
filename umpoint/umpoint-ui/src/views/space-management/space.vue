@@ -113,7 +113,7 @@
           </el-row>
         </el-col>
         <el-col :span="3" class="button-column">
-          <el-button class="action-button">Details</el-button>
+          <el-button @click="$router.push('space-info')" class="action-button" re>Details</el-button>
           <el-button class="action-button bottom-button">Availability</el-button>
         </el-col>
       </el-row>
@@ -122,7 +122,6 @@
     <add-or-update ref="addOrUpdateRef" @refreshDataList="state.getDataList">Confirm</add-or-update>
   </div>
 </template>
-
 <script lang="ts" setup>
 import useView from "@/hooks/useView";
 import {computed, reactive, ref, toRefs} from "vue";
