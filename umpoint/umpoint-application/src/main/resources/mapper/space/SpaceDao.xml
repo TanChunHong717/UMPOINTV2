@@ -8,8 +8,12 @@
         <result property="name" column="name"/>
         <result property="catId" column="cat_id"/>
         <result property="deptId" column="dept_id"/>
+        <result property="address" column="address"/>
         <result property="description" column="description"/>
         <result property="facilities" column="facilities"/>
+        <result property="capacity" column="capacity"/>
+        <result property="manager" column="manager"/>
+        <result property="bookingRuleId" column="booking_rule_id"/>
         <result property="creator" column="creator"/>
         <result property="createDate" column="create_date"/>
         <result property="updater" column="updater"/>
@@ -21,9 +25,12 @@
         <result property="name" column="name"/>
         <result property="catId" column="cat_id"/>
         <result property="deptId" column="dept_id"/>
+        <result property="address" column="address"/>
         <result property="description" column="description"/>
         <result property="facilities" column="facilities"/>
+        <result property="capacity" column="capacity"/>
         <result property="manager" column="manager"/>
+        <result property="bookingRuleId" column="booking_rule_id"/>
         <result property="creator" column="creator"/>
         <result property="createDate" column="create_date"/>
         <result property="updater" column="updater"/>
@@ -33,11 +40,25 @@
         <result column="manager_name" property="managerName" />
         <result column="creator_name" property="creatorName" />
         <result column="updater_name" property="updaterName" />
-        <collection property="imageUrls" ofType="String">
-            <result column="image_url"/>
+        <association property="bookingRuleEntity">
+            <id property="id" column="booking_rule_id"/>
+            <result property="hourPrice" column="hour_price"/>
+            <result property="fourHoursPrice" column="four_hours_price"/>
+            <result property="dayPrice" column="day_price"/>
+            <result property="openDaysBeforeEvent" column="open_days_before_event"/>
+            <result property="closeDaysBeforeEvent" column="close_days_before_event"/>
+            <result property="maxReservationDays" column="max_reservation_days"/>
+            <result property="approvalRequired" column="approval_required"/>
+            <result property="minBookingHours" column="min_booking_hours"/>
+        </association>
+        <collection property="imageEntityList" ofType="my.edu.um.umpoint.modules.space.entity.ImageEntity">
+            <id property="id" column="image_id"/>
+            <result property="spaceId" column="id"/>
+            <result property="imageUrl" column="image_url"/>
         </collection>
-        <collection property="tags" ofType="String">
-            <result column="tag_name"/>
+        <collection property="tagEntityList" ofType="my.edu.um.umpoint.modules.space.entity.TagEntity">
+            <id property="id" column="tag_id"/>
+            <result column="tag_name" property="tagName"/>
         </collection>
     </resultMap>
 
@@ -47,9 +68,12 @@
             s.name,
             s.cat_id,
             s.dept_id,
+            s.address,
             s.description,
             s.facilities,
+            s.capacity,
             s.manager,
+            s.booking_rule_id,
             s.creator,
             s.create_date,
             s.updater,
@@ -59,12 +83,24 @@
             m.username AS manager_name,
             cr.username AS creator_name,
             u.username AS updater_name,
+            b.id AS booking_rule_id,
+            b.hour_price,
+            b.four_hours_price,
+            b.day_price,
+            b.open_days_before_event,
+            b.close_days_before_event,
+            b.max_reservation_days,
+            b.approval_required,
+            b.min_booking_hours,
+            i.id AS image_id,
             i.image_url,
+            t.id AS tag_id,
             t.tag_name
         FROM spc_space s
         LEFT JOIN spc_category c ON s.cat_id = c.id
         LEFT JOIN sys_dept d ON s.dept_id = d.id
         LEFT JOIN spc_image i ON s.id = i.space_id
+        LEFT JOIN spc_booking_rule b ON s.booking_rule_id = b.id
         LEFT JOIN spc_space_tag st ON s.id = st.space_id
         LEFT JOIN spc_tag t ON st.tag_id = t.id
         LEFT JOIN sys_user m ON s.manager = m.id
@@ -94,22 +130,44 @@
             s.name,
             s.cat_id,
             s.dept_id,
+            s.address,
             s.description,
             s.facilities,
+            s.capacity,
+            s.manager,
+            s.booking_rule_id,
             s.creator,
             s.create_date,
             s.updater,
             s.update_date,
             c.name AS category,
             d.name AS dept_name,
+            m.username AS manager_name,
+            cr.username AS creator_name,
+            u.username AS updater_name,
+            b.id AS booking_rule_id,
+            b.hour_price,
+            b.four_hours_price,
+            b.day_price,
+            b.open_days_before_event,
+            b.close_days_before_event,
+            b.max_reservation_days,
+            b.approval_required,
+            b.min_booking_hours,
+            i.id AS image_id,
             i.image_url,
+            t.id AS tag_id,
             t.tag_name
         FROM spc_space s
         LEFT JOIN spc_category c ON s.cat_id = c.id
         LEFT JOIN sys_dept d ON s.dept_id = d.id
         LEFT JOIN spc_image i ON s.id = i.space_id
+        LEFT JOIN spc_booking_rule b ON s.id = b.space_id
         LEFT JOIN spc_space_tag st ON s.id = st.space_id
         LEFT JOIN spc_tag t ON st.tag_id = t.id
+        LEFT JOIN sys_user m ON s.manager = m.id
+        LEFT JOIN sys_user cr ON s.creator = cr.id
+        LEFT JOIN sys_user u ON s.updater = u.id
         WHERE s.id = #{id}
     </select>
 </mapper>

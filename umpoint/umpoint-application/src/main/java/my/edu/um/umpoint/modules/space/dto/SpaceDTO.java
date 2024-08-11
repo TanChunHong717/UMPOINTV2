@@ -34,14 +34,23 @@ public class SpaceDTO implements Serializable {
 	@SchemaProperty(name = "Department ID")
 	private Long deptId;
 
+	@SchemaProperty(name = "Address")
+	private String address;
+
 	@SchemaProperty(name = "Description")
 	private String description;
 
 	@SchemaProperty(name = "Facilities")
 	private String facilities;
 
+	@SchemaProperty(name = "Capacity")
+	private Integer capacity;
+
 	@SchemaProperty(name = "Manager ID")
 	private Long manager;
+
+	@SchemaProperty(name = "Booking Rule ID")
+	private BookingRuleDTO bookingRuleId;
 
 	@SchemaProperty(name = "Creator ID")
 	private Long creator;
@@ -70,9 +79,12 @@ public class SpaceDTO implements Serializable {
 	@SchemaProperty(name = "Last Updater Name")
 	private String updaterName;
 
-	@SchemaProperty(name = "Image Url List")
-	private List<String> imageUrls;
+	@SchemaProperty(name = "Booking Rule DTO")
+	private BookingRuleDTO bookingRuleDTO;
 
-	@SchemaProperty(name = "Tags")
-	private List<String> tags;
+	@SchemaProperty(name = "Image DTO List")
+	private List<ImageDTO> imageDTOList;
+
+	@SchemaProperty(name = "Tag DTO List")
+	private List<TagDTO> tagDTOList;
 }

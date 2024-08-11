@@ -6,7 +6,7 @@
     <resultMap type="my.edu.um.umpoint.modules.space.entity.ImageEntity" id="imageMap">
         <result property="id" column="id"/>
         <result property="spaceId" column="space_id"/>
-        <result property="spaceUrl" column="space_url"/>
+        <result property="imageUrl" column="image_url"/>
     </resultMap>
 
 

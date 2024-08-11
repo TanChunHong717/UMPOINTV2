@@ -27,8 +27,8 @@ public class ImageDTO implements Serializable {
 	@SchemaProperty(name = "Space ID")
 	private Long spaceId;
 
-	@SchemaProperty(name = "Space url")
-	private String spaceUrl;
+	@SchemaProperty(name = "Image url")
+	private String imageUrl;
 
 
 }

@@ -17,9 +17,12 @@ CREATE TABLE spc_space (
     name varchar(50) NOT NULL COMMENT 'Name',
     cat_id bigint NOT NULL COMMENT 'Category ID',
     dept_id bigint NOT NULL COMMENT 'Department ID',
-    description varchar(250) COMMENT 'Description',
+    address varchar(250) NOT NULL COMMENT 'Address',
+    description varchar(2500) COMMENT 'Description',
     facilities varchar(250) COMMENT 'Facilities',
+    capacity decimal(5,0) COMMENT 'Max capacity',
     manager bigint NOT NULL COMMENT 'Manager ID',
+    booking_rule_id bigint NOT NULL COMMENT 'Booking Rule ID'
     creator bigint NOT NULL COMMENT 'Creator',
     create_date datetime NOT NULL COMMENT 'Create date',
     updater bigint NOT NULL COMMENT 'Updater',
@@ -27,9 +30,10 @@ CREATE TABLE spc_space (
     PRIMARY KEY (id),
     FOREIGN KEY (cat_id) REFERENCES spc_category(id),
     FOREIGN KEY (dept_id) REFERENCES sys_dept(id),
-    FOREIGN KEY (dept_id) REFERENCES sys_user(id),
-    FOREIGN KEY (dept_id) REFERENCES sys_user(id),
-    FOREIGN KEY (dept_id) REFERENCES sys_user(id)
+    FOREIGN KEY (manager) REFERENCES sys_user(id),
+    FOREIGN KEY (booking_rule_id) REFERENCES spc_booking_rule(id),
+    FOREIGN KEY (creator) REFERENCES sys_user(id),
+    FOREIGN KEY (updater) REFERENCES sys_user(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space';
 
 CREATE TABLE spc_space_tag (

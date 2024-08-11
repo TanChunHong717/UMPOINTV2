@@ -32,6 +32,10 @@ public class SpaceEntity extends BaseEntity {
      * Department ID
      */
 	private Long deptId;
+	/**
+	 * Address
+	 */
+	private String address;
     /**
      * Description
      */
@@ -41,9 +45,17 @@ public class SpaceEntity extends BaseEntity {
      */
 	private String facilities;
 	/**
+	 * Capacity
+	 */
+	private Integer capacity;
+	/**
 	 * Manager ID
 	 */
 	private Long manager;
+	/**
+	 * Booking rule ID
+	 */
+	private Long bookingRuleId;
 	/**
 	 * Last updater
 	 */
@@ -80,13 +92,18 @@ public class SpaceEntity extends BaseEntity {
 	@TableField(exist = false)
 	private String updaterName;
 	/**
+	 * Booking rule entity
+	 */
+	@TableField(exist = false)
+	private BookingRuleEntity bookingRuleEntity;
+	/**
 	 * Image url list
 	 */
 	@TableField(exist = false)
-	private List<String> imageUrls;
+	private List<ImageEntity> imageEntityList;
 	/**
 	 * Space tag list
 	 */
 	@TableField(exist = false)
-	private List<String> tags;
+	private List<TagEntity> tagEntityList;
 }

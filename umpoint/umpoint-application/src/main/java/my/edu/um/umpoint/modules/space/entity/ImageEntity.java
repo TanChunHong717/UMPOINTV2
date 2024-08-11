@@ -26,7 +26,7 @@ public class ImageEntity {
      */
 	private Long spaceId;
     /**
-     * Space url
+     * Image url
      */
-	private String spaceUrl;
+	private String imageUrl;
 }

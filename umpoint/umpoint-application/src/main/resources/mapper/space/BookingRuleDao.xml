@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="my.edu.um.umpoint.modules.space.dao.BookingRuleDao">
+
+    <resultMap type="my.edu.um.umpoint.modules.space.entity.BookingRuleEntity" id="bookingRuleMap">
+        <result property="id" column="id"/>
+        <result property="hourPrice" column="hour_price"/>
+        <result property="fourHoursPrice" column="four_hours_price"/>
+        <result property="dayPrice" column="day_price"/>
+        <result property="openDaysBeforeEvent" column="open_days_before_event"/>
+        <result property="closeDaysBeforeEvent" column="close_days_before_event"/>
+        <result property="maxReservationDays" column="max_reservation_days"/>
+        <result property="approvalRequired" column="approval_required"/>
+        <result property="minBookingHours" column="min_booking_hours"/>
+    </resultMap>
+
+
+</mapper>

@@ -58,8 +58,8 @@
     <div v-for="space in state.dataList" :key="space.id" class="space-container">
       <el-row align="middle" style="margin-bottom: 10px;" :gutter="10">
         <el-col :span="5">
-          <div v-if="space.imageUrls && space.imageUrls.length > 0">
-            <el-image class="space-image" :src="space.imageUrls[0]" fit="cover"/>
+          <div v-if="space.imageDTOList && space.imageDTOList.length > 0">
+            <el-image class="space-image" :src="space.imageDTOList[0].imageUrl" fit="cover"/>
           </div>
           <el-empty v-else :image-size="100" description="No Image"></el-empty>
         </el-col>
@@ -78,22 +78,22 @@
             </el-col>
             <el-col :span="8">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-team"></use></svg>
-              Capacity: {{ space.max_capacity }}
+              Capacity: {{ space.capacity }}
             </el-col>
           </el-row>
           <el-row class="in-col-row">
             <el-col :span="24">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-tag"></use></svg>
-              Tag: <el-tag v-for="tag in space.tags" type="primary">{{ tag }} </el-tag>
+              Tag: <el-tag v-for="tag in space.tagDTOList" type="primary">{{ tag.tagName }} </el-tag>
             </el-col>
           </el-row>
           <el-row class="in-col-row">
             <el-col :span="24">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-location"></use></svg>
-              Address: {{ space.location }}
+              Address: {{ space.address }}
             </el-col>
           </el-row>
-          <el-row>
+          <el-row v-if="space.facilities?.trim().length > 0">
             <el-col :span="24">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-wrench"></use></svg>
               Facilities: {{ space.facilities }}
@@ -101,15 +101,15 @@
           </el-row>
           <el-divider style="margin: 10px 0;"></el-divider>
           <el-row>
-            <el-col :span="8">
-              <span class="hour_price">RM{{ space.hour_price }}</span> / Hour
-            </el-col>
-            <el-col :span="8" v-if="space.four_hour_price">
-              <span class="four_hour_price">RM{{ space.four_hour_price }}</span> / 4 Hours
-            </el-col>
-            <el-col :span="8" v-if="space.day_price">
-              <span class="day_price">RM{{ space.day_price }}</span> / Day
-            </el-col>
+<!--            <el-col :span="8">-->
+<!--              <span class="hour_price">RM{{ space.hour_price }}</span> / Hour-->
+<!--            </el-col>-->
+<!--            <el-col :span="8" v-if="space.four_hour_price">-->
+<!--              <span class="four_hour_price">RM{{ space.four_hour_price }}</span> / 4 Hours-->
+<!--            </el-col>-->
+<!--            <el-col :span="8" v-if="space.day_price">-->
+<!--              <span class="day_price">RM{{ space.day_price }}</span> / Day-->
+<!--            </el-col>-->
           </el-row>
         </el-col>
         <el-col :span="3" class="button-column">
