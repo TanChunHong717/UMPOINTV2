@@ -25,7 +25,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("sys/dict/type")
-@Tag(name = "字典类型")
+@Tag(name = "Dictionary Type")
 @AllArgsConstructor
 public class SysDictTypeController {
     private final SysDictTypeService sysDictTypeService;

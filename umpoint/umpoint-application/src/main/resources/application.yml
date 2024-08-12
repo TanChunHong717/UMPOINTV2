@@ -20,6 +20,7 @@ knife4j:
     password: admin
   setting:
     enableFooter: false
+    language: en
 
 spring:
   # environment dev|test|prod
