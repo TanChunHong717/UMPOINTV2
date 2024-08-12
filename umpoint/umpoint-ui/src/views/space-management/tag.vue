@@ -41,7 +41,10 @@ const view = reactive({
   getDataListURL: "/space/tag/page",
   getDataListIsPage: true,
   exportURL: "/space/tag/export",
-  deleteURL: "/space/tag"
+  deleteURL: "/space/tag",
+  dataForm: {
+    tagName: ""
+  }
 });
 
 const state = reactive({ ...useView(view), ...toRefs(view) });

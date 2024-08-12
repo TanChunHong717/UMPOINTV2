@@ -53,7 +53,12 @@ router.beforeEach((to, from, next) => {
         }
       } else {
         if (!to.query.pop) {
-          const routeMeta: IObject = store.state.routeToMeta[to.path];
+          let routeMeta: IObject = store.state.routeToMeta[to.path];
+          if (!routeMeta) {
+            const param = to.path.substring(to.path.lastIndexOf("/"));
+            const newPath = to.path.replace(param, "/:id");
+            routeMeta = store.state.routeToMeta[newPath];
+          }
           emits.emit(EMitt.OnPushMenuToTabs, {
             label: to.query._mt || routeMeta.title || to.path,
             value: to.fullPath,

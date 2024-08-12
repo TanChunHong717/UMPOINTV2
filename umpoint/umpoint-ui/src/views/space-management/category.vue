@@ -41,7 +41,10 @@ const view = reactive({
   getDataListURL: "/space/category/page",
   getDataListIsPage: true,
   exportURL: "/space/category/export",
-  deleteURL: "/space/category"
+  deleteURL: "/space/category",
+  dataForm: {
+    name: ""
+  }
 });
 
 const state = reactive({ ...useView(view), ...toRefs(view) });

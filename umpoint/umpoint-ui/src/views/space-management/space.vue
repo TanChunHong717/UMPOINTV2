@@ -101,19 +101,19 @@
           </el-row>
           <el-divider style="margin: 10px 0;"></el-divider>
           <el-row>
-<!--            <el-col :span="8">-->
-<!--              <span class="hour_price">RM{{ space.hour_price }}</span> / Hour-->
-<!--            </el-col>-->
-<!--            <el-col :span="8" v-if="space.four_hour_price">-->
-<!--              <span class="four_hour_price">RM{{ space.four_hour_price }}</span> / 4 Hours-->
-<!--            </el-col>-->
-<!--            <el-col :span="8" v-if="space.day_price">-->
-<!--              <span class="day_price">RM{{ space.day_price }}</span> / Day-->
-<!--            </el-col>-->
+            <el-col :span="8">
+              <span class="hour_price">RM{{ space.hour_price }}</span> / Hour
+            </el-col>
+            <el-col :span="8" v-if="space.four_hour_price">
+              <span class="four_hour_price">RM{{ space.four_hour_price }}</span> / 4 Hours
+            </el-col>
+            <el-col :span="8" v-if="space.day_price">
+              <span class="day_price">RM{{ space.day_price }}</span> / Day
+            </el-col>
           </el-row>
         </el-col>
         <el-col :span="3" class="button-column">
-          <el-button @click="$router.push('space-info')" class="action-button" re>Details</el-button>
+          <el-button @click="$router.push({name:`space-info`, params: {id:space.id}})" class="action-button" re>Details</el-button>
           <el-button class="action-button bottom-button">Availability</el-button>
         </el-col>
       </el-row>
@@ -143,7 +143,13 @@ const view = reactive({
   getDataListURL: "/space/space/page",
   getDataListIsPage: true,
   exportURL: "/space/space/export",
-  deleteURL: "/space/space"
+  deleteURL: "/space/space",
+  dataForm: {
+    name: "",
+    deptId: null,
+    catId: null,
+    tagId: null
+  }
 });
 
 const state = reactive({ ...useView(view), ...toRefs(view) });

@@ -48,7 +48,8 @@ const routes: Array<RouteRecordRaw> = [
     meta: { isNavigationMenu: false }
   },
   {
-    path: "/space-management/space-info",
+    path: "/space-management/space-info/:id",
+    name: "space-info",
     component: () => import("@/views/space-management/space-info.vue"),
     meta: { title: "Space Info", requiresAuth: true, isNavigationMenu: false }
   }

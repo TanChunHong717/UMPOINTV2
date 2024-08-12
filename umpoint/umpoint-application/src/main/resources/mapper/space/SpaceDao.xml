@@ -162,7 +162,7 @@
         LEFT JOIN spc_category c ON s.cat_id = c.id
         LEFT JOIN sys_dept d ON s.dept_id = d.id
         LEFT JOIN spc_image i ON s.id = i.space_id
-        LEFT JOIN spc_booking_rule b ON s.id = b.space_id
+        LEFT JOIN spc_booking_rule b ON s.booking_rule_id = b.id
         LEFT JOIN spc_space_tag st ON s.id = st.space_id
         LEFT JOIN spc_tag t ON st.tag_id = t.id
         LEFT JOIN sys_user m ON s.manager = m.id
