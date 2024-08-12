@@ -25,7 +25,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/sys/menu")
-@Tag(name = "system menu")
+@Tag(name = "System Menu")
 @AllArgsConstructor
 public class SysMenuController {
     private final SysMenuService sysMenuService;

@@ -36,7 +36,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/sys/user")
-@Tag(name = "user management")
+@Tag(name = "User Management")
 @AllArgsConstructor
 public class SysUserController {
     private final SysUserService sysUserService;

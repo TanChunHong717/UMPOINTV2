@@ -36,7 +36,7 @@ import java.io.IOException;
 import java.util.Date;
 
 @RestController
-@Tag(name = "Login controller")
+@Tag(name = "Login Controller")
 @AllArgsConstructor
 public class LoginController {
     private final SysUserService sysUserService;

@@ -26,7 +26,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("sys/log/error")
-@Tag(name = "error log")
+@Tag(name = "Error Log")
 @AllArgsConstructor
 public class SysLogErrorController {
     private final SysLogErrorService sysLogErrorService;

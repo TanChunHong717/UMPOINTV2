@@ -23,7 +23,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("sys/dict/data")
-@Tag(name = "dictionary data")
+@Tag(name = "Dictionary Data")
 @AllArgsConstructor
 public class SysDictDataController {
     private final SysDictDataService sysDictDataService;

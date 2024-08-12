@@ -26,7 +26,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("sys/log/login")
-@Tag(name = "login log")
+@Tag(name = "Login Log")
 @AllArgsConstructor
 public class SysLogLoginController {
     private final SysLogLoginService sysLogLoginService;

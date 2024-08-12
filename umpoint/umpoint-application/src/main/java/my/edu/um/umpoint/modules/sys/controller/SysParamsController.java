@@ -28,7 +28,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("sys/params")
-@Tag(name = "params")
+@Tag(name = "Params")
 @AllArgsConstructor
 public class SysParamsController {
     private final SysParamsService sysParamsService;

@@ -20,7 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/sys/dept")
-@Tag(name = "department management")
+@Tag(name = "Department Management")
 @AllArgsConstructor
 public class SysDeptController {
     private final SysDeptService sysDeptService;

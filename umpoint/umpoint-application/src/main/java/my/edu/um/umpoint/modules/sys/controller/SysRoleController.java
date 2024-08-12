@@ -28,7 +28,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/sys/role")
-@Tag(name = "role management")
+@Tag(name = "Role Management")
 @AllArgsConstructor
 public class SysRoleController {
     private final SysRoleService sysRoleService;
