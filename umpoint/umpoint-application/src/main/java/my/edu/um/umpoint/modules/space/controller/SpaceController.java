@@ -1,5 +1,6 @@
 package my.edu.um.umpoint.modules.space.controller;
 
+import my.edu.um.umpoint.common.annotation.DataFilter;
 import my.edu.um.umpoint.common.annotation.LogOperation;
 import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.page.PageData;
@@ -48,6 +49,7 @@ public class SpaceController {
         @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String")
     })
     @RequiresPermissions("space:space:page")
+    @DataFilter
     public Result<PageData<SpaceDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
         PageData<SpaceDTO> page = spaceService.page(params);
 
@@ -57,6 +59,7 @@ public class SpaceController {
     @GetMapping("{id}")
     @Operation(summary = "Information")
     @RequiresPermissions("space:space:info")
+    @DataFilter
     public Result<SpaceDTO> get(@PathVariable("id") Long id){
         SpaceDTO data = spaceService.get(id);
 

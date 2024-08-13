@@ -45,10 +45,6 @@ public class SpaceServiceImpl extends CrudServiceImpl<SpaceDao, SpaceEntity, Spa
 
     @Override
     public PageData<SpaceDTO> page(Map<String, Object> params) {
-        UserDetail user = SecurityUser.getUser();
-        if (user.getSuperAdmin() == 0) {
-            params.put("deptIdList", sysDeptService.getSubDeptIdList(user.getDeptId()));
-        }
         if (params.get("deptId") != null) {
             params.put("deptIdList", sysDeptService.getSubDeptIdList(Long.getLong((String) params.get("deptId"))));
         }

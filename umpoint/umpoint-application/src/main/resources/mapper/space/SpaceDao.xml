@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatiorg//DTD Mapper 3.0//EN" "http://mybatiorg/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="my.edu.um.umpoint.modules.space.dao.SpaceDao">
+<mapper namespace="my.edu.um.umpoint.modulespace.dao.SpaceDao">
 
-    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpaceEntity" id="spaceMap">
+    <resultMap type="my.edu.um.umpoint.modulespace.entity.SpaceEntity" id="spaceMap">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="catId" column="cat_id"/>
@@ -20,7 +20,7 @@
         <result property="updateDate" column="update_date"/>
     </resultMap>
 
-    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpaceEntity" id="spaceSelectMap">
+    <resultMap type="my.edu.um.umpoint.modulespace.entity.SpaceEntity" id="spaceSelectMap">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="catId" column="cat_id"/>
@@ -51,12 +51,12 @@
             <result property="approvalRequired" column="approval_required"/>
             <result property="minBookingHours" column="min_booking_hours"/>
         </association>
-        <collection property="imageEntityList" ofType="my.edu.um.umpoint.modules.space.entity.ImageEntity">
+        <collection property="imageEntityList" ofType="my.edu.um.umpoint.modulespace.entity.ImageEntity">
             <id property="id" column="image_id"/>
             <result property="spaceId" column="id"/>
             <result property="imageUrl" column="image_url"/>
         </collection>
-        <collection property="tagEntityList" ofType="my.edu.um.umpoint.modules.space.entity.TagEntity">
+        <collection property="tagEntityList" ofType="my.edu.um.umpoint.modulespace.entity.TagEntity">
             <id property="id" column="tag_id"/>
             <result column="tag_name" property="tagName"/>
         </collection>
@@ -64,20 +64,20 @@
 
     <select id="getList" resultMap="spaceSelectMap">
         SELECT
-            s.id,
-            s.name,
-            s.cat_id,
-            s.dept_id,
-            s.address,
-            s.description,
-            s.facilities,
-            s.capacity,
-            s.manager,
-            s.booking_rule_id,
-            s.creator,
-            s.create_date,
-            s.updater,
-            s.update_date,
+            id,
+            name,
+            cat_id,
+            dept_id,
+            address,
+            description,
+            facilities,
+            capacity,
+            manager,
+            booking_rule_id,
+            creator,
+            create_date,
+            updater,
+            update_date,
             c.name AS category,
             d.name AS dept_name,
             m.username AS manager_name,
@@ -96,28 +96,28 @@
             i.image_url,
             t.id AS tag_id,
             t.tag_name
-        FROM spc_space s
-        LEFT JOIN spc_category c ON s.cat_id = c.id
-        LEFT JOIN sys_dept d ON s.dept_id = d.id
-        LEFT JOIN spc_image i ON s.id = i.space_id
-        LEFT JOIN spc_booking_rule b ON s.booking_rule_id = b.id
-        LEFT JOIN spc_space_tag st ON s.id = st.space_id
+        FROM spc_space
+        LEFT JOIN spc_category c ON cat_id = c.id
+        LEFT JOIN sys_dept d ON dept_id = d.id
+        LEFT JOIN spc_image i ON id = i.space_id
+        LEFT JOIN spc_booking_rule b ON booking_rule_id = b.id
+        LEFT JOIN spc_space_tag st ON id = st.space_id
         LEFT JOIN spc_tag t ON st.tag_id = t.id
-        LEFT JOIN sys_user m ON s.manager = m.id
-        LEFT JOIN sys_user cr ON s.creator = cr.id
-        LEFT JOIN sys_user u ON s.updater = u.id
+        LEFT JOIN sys_user m ON manager = m.id
+        LEFT JOIN sys_user cr ON creator = cr.id
+        LEFT JOIN sys_user u ON updater = u.id
         <where>
             <if test="name != null and name.trim() != ''">
                 and t1.username like #{name}
             </if>
             <if test="catId != null">
-                AND s.cat_id = #{catId}
+                AND cat_id = #{catId}
             </if>
             <if test="tagId != null">
                 AND st.tag_id = #{tagId}
             </if>
             <if test="deptIdList != null">
-                AND s.dept_id IN
+                AND dept_id IN
                 <foreach item="id" collection="deptIdList" open="(" separator="," close=")">
                     #{id}
                 </foreach>
@@ -126,20 +126,20 @@
     </select>
     <select id="selectById" resultMap="spaceSelectMap">
         SELECT
-            s.id,
-            s.name,
-            s.cat_id,
-            s.dept_id,
-            s.address,
-            s.description,
-            s.facilities,
-            s.capacity,
-            s.manager,
-            s.booking_rule_id,
-            s.creator,
-            s.create_date,
-            s.updater,
-            s.update_date,
+            id,
+            name,
+            cat_id,
+            dept_id,
+            address,
+            description,
+            facilities,
+            capacity,
+            manager,
+            booking_rule_id,
+            creator,
+            create_date,
+            updater,
+            update_date,
             c.name AS category,
             d.name AS dept_name,
             m.username AS manager_name,
@@ -159,15 +159,15 @@
             t.id AS tag_id,
             t.tag_name
         FROM spc_space s
-        LEFT JOIN spc_category c ON s.cat_id = c.id
-        LEFT JOIN sys_dept d ON s.dept_id = d.id
-        LEFT JOIN spc_image i ON s.id = i.space_id
-        LEFT JOIN spc_booking_rule b ON s.booking_rule_id = b.id
-        LEFT JOIN spc_space_tag st ON s.id = st.space_id
+        LEFT JOIN spc_category c ON cat_id = c.id
+        LEFT JOIN sys_dept d ON dept_id = d.id
+        LEFT JOIN spc_image i ON id = i.space_id
+        LEFT JOIN spc_booking_rule b ON booking_rule_id = b.id
+        LEFT JOIN spc_space_tag st ON id = st.space_id
         LEFT JOIN spc_tag t ON st.tag_id = t.id
-        LEFT JOIN sys_user m ON s.manager = m.id
-        LEFT JOIN sys_user cr ON s.creator = cr.id
-        LEFT JOIN sys_user u ON s.updater = u.id
-        WHERE s.id = #{id}
+        LEFT JOIN sys_user m ON manager = m.id
+        LEFT JOIN sys_user cr ON creator = cr.id
+        LEFT JOIN sys_user u ON updater = u.id
+        WHERE id = #{id}
     </select>
 </mapper>

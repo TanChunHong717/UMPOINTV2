@@ -13,11 +13,11 @@
             <el-tree :data="menuList" :props="{ label: 'name', children: 'children' }" node-key="id" ref="menuListTree" accordion show-checkbox> </el-tree>
           </el-form-item>
         </el-col>
-<!--        <el-col :span="12">-->
-<!--          <el-form-item size="small" label="Data permission">-->
-<!--            <el-tree :data="deptList" :props="{ label: 'name', children: 'children' }" node-key="id" ref="deptListTree" accordion show-checkbox> </el-tree>-->
-<!--          </el-form-item>-->
-<!--        </el-col>-->
+        <el-col :span="12">
+          <el-form-item size="small" label="Data permission">
+            <el-tree :data="deptList" :props="{ label: 'name', children: 'children' }" node-key="id" ref="deptListTree" accordion show-checkbox> </el-tree>
+          </el-form-item>
+        </el-col>
       </el-row>
     </el-form>
     <template v-slot:footer>
