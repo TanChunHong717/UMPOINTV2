@@ -49,7 +49,7 @@ public class SpaceController {
         @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String")
     })
     @RequiresPermissions("space:space:page")
-    @DataFilter
+    @DataFilter(tableAlias = "s")
     public Result<PageData<SpaceDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
         PageData<SpaceDTO> page = spaceService.page(params);
 
@@ -59,7 +59,6 @@ public class SpaceController {
     @GetMapping("{id}")
     @Operation(summary = "Information")
     @RequiresPermissions("space:space:info")
-    @DataFilter
     public Result<SpaceDTO> get(@PathVariable("id") Long id){
         SpaceDTO data = spaceService.get(id);
 
