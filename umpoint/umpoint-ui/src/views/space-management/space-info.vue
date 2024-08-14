@@ -1,13 +1,12 @@
 <template>
-  <div v-loading>
-    <div v-if="!isLoading">
+  <div v-if="!isLoading">
+    <div>
       <el-row justify="space-between" align="middle">
         <el-col :span="16">
           <h1 class="h1-text">{{ space.name }}</h1>
         </el-col>
         <el-col :span="8" class="end-justify">
-          <el-button type="primary">Edit</el-button>
-          <el-button class="ml-5" type="danger">Delete</el-button>
+          <el-button class="ml-5" type="danger" v-if="state.hasPermission('space:space:delete')">Delete</el-button>
         </el-col>
       </el-row>
       <el-carousel height="300px" class="carousel-container">
@@ -22,63 +21,103 @@
           </div>
         </template>
       </el-carousel>
-      <el-row class="in-col-row">
-        <el-col :span="12">
-          <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-apartment"></use></svg>
-          Department: {{ space.deptName }}
-        </el-col>
-        <el-col :span="12">
-          <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-appstore"></use></svg>
-          Category: {{ space.category }}
-        </el-col>
-      </el-row>
-      <el-row class="in-col-row">
-        <el-col :span="12">
-          <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-team"></use></svg>
-          Capacity: {{ space.capacity }}
-        </el-col>
-        <el-col :span="12">
-          <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-user"></use></svg>
-          Manager: {{ space.manageru }}
-        </el-col>
-      </el-row>
-      <el-row class="in-col-row">
-        <el-col :span="24">
-          <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-tag"></use></svg>
-          Tag: <el-tag v-for="tag in space.tagDTOList" type="primary">{{ tag.tagName }} </el-tag>
-        </el-col>
-      </el-row>
-      <el-row class="in-col-row">
-        <el-col :span="24">
-          <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-location"></use></svg>
-          Address: {{ space.address }}
-        </el-col>
-      </el-row>
-      <el-row v-if="space.facilities?.trim().length > 0">
-        <el-col :span="24">
-          <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-wrench"></use></svg>
-          Facilities: {{ space.facilities }}
-        </el-col>
-      </el-row>
-      <h2>Price</h2>
-      <el-row>
-        <el-col :span="8"><span class="hour_price">RM{{ space.hour_price }}</span> / Hour</el-col>
-        <el-col :span="8" v-if="space.four_hour_price"><span class="four_hour_price">RM{{ space.four_hour_price }}</span> / 4 Hours</el-col>
-        <el-col :span="8" v-if="space.day_price"><span class="day_price">RM{{ space.day_price }}</span> / Day</el-col>
-      </el-row>
-      <h2>Description</h2>
-      <div v-html="space.description"></div>
+      <el-tabs>
+        <el-tab-pane label="Details">
+          <el-row v-if="state.hasPermission('space:space:update')">
+            <el-col :span="24">
+              <el-button type="primary">Edit</el-button>
+            </el-col>
+          </el-row>
+          <el-row class="in-col-row">
+            <el-col :span="24">
+              <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-location"></use></svg>
+              {{ space.address }}
+            </el-col>
+          </el-row>
+          <el-row class="in-col-row">
+            <el-col :span="8">
+              <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-apartment"></use></svg>
+              Department: {{ space.deptName }}
+            </el-col>
+            <el-col :span="8">
+              <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-appstore"></use></svg>
+              Category: {{ space.category }}
+            </el-col>
+            <el-col :span="8">
+              <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-team"></use></svg>
+              Capacity: {{ space.capacity }}
+            </el-col>
+          </el-row>
+          <el-row v-if="space.facilities?.trim().length > 0">
+            <el-col :span="24">
+              <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-wrench"></use></svg>
+              Facilities: {{ space.facilities }}
+            </el-col>
+          </el-row>
+          <el-row class="in-col-row">
+            <el-col :span="24">
+              <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-tag"></use></svg>
+              Tag:
+              <el-tag v-if="space.tagDTOList?.length > 0" v-for="tag in space.tagDTOList" type="primary">{{ tag.tagName }} </el-tag>
+              <el-tag v-else type="info">No Tag</el-tag>
+            </el-col>
+          </el-row>
+          <div v-if="space.description?.trim().length > 0">
+            <h2>Description</h2>
+            <div v-html="space.description"></div>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="Availability">
+          <el-row v-if="state.hasPermission('space:booking-rule:update')">
+            <el-col :span="24">
+              <el-button type="primary">Edit</el-button>
+            </el-col>
+          </el-row>
+          <el-row class="in-col-row">
+            <el-col :span="24">
+              <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-user"></use></svg>
+              Contact: {{ space.managerName }}
+            </el-col>
+          </el-row>
+          <el-row class="in-col-row">
+            <el-col :span="12">Days open for booking before event: {{ space.bookingRuleDTO.openDaysBeforeEvent }}</el-col>
+            <el-col :span="12">Maximum reservation days: {{ space.bookingRuleDTO.maxReservationDays }}</el-col>
+          </el-row>
+          <el-row class="in-col-row">
+            <el-col :span="12">Days close for booking before event: {{ space.bookingRuleDTO.closeDaysBeforeEvent }}</el-col>
+            <el-col :span="12">Minimum booking hours: {{ space.bookingRuleDTO.minBookingHours }}</el-col>
+          </el-row>
+          <el-row class="in-col-row">
+            <el-col :span="24">
+              Approval Required:
+              <el-tag v-if="space.bookingRuleDTO.approvalRequired" type="primary">Yes</el-tag>
+              <el-tag v-else type="info">No</el-tag>
+            </el-col>
+          </el-row>
+          <h2>Price</h2>
+          <el-row>
+            <el-col :span="8"><span class="hour_price">RM{{ space.hour_price }}</span> / Hour</el-col>
+            <el-col :span="8" v-if="space.four_hour_price"><span class="four_hour_price">RM{{ space.four_hour_price }}</span> / 4 Hours</el-col>
+            <el-col :span="8" v-if="space.day_price"><span class="day_price">RM{{ space.day_price }}</span> / Day</el-col>
+          </el-row>
+        </el-tab-pane>
+      </el-tabs>
     </div>
+    <add-or-update ref="addOrUpdateRef" @refreshData="getInfo(Number(route.params.id))">Confirm</add-or-update>
   </div>
 </template>
 <script lang="ts" setup>
-import {onMounted, defineProps, ref} from 'vue';
+import {onMounted, ref, reactive, toRefs} from 'vue';
 import baseService from "@/service/baseService";
 import {useRoute} from "vue-router";
+import useView from "@/hooks/useView";
+import AddOrUpdate from "@/views/space-management/space-add-or-update.vue";
 
 const route = useRoute()
 const space = ref();
 const isLoading = ref(true);
+const view = reactive({});
+const state = reactive({ ...useView(view), ...toRefs(view) });
 
 const getInfo = (id: number) => {
   baseService.get("/space/space/" + id).then((res) => {
