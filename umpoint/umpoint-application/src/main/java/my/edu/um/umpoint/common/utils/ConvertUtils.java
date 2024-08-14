@@ -21,15 +21,15 @@ public class ConvertUtils {
         try {
             targetObject = target.newInstance();
             BeanUtils.copyProperties(source, targetObject);
-            for (Field dto : getDto(target)) {
-                dto.setAccessible(true);
-                dto.set(targetObject, sourceToTarget(getEntity(source, dto.getName()), dto.getDeclaringClass()));
+            for (Field field : getField(target)) {
+                field.setAccessible(true);
+                field.set(targetObject, sourceToTarget(getObject(source, field.getName()), field.getDeclaringClass()));
             }
-            for (Field dtoList : getDtoList(target)) {
+            for (Field dtoList : getFieldList(target)) {
                 ParameterizedType genericType = (ParameterizedType) dtoList.getGenericType();
                 Class<?> clazz = (Class<?>) genericType.getActualTypeArguments()[0];
                 dtoList.setAccessible(true);
-                dtoList.set(targetObject, sourceToTarget((Collection<?>) getEntity(source, dtoList.getName()), clazz));
+                dtoList.set(targetObject, sourceToTarget((Collection<?>) getObject(source, dtoList.getName()), clazz));
             }
         } catch (Exception e) {
             logger.error("convert error ", e);
@@ -56,37 +56,44 @@ public class ConvertUtils {
         return targetList;
     }
 
-    private static List<Field> getDto(Class<?> clazz) {
-        List<Field> dtoFields = new ArrayList<>();
+    private static List<Field> getField(Class<?> clazz) {
+        List<Field> fieldList = new ArrayList<>();
         Field[] fields = clazz.getDeclaredFields();
 
         for (Field field : fields) {
-            if (!field.getType().isPrimitive() && field.getName().endsWith("DTO")) {
-                dtoFields.add(field);
+            if (!field.getType().isPrimitive() && (field.getName().endsWith("DTO") || field.getName().endsWith("Entity"))) {
+                fieldList.add(field);
             }
         }
 
-        return dtoFields;
+        return fieldList;
     }
 
-    private static List<Field> getDtoList(Class<?> clazz) {
-        List<Field> dtoFields = new ArrayList<>();
+    private static List<Field> getFieldList(Class<?> clazz) {
+        List<Field> fieldList = new ArrayList<>();
         Field[] fields = clazz.getDeclaredFields();
 
         for (Field field : fields) {
-            if (!field.getType().isPrimitive() && field.getName().endsWith("DTOList")) {
-                dtoFields.add(field);
+            if (!field.getType().isPrimitive() && (field.getName().endsWith("DTOList") || field.getName().endsWith("EntityList"))) {
+                fieldList.add(field);
             }
         }
 
-        return dtoFields;
+        return fieldList;
     }
 
-
-    private static Object getEntity(Object source, String name) {
+    private static Object getObject(Object source, String name) {
         try {
+            String fieldName;
             Class<?> sourceClass = source.getClass();
-            Field field = sourceClass.getDeclaredField(name.replace("DTO", "Entity"));
+            if (name.endsWith("DTO") || name.endsWith("DTOList")) {
+                fieldName = name.replace("DTO", "Entity");
+            } else if (name.endsWith("Entity") || name.endsWith("EntityList")) {
+                fieldName = name.replace("Entity", "DTO");
+            } else {
+                throw new RuntimeException("Did not find DTO or Entity in target class:" + sourceClass);
+            }
+            Field field = sourceClass.getDeclaredField(fieldName);
             field.setAccessible(true);
             return field.get(source);
         } catch (NoSuchFieldException | IllegalAccessException e) {
