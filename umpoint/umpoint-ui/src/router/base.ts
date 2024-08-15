@@ -43,9 +43,12 @@ const routes: Array<RouteRecordRaw> = [
     meta: { title: "Error", isNavigationMenu: false }
   },
   {
-    path: "/:path(.*)*",
-    redirect: { path: "/error", query: { to: 404 }, replace: true },
-    meta: { isNavigationMenu: false }
+    path: "/sys/:syspage(.*)",
+    component: Layout,
+  },
+  {
+    path: "/job/:syspage(.*)",
+    component: Layout,
   },
   {
     path: "/space-management/space-info/:id",
@@ -64,7 +67,13 @@ const routes: Array<RouteRecordRaw> = [
     name: "space-update",
     component: () => import("@/views/space-management/space-add-or-update.vue"),
     meta: { title: "Space Update", requiresAuth: true, isNavigationMenu: false }
-  }
+  },
+  // must be last to prevent redirecting to error page
+  {
+    path: "/:path(.*)*",
+    redirect: { path: "/error", query: { to: 404 }, replace: true },
+    meta: { isNavigationMenu: false }
+  },
 ];
 
 export default routes;

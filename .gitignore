@@ -29,3 +29,6 @@ buildNumber.properties
 **/node_modules/
 
 **/*.rar
+
+mysql/
+.vscode
