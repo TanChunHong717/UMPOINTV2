@@ -23,9 +23,9 @@
       </el-carousel>
       <el-tabs>
         <el-tab-pane label="Details">
-          <el-row v-if="state.hasPermission('space:space:update')">
+          <el-row v-if="state.hasPermission('space:space:update')" class="button-row" justify="end">
             <el-col :span="24">
-              <el-button type="primary">Edit</el-button>
+              <el-button type="primary" @click="router.push({name: 'space-update'})" size="small">Edit</el-button>
             </el-col>
           </el-row>
           <el-row class="in-col-row">
@@ -68,9 +68,9 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="Availability">
-          <el-row v-if="state.hasPermission('space:booking-rule:update')">
+          <el-row v-if="state.hasPermission('space:booking-rule:update')" class="button-row" justify="end">
             <el-col :span="24">
-              <el-button type="primary">Edit</el-button>
+              <el-button type="primary" size="small">Edit</el-button>
             </el-col>
           </el-row>
           <el-row class="in-col-row">
@@ -79,21 +79,23 @@
               Contact: {{ space.managerName }}
             </el-col>
           </el-row>
-          <el-row class="in-col-row">
-            <el-col :span="12">Days open for booking before event: {{ space.bookingRuleDTO.openDaysBeforeEvent }}</el-col>
-            <el-col :span="12">Maximum reservation days: {{ space.bookingRuleDTO.maxReservationDays }}</el-col>
-          </el-row>
-          <el-row class="in-col-row">
-            <el-col :span="12">Days close for booking before event: {{ space.bookingRuleDTO.closeDaysBeforeEvent }}</el-col>
-            <el-col :span="12">Minimum booking hours: {{ space.bookingRuleDTO.minBookingHours }}</el-col>
-          </el-row>
-          <el-row class="in-col-row">
-            <el-col :span="24">
-              Approval Required:
-              <el-tag v-if="space.bookingRuleDTO.approvalRequired" type="primary">Yes</el-tag>
-              <el-tag v-else type="info">No</el-tag>
-            </el-col>
-          </el-row>
+          <div v-if="space.bookingRuleDTO">
+            <el-row class="in-col-row">
+              <el-col :span="12">Days open for booking before event: {{ space.bookingRuleDTO.openDaysBeforeEvent }}</el-col>
+              <el-col :span="12">Maximum reservation days: {{ space.bookingRuleDTO.maxReservationDays }}</el-col>
+            </el-row>
+            <el-row class="in-col-row">
+              <el-col :span="12">Days close for booking before event: {{ space.bookingRuleDTO.closeDaysBeforeEvent }}</el-col>
+              <el-col :span="12">Minimum booking hours: {{ space.bookingRuleDTO.minBookingHours }}</el-col>
+            </el-row>
+            <el-row class="in-col-row">
+              <el-col :span="24">
+                Approval Required:
+                <el-tag v-if="space.bookingRuleDTO.approvalRequired" type="primary">Yes</el-tag>
+                <el-tag v-else type="info">No</el-tag>
+              </el-col>
+            </el-row>
+          </div>
           <h2>Price</h2>
           <el-row>
             <el-col :span="8"><span class="hour_price">RM{{ space.hour_price }}</span> / Hour</el-col>
@@ -103,7 +105,6 @@
         </el-tab-pane>
       </el-tabs>
     </div>
-    <add-or-update ref="addOrUpdateRef" @refreshData="getInfo(Number(route.params.id))">Confirm</add-or-update>
   </div>
 </template>
 <script lang="ts" setup>
@@ -111,7 +112,7 @@ import {onMounted, ref, reactive, toRefs} from 'vue';
 import baseService from "@/service/baseService";
 import {useRoute} from "vue-router";
 import useView from "@/hooks/useView";
-import AddOrUpdate from "@/views/space-management/space-add-or-update.vue";
+import router from "@/router";
 
 const route = useRoute()
 const space = ref();
@@ -159,5 +160,8 @@ onMounted(() => {
 }
 .in-col-row {
   margin-bottom: 5px;
+}
+.button-row {
+  padding-bottom: 10px;
 }
 </style>

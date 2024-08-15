@@ -52,6 +52,18 @@ const routes: Array<RouteRecordRaw> = [
     name: "space-info",
     component: () => import("@/views/space-management/space-info.vue"),
     meta: { title: "Space Info", requiresAuth: true, isNavigationMenu: false }
+  },
+  {
+    path: "/space-management/space/add",
+    name: "space-add",
+    component: () => import("@/views/space-management/space-add-or-update.vue"),
+    meta: { title: "Space Add", requiresAuth: true, isNavigationMenu: false }
+  },
+  {
+    path: "/space-management/space/update/:id",
+    name: "space-update",
+    component: () => import("@/views/space-management/space-add-or-update.vue"),
+    meta: { title: "Space Update", requiresAuth: true, isNavigationMenu: false }
   }
 ];
 

@@ -4,11 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
 import my.edu.um.umpoint.modules.space.dao.SpaceTagDao;
 import my.edu.um.umpoint.modules.space.dto.SpaceTagDTO;
+import my.edu.um.umpoint.modules.space.dto.TagDTO;
 import my.edu.um.umpoint.modules.space.entity.SpaceTagEntity;
 import my.edu.um.umpoint.modules.space.service.SpaceTagService;
 import cn.hutool.core.util.StrUtil;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,5 +32,8 @@ public class SpaceTagServiceImpl extends CrudServiceImpl<SpaceTagDao, SpaceTagEn
         return wrapper;
     }
 
-
+    @Override
+    public void deleteBySpaceId(Long spaceId) {
+        baseDao.delete(new QueryWrapper<SpaceTagEntity>().eq("space_id", spaceId));
+    }
 }

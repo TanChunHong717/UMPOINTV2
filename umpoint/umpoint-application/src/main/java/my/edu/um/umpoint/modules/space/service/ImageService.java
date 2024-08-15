@@ -12,4 +12,5 @@ import my.edu.um.umpoint.modules.space.entity.ImageEntity;
  */
 public interface ImageService extends CrudService<ImageEntity, ImageDTO> {
 
+    void deleteBySpaceId(Long spaceId);
 }

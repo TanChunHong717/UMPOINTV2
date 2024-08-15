@@ -67,7 +67,7 @@ public class CategoryController {
     }
 
     @GetMapping("list/filter")
-    @Operation(summary = "list")
+    @Operation(summary = "filter list")
     @RequiresPermissions("space:category:list")
     public Result<List<CategoryDTO>> filterList(){
         HashMap<String, Object> params = new HashMap<>();

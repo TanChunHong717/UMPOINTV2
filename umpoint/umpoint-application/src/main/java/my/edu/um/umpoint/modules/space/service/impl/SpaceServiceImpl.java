@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
+import my.edu.um.umpoint.common.utils.ConvertUtils;
 import my.edu.um.umpoint.modules.security.user.SecurityUser;
 import my.edu.um.umpoint.modules.security.user.UserDetail;
 import my.edu.um.umpoint.modules.space.dao.SpaceDao;
@@ -56,5 +57,12 @@ public class SpaceServiceImpl extends CrudServiceImpl<SpaceDao, SpaceEntity, Spa
         List<SpaceEntity> list = baseDao.getList(params);
 
         return getPageData(list, page.getTotal(), currentDtoClass());
+    }
+
+    @Override
+    public Long saveWithID(SpaceDTO dto) {
+        SpaceEntity spaceEntity = ConvertUtils.sourceToTarget(dto, SpaceEntity.class);
+        baseDao.insert(spaceEntity);
+        return spaceEntity.getId();
     }
 }

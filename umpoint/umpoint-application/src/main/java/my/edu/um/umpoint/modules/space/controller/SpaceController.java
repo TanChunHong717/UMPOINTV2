@@ -12,11 +12,14 @@ import my.edu.um.umpoint.common.validator.group.AddGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import my.edu.um.umpoint.modules.space.dto.SpaceDTO;
+import my.edu.um.umpoint.modules.space.dto.SpaceTagDTO;
 import my.edu.um.umpoint.modules.space.excel.SpaceExcel;
+import my.edu.um.umpoint.modules.space.service.ImageService;
 import my.edu.um.umpoint.modules.space.service.SpaceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import my.edu.um.umpoint.modules.space.service.SpaceTagService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +42,12 @@ import java.util.Map;
 public class SpaceController {
     @Autowired
     private SpaceService spaceService;
+
+    @Autowired
+    private SpaceTagService spaceTagService;
+
+    @Autowired
+    private ImageService imageService;
 
     @GetMapping("page")
     @Operation(summary = "Pagination")
@@ -72,7 +81,11 @@ public class SpaceController {
     public Result save(@RequestBody SpaceDTO dto){
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
 
+        //will set the id for dto after insert
         spaceService.save(dto);
+
+        updateSpaceTag(dto);
+        updateSpaceImage(dto);
 
         return new Result();
     }
@@ -86,7 +99,31 @@ public class SpaceController {
 
         spaceService.update(dto);
 
+        updateSpaceTag(dto);
+        updateSpaceImage(dto);
+
         return new Result();
+    }
+
+    private void updateSpaceImage(SpaceDTO dto) {
+        imageService.deleteBySpaceId(dto.getId());
+        // image will remain same id before delete
+        // because imageDTO consist of original id
+        dto.getImageDTOList().forEach(imageDTO -> {
+            // set spaceId for new space
+            imageDTO.setSpaceId(dto.getId());
+            imageService.save(imageDTO);
+        });
+    }
+
+    private void updateSpaceTag(SpaceDTO dto) {
+        spaceTagService.deleteBySpaceId(dto.getId());
+        dto.getTagDTOList().forEach(tagDTO -> {
+            SpaceTagDTO spaceTagDTO = new SpaceTagDTO();
+            spaceTagDTO.setSpaceId(dto.getId());
+            spaceTagDTO.setTagId(tagDTO.getId());
+            spaceTagService.save(spaceTagDTO);
+        });
     }
 
     @DeleteMapping

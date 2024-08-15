@@ -40,12 +40,3 @@ export enum EMitt {
 export enum EThemeColor {
   ThemeColor = "--color-primary"
 }
-
-export enum ButtonType {
-  PRIMARY = 'primary',
-  SUCCESS = 'success',
-  WARNING = 'warning',
-  DANGER = 'danger',
-  INFO = 'info',
-  TEXT = 'text'
-}

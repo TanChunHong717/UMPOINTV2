@@ -22,10 +22,7 @@ spring:
         url-pattern: /druid/*
         #login-username: admin
         #login-password: admin
-  cloud:
-    azure:
-      storage:
-        account-name: mymall #temporary method
-        blob:
-          account-key: placeholder
-          container-name: upload
+azure:
+  storage:
+    connection-string:
+    container: upload

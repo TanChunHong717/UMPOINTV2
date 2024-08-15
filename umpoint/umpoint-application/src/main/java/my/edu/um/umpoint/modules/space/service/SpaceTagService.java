@@ -4,6 +4,8 @@ import my.edu.um.umpoint.common.service.CrudService;
 import my.edu.um.umpoint.modules.space.dto.SpaceTagDTO;
 import my.edu.um.umpoint.modules.space.entity.SpaceTagEntity;
 
+import java.util.List;
+
 /**
  * Space tag relationship
  *
@@ -11,5 +13,5 @@ import my.edu.um.umpoint.modules.space.entity.SpaceTagEntity;
  * @since 1.0.0 2024-08-03
  */
 public interface SpaceTagService extends CrudService<SpaceTagEntity, SpaceTagDTO> {
-
+    void deleteBySpaceId(Long spaceId);
 }

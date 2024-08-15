@@ -31,4 +31,8 @@ public class ImageServiceImpl extends CrudServiceImpl<ImageDao, ImageEntity, Ima
     }
 
 
+    @Override
+    public void deleteBySpaceId(Long spaceId) {
+        baseDao.delete(new QueryWrapper<ImageEntity>().eq("space_id", spaceId));
+    }
 }

@@ -19,7 +19,6 @@
 <script>
 import axios from 'axios';
 import baseService from "@/service/baseService.ts";
-import {ButtonType} from "@/constants/enum.js"
 import {uuid} from "vue-uuid";
 
 export default {
@@ -33,19 +32,22 @@ export default {
       default: "Select upload file"
     },
     buttonType: {
-      type: ButtonType,
+      type: String,
       default: "primary"
     }
   },
   watch: {
-    url(newVal, oldVal) {
-      for (let i = 0; i < newVal.length; i++) {
-        if (newVal[i].trim().length > 0) {
-          const parts = newVal[i].split('/');
-          const fileName = parts[parts.length-1].split('_')[1];
-          this.fileList.push({name: fileName, url: newVal[i]});
+    url: {
+      handler(newVal, oldVal) {
+        for (let i = 0; i < newVal.length; i++) {
+          if (newVal[i].url.trim().length > 0) {
+            const parts = newVal[i].url.split('/');
+            const fileName = parts[parts.length-1].split('_')[1];
+            this.fileList.push({uid: newVal[i].id, name: fileName, url: newVal[i].url});
+          }
         }
-      }
+      },
+      deep: true
     }
   },
   data() {
@@ -67,9 +69,6 @@ export default {
           this.sasToken = res;
           this.actionUrl = `https://mallstore.blob.core.windows.net/${this.containerName}?${this.sasToken}`;
         })
-        .catch((error) => {
-          console.error('Error fetching SAS token:', error);
-        });
     },
     async beforeUpload(file) {
       await this.getSasToken();
@@ -93,7 +92,13 @@ export default {
         }
       }).then(response => {
         this.uploadPercentage = 0;
-        this.$emit('update', this.fileList.map((file) => {file.url}));
+        console.log(this.fileList)
+        this.$emit('upload', this.fileList.map((file) => {
+          return {
+            spaceId: file.uid,
+            imageUrl: file.url
+          }
+        }));
       }).catch(error => {
         this.uploadPercentage = 0;
         console.error('Upload error:', error);

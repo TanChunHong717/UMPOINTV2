@@ -68,6 +68,12 @@
             <el-col :span="24" class="title">{{ space.name }}</el-col>
           </el-row>
           <el-row class="in-col-row">
+            <el-col :span="24">
+              <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-location"></use></svg>
+              <span style="margin-left: 4px"> {{ space.address }}</span>
+            </el-col>
+          </el-row>
+          <el-row class="in-col-row">
             <el-col :span="8">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-apartment"></use></svg>
               Department: {{ space.deptName }}
@@ -81,22 +87,18 @@
               Capacity: {{ space.capacity }}
             </el-col>
           </el-row>
-          <el-row class="in-col-row">
-            <el-col :span="24">
-              <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-tag"></use></svg>
-              Tag: <el-tag v-for="tag in space.tagDTOList" type="primary">{{ tag.tagName }} </el-tag>
-            </el-col>
-          </el-row>
-          <el-row class="in-col-row">
-            <el-col :span="24">
-              <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-location"></use></svg>
-              Address: {{ space.address }}
-            </el-col>
-          </el-row>
           <el-row v-if="space.facilities?.trim().length > 0">
             <el-col :span="24">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-wrench"></use></svg>
               Facilities: {{ space.facilities }}
+            </el-col>
+          </el-row>
+          <el-row class="in-col-row">
+            <el-col :span="24">
+              <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-tag"></use></svg>
+              Tag:
+              <el-tag v-if="space.tagDTOList?.length > 0" v-for="tag in space.tagDTOList" type="primary">{{ tag.tagName }} </el-tag>
+              <el-tag v-else type="info">No Tag</el-tag>
             </el-col>
           </el-row>
           <el-divider style="margin: 10px 0;"></el-divider>
@@ -119,17 +121,16 @@
       </el-row>
     </div>
     <el-pagination :current-page="state.page" :page-sizes="[10, 20, 50]" :page-size="state.limit" :total="state.total" layout="total, sizes, prev, pager, next, jumper" @size-change="state.pageSizeChangeHandle" @current-change="state.pageCurrentChangeHandle"> </el-pagination>
-    <add-or-update ref="addOrUpdateRef" @refreshDataList="state.getDataList">Confirm</add-or-update>
   </div>
 </template>
 <script lang="ts" setup>
 import useView from "@/hooks/useView";
-import {computed, reactive, ref, toRefs} from "vue";
-import AddOrUpdate from "./space-add-or-update.vue";
+import {computed, onActivated, onBeforeUpdate, onMounted, reactive, ref, toRefs} from "vue";
 import {useAppStore} from "@/store";
 import {IObject} from "@/types/interface";
 import baseService from "@/service/baseService";
 import {ElMessage} from "element-plus";
+import router from "@/router";
 
 const store = useAppStore();
 const user = computed(() => store.state.user);
@@ -155,8 +156,8 @@ const view = reactive({
 const state = reactive({ ...useView(view), ...toRefs(view) });
 
 const addOrUpdateRef = ref();
-const addOrUpdateHandle = (id?: number) => {
-  addOrUpdateRef.value.init(id);
+const addOrUpdateHandle = () => {
+  router.push({name: "space-add"})
 };
 
 const getDeptList = () => {
@@ -196,9 +197,15 @@ const getTagList = () => {
   });
 };
 
-getDeptList();
-getCategoryList();
-getTagList();
+onMounted(() => {
+  getDeptList();
+  getCategoryList();
+  getTagList();
+})
+
+onActivated(() => {
+  state.getDataList();
+})
 </script>
 <style>
 .header-form {
