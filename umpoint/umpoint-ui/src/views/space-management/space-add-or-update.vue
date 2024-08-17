@@ -28,7 +28,13 @@
       <el-input v-model="dataForm.address" placeholder="Address" :rows="2" type="textarea"></el-input>
     </el-form-item>
     <el-form-item label="Description" prop="description">
-      <el-input v-model="dataForm.description" placeholder="Description" :rows="3" type="textarea"></el-input>
+      <Editor
+        api-key="q32ldzad7pdjt17n0ej2icck28i6pzk3954qkxfeo6n99d1k"
+        v-model="dataForm.description"
+        :init="{
+          plugins: 'lists link image table code help wordcount'
+        }"
+      />
     </el-form-item>
     <el-form-item label="Facilities" prop="facilities">
       <el-input v-model="dataForm.facilities" placeholder="Facilities"></el-input>
@@ -53,8 +59,10 @@
     <el-form-item label="Image" prop="image">
       <multi-upload :url="fileList" @upload="imageUploadHandle"></multi-upload>
     </el-form-item>
-    <el-button @click="emits.emit(EMitt.OnCloseCurrTab)">Cancel</el-button>
-    <el-button type="primary" @click="dataFormSubmitHandle()">Confirm</el-button>
+    <el-row class="bottom-button" justify="end">
+      <el-button @click="emits.emit(EMitt.OnCloseCurrTab)" size="large">Cancel</el-button>
+      <el-button type="primary" @click="dataFormSubmitHandle()" size="large">Confirm</el-button>
+    </el-row>
   </el-form>
 </template>
 
@@ -67,6 +75,7 @@ import MultiUpload from "@/components/upload/multi-upload.vue";
 import emits from "@/utils/emits";
 import {EMitt} from "@/constants/enum";
 import {useRoute} from "vue-router";
+import Editor from "@tinymce/tinymce-vue";
 
 const route = useRoute();
 const categoryList = ref([]);
@@ -207,3 +216,11 @@ onMounted(() => {
   init(route.params.id);
 })
 </script>
+<style>
+div.el-form-item__content > div {
+  width: 100% !important;
+}
+.bottom-button {
+  padding-top: 10px;
+}
+</style>

@@ -35,6 +35,21 @@
             </if>
         </where>
         GROUP BY ct.id
+        <if test="orderField != null and orderField.trim() != ''">
+            ORDER BY
+            <if test="orderField == 'name'">
+                name
+            </if>
+            <if test="orderField == 'space_count'">
+                space_count
+            </if>
+            <if test="order != 'desc'">
+                ASC
+            </if>
+            <if test="order == 'desc'">
+                DESC
+            </if>
+        </if>
     </select>
 
 </mapper>

@@ -14,10 +14,9 @@
         <el-button v-if="state.hasPermission('space:category:delete')" type="danger" @click="state.deleteHandle()">Delete</el-button>
       </el-form-item>
     </el-form>
-    <el-table v-loading="state.dataListLoading" :data="state.dataList" border @selection-change="state.dataListSelectionChangeHandle" style="width: 100%">
-      <el-table-column prop="id" label="ID" header-align="center" align="center"></el-table-column>
-      <el-table-column prop="name" label="Name" header-align="center" align="center"></el-table-column>
-      <el-table-column prop="spaceCount" label="Space count" header-align="center" align="center"></el-table-column>
+    <el-table v-loading="state.dataListLoading" :data="state.dataList" border @sort-change="state.dataListSortChangeHandle" style="width: 100%">
+      <el-table-column prop="name" label="Name" header-align="center" align="center" sortable="custom"></el-table-column>
+      <el-table-column prop="spaceCount" label="Number of Space" header-align="center" align="center" sortable="custom"></el-table-column>
       <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="150">
         <template v-slot="scope">
           <el-button v-if="state.hasPermission('space:category:update')" type="primary" link @click="addOrUpdateHandle(scope.row.id)">Update</el-button>

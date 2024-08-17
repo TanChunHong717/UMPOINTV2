@@ -14,8 +14,8 @@ import { useAppStore } from "@/store";
 import { ElMessage, ElMessageBox } from "element-plus";
 
 /**
- * 通用视图业务逻辑（列表/增删改查基本业务）
- * @param props 自定义通用业务state
+ * Common view business logic (crud)
+ * @param props custom state
  * @returns 返回响应式自定义state和通用方法
  */
 const useView = (props: IViewHooksOptions | IObject): IViewHooks => {
@@ -58,9 +58,6 @@ const useView = (props: IViewHooksOptions | IObject): IViewHooks => {
   });
   onActivated(() => {
     if (store.state.closedTabs.includes(store.state.activeTabName)) {
-      //如果当前打开的tab页面是之前已经关闭过的会存在keep-alive缓存
-      //这里采用临时刷新页面解决方案
-      //待vue官方开放缓存策略后再行实现 https://github.com/vuejs/vue-next/pull/4339   https://github.com/vuejs/rfcs/pull/284
 
       const closedTabs = store.state.closedTabs;
       store.updateState({
@@ -73,8 +70,6 @@ const useView = (props: IViewHooksOptions | IObject): IViewHooks => {
       viewFns.query();
     }
   });
-
-  //
   const rejectFns = {
     hasPermission(key: string) {
       return checkPermission(store.state.permissions as string[], key);
@@ -83,10 +78,8 @@ const useView = (props: IViewHooksOptions | IObject): IViewHooks => {
       return getDictLabel(store.state.dicts, dictType, dictValue);
     }
   };
-
-  //
   const viewFns = {
-    // 获取数据列表
+    // Query
     query() {
       if (!state.getDataListURL) {
         return;
@@ -109,11 +102,11 @@ const useView = (props: IViewHooksOptions | IObject): IViewHooks => {
           state.dataListLoading = false;
         });
     },
-    // 多选
+    // Multi select
     dataListSelectionChangeHandle(val: IObject[]) {
       state.dataListSelections = val;
     },
-    // 排序
+    // Sort
     dataListSortChangeHandle(data: IObject) {
       if (!data.order || !data.prop) {
         state.order = "";
@@ -124,23 +117,23 @@ const useView = (props: IViewHooksOptions | IObject): IViewHooks => {
       state.orderField = data.prop.replace(/([A-Z])/g, "_$1").toLowerCase();
       viewFns.query();
     },
-    // 分页, 每页条数
+    // Page size change handler
     pageSizeChangeHandle(val: number) {
       state.page = 1;
       state.limit = val;
       viewFns.query();
     },
-    // 分页, 当前页
+    // Current page change handler
     pageCurrentChangeHandle(val: number) {
       state.page = val;
       viewFns.query();
     },
-    //搜索
+    // Search
     getDataList() {
       state.page = 1;
       viewFns.query();
     },
-    // 删除
+    // Delete
     deleteHandle(id?: string): Promise<any> {
       return new Promise((resolve, reject) => {
         if (
@@ -190,7 +183,7 @@ const useView = (props: IViewHooksOptions | IObject): IViewHooks => {
           });
       });
     },
-    // 导出
+    // Export
     exportHandle() {
       window.location.href = `${app.api}${state.exportURL}?${qs.stringify({
         ...state.dataForm,
@@ -198,7 +191,7 @@ const useView = (props: IViewHooksOptions | IObject): IViewHooks => {
       })}`;
       // baseService.download(state.exportURL, { ...state.dataForm, token: getToken() });
     },
-    //关闭当前窗口
+    // Close current tab
     closeCurrentTab() {
       if (getThemeConfigCacheByKey(EThemeSetting.OpenTabsPage)) {
         emits.emit(EMitt.OnCloseCurrTab);
@@ -206,7 +199,7 @@ const useView = (props: IViewHooksOptions | IObject): IViewHooks => {
         router.replace("/home");
       }
     },
-    // 处理流程路由
+    // Handle route flow
     handleFlowRoute(data: IObject) {
       const routeParams = {
         path: `/flow/task-form`,
@@ -220,7 +213,7 @@ const useView = (props: IViewHooksOptions | IObject): IViewHooks => {
       };
       registerDynamicToRouterAndNext(routeParams);
     },
-    // 查看流程详情
+    // Check flow detail
     flowDetailRoute(data: IObject) {
       const routeParams = {
         path: `/flow/task-form`,

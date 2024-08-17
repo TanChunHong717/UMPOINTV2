@@ -42,7 +42,7 @@ public class CategoryServiceImpl extends CrudServiceImpl<CategoryDao, CategoryEn
 
         IPage<CategoryEntity> page = getPage(params, "name", true);
 
-        List<CategoryEntity> list = baseDao.listWithCount();
+        List<CategoryEntity> list = baseDao.listWithCount(params);
 
         return getPageData(list, page.getTotal(), currentDtoClass());
     }

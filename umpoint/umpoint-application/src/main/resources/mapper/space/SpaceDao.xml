@@ -108,7 +108,7 @@
         LEFT JOIN sys_user u ON s.updater = u.id
         <where>
             <if test="name != null and name.trim() != ''">
-                and t1.username like #{name}
+                and s.name like #{name}
             </if>
             <if test="catId != null">
                 AND s.cat_id = #{catId}

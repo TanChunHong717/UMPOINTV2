@@ -5,6 +5,7 @@ import my.edu.um.umpoint.modules.space.entity.TagEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Space Tag
@@ -14,6 +15,6 @@ import java.util.List;
  */
 @Mapper
 public interface TagDao extends BaseDao<TagEntity> {
-    List<TagEntity> listWithCount();
+    List<TagEntity> listWithCount(Map<String, Object> params);
     List<TagEntity> filterList();
 }

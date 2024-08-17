@@ -41,9 +41,9 @@ public class TagServiceImpl extends CrudServiceImpl<TagDao, TagEntity, TagDTO> i
     public PageData<TagDTO> page(Map<String, Object> params) {
         paramsToLike(params, "tagName");
 
-        IPage<TagEntity> page = getPage(params, "tagName", true);
+        IPage<TagEntity> page = getPage(params, "tag_name", true);
 
-        List<TagEntity> list = baseDao.listWithCount();
+        List<TagEntity> list = baseDao.listWithCount(params);
 
         return getPageData(list, page.getTotal(), currentDtoClass());
     }

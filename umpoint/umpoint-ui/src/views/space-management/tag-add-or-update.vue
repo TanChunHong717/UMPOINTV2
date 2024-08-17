@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="visible" :title="!dataForm.id ? 'Add' : 'Update'" :close-on-click-modal="false" :close-on-press-escape="false">
+  <el-dialog v-model="visible" :title="!dataForm.id ? 'Add' : 'Update'" width="500" :close-on-click-modal="false" :close-on-press-escape="false">
     <el-form :model="dataForm" :rules="rules" ref="dataFormRef" @keyup.enter="dataFormSubmitHandle()" label-width="120px">
           <el-form-item label="Tag name" prop="tagName">
         <el-input v-model="dataForm.tagName" placeholder="Tag name"></el-input>
