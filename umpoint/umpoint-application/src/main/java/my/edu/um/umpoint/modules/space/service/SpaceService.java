@@ -11,5 +11,4 @@ import my.edu.um.umpoint.modules.space.entity.SpaceEntity;
  * @since 1.0.0 2024-08-03
  */
 public interface SpaceService extends CrudService<SpaceEntity, SpaceDTO> {
-    Long saveWithID(SpaceDTO dto);
 }

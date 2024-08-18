@@ -2,6 +2,7 @@ package my.edu.um.umpoint.modules.space.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -56,6 +57,11 @@ public class SpaceEntity extends BaseEntity {
 	 * Booking rule ID
 	 */
 	private Long bookingRuleId;
+	/**
+	 * Status 0:Suspend 1:Normal
+	 */
+	@TableLogic(value = "1", delval = "0")
+	private Integer status;
 	/**
 	 * Last updater
 	 */

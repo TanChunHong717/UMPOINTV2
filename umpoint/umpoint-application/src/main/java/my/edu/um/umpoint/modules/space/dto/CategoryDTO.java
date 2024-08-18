@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import lombok.Data;
 import my.edu.um.umpoint.common.validator.group.AddGroup;
+import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 
 import java.io.Serial;
@@ -32,10 +33,9 @@ public class CategoryDTO implements Serializable {
 	private Long id;
 
 	@SchemaProperty(name = "Name")
-	@NotEmpty
+	@NotEmpty(groups = {DefaultGroup.class})
 	private String name;
 
 	@SchemaProperty(name = "Space count")
-	@Null
 	private Long spaceCount;
 }

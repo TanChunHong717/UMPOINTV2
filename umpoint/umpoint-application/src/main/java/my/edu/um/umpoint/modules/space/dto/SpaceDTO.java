@@ -7,7 +7,9 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import lombok.Data;
 import my.edu.um.umpoint.common.validator.group.AddGroup;
+import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
+import org.hibernate.validator.constraints.Range;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -33,19 +35,19 @@ public class SpaceDTO implements Serializable {
 	private Long id;
 
 	@SchemaProperty(name = "Name")
-	@NotEmpty
+	@NotEmpty(groups = {DefaultGroup.class})
 	private String name;
 
 	@SchemaProperty(name = "Category ID")
-	@NotNull
+	@NotNull(groups = {DefaultGroup.class})
 	private Long catId;
 
 	@SchemaProperty(name = "Department ID")
-	@NotNull
+	@NotNull(groups = {DefaultGroup.class})
 	private Long deptId;
 
 	@SchemaProperty(name = "Address")
-	@NotNull
+	@NotNull(groups = {DefaultGroup.class})
 	private String address;
 
 	@SchemaProperty(name = "Description")
@@ -55,7 +57,7 @@ public class SpaceDTO implements Serializable {
 	private String facilities;
 
 	@SchemaProperty(name = "Capacity")
-	@NotNull
+	@NotNull(groups = {DefaultGroup.class})
 	private Integer capacity;
 
 	@SchemaProperty(name = "Manager ID")
@@ -64,40 +66,35 @@ public class SpaceDTO implements Serializable {
 	@SchemaProperty(name = "Booking Rule ID")
 	private BookingRuleDTO bookingRuleId;
 
+	@Schema(title = "status 0:suspend 1:normal", required = true)
+	@Range(min=0, max=1, groups = DefaultGroup.class)
+	private Integer status;
+
 	@SchemaProperty(name = "Creator ID")
-	@Null
 	private Long creator;
 
 	@SchemaProperty(name = "Create Date")
-	@Null
 	private Date createDate;
 
 	@SchemaProperty(name = "Last Updater ID")
-	@Null
 	private Long updater;
 
 	@SchemaProperty(name = "Last Update Date")
-	@Null
 	private Date updateDate;
 
 	@SchemaProperty(name = "Category Name")
-	@Null
 	private String category;
 
 	@SchemaProperty(name = "Department Name")
-	@Null
 	private String deptName;
 
 	@SchemaProperty(name = "Manager Name")
-	@Null
 	private String managerName;
 
 	@SchemaProperty(name = "Creator Name")
-	@Null
 	private String creatorName;
 
 	@SchemaProperty(name = "Last Updater Name")
-	@Null
 	private String updaterName;
 
 	@SchemaProperty(name = "Booking Rule DTO")

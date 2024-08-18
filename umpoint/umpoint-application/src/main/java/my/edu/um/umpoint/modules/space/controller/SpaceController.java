@@ -1,6 +1,5 @@
 package my.edu.um.umpoint.modules.space.controller;
 
-import my.edu.um.umpoint.common.annotation.DataFilter;
 import my.edu.um.umpoint.common.annotation.LogOperation;
 import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.page.PageData;
@@ -12,7 +11,6 @@ import my.edu.um.umpoint.common.validator.group.AddGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import my.edu.um.umpoint.modules.space.dto.SpaceDTO;
-import my.edu.um.umpoint.modules.space.dto.SpaceTagDTO;
 import my.edu.um.umpoint.modules.space.excel.SpaceExcel;
 import my.edu.um.umpoint.modules.space.service.ImageService;
 import my.edu.um.umpoint.modules.space.service.SpaceService;
@@ -22,13 +20,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import my.edu.um.umpoint.modules.space.service.SpaceTagService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
-
 
 /**
  * Space
@@ -58,7 +56,6 @@ public class SpaceController {
         @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String")
     })
     @RequiresPermissions("space:space:page")
-    @DataFilter(tableAlias = "s")
     public Result<PageData<SpaceDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
         PageData<SpaceDTO> page = spaceService.page(params);
 
@@ -78,14 +75,16 @@ public class SpaceController {
     @Operation(summary = "Save")
     @LogOperation("Save")
     @RequiresPermissions("space:space:save")
+    @Transactional
     public Result save(@RequestBody SpaceDTO dto){
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
+        validateSpaceTagDTO(dto, true);
+        validateSpaceImageDTO(dto, true);
+        if (dto.getBookingRuleDTO() != null) {
+            ValidatorUtils.validateEntity(dto.getBookingRuleDTO(), AddGroup.class, DefaultGroup.class);
+        }
 
-        //will set the id for dto after insert
         spaceService.save(dto);
-
-        updateSpaceTag(dto);
-        updateSpaceImage(dto);
 
         return new Result();
     }
@@ -94,36 +93,18 @@ public class SpaceController {
     @Operation(summary = "Update")
     @LogOperation("Update")
     @RequiresPermissions("space:space:update")
+    @Transactional
     public Result update(@RequestBody SpaceDTO dto){
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
+        validateSpaceTagDTO(dto, true);
+        validateSpaceImageDTO(dto, true);
+        if (dto.getBookingRuleDTO() != null) {
+            ValidatorUtils.validateEntity(dto.getBookingRuleDTO(), UpdateGroup.class, DefaultGroup.class);
+        }
 
         spaceService.update(dto);
 
-        updateSpaceTag(dto);
-        updateSpaceImage(dto);
-
         return new Result();
-    }
-
-    private void updateSpaceImage(SpaceDTO dto) {
-        imageService.deleteBySpaceId(dto.getId());
-        // image will remain same id before delete
-        // because imageDTO consist of original id
-        dto.getImageDTOList().forEach(imageDTO -> {
-            // set spaceId for new space
-            imageDTO.setSpaceId(dto.getId());
-            imageService.save(imageDTO);
-        });
-    }
-
-    private void updateSpaceTag(SpaceDTO dto) {
-        spaceTagService.deleteBySpaceId(dto.getId());
-        dto.getTagDTOList().forEach(tagDTO -> {
-            SpaceTagDTO spaceTagDTO = new SpaceTagDTO();
-            spaceTagDTO.setSpaceId(dto.getId());
-            spaceTagDTO.setTagId(tagDTO.getId());
-            spaceTagService.save(spaceTagDTO);
-        });
     }
 
     @DeleteMapping
@@ -146,6 +127,26 @@ public class SpaceController {
         List<SpaceDTO> list = spaceService.list(params);
 
         ExcelUtils.exportExcelToTarget(response, null, "Space", list, SpaceExcel.class);
+    }
+
+    private void validateSpaceTagDTO(SpaceDTO dto, boolean isAdd) {
+        dto.getTagDTOList().forEach(tagDTO -> {
+            ValidatorUtils.validateEntity(
+                    tagDTO,
+                    (isAdd)? AddGroup.class: UpdateGroup.class,
+                    DefaultGroup.class
+            );
+        });
+    }
+
+    private void validateSpaceImageDTO(SpaceDTO dto, boolean isAdd) {
+        dto.getImageDTOList().forEach(imageDTO -> {
+            ValidatorUtils.validateEntity(
+                    imageDTO,
+                    (isAdd)? AddGroup.class: UpdateGroup.class,
+                    DefaultGroup.class
+            );
+        });
     }
 
 }

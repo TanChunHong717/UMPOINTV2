@@ -78,19 +78,19 @@ import {useRoute} from "vue-router";
 import Editor from "@tinymce/tinymce-vue";
 
 const route = useRoute();
-const categoryList = ref([]);
+const categoryList = ref<{id: number; name: string}[]>([]);
 
 const deptList = ref([]);
 const deptListPopover = ref();
 const deptListTree = ref();
 
-const tagList = ref([]);
-const selectTagList = ref([]);
+const tagList = ref<{id: number; tagName: string}[]>([]);
+const selectTagList = ref<number[]>([]);
 
-const fileList = ref([]);
+const fileList = ref<any[]>([]);
 
 const dataFormRef = ref();
-const dataForm = reactive({
+const dataForm = reactive<any>({
   id: '',
   name: '',
   catId: '',
@@ -101,7 +101,8 @@ const dataForm = reactive({
   capacity: 30,
   deptName: '',
   imageDTOList: [],
-  tagDTOList: []
+  tagDTOList: [],
+  status: 1
 });
 
 const rules = ref({
@@ -133,7 +134,7 @@ const getCategoryList = () => {
 
 const deptListTreeCurrentChangeHandle = (data: IObject) => {
   dataForm.deptId = data.id;
-  dataForm.department = data.name;
+  dataForm.deptName = data.name;
   deptListPopover.value.hide();
 };
 
@@ -181,12 +182,12 @@ const init = (id?: number) => {
     dataFormRef.value.resetFields();
   }
 
-  if (id) {
+  if (id && !isNaN(id)) {
     getInfo(id);
   }
 };
 
-const imageUploadHandle = (imageDTOList) => {
+const imageUploadHandle = (imageDTOList: any) => {
   dataForm.imageDTOList = imageDTOList
 }
 
@@ -213,7 +214,7 @@ const dataFormSubmitHandle = () => {
 };
 
 onMounted(() => {
-  init(route.params.id);
+  init(Number(route.params.id));
 })
 </script>
 <style>
