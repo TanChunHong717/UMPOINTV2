@@ -77,6 +77,10 @@ export interface IViewHooksOptions {
    */
   deleteIsBatchKey?: string;
   /**
+   * Message to display on delete
+   */
+  deleteMessage?:string;
+  /**
    * 导出接口，API地址
    */
   exportURL?: string;

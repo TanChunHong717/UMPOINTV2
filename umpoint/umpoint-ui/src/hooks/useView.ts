@@ -30,6 +30,7 @@ const useView = (props: IViewHooksOptions | IObject): IViewHooks => {
     deleteURL: "",
     deleteIsBatch: false,
     deleteIsBatchKey: "id",
+    deleteMessage: "Confrim to delete?",
     exportURL: "",
     dataForm: {},
     dataList: [],
@@ -148,7 +149,7 @@ const useView = (props: IViewHooksOptions | IObject): IViewHooks => {
           });
           return;
         }
-        ElMessageBox.confirm("Confrim to delete?", "Hint", {
+        ElMessageBox.confirm(state.deleteMessage, "Hint", {
           confirmButtonText: "Confrim",
           cancelButtonText: "Cancel",
           type: "warning"

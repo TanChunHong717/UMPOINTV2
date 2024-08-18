@@ -41,6 +41,7 @@ const view = reactive({
   getDataListIsPage: true,
   exportURL: "/space/tag/export",
   deleteURL: "/space/tag",
+  deleteMessage: "Confirm to delete? This will also remove selected tag from space entry.",
   dataForm: {
     tagName: ""
   }
