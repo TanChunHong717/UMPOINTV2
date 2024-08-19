@@ -10,9 +10,9 @@
         </el-col>
       </el-row>
       <el-carousel height="300px" class="carousel-container">
-        <template v-if="space && space.imageDTOList && space.imageDTOList.length > 0">
-          <el-carousel-item class="center-justify image-bg" v-for="(imageDTO, index) in space.imageDTOList" :key="index">
-            <img :src="imageDTO.imageUrl" style="max-height: 300px; object-fit: contain" />
+        <template v-if="space && space.spcImageDTOList && space.spcImageDTOList.length > 0">
+          <el-carousel-item class="center-justify image-bg" v-for="(spcImageDTO, index) in space.spcImageDTOList" :key="index">
+            <img :src="spcImageDTO.imageUrl" style="max-height: 300px; object-fit: contain" />
           </el-carousel-item>
         </template>
         <template v-else>
@@ -58,7 +58,7 @@
             <el-col :span="24">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-tag"></use></svg>
               Tag:
-              <el-tag v-if="space.tagDTOList?.length > 0" v-for="tag in space.tagDTOList" type="primary">{{ tag.tagName }} </el-tag>
+              <el-tag v-if="space.spcTagDTOList?.length > 0" v-for="tag in space.spcTagDTOList" type="primary">{{ tag.tagName }} </el-tag>
               <el-tag v-else type="info">No Tag</el-tag>
             </el-col>
           </el-row>
@@ -79,19 +79,19 @@
               Contact: {{ space.managerName }}
             </el-col>
           </el-row>
-          <div v-if="space.bookingRuleDTO">
+          <div v-if="space.spcBookingRuleDTO">
             <el-row class="in-col-row">
-              <el-col :span="12">Days open for booking before event: {{ space.bookingRuleDTO.openDaysBeforeEvent }}</el-col>
-              <el-col :span="12">Maximum reservation days: {{ space.bookingRuleDTO.maxReservationDays }}</el-col>
+              <el-col :span="12">Days open for booking before event: {{ space.spcBookingRuleDTO.openDaysBeforeEvent }}</el-col>
+              <el-col :span="12">Maximum reservation days: {{ space.spcBookingRuleDTO.maxReservationDays }}</el-col>
             </el-row>
             <el-row class="in-col-row">
-              <el-col :span="12">Days close for booking before event: {{ space.bookingRuleDTO.closeDaysBeforeEvent }}</el-col>
-              <el-col :span="12">Minimum booking hours: {{ space.bookingRuleDTO.minBookingHours }}</el-col>
+              <el-col :span="12">Days close for booking before event: {{ space.spcBookingRuleDTO.closeDaysBeforeEvent }}</el-col>
+              <el-col :span="12">Minimum booking hours: {{ space.spcBookingRuleDTO.minBookingHours }}</el-col>
             </el-row>
             <el-row class="in-col-row">
               <el-col :span="24">
                 Approval Required:
-                <el-tag v-if="space.bookingRuleDTO.approvalRequired" type="primary">Yes</el-tag>
+                <el-tag v-if="space.spcBookingRuleDTO.approvalRequired" type="primary">Yes</el-tag>
                 <el-tag v-else type="info">No</el-tag>
               </el-col>
             </el-row>

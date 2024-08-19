@@ -58,8 +58,8 @@
     <div v-for="space in state.dataList" :key="space.id" class="space-container">
       <el-row align="middle" justify="start" style="margin-bottom: 10px;" :gutter="10">
         <el-col :span="5">
-          <div v-if="space.imageDTOList && space.imageDTOList.length > 0">
-            <el-image class="space-image" :src="space.imageDTOList[0].imageUrl" fit="cover"/>
+          <div v-if="space.spcImageDTOList && space.spcImageDTOList.length > 0">
+            <el-image class="space-image" :src="space.spcImageDTOList[0].imageUrl" fit="cover"/>
           </div>
           <el-empty v-else :image-size="100" description="No Image"></el-empty>
         </el-col>
@@ -97,7 +97,7 @@
             <el-col :span="24">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-tag"></use></svg>
               Tag:
-              <el-tag v-if="space.tagDTOList?.length > 0" v-for="tag in space.tagDTOList" type="primary">{{ tag.tagName }} </el-tag>
+              <el-tag v-if="space.spcTagDTOList?.length > 0" v-for="tag in space.spcTagDTOList" type="primary">{{ tag.tagName }} </el-tag>
               <el-tag v-else type="info">No Tag</el-tag>
             </el-col>
           </el-row>

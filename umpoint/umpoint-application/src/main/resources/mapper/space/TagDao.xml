@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="my.edu.um.umpoint.modules.space.dao.TagDao">
+<mapper namespace="my.edu.um.umpoint.modules.space.dao.SpcTagDao">
 
-    <resultMap type="my.edu.um.umpoint.modules.space.entity.TagEntity" id="tagMap">
+    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcTagEntity" id="tagMap">
         <result property="id" column="id"/>
         <result property="tagName" column="tag_name"/>
     </resultMap>
@@ -16,7 +16,7 @@
         RIGHT JOIN spc_space_tag st ON t.id = st.tag_id
     </select>
 
-    <resultMap type="my.edu.um.umpoint.modules.space.entity.TagEntity" id="tagMapWithCount">
+    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcTagEntity" id="tagMapWithCount">
         <result property="id" column="id"/>
         <result property="tagName" column="tag_name"/>
         <result property="spaceCount" column="space_count"/>

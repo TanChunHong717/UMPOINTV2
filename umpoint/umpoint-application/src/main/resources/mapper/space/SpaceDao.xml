@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatiorg//DTD Mapper 3.0//EN" "http://mybatiorg/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="my.edu.um.umpoint.modules.space.dao.SpaceDao">
+<mapper namespace="my.edu.um.umpoint.modules.space.dao.SpcSpaceDao">
 
-    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpaceEntity" id="spaceMap">
+    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcSpaceEntity" id="spaceMap">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="catId" column="cat_id"/>
@@ -13,14 +13,14 @@
         <result property="facilities" column="facilities"/>
         <result property="capacity" column="capacity"/>
         <result property="manager" column="manager"/>
-        <result property="bookingRuleId" column="booking_rule_id"/>
+        <result property="spcBookingRuleId" column="booking_rule_id"/>
         <result property="creator" column="creator"/>
         <result property="createDate" column="create_date"/>
         <result property="updater" column="updater"/>
         <result property="updateDate" column="update_date"/>
     </resultMap>
 
-    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpaceEntity" id="spaceSelectMap">
+    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcSpaceEntity" id="spaceSelectMap">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="catId" column="cat_id"/>
@@ -30,7 +30,7 @@
         <result property="facilities" column="facilities"/>
         <result property="capacity" column="capacity"/>
         <result property="manager" column="manager"/>
-        <result property="bookingRuleId" column="booking_rule_id"/>
+        <result property="spcBookingRuleId" column="booking_rule_id"/>
         <result property="creator" column="creator"/>
         <result property="createDate" column="create_date"/>
         <result property="updater" column="updater"/>
@@ -40,7 +40,7 @@
         <result column="manager_name" property="managerName" />
         <result column="creator_name" property="creatorName" />
         <result column="updater_name" property="updaterName" />
-        <association property="bookingRuleEntity">
+        <association property="spcBookingRuleEntity">
             <id property="id" column="booking_rule_id"/>
             <result property="hourPrice" column="hour_price"/>
             <result property="fourHoursPrice" column="four_hours_price"/>
@@ -51,12 +51,12 @@
             <result property="approvalRequired" column="approval_required"/>
             <result property="minBookingHours" column="min_booking_hours"/>
         </association>
-        <collection property="imageEntityList" ofType="my.edu.um.umpoint.modules.space.entity.ImageEntity">
+        <collection property="spcImageEntityList" ofType="my.edu.um.umpoint.modules.space.entity.SpcImageEntity">
             <id property="id" column="image_id"/>
             <result property="spaceId" column="id"/>
             <result property="imageUrl" column="image_url"/>
         </collection>
-        <collection property="tagEntityList" ofType="my.edu.um.umpoint.modules.space.entity.TagEntity">
+        <collection property="spcTagEntityList" ofType="my.edu.um.umpoint.modules.space.entity.SpcTagEntity">
             <id property="id" column="tag_id"/>
             <result column="tag_name" property="tagName"/>
         </collection>

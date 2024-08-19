@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="my.edu.um.umpoint.modules.space.dao.SpaceTagDao">
+<mapper namespace="my.edu.um.umpoint.modules.space.dao.SpcSpaceTagDao">
 
-    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpaceTagEntity" id="spaceTagMap">
+    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcSpaceTagEntity" id="spaceTagMap">
         <result property="spaceId" column="space_id"/>
         <result property="tagId" column="tag_id"/>
     </resultMap>

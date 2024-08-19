@@ -100,8 +100,8 @@ const dataForm = reactive<any>({
   facilities: '',
   capacity: 30,
   deptName: '',
-  imageDTOList: [],
-  tagDTOList: [],
+  spcImageDTOList: [],
+  spcTagDTOList: [],
   status: 1
 });
 
@@ -159,13 +159,13 @@ const getTagList = () => {
 const getInfo = (id: number) => {
   baseService.get("/space/space/" + id).then((res) => {
     Object.assign(dataForm, res.data);
-    for (let i = 0; i < res.data.imageDTOList.length; i++) {
-      let imageDTO = res.data.imageDTOList[i];
-      fileList.value.push({id: imageDTO.id, url: imageDTO.imageUrl})
+    for (let i = 0; i < res.data.spcImageDTOList.length; i++) {
+      let spcImageDTO = res.data.spcImageDTOList[i];
+      fileList.value.push({id: spcImageDTO.id, url: spcImageDTO.imageUrl})
     }
-    for (let i = 0; i < res.data.tagDTOList.length; i++) {
-      let tagDTO = res.data.tagDTOList[i];
-      selectTagList.value.push(tagDTO.id);
+    for (let i = 0; i < res.data.spcTagDTOList.length; i++) {
+      let spcTagDTO = res.data.spcTagDTOList[i];
+      selectTagList.value.push(spcTagDTO.id);
     }
   });
 };
@@ -187,8 +187,8 @@ const init = (id?: number) => {
   }
 };
 
-const imageUploadHandle = (imageDTOList: any) => {
-  dataForm.imageDTOList = imageDTOList
+const imageUploadHandle = (spcImageDTOList: any) => {
+  dataForm.spcImageDTOList = spcImageDTOList
 }
 
 // Form submission
@@ -197,11 +197,11 @@ const dataFormSubmitHandle = () => {
     if (!valid) {
       return false;
     }
-    dataForm.imageDTOList.forEach((imageDTO: any) => {
-      imageDTO.spaceId = dataForm.id;
+    dataForm.spcImageDTOList.forEach((spcImageDTO: any) => {
+      spcImageDTO.spaceId = dataForm.id;
     })
     selectTagList.value.forEach((tagId) => {
-      dataForm.tagDTOList.push({id: tagId, spaceId: dataForm.id});
+      dataForm.spcTagDTOList.push({id: tagId, spaceId: dataForm.id});
     });
     (!dataForm.id ? baseService.post : baseService.put)("/space/space", dataForm).then((res) => {
       emits.emit(EMitt.OnCloseCurrTab);
