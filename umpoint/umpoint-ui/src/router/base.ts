@@ -5,7 +5,7 @@ import Login from "@/views/login.vue";
 import Iframe from "@/views/iframe.vue";
 
 /**
- * 框架基础路由
+ * Base route
  */
 const routes: Array<RouteRecordRaw> = [
   {
