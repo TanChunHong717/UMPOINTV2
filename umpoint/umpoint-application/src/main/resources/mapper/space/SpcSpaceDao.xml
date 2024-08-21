@@ -3,7 +3,7 @@
 
 <mapper namespace="my.edu.um.umpoint.modules.space.dao.SpcSpaceDao">
 
-    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcSpaceEntity" id="spaceMap">
+    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcSpaceEntity" id="spcSpaceMap">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="catId" column="cat_id"/>
@@ -13,14 +13,14 @@
         <result property="facilities" column="facilities"/>
         <result property="capacity" column="capacity"/>
         <result property="manager" column="manager"/>
-        <result property="spcBookingRuleId" column="booking_rule_id"/>
+        <result property="bookingRuleId" column="booking_rule_id"/>
         <result property="creator" column="creator"/>
         <result property="createDate" column="create_date"/>
         <result property="updater" column="updater"/>
         <result property="updateDate" column="update_date"/>
     </resultMap>
 
-    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcSpaceEntity" id="spaceSelectMap">
+    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcSpaceEntity" id="spcSpaceSelectMap">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="catId" column="cat_id"/>
@@ -30,7 +30,7 @@
         <result property="facilities" column="facilities"/>
         <result property="capacity" column="capacity"/>
         <result property="manager" column="manager"/>
-        <result property="spcBookingRuleId" column="booking_rule_id"/>
+        <result property="bookingRuleId" column="booking_rule_id"/>
         <result property="creator" column="creator"/>
         <result property="createDate" column="create_date"/>
         <result property="updater" column="updater"/>
@@ -62,7 +62,7 @@
         </collection>
     </resultMap>
 
-    <select id="getList" resultMap="spaceSelectMap">
+    <select id="getList" resultMap="spcSpaceSelectMap">
         SELECT
             s.id,
             s.name,
@@ -124,7 +124,7 @@
             </if>
         </where>
     </select>
-    <select id="selectById" resultMap="spaceSelectMap">
+    <select id="selectById" resultMap="spcSpaceSelectMap">
         SELECT
             s.id,
             s.name,

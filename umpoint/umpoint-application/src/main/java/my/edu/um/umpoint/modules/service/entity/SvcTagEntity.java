@@ -1,5 +1,6 @@
 package my.edu.um.umpoint.modules.service.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -25,4 +26,9 @@ public class SvcTagEntity {
 	* Tag name
 	*/
 	private String tagName;
+	/**
+	 * Space Count
+	 */
+	@TableField(exist = false)
+	private Long spaceCount;
 }

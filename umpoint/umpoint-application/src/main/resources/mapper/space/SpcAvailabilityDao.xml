@@ -3,7 +3,7 @@
 
 <mapper namespace="my.edu.um.umpoint.modules.space.dao.SpcAvailabilityDao">
 
-    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcAvailabilityEntity" id="availabilityMap">
+    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcAvailabilityEntity" id="spcAvailabilityMap">
         <result property="id" column="id"/>
         <result property="spaceId" column="space_id"/>
         <result property="year" column="year"/>

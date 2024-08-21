@@ -3,7 +3,7 @@
 
 <mapper namespace="my.edu.um.umpoint.modules.space.dao.SpcSpaceTagDao">
 
-    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcSpaceTagEntity" id="spaceTagMap">
+    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcSpaceTagEntity" id="spcSpaceTagMap">
         <result property="spaceId" column="space_id"/>
         <result property="tagId" column="tag_id"/>
     </resultMap>

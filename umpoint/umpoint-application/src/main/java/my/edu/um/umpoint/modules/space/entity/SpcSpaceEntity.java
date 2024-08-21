@@ -56,7 +56,7 @@ public class SpcSpaceEntity extends BaseEntity {
 	/**
 	 * Booking rule ID
 	 */
-	private Long spcBookingRuleId;
+	private Long bookingRuleId;
 	/**
 	 * Status 0:Suspend 1:Normal
 	 */

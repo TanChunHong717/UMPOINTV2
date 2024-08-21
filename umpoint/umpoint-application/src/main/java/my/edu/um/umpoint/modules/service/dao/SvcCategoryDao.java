@@ -4,6 +4,9 @@ import my.edu.um.umpoint.common.dao.BaseDao;
 import my.edu.um.umpoint.modules.service.entity.SvcCategoryEntity;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Service Category
  *
@@ -12,5 +15,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface SvcCategoryDao extends BaseDao<SvcCategoryEntity> {
-	
+    List<SvcCategoryEntity> listWithCount(Map<String, Object> params);
+    List<SvcCategoryEntity> filterList();
 }

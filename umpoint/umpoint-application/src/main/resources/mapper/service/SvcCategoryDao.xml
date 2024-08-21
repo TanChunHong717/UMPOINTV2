@@ -8,5 +8,48 @@
         <result property="name" column="name"/>
     </resultMap>
 
+    <select id="filterList" resultMap="categoryMap">
+        SELECT DISTINCT
+            ct.id,
+            ct.name
+        FROM svc_category ct
+        RIGHT JOIN svc_service s ON ct.id = s.cat_id
+    </select>
+
+    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcCategoryEntity" id="spcCategoryMapWithCount">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="spaceCount" column="space_count"/>
+    </resultMap>
+
+    <select id="listWithCount" resultMap="spcCategoryMapWithCount">
+        SELECT DISTINCT
+        ct.id,
+        ct.name,
+        COUNT(s.id) AS space_count
+        FROM spc_category ct
+        LEFT JOIN svc_service s ON ct.id = s.cat_id
+        <where>
+            <if test="name != null and name.trim() != ''">
+                and ct.name like #{name}
+            </if>
+        </where>
+        GROUP BY ct.id
+        <if test="orderField != null and orderField.trim() != ''">
+            ORDER BY
+            <if test="orderField == 'name'">
+                name
+            </if>
+            <if test="orderField == 'space_count'">
+                space_count
+            </if>
+            <if test="order != 'desc'">
+                ASC
+            </if>
+            <if test="order == 'desc'">
+                DESC
+            </if>
+        </if>
+    </select>
 
 </mapper>

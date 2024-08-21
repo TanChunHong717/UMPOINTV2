@@ -3,7 +3,7 @@
 
 <mapper namespace="my.edu.um.umpoint.modules.space.dao.SpcBookingRuleDao">
 
-    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcBookingRuleEntity" id="bookingRuleMap">
+    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcBookingRuleEntity" id="spcBookingRuleMap">
         <result property="id" column="id"/>
         <result property="hourPrice" column="hour_price"/>
         <result property="fourHoursPrice" column="four_hours_price"/>

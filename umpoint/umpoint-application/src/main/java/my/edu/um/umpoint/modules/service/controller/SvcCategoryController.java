@@ -22,9 +22,10 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 /**
  * Service Category
@@ -52,6 +53,26 @@ public class SvcCategoryController {
         PageData<SvcCategoryDTO> page = svcCategoryService.page(params);
 
         return new Result<PageData<SvcCategoryDTO>>().ok(page);
+    }
+
+    @GetMapping("list")
+    @Operation(summary = "list")
+    @RequiresPermissions("service:category:list")
+    public Result<List<SvcCategoryDTO>> list(){
+        List<SvcCategoryDTO> page = svcCategoryService.list(new HashMap<>());
+
+        return new Result<List<SvcCategoryDTO>>().ok(page);
+    }
+
+    @GetMapping("list/filter")
+    @Operation(summary = "filter list")
+    @RequiresPermissions("service:category:list")
+    public Result<List<SvcCategoryDTO>> filterList(){
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("filter", true);
+        List<SvcCategoryDTO> page = svcCategoryService.list(params);
+
+        return new Result<List<SvcCategoryDTO>>().ok(page);
     }
 
     @GetMapping("{id}")

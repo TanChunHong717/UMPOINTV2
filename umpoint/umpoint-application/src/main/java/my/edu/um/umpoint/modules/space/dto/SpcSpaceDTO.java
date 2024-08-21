@@ -64,7 +64,7 @@ public class SpcSpaceDTO implements Serializable {
 	private Long manager;
 
 	@SchemaProperty(name = "Booking Rule ID")
-	private Long spcBookingRuleId;
+	private Long bookingRuleId;
 
 	@Schema(title = "status 0:suspend 1:normal", required = true)
 	@Range(min=0, max=1, groups = DefaultGroup.class)

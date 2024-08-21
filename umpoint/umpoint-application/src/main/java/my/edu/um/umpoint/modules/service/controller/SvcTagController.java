@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,6 +54,26 @@ public class SvcTagController {
         PageData<SvcTagDTO> page = svcTagService.page(params);
 
         return new Result<PageData<SvcTagDTO>>().ok(page);
+    }
+
+    @GetMapping("list")
+    @Operation(summary = "list")
+    @RequiresPermissions("service:tag:list")
+    public Result<List<SvcTagDTO>> list(){
+        List<SvcTagDTO> page = svcTagService.list(new HashMap<>());
+
+        return new Result<List<SvcTagDTO>>().ok(page);
+    }
+
+    @GetMapping("list/filter")
+    @Operation(summary = "list")
+    @RequiresPermissions("service:tag:list")
+    public Result<List<SvcTagDTO>> filterList(){
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("filter", true);
+        List<SvcTagDTO> page = svcTagService.list(params);
+
+        return new Result<List<SvcTagDTO>>().ok(page);
     }
 
     @GetMapping("{id}")

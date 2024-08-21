@@ -47,7 +47,7 @@ public class SpcSpaceServiceImpl extends CrudServiceImpl<SpcSpaceDao, SpcSpaceEn
         String name = (String)params.get("name");
 
         QueryWrapper<SpcSpaceEntity> wrapper = new QueryWrapper<>();
-        wrapper.eq(StrUtil.isNotBlank(name), "name", name);
+        wrapper.like(StrUtil.isNotBlank(name), "name", name);
 
         return wrapper;
     }

@@ -11,6 +11,5 @@ import my.edu.um.umpoint.modules.space.entity.SpcImageEntity;
  * @since 1.0.0 2024-08-03
  */
 public interface SpcImageService extends CrudService<SpcImageEntity, SpcImageDTO> {
-
     void deleteBySpaceId(Long spaceId);
 }

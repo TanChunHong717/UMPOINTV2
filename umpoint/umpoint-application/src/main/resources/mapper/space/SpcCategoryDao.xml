@@ -3,7 +3,7 @@
 
 <mapper namespace="my.edu.um.umpoint.modules.space.dao.SpcCategoryDao">
 
-    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcCategoryEntity" id="categoryMap">
+    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcCategoryEntity" id="spcCategoryMap">
         <result property="id" column="id"/>
         <result property="name" column="name"/>
     </resultMap>
@@ -16,13 +16,13 @@
         RIGHT JOIN spc_space s ON ct.id = s.cat_id
     </select>
 
-    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcCategoryEntity" id="categoryMapWithCount">
+    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcCategoryEntity" id="spcCategoryMapWithCount">
         <result property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="spaceCount" column="space_count"/>
     </resultMap>
 
-    <select id="listWithCount" resultMap="categoryMapWithCount">
+    <select id="listWithCount" resultMap="spcCategoryMapWithCount">
         SELECT DISTINCT
             ct.id,
             ct.name,

@@ -29,7 +29,7 @@ public class SpcCategoryServiceImpl extends CrudServiceImpl<SpcCategoryDao, SpcC
         String name = (String)params.get("name");
 
         QueryWrapper<SpcCategoryEntity> wrapper = new QueryWrapper<>();
-        wrapper.eq(StrUtil.isNotBlank(name), "name", name);
+        wrapper.like(StrUtil.isNotBlank(name), "name", name);
 
         return wrapper;
     }

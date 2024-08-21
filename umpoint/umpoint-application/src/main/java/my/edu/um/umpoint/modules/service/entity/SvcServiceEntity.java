@@ -1,10 +1,15 @@
 package my.edu.um.umpoint.modules.service.entity;
 
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import my.edu.um.umpoint.common.entity.BaseEntity;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Service
@@ -13,14 +18,9 @@ import java.util.Date;
  * @since 1.0.0 2024-08-20
  */
 @Data
+@EqualsAndHashCode(callSuper=false)
 @TableName("svc_service")
-public class SvcServiceEntity {
-
-    /**
-     * ID
-     */
-	@TableId
-	private Long id;
+public class SvcServiceEntity extends BaseEntity {
     /**
      * Name
      */
@@ -57,20 +57,59 @@ public class SvcServiceEntity {
      * Booking Rule ID
      */
 	private Long bookingRuleId;
-    /**
-     * Creator
-     */
-	private Long creator;
-    /**
-     * Create date
-     */
-	private Date createDate;
-    /**
-     * Updater
-     */
+	/**
+	 * Status 0:Suspend 1:Normal
+	 */
+	@TableLogic(value = "1", delval = "0")
+	private Integer status;
+	/**
+	 * Last updater
+	 */
+	@TableField(fill = FieldFill.INSERT_UPDATE)
 	private Long updater;
-    /**
-     * Update date
-     */
+	/**
+	 * Last update date
+	 */
+	@TableField(fill = FieldFill.INSERT_UPDATE)
 	private Date updateDate;
+	/**
+	 * Category name
+	 */
+	@TableField(exist = false)
+	private String category;
+	/**
+	 * Department name
+	 */
+	@TableField(exist = false)
+	private String deptName;
+	/**
+	 * Manager name
+	 */
+	@TableField(exist = false)
+	private String managerName;
+	/**
+	 * Creator name
+	 */
+	@TableField(exist = false)
+	private String creatorName;
+	/**
+	 * Last updater name
+	 */
+	@TableField(exist = false)
+	private String updaterName;
+	/**
+	 * Booking rule entity
+	 */
+	@TableField(exist = false)
+	private SvcBookingRuleEntity svcBookingRuleEntity;
+	/**
+	 * Image url list
+	 */
+	@TableField(exist = false)
+	private List<SvcImageEntity> svcImageEntityList;
+	/**
+	 * Space tag list
+	 */
+	@TableField(exist = false)
+	private List<SvcTagEntity> svcTagEntityList;
 }

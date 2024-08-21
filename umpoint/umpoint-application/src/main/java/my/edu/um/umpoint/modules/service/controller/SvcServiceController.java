@@ -25,7 +25,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * Service
  *
@@ -69,6 +68,11 @@ public class SvcServiceController {
     @RequiresPermissions("service:service:save")
     public Result save(@RequestBody SvcServiceDTO dto){
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
+        validateServiceTagDTO(dto, true);
+        validateServiceImageDTO(dto, true);
+        if (dto.getSvcBookingRuleDTO() != null) {
+            ValidatorUtils.validateEntity(dto.getSvcBookingRuleDTO(), AddGroup.class, DefaultGroup.class);
+        }
 
         svcServiceService.save(dto);
 
@@ -81,6 +85,11 @@ public class SvcServiceController {
     @RequiresPermissions("service:service:update")
     public Result update(@RequestBody SvcServiceDTO dto){
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
+        validateServiceTagDTO(dto, false);
+        validateServiceImageDTO(dto, false);
+        if (dto.getSvcBookingRuleDTO() != null) {
+            ValidatorUtils.validateEntity(dto.getSvcBookingRuleDTO(), UpdateGroup.class, DefaultGroup.class);
+        }
 
         svcServiceService.update(dto);
 
@@ -107,6 +116,26 @@ public class SvcServiceController {
         List<SvcServiceDTO> list = svcServiceService.list(params);
 
         ExcelUtils.exportExcelToTarget(response, null, "Service", list, SvcServiceExcel.class);
+    }
+
+    private void validateServiceTagDTO(SvcServiceDTO dto, boolean isAdd) {
+        dto.getSvcTagDTOList().forEach(tagDTO -> {
+            ValidatorUtils.validateEntity(
+                    tagDTO,
+                    (isAdd)? AddGroup.class: UpdateGroup.class,
+                    DefaultGroup.class
+            );
+        });
+    }
+
+    private void validateServiceImageDTO(SvcServiceDTO dto, boolean isAdd) {
+        dto.getSvcImageDTOList().forEach(imageDTO -> {
+            ValidatorUtils.validateEntity(
+                    imageDTO,
+                    (isAdd)? AddGroup.class: UpdateGroup.class,
+                    DefaultGroup.class
+            );
+        });
     }
 
 }

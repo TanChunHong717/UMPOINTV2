@@ -90,8 +90,8 @@ public class SpcSpaceController {
     @Transactional
     public Result update(@RequestBody SpcSpaceDTO dto){
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
-        validateSpaceTagDTO(dto, true);
-        validateSpaceImageDTO(dto, true);
+        validateSpaceTagDTO(dto, false);
+        validateSpaceImageDTO(dto, false);
         if (dto.getSpcBookingRuleDTO() != null) {
             ValidatorUtils.validateEntity(dto.getSpcBookingRuleDTO(), UpdateGroup.class, DefaultGroup.class);
         }

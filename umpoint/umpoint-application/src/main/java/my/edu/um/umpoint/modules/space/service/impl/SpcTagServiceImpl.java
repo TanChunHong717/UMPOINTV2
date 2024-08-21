@@ -29,7 +29,7 @@ public class SpcTagServiceImpl extends CrudServiceImpl<SpcTagDao, SpcTagEntity, 
         String name = (String)params.get("name");
 
         QueryWrapper<SpcTagEntity> wrapper = new QueryWrapper<>();
-        wrapper.eq(StrUtil.isNotBlank(name), "name", name);
+        wrapper.like(StrUtil.isNotBlank(name), "name", name);
 
         return wrapper;
     }

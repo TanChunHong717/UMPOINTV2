@@ -30,5 +30,8 @@ public class SvcServiceTagServiceImpl extends CrudServiceImpl<SvcServiceTagDao, 
         return wrapper;
     }
 
-
+    @Override
+    public void deleteByServiceId(Long serviceId) {
+        baseDao.delete(new QueryWrapper<SvcServiceTagEntity>().eq("service_id", serviceId));
+    }
 }

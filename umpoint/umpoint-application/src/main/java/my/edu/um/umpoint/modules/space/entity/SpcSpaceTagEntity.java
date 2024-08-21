@@ -14,13 +14,13 @@ import lombok.Data;
 @TableName("spc_space_tag")
 public class SpcSpaceTagEntity {
 
-    /**
-     * Space ID
-     */
-		@TableId
-		private Long spaceId;
-    /**
-     * Tag ID
-     */
-		private Long tagId;
+	/**
+	* Space ID
+	*/
+	@TableId
+	private Long spaceId;
+	/**
+	* Tag ID
+	*/
+	private Long tagId;
 }

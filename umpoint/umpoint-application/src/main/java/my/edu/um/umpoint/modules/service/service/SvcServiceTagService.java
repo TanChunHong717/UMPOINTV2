@@ -11,5 +11,5 @@ import my.edu.um.umpoint.modules.service.entity.SvcServiceTagEntity;
  * @since 1.0.0 2024-08-20
  */
 public interface SvcServiceTagService extends CrudService<SvcServiceTagEntity, SvcServiceTagDTO> {
-
+    void deleteByServiceId(Long serviceId);
 }

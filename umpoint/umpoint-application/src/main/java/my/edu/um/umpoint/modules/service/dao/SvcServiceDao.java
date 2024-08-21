@@ -4,6 +4,10 @@ import my.edu.um.umpoint.common.dao.BaseDao;
 import my.edu.um.umpoint.modules.service.entity.SvcServiceEntity;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Service
  *
@@ -12,5 +16,8 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface SvcServiceDao extends BaseDao<SvcServiceEntity> {
-	
+    List<SvcServiceEntity> getList(Map<String, Object> params);
+
+    @Override
+    SvcServiceEntity selectById(Serializable id);
 }

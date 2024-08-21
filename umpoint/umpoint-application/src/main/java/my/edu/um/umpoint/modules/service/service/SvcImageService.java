@@ -11,5 +11,5 @@ import my.edu.um.umpoint.modules.service.entity.SvcImageEntity;
  * @since 1.0.0 2024-08-20
  */
 public interface SvcImageService extends CrudService<SvcImageEntity, SvcImageDTO> {
-
+    void deleteByServiceId(Long serviceId);
 }

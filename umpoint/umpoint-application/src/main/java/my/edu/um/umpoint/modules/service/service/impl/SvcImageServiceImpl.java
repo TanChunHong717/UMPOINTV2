@@ -30,5 +30,8 @@ public class SvcImageServiceImpl extends CrudServiceImpl<SvcImageDao, SvcImageEn
         return wrapper;
     }
 
-
+    @Override
+    public void deleteByServiceId(Long serviceId) {
+        baseDao.delete(new QueryWrapper<SvcImageEntity>().eq("service_id", serviceId));
+    }
 }

@@ -8,5 +8,48 @@
         <result property="tagName" column="tag_name"/>
     </resultMap>
 
+    <select id="filterList" resultMap="tagMap">
+        SELECT DISTINCT
+            t.id,
+            t.tag_name
+        FROM svc_tag t
+        RIGHT JOIN svc_service_tag st ON t.id = st.tag_id
+    </select>
+
+    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcTagEntity" id="spcTagMapWithCount">
+        <result property="id" column="id"/>
+        <result property="tagName" column="tag_name"/>
+        <result property="spaceCount" column="space_count"/>
+    </resultMap>
+
+    <select id="listWithCount" resultMap="spcTagMapWithCount">
+        SELECT DISTINCT
+        t.id,
+        t.tag_name,
+        COUNT(st.space_id) AS space_count
+        FROM svc_tag t
+        LEFT JOIN svc_service_tag st ON t.id = st.tag_id
+        <where>
+            <if test="tagName != null and tagName.trim() != ''">
+                and t.tag_name like #{tagName}
+            </if>
+        </where>
+        GROUP BY t.id
+        <if test="orderField != null and orderField.trim() != ''">
+            ORDER BY
+            <if test="orderField == 'tag_name'">
+                tag_name
+            </if>
+            <if test="orderField == 'space_count'">
+                space_count
+            </if>
+            <if test="order != 'desc'">
+                ASC
+            </if>
+            <if test="order == 'desc'">
+                DESC
+            </if>
+        </if>
+    </select>
 
 </mapper>

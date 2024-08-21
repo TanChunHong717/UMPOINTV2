@@ -3,7 +3,7 @@
 
 <mapper namespace="my.edu.um.umpoint.modules.space.dao.SpcTagDao">
 
-    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcTagEntity" id="tagMap">
+    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcTagEntity" id="spcTagMap">
         <result property="id" column="id"/>
         <result property="tagName" column="tag_name"/>
     </resultMap>
@@ -16,13 +16,13 @@
         RIGHT JOIN spc_space_tag st ON t.id = st.tag_id
     </select>
 
-    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcTagEntity" id="tagMapWithCount">
+    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcTagEntity" id="spcTagMapWithCount">
         <result property="id" column="id"/>
         <result property="tagName" column="tag_name"/>
         <result property="spaceCount" column="space_count"/>
     </resultMap>
 
-    <select id="listWithCount" resultMap="tagMapWithCount">
+    <select id="listWithCount" resultMap="spcTagMapWithCount">
         SELECT DISTINCT
             t.id,
             t.tag_name,
