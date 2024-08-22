@@ -68,6 +68,24 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/space-management/space-add-or-update.vue"),
     meta: { title: "Space Update", requiresAuth: true, isNavigationMenu: false }
   },
+  {
+    path: "/service-management/service-info/:id",
+    name: "service-info",
+    component: () => import("@/views/service-management/service-info.vue"),
+    meta: { title: "Service Info", requiresAuth: true, isNavigationMenu: false }
+  },
+  {
+    path: "/service-management/service/add",
+    name: "service-add",
+    component: () => import("@/views/service-management/service-add-or-update.vue"),
+    meta: { title: "Service Add", requiresAuth: true, isNavigationMenu: false }
+  },
+  {
+    path: "/service-management/service/update/:id",
+    name: "service-update",
+    component: () => import("@/views/service-management/service-add-or-update.vue"),
+    meta: { title: "Service Update", requiresAuth: true, isNavigationMenu: false }
+  },
   // must be last to prevent redirecting to error page
   {
     path: "/:path(.*)*",

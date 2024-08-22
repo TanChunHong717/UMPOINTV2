@@ -52,7 +52,7 @@
         </el-form-item>
       </div>
       <el-form-item>
-        <el-button v-if="state.hasPermission('space:space:save')" type="primary" @click="addOrUpdateHandle()">Add</el-button>
+        <el-button v-if="state.hasPermission('space:space:save')" type="primary" @click="addHandle()">Add</el-button>
       </el-form-item>
     </el-form>
     <div v-for="space in state.dataList" :key="space.id" class="space-container">
@@ -132,8 +132,6 @@ import baseService from "@/service/baseService";
 import {ElMessage} from "element-plus";
 import router from "@/router";
 
-const store = useAppStore();
-const user = computed(() => store.state.user);
 const deptList = ref([]);
 const categoryList = ref([]);
 const tagList = ref([]);
@@ -155,8 +153,7 @@ const view = reactive({
 
 const state = reactive({ ...useView(view), ...toRefs(view) });
 
-const addOrUpdateRef = ref();
-const addOrUpdateHandle = () => {
+const addHandle = () => {
   router.push({name: "space-add"})
 };
 

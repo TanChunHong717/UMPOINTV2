@@ -22,13 +22,15 @@ const visible = ref(false);
 const dataFormRef = ref();
 
 const dataForm = reactive({
-  id: '',  name: ''});
+  id: '',
+  name: ''
+});
 
 const rules = ref({
-          name: [
-      { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
-    ]
-  });
+  name: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ]
+});
 
 const init = (id?: number) => {
   visible.value = true;

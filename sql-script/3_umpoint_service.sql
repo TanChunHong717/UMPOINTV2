@@ -26,8 +26,6 @@ CREATE TABLE svc_service (
     dept_id bigint NOT NULL COMMENT 'Department ID',
     address varchar(250) NOT NULL COMMENT 'Address',
     description varchar(2500) COMMENT 'Description',
-    facilities varchar(250) COMMENT 'Facilities',
-    capacity decimal(5,0) COMMENT 'Max capacity',
     manager bigint NOT NULL COMMENT 'Manager ID',
     booking_rule_id bigint NOT NULL COMMENT 'Booking Rule ID',
     status tinyint COMMENT 'Status 0:Suspend 1:Normal',

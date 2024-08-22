@@ -1,9 +1,6 @@
 package my.edu.um.umpoint.modules.service.excel;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.annotation.write.style.ColumnWidth;
-import com.alibaba.excel.annotation.write.style.ContentRowHeight;
-import com.alibaba.excel.annotation.write.style.HeadRowHeight;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -29,10 +26,6 @@ public class SvcServiceExcel {
     private String address;
     @ExcelProperty(value = "Description")
     private String description;
-    @ExcelProperty(value = "Facilities")
-    private String facilities;
-    @ExcelProperty(value = "Max capacity")
-    private BigDecimal capacity;
     @ExcelProperty(value = "Manager ID")
     private Long manager;
     @ExcelProperty(value = "Booking Rule ID")
@@ -45,5 +38,4 @@ public class SvcServiceExcel {
     private Long updater;
     @ExcelProperty(value = "Update date")
     private Date updateDate;
-
 }

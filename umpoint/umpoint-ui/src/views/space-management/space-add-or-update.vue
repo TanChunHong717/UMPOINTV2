@@ -65,7 +65,6 @@
     </el-row>
   </el-form>
 </template>
-
 <script lang="ts" setup>
 import {onMounted, reactive, ref} from "vue";
 import baseService from "@/service/baseService";

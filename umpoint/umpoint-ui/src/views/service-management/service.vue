@@ -1,66 +1,219 @@
 <template>
   <div class="mod-service__svcservice">
-    <el-form :inline="true" :model="state.dataForm" @keyup.enter="state.getDataList()">
-      <!-- Modify id to field you want -->
+    <el-form :inline="true" :model="state.dataForm" @keyup.enter="state.getDataList()" class="header-form">
+      <div>
+        <el-form-item>
+          <el-input v-model="state.dataForm.name" placeholder="Name" clearable></el-input>
+        </el-form-item>
+        <el-form-item class="dept-list">
+          <el-popover :width="218" ref="deptListPopover" placement="bottom-start" trigger="click" popper-class="popover-pop">
+            <template v-slot:reference>
+              <el-input v-model="currentChooseDepartment" placeholder="Department">
+                <template v-slot:suffix>
+                  <el-icon @click.stop="deptListTreeSetDefaultHandle()" class="el-input__icon"><circle-close /></el-icon>
+                </template>
+              </el-input>
+            </template>
+            <div class="popover-pop-body">
+              <el-tree :data="deptList" :props="{ label: 'name', children: 'children' }" node-key="id" ref="deptListTree" :highlight-current="true" :expand-on-click-node="false" accordion @current-change="deptListTreeCurrentChangeHandle"></el-tree>
+            </div>
+          </el-popover>
+        </el-form-item>
+        <el-form-item>
+          <el-select
+            v-model="state.dataForm.catId"
+            placeholder="Category"
+            filterable
+          >
+            <el-option
+              v-for="category in categoryList"
+              :key="category.id"
+              :label="category.name"
+              :value="category.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-select
+            v-model="state.dataForm.tagId"
+            placeholder="Tag"
+            filterable
+          >
+            <el-option
+              v-for="tag in tagList"
+              :key="tag.id"
+              :label="tag.tagName"
+              :value="tag.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="state.getDataList()">Search</el-button>
+        </el-form-item>
+      </div>
       <el-form-item>
-        <el-input v-model="state.dataForm.id" placeholder="ID" clearable></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="state.getDataList()">Search</el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-button v-if="state.hasPermission('service:service:save')" type="primary" @click="addOrUpdateHandle()">Add</el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-button v-if="state.hasPermission('service:service:delete')" type="danger" @click="state.deleteHandle()">Delete</el-button>
+        <el-button v-if="state.hasPermission('service:service:save')" type="primary" @click="addHandle()">Add</el-button>
       </el-form-item>
     </el-form>
-    <el-table v-loading="state.dataListLoading" :data="state.dataList" border @selection-change="state.dataListSelectionChangeHandle" style="width: 100%">
-      <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-              <el-table-column prop="id" label="ID" header-align="center" align="center"></el-table-column>
-              <el-table-column prop="name" label="Name" header-align="center" align="center"></el-table-column>
-              <el-table-column prop="catId" label="Category ID" header-align="center" align="center"></el-table-column>
-              <el-table-column prop="deptId" label="Department ID" header-align="center" align="center"></el-table-column>
-              <el-table-column prop="address" label="Address" header-align="center" align="center"></el-table-column>
-              <el-table-column prop="description" label="Description" header-align="center" align="center"></el-table-column>
-              <el-table-column prop="facilities" label="Facilities" header-align="center" align="center"></el-table-column>
-              <el-table-column prop="capacity" label="Max capacity" header-align="center" align="center"></el-table-column>
-              <el-table-column prop="manager" label="Manager ID" header-align="center" align="center"></el-table-column>
-              <el-table-column prop="bookingRuleId" label="Booking Rule ID" header-align="center" align="center"></el-table-column>
-              <el-table-column prop="creator" label="Creator" header-align="center" align="center"></el-table-column>
-              <el-table-column prop="createDate" label="Create date" header-align="center" align="center"></el-table-column>
-              <el-table-column prop="updater" label="Updater" header-align="center" align="center"></el-table-column>
-              <el-table-column prop="updateDate" label="Update date" header-align="center" align="center"></el-table-column>
-            <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="150">
-        <template v-slot="scope">
-          <el-button v-if="state.hasPermission('service:service:update')" type="primary" link @click="addOrUpdateHandle(scope.row.id)">Update</el-button>
-          <el-button v-if="state.hasPermission('service:service:delete')" type="primary" link @click="state.deleteHandle(scope.row.id)">Delete</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div v-for="service in state.dataList" :key="service.id" class="service-container">
+      <el-row align="middle" justify="start" style="margin-bottom: 10px;" :gutter="10">
+        <el-col :span="5">
+          <div v-if="service.svcImageDTOList && service.svcImageDTOList.length > 0">
+            <el-image class="service-image" :src="service.svcImageDTOList[0].imageUrl" fit="cover"/>
+          </div>
+          <el-empty v-else :image-size="100" description="No Image"></el-empty>
+        </el-col>
+        <el-col :span="16">
+          <el-row class="in-col-row">
+            <el-col :span="24" class="title">{{ service.name }}</el-col>
+          </el-row>
+          <el-row class="in-col-row">
+            <el-col :span="8">
+              <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-apartment"></use></svg>
+              Department: {{ service.deptName }}
+            </el-col>
+            <el-col :span="8">
+              <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-appstore"></use></svg>
+              Category: {{ service.category }}
+            </el-col>
+          </el-row>
+          <el-row class="in-col-row">
+            <el-col :span="24">
+              <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-tag"></use></svg>
+              Tag:
+              <el-tag v-if="service.svcTagDTOList?.length > 0" v-for="tag in service.svcTagDTOList" type="primary">{{ tag.tagName }} </el-tag>
+              <el-tag v-else type="info">No Tag</el-tag>
+            </el-col>
+          </el-row>
+          <el-divider style="margin: 10px 0;"></el-divider>
+          <el-row>
+            <el-col :span="8">
+              <span>RM{{ service.price }}</span> / Service
+            </el-col>
+          </el-row>
+        </el-col>
+        <el-col :span="3" class="button-column">
+          <el-button @click="$router.push({name:`service-info`, params: {id:service.id}})" class="action-button" re>Details</el-button>
+          <el-button class="action-button bottom-button">Availability</el-button>
+        </el-col>
+      </el-row>
+    </div>
     <el-pagination :current-page="state.page" :page-sizes="[10, 20, 50, 100]" :page-size="state.limit" :total="state.total" layout="total, sizes, prev, pager, next, jumper" @size-change="state.pageSizeChangeHandle" @current-change="state.pageCurrentChangeHandle"> </el-pagination>
-    <!-- Popup, Add / Edit -->
-    <add-or-update ref="addOrUpdateRef" @refreshDataList="state.getDataList">Confirm</add-or-update>
   </div>
 </template>
 
 <script lang="ts" setup>
 import useView from "@/hooks/useView";
-import { reactive, ref, toRefs } from "vue";
+import {onActivated, onMounted, reactive, ref, toRefs} from "vue";
 import AddOrUpdate from "./service-add-or-update.vue";
+import baseService from "@/service/baseService";
+import {ElMessage} from "element-plus";
+import {IObject} from "@/types/interface";
+import router from "@/router";
+
+const deptList = ref([]);
+const categoryList = ref([]);
+const tagList = ref([]);
+const currentChooseDepartment = ref();
 
 const view = reactive({
-  deleteIsBatch: true,
+  deleteIsBatch: false,
   getDataListURL: "/service/service/page",
   getDataListIsPage: true,
   exportURL: "/service/service/export",
-  deleteURL: "/service/service"
+  deleteURL: "/service/service",
+  dataForm: {
+    name: "",
+    deptId: null,
+    catId: null,
+    tagId: null
+  }
 });
 
 const state = reactive({ ...useView(view), ...toRefs(view) });
 
-const addOrUpdateRef = ref();
-const addOrUpdateHandle = (id?: number) => {
-  addOrUpdateRef.value.init(id);
+const addHandle = () => {
+  router.push({name: "space-add"})
 };
+
+const getDeptList = () => {
+  return baseService.get("/sys/dept/list").then((res) => {
+    if (res.code !== 0) {
+      return ElMessage.error(res.msg);
+    }
+    deptList.value = res.data;
+  });
+};
+
+const deptListTreeSetDefaultHandle = () => {
+  state.dataForm.deptId = null;
+  currentChooseDepartment.value = null;
+};
+
+const deptListTreeCurrentChangeHandle = (data: IObject) => {
+  state.dataForm.deptId = data.id;
+  currentChooseDepartment.value = data.name;
+};
+
+const getCategoryList = () => {
+  return baseService.get("/service/category/list/filter").then((res) => {
+    if (res.code !== 0) {
+      return ElMessage.error(res.msg);
+    }
+    categoryList.value = res.data;
+  });
+};
+
+const getTagList = () => {
+  return baseService.get("/service/tag/list/filter").then((res) => {
+    if (res.code !== 0) {
+      return ElMessage.error(res.msg);
+    }
+    tagList.value = res.data;
+  });
+};
+
+onMounted(() => {
+  getDeptList();
+  getCategoryList();
+  getTagList();
+})
+
+onActivated(() => {
+  state.getDataList();
+})
 </script>
+<style>
+.header-form {
+  display:flex;
+  justify-content: space-between;
+}
+.service-image {
+  width: 100%;
+  max-width: 250px;
+  max-height: 150px;
+  padding: 0 10px;
+}
+.title {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+.in-col-row {
+  margin-bottom: 3px;
+}
+.button-column {
+  display: flex !important;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+.action-button {
+  width: 100px;
+  margin-left: 0 !important;
+}
+.bottom-button {
+  margin-top: 5px;
+}
+</style>

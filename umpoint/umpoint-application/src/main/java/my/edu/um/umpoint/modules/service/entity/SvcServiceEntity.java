@@ -42,14 +42,6 @@ public class SvcServiceEntity extends BaseEntity {
      */
 	private String description;
     /**
-     * Facilities
-     */
-	private String facilities;
-    /**
-     * Max capacity
-     */
-	private Integer capacity;
-    /**
      * Manager ID
      */
 	private Long manager;

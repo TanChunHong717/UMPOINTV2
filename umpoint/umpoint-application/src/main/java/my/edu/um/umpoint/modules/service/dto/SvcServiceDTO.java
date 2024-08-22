@@ -53,13 +53,6 @@ public class SvcServiceDTO implements Serializable {
 	@SchemaProperty(name = "Description")
 	private String description;
 
-	@SchemaProperty(name = "Facilities")
-	private String facilities;
-
-	@SchemaProperty(name = "Max capacity")
-	@NotNull(groups = {DefaultGroup.class})
-	private Integer capacity;
-
 	@SchemaProperty(name = "Manager ID")
 	private Long manager;
 
