@@ -15,7 +15,6 @@ import java.math.BigDecimal;
 @Data
 @TableName("spc_booking_rule")
 public class SpcBookingRuleEntity {
-
     /**
      * ID
      */
@@ -36,15 +35,15 @@ public class SpcBookingRuleEntity {
     /**
      * Days open for booking before event
      */
-	private BigDecimal openDaysBeforeEvent;
+	private Integer openDaysBeforeEvent;
     /**
      * Days close for booking before event
      */
-	private BigDecimal closeDaysBeforeEvent;
+	private Integer closeDaysBeforeEvent;
     /**
      * Maximum reservation days
      */
-	private BigDecimal maxReservationDays;
+	private Integer maxReservationDays;
     /**
      * Is booking require approve by manager
      */
@@ -52,5 +51,5 @@ public class SpcBookingRuleEntity {
     /**
      * Minimum booking hours per day
      */
-	private BigDecimal minBookingHours;
+	private Integer minBookingHours;
 }

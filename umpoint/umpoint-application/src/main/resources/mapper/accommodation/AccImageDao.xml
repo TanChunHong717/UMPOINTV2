@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="my.edu.um.umpoint.modules.accommodation.dao.AccImageDao">
+
+    <resultMap type="my.edu.um.umpoint.modules.accommodation.entity.AccImageEntity" id="accImageMap">
+        <result property="id" column="id"/>
+        <result property="accommodationId" column="accommodation_id"/>
+        <result property="imageUrl" column="image_url"/>
+    </resultMap>
+
+
+</mapper>

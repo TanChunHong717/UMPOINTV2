@@ -1,4 +1,4 @@
-package my.edu.um.umpoint.modules.space.dto;
+package my.edu.um.umpoint.modules.accommodation.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.SchemaProperty;
@@ -6,32 +6,30 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Date;
 
 import java.math.BigDecimal;
 
 /**
- * Space Availability
+ * Accommodation Booking Rule
  *
  * @author Tan Chun Hong tanchunhong717@gmail.com
- * @since 1.0.0 2024-08-11
+ * @since 1.0.0 2024-08-23
  */
 @Data
-@Schema(name = "Space Availability")
-public class SpcBookingRuleDTO implements Serializable {
+@Schema(name = "Accommodation Booking Rule")
+public class AccBookingRuleDTO implements Serializable {
 	@Serial
-    private static final long serialVersionUID = 3105155482684743857L;
+    private static final long serialVersionUID = 9187174069158066308L;
 
 	@SchemaProperty(name = "ID")
 	private Long id;
 
-	@SchemaProperty(name = "Price for book an hour")
-	private BigDecimal hourPrice;
-
-	@SchemaProperty(name = "Price for book four hours")
-	private BigDecimal fourHoursPrice;
-
 	@SchemaProperty(name = "Price for book a day")
 	private BigDecimal dayPrice;
+
+	@SchemaProperty(name = "Price for book a week")
+	private BigDecimal weekPrice;
 
 	@SchemaProperty(name = "Days open for booking before event")
 	private Integer openDaysBeforeEvent;
@@ -45,6 +43,6 @@ public class SpcBookingRuleDTO implements Serializable {
 	@SchemaProperty(name = "Is booking require approve by manager")
 	private Integer approvalRequired;
 
-	@SchemaProperty(name = "Minimum booking hours per day")
-	private Integer minBookingHours;
+	@SchemaProperty(name = "Minimum booking days")
+	private Integer minBookingDays;
 }

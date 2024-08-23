@@ -15,7 +15,7 @@ CREATE TABLE acc_tag (
 CREATE TABLE acc_booking_rule (
     id bigint NOT NULL COMMENT 'ID',
     day_price decimal(10, 2) NOT NULL COMMENT 'Price for book a day',
-    day_week decimal(10, 2) NOT NULL COMMENT 'Price for book a week',
+    week_price decimal(10, 2) NOT NULL COMMENT 'Price for book a week',
     open_days_before_event decimal(5,0) NOT NULL COMMENT 'Days open for booking before event',
     close_days_before_event decimal(5,0) NOT NULL COMMENT 'Days close for booking before event',
     max_reservation_days decimal(5, 0) NOT NULL COMMENT 'Maximum reservation days',

@@ -29,5 +29,4 @@ public class SvcBookingRuleDTO implements Serializable {
 
 	@SchemaProperty(name = "Is booking require approve by manager")
 	private Integer approvalRequired;
-
 }
