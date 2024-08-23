@@ -36,7 +36,7 @@ CREATE TABLE spc_space (
     capacity decimal(5,0) COMMENT 'Max capacity',
     manager bigint NOT NULL COMMENT 'Manager ID',
     booking_rule_id bigint NOT NULL COMMENT 'Booking Rule ID',
-    tinyint COMMENT 'Status 0:Suspend 1:Normal',
+    status tinyint COMMENT 'Status 0:Suspend 1:Normal',
     creator bigint NOT NULL COMMENT 'Creator',
     create_date datetime NOT NULL COMMENT 'Create date',
     updater bigint NOT NULL COMMENT 'Updater',
@@ -70,7 +70,7 @@ CREATE TABLE spc_availability (
     id bigint NOT NULL COMMENT 'ID',
     space_id bigint NOT NULL COMMENT 'Space ID',
     year decimal(4,0) NOT NULL COMMENT 'Year',
-    availability BLOB NOT NULL COMMENT 'Availability of space, consist of 366*24*2 bit, 1 represent available in specific hour in one year',
+    availability BLOB NOT NULL COMMENT 'Availability of space, consist of 366*24*2 bit, 1 represent available in specific half hour in one year',
     PRIMARY KEY (id),
     FOREIGN KEY (space_id) REFERENCES spc_space(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space Availability';
