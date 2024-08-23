@@ -1,5 +1,5 @@
 <template>
-  <div class="mod-accommodation__acccategory">
+  <div class="mod-accommodation__acctag">
     <el-form :inline="true" :model="state.dataForm" @keyup.enter="state.getDataList()">
       <!-- Modify id to field you want -->
       <el-form-item>
@@ -9,20 +9,20 @@
         <el-button @click="state.getDataList()">Search</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button v-if="state.hasPermission('accommodation:acccategory:save')" type="primary" @click="addOrUpdateHandle()">Add</el-button>
+        <el-button v-if="state.hasPermission('accommodation:tag:save')" type="primary" @click="addOrUpdateHandle()">Add</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button v-if="state.hasPermission('accommodation:acccategory:delete')" type="danger" @click="state.deleteHandle()">Delete</el-button>
+        <el-button v-if="state.hasPermission('accommodation:tag:delete')" type="danger" @click="state.deleteHandle()">Delete</el-button>
       </el-form-item>
     </el-form>
     <el-table v-loading="state.dataListLoading" :data="state.dataList" border @selection-change="state.dataListSelectionChangeHandle" style="width: 100%">
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
               <el-table-column prop="id" label="ID" header-align="center" align="center"></el-table-column>
-              <el-table-column prop="name" label="Name" header-align="center" align="center"></el-table-column>
+              <el-table-column prop="tagName" label="Tag name" header-align="center" align="center"></el-table-column>
             <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="150">
         <template v-slot="scope">
-          <el-button v-if="state.hasPermission('accommodation:acccategory:update')" type="primary" link @click="addOrUpdateHandle(scope.row.id)">Update</el-button>
-          <el-button v-if="state.hasPermission('accommodation:acccategory:delete')" type="primary" link @click="state.deleteHandle(scope.row.id)">Delete</el-button>
+          <el-button v-if="state.hasPermission('accommodation:tag:update')" type="primary" link @click="addOrUpdateHandle(scope.row.id)">Update</el-button>
+          <el-button v-if="state.hasPermission('accommodation:tag:delete')" type="primary" link @click="state.deleteHandle(scope.row.id)">Delete</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -35,14 +35,14 @@
 <script lang="ts" setup>
 import useView from "@/hooks/useView";
 import { reactive, ref, toRefs } from "vue";
-import AddOrUpdate from "./acccategory-add-or-update.vue";
+import AddOrUpdate from "./tag-add-or-update.vue";
 
 const view = reactive({
   deleteIsBatch: true,
-  getDataListURL: "/accommodation/acccategory/page",
+  getDataListURL: "/accommodation/tag/page",
   getDataListIsPage: true,
-  exportURL: "/accommodation/acccategory/export",
-  deleteURL: "/accommodation/acccategory"
+  exportURL: "/accommodation/tag/export",
+  deleteURL: "/accommodation/tag"
 });
 
 const state = reactive({ ...useView(view), ...toRefs(view) });

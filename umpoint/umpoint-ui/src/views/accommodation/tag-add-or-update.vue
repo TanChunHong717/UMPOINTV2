@@ -1,8 +1,8 @@
 <template>
   <el-dialog v-model="visible" :title="!dataForm.id ? 'Add' : 'Update'" :close-on-click-modal="false" :close-on-press-escape="false">
     <el-form :model="dataForm" :rules="rules" ref="dataFormRef" @keyup.enter="dataFormSubmitHandle()" label-width="120px">
-          <el-form-item label="Name" prop="name">
-        <el-input v-model="dataForm.name" placeholder="Name"></el-input>
+          <el-form-item label="Tag name" prop="tagName">
+        <el-input v-model="dataForm.tagName" placeholder="Tag name"></el-input>
       </el-form-item>
       </el-form>
     <template #footer>
@@ -22,13 +22,15 @@ const visible = ref(false);
 const dataFormRef = ref();
 
 const dataForm = reactive({
-  id: '',  name: ''});
+  id: '',
+  tagName: ''
+});
 
 const rules = ref({
-          name: [
-      { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
-    ]
-  });
+  tagName: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ]
+});
 
 const init = (id?: number) => {
   visible.value = true;
@@ -46,7 +48,7 @@ const init = (id?: number) => {
 
 // Retrieve information
 const getInfo = (id: number) => {
-  baseService.get("/accommodation/acccategory/" + id).then((res) => {
+  baseService.get("/accommodation/tag/" + id).then((res) => {
     Object.assign(dataForm, res.data);
   });
 };
@@ -57,7 +59,7 @@ const dataFormSubmitHandle = () => {
     if (!valid) {
       return false;
     }
-    (!dataForm.id ? baseService.post : baseService.put)("/accommodation/acccategory", dataForm).then((res) => {
+    (!dataForm.id ? baseService.post : baseService.put)("/accommodation/tag", dataForm).then((res) => {
       ElMessage.success({
         message: 'Success',
         duration: 500,

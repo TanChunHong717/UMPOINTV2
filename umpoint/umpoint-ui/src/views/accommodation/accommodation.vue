@@ -9,10 +9,10 @@
         <el-button @click="state.getDataList()">Search</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button v-if="state.hasPermission('accommodation:accaccommodation:save')" type="primary" @click="addOrUpdateHandle()">Add</el-button>
+        <el-button v-if="state.hasPermission('accommodation:accommodation:save')" type="primary" @click="addOrUpdateHandle()">Add</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button v-if="state.hasPermission('accommodation:accaccommodation:delete')" type="danger" @click="state.deleteHandle()">Delete</el-button>
+        <el-button v-if="state.hasPermission('accommodation:accommodation:delete')" type="danger" @click="state.deleteHandle()">Delete</el-button>
       </el-form-item>
     </el-form>
     <el-table v-loading="state.dataListLoading" :data="state.dataList" border @selection-change="state.dataListSelectionChangeHandle" style="width: 100%">
@@ -34,8 +34,8 @@
               <el-table-column prop="updateDate" label="Update date" header-align="center" align="center"></el-table-column>
             <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="150">
         <template v-slot="scope">
-          <el-button v-if="state.hasPermission('accommodation:accaccommodation:update')" type="primary" link @click="addOrUpdateHandle(scope.row.id)">Update</el-button>
-          <el-button v-if="state.hasPermission('accommodation:accaccommodation:delete')" type="primary" link @click="state.deleteHandle(scope.row.id)">Delete</el-button>
+          <el-button v-if="state.hasPermission('accommodation:accommodation:update')" type="primary" link @click="addOrUpdateHandle(scope.row.id)">Update</el-button>
+          <el-button v-if="state.hasPermission('accommodation:accommodation:delete')" type="primary" link @click="state.deleteHandle(scope.row.id)">Delete</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -48,14 +48,14 @@
 <script lang="ts" setup>
 import useView from "@/hooks/useView";
 import { reactive, ref, toRefs } from "vue";
-import AddOrUpdate from "./accaccommodation-add-or-update.vue";
+import AddOrUpdate from "./accommodation-add-or-update.vue";
 
 const view = reactive({
   deleteIsBatch: true,
-  getDataListURL: "/accommodation/accaccommodation/page",
+  getDataListURL: "/accommodation/accommodation/page",
   getDataListIsPage: true,
-  exportURL: "/accommodation/accaccommodation/export",
-  deleteURL: "/accommodation/accaccommodation"
+  exportURL: "/accommodation/accommodation/export",
+  deleteURL: "/accommodation/accommodation"
 });
 
 const state = reactive({ ...useView(view), ...toRefs(view) });

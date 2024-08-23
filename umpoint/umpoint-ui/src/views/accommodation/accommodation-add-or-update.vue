@@ -49,40 +49,55 @@ const visible = ref(false);
 const dataFormRef = ref();
 
 const dataForm = reactive({
-  id: '',  name: '',  catId: '',  deptId: '',  address: '',  description: '',  facilities: '',  capacity: '',  manager: '',  bookingRuleId: '',  status: '',  creator: '',  createDate: '',  updater: '',  updateDate: ''});
+  id: '',
+  name: '',
+  catId: '',
+  deptId: '',
+  address: '',
+  description: '',
+  facilities: '',
+  capacity: '',
+  manager: '',
+  bookingRuleId: '',
+  status: '',
+  creator: '',
+  createDate: '',
+  updater: '',
+  updateDate: ''
+});
 
 const rules = ref({
-          name: [
-      { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
-    ],
-          catId: [
-      { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
-    ],
-          deptId: [
-      { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
-    ],
-          address: [
-      { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
-    ],
-          description: [
-      { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
-    ],
-          facilities: [
-      { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
-    ],
-          capacity: [
-      { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
-    ],
-          manager: [
-      { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
-    ],
-          bookingRuleId: [
-      { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
-    ],
-          status: [
-      { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
-    ],
-          });
+  name: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ],
+  catId: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ],
+  deptId: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ],
+  address: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ],
+  description: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ],
+  facilities: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ],
+  capacity: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ],
+  manager: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ],
+  bookingRuleId: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ],
+  status: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ],
+});
 
 const init = (id?: number) => {
   visible.value = true;
@@ -100,7 +115,7 @@ const init = (id?: number) => {
 
 // Retrieve information
 const getInfo = (id: number) => {
-  baseService.get("/accommodation/accaccommodation/" + id).then((res) => {
+  baseService.get("/accommodation/accommodation/" + id).then((res) => {
     Object.assign(dataForm, res.data);
   });
 };
@@ -111,7 +126,7 @@ const dataFormSubmitHandle = () => {
     if (!valid) {
       return false;
     }
-    (!dataForm.id ? baseService.post : baseService.put)("/accommodation/accaccommodation", dataForm).then((res) => {
+    (!dataForm.id ? baseService.post : baseService.put)("/accommodation/accommodation", dataForm).then((res) => {
       ElMessage.success({
         message: 'Success',
         duration: 500,

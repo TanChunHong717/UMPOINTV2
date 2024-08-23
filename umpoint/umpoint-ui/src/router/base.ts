@@ -53,37 +53,37 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/space-management/space-info/:id",
     name: "space-info",
-    component: () => import("@/views/space-management/space-info.vue"),
+    component: () => import("@/views/space/space-info.vue"),
     meta: { title: "Space Info", requiresAuth: true, isNavigationMenu: false }
   },
   {
     path: "/space-management/space/add",
     name: "space-add",
-    component: () => import("@/views/space-management/space-add-or-update.vue"),
+    component: () => import("@/views/space/space-add-or-update.vue"),
     meta: { title: "Space Add", requiresAuth: true, isNavigationMenu: false }
   },
   {
     path: "/space-management/space/update/:id",
     name: "space-update",
-    component: () => import("@/views/space-management/space-add-or-update.vue"),
+    component: () => import("@/views/space/space-add-or-update.vue"),
     meta: { title: "Space Update", requiresAuth: true, isNavigationMenu: false }
   },
   {
     path: "/service-management/service-info/:id",
     name: "service-info",
-    component: () => import("@/views/service-management/service-info.vue"),
+    component: () => import("@/views/service/service-info.vue"),
     meta: { title: "Service Info", requiresAuth: true, isNavigationMenu: false }
   },
   {
     path: "/service-management/service/add",
     name: "service-add",
-    component: () => import("@/views/service-management/service-add-or-update.vue"),
+    component: () => import("@/views/service/service-add-or-update.vue"),
     meta: { title: "Service Add", requiresAuth: true, isNavigationMenu: false }
   },
   {
     path: "/service-management/service/update/:id",
     name: "service-update",
-    component: () => import("@/views/service-management/service-add-or-update.vue"),
+    component: () => import("@/views/service/service-add-or-update.vue"),
     meta: { title: "Service Update", requiresAuth: true, isNavigationMenu: false }
   },
   // must be last to prevent redirecting to error page
