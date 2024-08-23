@@ -18,7 +18,7 @@
         <result property="updateDate" column="update_date"/>
     </resultMap>
 
-    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcSpaceEntity" id="spcSpaceSelectMap">
+    <resultMap type="my.edu.um.umpoint.modules.service.entity.SvcServiceEntity" id="svcServiceSelectMap">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="catId" column="cat_id"/>
@@ -36,23 +36,23 @@
         <result column="manager_name" property="managerName" />
         <result column="creator_name" property="creatorName" />
         <result column="updater_name" property="updaterName" />
-        <association property="spcBookingRuleEntity">
+        <association property="svcBookingRuleEntity">
             <id property="id" column="booking_rule_id"/>
             <result property="price" column="price"/>
             <result property="approvalRequired" column="approval_required"/>
         </association>
-        <collection property="spcImageEntityList" ofType="my.edu.um.umpoint.modules.space.entity.SpcImageEntity">
+        <collection property="svcImageEntityList" ofType="my.edu.um.umpoint.modules.space.entity.SpcImageEntity">
             <id property="id" column="image_id"/>
             <result property="spaceId" column="id"/>
             <result property="imageUrl" column="image_url"/>
         </collection>
-        <collection property="spcTagEntityList" ofType="my.edu.um.umpoint.modules.space.entity.SpcTagEntity">
+        <collection property="svcTagEntityList" ofType="my.edu.um.umpoint.modules.space.entity.SpcTagEntity">
             <id property="id" column="tag_id"/>
             <result column="tag_name" property="tagName"/>
         </collection>
     </resultMap>
 
-    <select id="getList" resultMap="spcSpaceSelectMap">
+    <select id="getList" resultMap="svcServiceSelectMap">
         SELECT
         s.id,
         s.name,
@@ -106,7 +106,7 @@
             </if>
         </where>
     </select>
-    <select id="selectById" resultMap="spcSpaceSelectMap">
+    <select id="selectById" resultMap="svcServiceSelectMap">
         SELECT
             s.id,
             s.name,

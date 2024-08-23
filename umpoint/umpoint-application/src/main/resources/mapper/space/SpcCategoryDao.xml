@@ -8,7 +8,7 @@
         <result property="name" column="name"/>
     </resultMap>
 
-    <select id="filterList" resultMap="categoryMap">
+    <select id="filterList" resultMap="spcCategoryMap">
         SELECT DISTINCT
             ct.id,
             ct.name

@@ -8,7 +8,7 @@
         <result property="tagName" column="tag_name"/>
     </resultMap>
 
-    <select id="filterList" resultMap="tagMap">
+    <select id="filterList" resultMap="svcTagMap">
         SELECT DISTINCT
             t.id,
             t.tag_name
@@ -16,13 +16,13 @@
         RIGHT JOIN svc_service_tag st ON t.id = st.tag_id
     </select>
 
-    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcTagEntity" id="spcTagMapWithCount">
+    <resultMap type="my.edu.um.umpoint.modules.service.entity.SvcTagEntity" id="svcTagMapWithCount">
         <result property="id" column="id"/>
         <result property="tagName" column="tag_name"/>
         <result property="spaceCount" column="space_count"/>
     </resultMap>
 
-    <select id="listWithCount" resultMap="spcTagMapWithCount">
+    <select id="listWithCount" resultMap="svcTagMapWithCount">
         SELECT DISTINCT
         t.id,
         t.tag_name,
