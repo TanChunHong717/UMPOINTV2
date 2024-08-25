@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * Accommodation Booking Rule
@@ -28,7 +27,7 @@ public class AccBookingRuleEntity {
 	/**
 	* Price for book a week
 	*/
-	private BigDecimal dayWeek;
+	private BigDecimal weekPrice;
 	/**
 	* Days open for booking before event
 	*/
@@ -48,5 +47,5 @@ public class AccBookingRuleEntity {
 	/**
 	* Minimum booking days
 	*/
-	private Integer minBookingDay;
+	private Integer minBookingDays;
 }

@@ -47,7 +47,7 @@ public class SpcSpaceDTO implements Serializable {
 	private Long deptId;
 
 	@SchemaProperty(name = "Address")
-	@NotNull(groups = {DefaultGroup.class})
+	@NotEmpty(groups = {DefaultGroup.class})
 	private String address;
 
 	@SchemaProperty(name = "Description")

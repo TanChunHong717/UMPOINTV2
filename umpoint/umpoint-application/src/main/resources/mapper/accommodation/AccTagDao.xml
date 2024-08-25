@@ -8,5 +8,47 @@
         <result property="tagName" column="tag_name"/>
     </resultMap>
 
+    <select id="filterList" resultMap="accTagMap">
+        SELECT DISTINCT
+            t.id,
+            t.tag_name
+        FROM acc_tag t
+        RIGHT JOIN acc_accommodation_tag at ON t.id = at.tag_id
+    </select>
 
+    <resultMap type="my.edu.um.umpoint.modules.accommodation.entity.AccTagEntity" id="accTagMapWithCount">
+        <result property="id" column="id"/>
+        <result property="tagName" column="tag_name"/>
+        <result property="accommodationCount" column="accommodation_count"/>
+    </resultMap>
+
+    <select id="listWithCount" resultMap="accTagMapWithCount">
+        SELECT DISTINCT
+        t.id,
+        t.tag_name,
+        COUNT(at.accommodation_id) AS accommodation_count
+        FROM acc_tag t
+        LEFT JOIN acc_accommodation_tag at ON t.id = at.tag_id
+        <where>
+            <if test="tagName != null and tagName.trim() != ''">
+                and t.tag_name like #{tagName}
+            </if>
+        </where>
+        GROUP BY t.id
+        <if test="orderField != null and orderField.trim() != ''">
+            ORDER BY
+            <if test="orderField == 'tag_name'">
+                tag_name
+            </if>
+            <if test="orderField == 'space_count'">
+                space_count
+            </if>
+            <if test="order != 'desc'">
+                ASC
+            </if>
+            <if test="order == 'desc'">
+                DESC
+            </if>
+        </if>
+    </select>
 </mapper>

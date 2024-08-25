@@ -9,6 +9,7 @@ import my.edu.um.umpoint.common.validator.AssertUtils;
 import my.edu.um.umpoint.common.validator.ValidatorUtils;
 import my.edu.um.umpoint.common.validator.group.AddGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
+import my.edu.um.umpoint.common.validator.group.InsertGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import my.edu.um.umpoint.modules.accommodation.dto.AccAccommodationDTO;
 import my.edu.um.umpoint.modules.accommodation.excel.AccAccommodationExcel;
@@ -24,7 +25,6 @@ import io.swagger.v3.oas.annotations.Parameters;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
-
 
 /**
  * Accommodation
@@ -69,6 +69,11 @@ public class AccAccommodationController {
     @RequiresPermissions("accommodation:accommodation:save")
     public Result save(@RequestBody AccAccommodationDTO dto){
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
+        validateAccommodationTagDTO(dto);
+        validateAccommodationImageDTO(dto);
+        if (dto.getAccBookingRuleDTO() != null) {
+            ValidatorUtils.validateEntity(dto.getAccBookingRuleDTO(), AddGroup.class, DefaultGroup.class);
+        }
 
         accAccommodationService.save(dto);
 
@@ -80,8 +85,12 @@ public class AccAccommodationController {
     @LogOperation("Update")
     @RequiresPermissions("accommodation:accommodation:update")
     public Result update(@RequestBody AccAccommodationDTO dto){
-        ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
-
+        ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
+        validateAccommodationTagDTO(dto);
+        validateAccommodationImageDTO(dto);
+        if (dto.getAccBookingRuleDTO() != null) {
+            ValidatorUtils.validateEntity(dto.getAccBookingRuleDTO(), AddGroup.class, DefaultGroup.class);
+        }
         accAccommodationService.update(dto);
 
         return new Result();
@@ -109,4 +118,22 @@ public class AccAccommodationController {
         ExcelUtils.exportExcelToTarget(response, null, "Accommodation", list, AccAccommodationExcel.class);
     }
 
+    private void validateAccommodationTagDTO(AccAccommodationDTO dto) {
+        dto.getAccTagDTOList().forEach(tagDTO -> {
+            ValidatorUtils.validateEntity(
+                    tagDTO,
+                    InsertGroup.class
+            );
+        });
+    }
+
+    private void validateAccommodationImageDTO(AccAccommodationDTO dto) {
+        dto.getAccImageDTOList().forEach(imageDTO -> {
+            ValidatorUtils.validateEntity(
+                    imageDTO,
+                    AddGroup.class,
+                    DefaultGroup.class
+            );
+        });
+    }
 }

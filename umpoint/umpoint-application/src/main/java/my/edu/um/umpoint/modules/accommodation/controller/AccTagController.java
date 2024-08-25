@@ -22,9 +22,10 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 /**
  * Accommodation Tag
@@ -52,6 +53,26 @@ public class AccTagController {
         PageData<AccTagDTO> page = accTagService.page(params);
 
         return new Result<PageData<AccTagDTO>>().ok(page);
+    }
+
+    @GetMapping("list")
+    @Operation(summary = "list")
+    @RequiresPermissions("accommodation:tag:list")
+    public Result<List<AccTagDTO>> list(){
+        List<AccTagDTO> page = accTagService.list(new HashMap<>());
+
+        return new Result<List<AccTagDTO>>().ok(page);
+    }
+
+    @GetMapping("list/filter")
+    @Operation(summary = "list")
+    @RequiresPermissions("accommodation:tag:list")
+    public Result<List<AccTagDTO>> filterList(){
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("filter", true);
+        List<AccTagDTO> page = accTagService.list(params);
+
+        return new Result<List<AccTagDTO>>().ok(page);
     }
 
     @GetMapping("{id}")

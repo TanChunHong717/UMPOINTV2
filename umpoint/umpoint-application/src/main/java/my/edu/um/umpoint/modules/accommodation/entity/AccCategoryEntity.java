@@ -1,10 +1,9 @@
 package my.edu.um.umpoint.modules.accommodation.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-
-import java.util.Date;
 
 /**
  * Accommodation Category
@@ -24,4 +23,9 @@ public class AccCategoryEntity {
 	* Name
 	*/
 	private String name;
+	/**
+	 * Accommodation Count
+	 */
+	@TableField(exist = false)
+	private Long accommodationCount;
 }

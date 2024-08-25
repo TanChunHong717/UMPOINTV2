@@ -9,6 +9,7 @@ import my.edu.um.umpoint.common.validator.AssertUtils;
 import my.edu.um.umpoint.common.validator.ValidatorUtils;
 import my.edu.um.umpoint.common.validator.group.AddGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
+import my.edu.um.umpoint.common.validator.group.InsertGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import my.edu.um.umpoint.modules.service.dto.SvcServiceDTO;
 import my.edu.um.umpoint.modules.service.excel.SvcServiceExcel;
@@ -68,8 +69,8 @@ public class SvcServiceController {
     @RequiresPermissions("service:service:save")
     public Result save(@RequestBody SvcServiceDTO dto){
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
-        validateServiceTagDTO(dto, true);
-        validateServiceImageDTO(dto, true);
+        validateServiceTagDTO(dto);
+        validateServiceImageDTO(dto);
         if (dto.getSvcBookingRuleDTO() != null) {
             ValidatorUtils.validateEntity(dto.getSvcBookingRuleDTO(), AddGroup.class, DefaultGroup.class);
         }
@@ -85,8 +86,8 @@ public class SvcServiceController {
     @RequiresPermissions("service:service:update")
     public Result update(@RequestBody SvcServiceDTO dto){
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
-        validateServiceTagDTO(dto, false);
-        validateServiceImageDTO(dto, false);
+        validateServiceTagDTO(dto);
+        validateServiceImageDTO(dto);
         if (dto.getSvcBookingRuleDTO() != null) {
             ValidatorUtils.validateEntity(dto.getSvcBookingRuleDTO(), UpdateGroup.class, DefaultGroup.class);
         }
@@ -118,24 +119,22 @@ public class SvcServiceController {
         ExcelUtils.exportExcelToTarget(response, null, "Service", list, SvcServiceExcel.class);
     }
 
-    private void validateServiceTagDTO(SvcServiceDTO dto, boolean isAdd) {
+    private void validateServiceTagDTO(SvcServiceDTO dto) {
         dto.getSvcTagDTOList().forEach(tagDTO -> {
             ValidatorUtils.validateEntity(
                     tagDTO,
-                    (isAdd)? AddGroup.class: UpdateGroup.class,
-                    DefaultGroup.class
+                    InsertGroup.class
             );
         });
     }
 
-    private void validateServiceImageDTO(SvcServiceDTO dto, boolean isAdd) {
+    private void validateServiceImageDTO(SvcServiceDTO dto) {
         dto.getSvcImageDTOList().forEach(imageDTO -> {
             ValidatorUtils.validateEntity(
                     imageDTO,
-                    (isAdd)? AddGroup.class: UpdateGroup.class,
+                    AddGroup.class,
                     DefaultGroup.class
             );
         });
     }
-
 }

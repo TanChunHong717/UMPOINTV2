@@ -20,7 +20,7 @@ CREATE TABLE acc_booking_rule (
     close_days_before_event decimal(5,0) NOT NULL COMMENT 'Days close for booking before event',
     max_reservation_days decimal(5, 0) NOT NULL COMMENT 'Maximum reservation days',
     approval_required BOOLEAN NOT NULL COMMENT 'Is booking require approve by manager',
-    min_booking_hours decimal(5, 0) NOT NULL COMMENT 'Minimum booking hours per day',
+    min_booking_days decimal(5, 0) NOT NULL COMMENT 'Minimum booking days',
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Accommodation Booking Rule';
 

@@ -16,7 +16,6 @@ import my.edu.um.umpoint.modules.space.service.SpcImageService;
 import my.edu.um.umpoint.modules.space.service.SpcSpaceService;
 import cn.hutool.core.util.StrUtil;
 import my.edu.um.umpoint.modules.space.service.SpcSpaceTagService;
-import my.edu.um.umpoint.modules.sys.service.SysDeptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,9 +31,6 @@ import java.util.Map;
  */
 @Service
 public class SpcSpaceServiceImpl extends CrudServiceImpl<SpcSpaceDao, SpcSpaceEntity, SpcSpaceDTO> implements SpcSpaceService {
-
-    @Autowired
-    private SysDeptService sysDeptService;
 
     @Autowired
     private SpcSpaceTagService spcSpaceTagService;
@@ -55,10 +51,6 @@ public class SpcSpaceServiceImpl extends CrudServiceImpl<SpcSpaceDao, SpcSpaceEn
     @Override
     @DataFilter(tableAlias = "s")
     public PageData<SpcSpaceDTO> page(Map<String, Object> params) {
-        if (params.get("deptId") != null) {
-            params.put("deptIdList", sysDeptService.getSubDeptIdList(Long.getLong((String) params.get("deptId"))));
-        }
-
         paramsToLike(params, "name");
 
         IPage<SpcSpaceEntity> page = getPage(params, Constant.CREATE_DATE, false);
@@ -90,7 +82,16 @@ public class SpcSpaceServiceImpl extends CrudServiceImpl<SpcSpaceDao, SpcSpaceEn
     }
 
     private void updateSpaceTag(SpcSpaceDTO dto) {
+        List<SpcSpaceTagEntity> tagEntityList = dto.getSpcTagDTOList()
+                .stream()
+                .map((spcTagDao) -> {
+                    SpcSpaceTagEntity entity = new SpcSpaceTagEntity();
+                    entity.setSpaceId(dto.getId());
+                    entity.setTagId(spcTagDao.getId());
+                    return entity;
+                }).toList();
+
         spcSpaceTagService.deleteBySpaceId(dto.getId());
-        spcSpaceTagService.insertBatch(ConvertUtils.sourceToTarget(dto.getSpcTagDTOList(), SpcSpaceTagEntity.class));
+        spcSpaceTagService.insertBatch(tagEntityList);
     }
 }

@@ -27,7 +27,7 @@
         ct.id,
         ct.name,
         COUNT(s.id) AS space_count
-        FROM spc_category ct
+        FROM svc_category ct
         LEFT JOIN svc_service s ON ct.id = s.cat_id
         <where>
             <if test="name != null and name.trim() != ''">

@@ -11,5 +11,5 @@ import my.edu.um.umpoint.modules.accommodation.entity.AccAccommodationTagEntity;
  * @since 1.0.0 2024-08-23
  */
 public interface AccAccommodationTagService extends CrudService<AccAccommodationTagEntity, AccAccommodationTagDTO> {
-
+    void deleteByAccommodationId(Long accommodationId);
 }

@@ -23,11 +23,9 @@ public class SpcSpaceTagDTO implements Serializable {
     private static final long serialVersionUID = 4886806046843501106L;
 
 	@SchemaProperty(name = "Space ID")
-	@NotNull(groups = DefaultGroup.class)
 	private Long spaceId;
 
 	@SchemaProperty(name = "Tag ID")
-	@NotNull(groups = DefaultGroup.class)
 	private Long tagId;
 
 }

@@ -4,6 +4,10 @@ import my.edu.um.umpoint.common.dao.BaseDao;
 import my.edu.um.umpoint.modules.accommodation.entity.AccAccommodationEntity;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Accommodation
  *
@@ -12,5 +16,8 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface AccAccommodationDao extends BaseDao<AccAccommodationEntity> {
-	
+    List<AccAccommodationEntity> getList(Map<String, Object> params);
+
+    @Override
+    AccAccommodationEntity selectById(Serializable id);
 }

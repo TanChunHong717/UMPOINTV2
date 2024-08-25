@@ -5,6 +5,7 @@ import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
 import my.edu.um.umpoint.modules.accommodation.dao.AccAccommodationTagDao;
 import my.edu.um.umpoint.modules.accommodation.dto.AccAccommodationTagDTO;
 import my.edu.um.umpoint.modules.accommodation.entity.AccAccommodationTagEntity;
+import my.edu.um.umpoint.modules.accommodation.entity.AccImageEntity;
 import my.edu.um.umpoint.modules.accommodation.service.AccAccommodationTagService;
 import cn.hutool.core.util.StrUtil;
 import org.springframework.stereotype.Service;
@@ -31,4 +32,8 @@ public class AccAccommodationTagServiceImpl extends CrudServiceImpl<AccAccommoda
     }
 
 
+    @Override
+    public void deleteByAccommodationId(Long accommodationId) {
+        baseDao.delete(new QueryWrapper<AccAccommodationTagEntity>().eq("accommodation_id", accommodationId));
+    }
 }

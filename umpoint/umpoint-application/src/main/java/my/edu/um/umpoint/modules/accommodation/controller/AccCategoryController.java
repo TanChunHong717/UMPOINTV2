@@ -16,15 +16,17 @@ import my.edu.um.umpoint.modules.accommodation.service.AccCategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import my.edu.um.umpoint.modules.space.dto.SpcCategoryDTO;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 /**
  * Accommodation Category
@@ -52,6 +54,26 @@ public class AccCategoryController {
         PageData<AccCategoryDTO> page = accCategoryService.page(params);
 
         return new Result<PageData<AccCategoryDTO>>().ok(page);
+    }
+
+    @GetMapping("list")
+    @Operation(summary = "list")
+    @RequiresPermissions("accommodation:category:list")
+    public Result<List<AccCategoryDTO>> list(){
+        List<AccCategoryDTO> page = accCategoryService.list(new HashMap<>());
+
+        return new Result<List<AccCategoryDTO>>().ok(page);
+    }
+
+    @GetMapping("list/filter")
+    @Operation(summary = "filter list")
+    @RequiresPermissions("accommodation:category:list")
+    public Result<List<AccCategoryDTO>> filterList(){
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("filter", true);
+        List<AccCategoryDTO> page = accCategoryService.list(params);
+
+        return new Result<List<AccCategoryDTO>>().ok(page);
     }
 
     @GetMapping("{id}")

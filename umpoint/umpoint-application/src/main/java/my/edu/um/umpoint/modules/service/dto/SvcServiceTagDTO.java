@@ -24,12 +24,8 @@ public class SvcServiceTagDTO implements Serializable {
     private static final long serialVersionUID = -5947001415023450228L;
 
 	@SchemaProperty(name = "Service ID")
-	@NotNull(groups = DefaultGroup.class)
 	private Long serviceId;
 
 	@SchemaProperty(name = "Tag ID")
-	@NotNull(groups = DefaultGroup.class)
 	private Long tagId;
-
-
 }

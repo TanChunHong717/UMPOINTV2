@@ -4,6 +4,9 @@ import my.edu.um.umpoint.common.dao.BaseDao;
 import my.edu.um.umpoint.modules.accommodation.entity.AccTagEntity;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Accommodation Tag
  *
@@ -12,5 +15,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface AccTagDao extends BaseDao<AccTagEntity> {
-	
+    List<AccTagEntity> listWithCount(Map<String, Object> params);
+    List<AccTagEntity> filterList();
 }

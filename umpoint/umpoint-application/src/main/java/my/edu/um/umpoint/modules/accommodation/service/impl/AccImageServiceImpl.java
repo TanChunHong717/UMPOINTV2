@@ -31,4 +31,8 @@ public class AccImageServiceImpl extends CrudServiceImpl<AccImageDao, AccImageEn
     }
 
 
+    @Override
+    public void deleteByAccommodationId(Long accommodationId) {
+        baseDao.delete(new QueryWrapper<AccImageEntity>().eq("accommodation_id", accommodationId));
+    }
 }

@@ -9,15 +9,14 @@ import my.edu.um.umpoint.common.validator.AssertUtils;
 import my.edu.um.umpoint.common.validator.ValidatorUtils;
 import my.edu.um.umpoint.common.validator.group.AddGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
+import my.edu.um.umpoint.common.validator.group.InsertGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import my.edu.um.umpoint.modules.space.dto.SpcSpaceDTO;
 import my.edu.um.umpoint.modules.space.excel.SpcSpaceExcel;
-import my.edu.um.umpoint.modules.space.service.SpcImageService;
 import my.edu.um.umpoint.modules.space.service.SpcSpaceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import my.edu.um.umpoint.modules.space.service.SpcSpaceTagService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,8 +71,8 @@ public class SpcSpaceController {
     @Transactional
     public Result save(@RequestBody SpcSpaceDTO dto){
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
-        validateSpaceTagDTO(dto, true);
-        validateSpaceImageDTO(dto, true);
+        validateSpaceTagDTO(dto);
+        validateSpaceImageDTO(dto);
         if (dto.getSpcBookingRuleDTO() != null) {
             ValidatorUtils.validateEntity(dto.getSpcBookingRuleDTO(), AddGroup.class, DefaultGroup.class);
         }
@@ -90,8 +89,8 @@ public class SpcSpaceController {
     @Transactional
     public Result update(@RequestBody SpcSpaceDTO dto){
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
-        validateSpaceTagDTO(dto, false);
-        validateSpaceImageDTO(dto, false);
+        validateSpaceTagDTO(dto);
+        validateSpaceImageDTO(dto);
         if (dto.getSpcBookingRuleDTO() != null) {
             ValidatorUtils.validateEntity(dto.getSpcBookingRuleDTO(), UpdateGroup.class, DefaultGroup.class);
         }
@@ -123,24 +122,22 @@ public class SpcSpaceController {
         ExcelUtils.exportExcelToTarget(response, null, "Space", list, SpcSpaceExcel.class);
     }
 
-    private void validateSpaceTagDTO(SpcSpaceDTO dto, boolean isAdd) {
+    private void validateSpaceTagDTO(SpcSpaceDTO dto) {
         dto.getSpcTagDTOList().forEach(tagDTO -> {
             ValidatorUtils.validateEntity(
                     tagDTO,
-                    (isAdd)? AddGroup.class: UpdateGroup.class,
-                    DefaultGroup.class
+                    InsertGroup.class
             );
         });
     }
 
-    private void validateSpaceImageDTO(SpcSpaceDTO dto, boolean isAdd) {
+    private void validateSpaceImageDTO(SpcSpaceDTO dto) {
         dto.getSpcImageDTOList().forEach(imageDTO -> {
             ValidatorUtils.validateEntity(
                     imageDTO,
-                    (isAdd)? AddGroup.class: UpdateGroup.class,
+                    AddGroup.class,
                     DefaultGroup.class
             );
         });
     }
-
 }

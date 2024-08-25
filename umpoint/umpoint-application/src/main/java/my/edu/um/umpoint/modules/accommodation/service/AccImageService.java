@@ -11,5 +11,5 @@ import my.edu.um.umpoint.modules.accommodation.entity.AccImageEntity;
  * @since 1.0.0 2024-08-23
  */
 public interface AccImageService extends CrudService<AccImageEntity, AccImageDTO> {
-
+    void deleteByAccommodationId(Long accommodationId);
 }

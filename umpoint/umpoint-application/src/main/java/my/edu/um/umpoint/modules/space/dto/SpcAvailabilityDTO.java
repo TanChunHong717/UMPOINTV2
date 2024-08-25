@@ -32,6 +32,4 @@ public class SpcAvailabilityDTO implements Serializable {
 
 	@SchemaProperty(name = "Availability of space, consist of 366*24 bit, 1 represent available in specific hour in one year")
 	private byte[] availability;
-
-
 }

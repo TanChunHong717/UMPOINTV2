@@ -1,11 +1,13 @@
 package my.edu.um.umpoint.modules.accommodation.entity;
 
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import my.edu.um.umpoint.common.entity.BaseEntity;
 
-import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Accommodation
@@ -14,13 +16,9 @@ import java.util.Date;
  * @since 1.0.0 2024-08-23
  */
 @Data
+@EqualsAndHashCode(callSuper=false)
 @TableName("acc_accommodation")
-public class AccAccommodationEntity {
-	/**
-	* ID
-	*/
-	@TableId
-	private Long id;
+public class AccAccommodationEntity extends BaseEntity {
 	/**
 	* Name
 	*/
@@ -62,14 +60,6 @@ public class AccAccommodationEntity {
 	*/
 	private Integer status;
 	/**
-	* Creator
-	*/
-	private Long creator;
-	/**
-	* Create date
-	*/
-	private Date createDate;
-	/**
 	* Updater
 	*/
 	private Long updater;
@@ -77,4 +67,44 @@ public class AccAccommodationEntity {
 	* Update date
 	*/
 	private Date updateDate;
+	/**
+	 * Category name
+	 */
+	@TableField(exist = false)
+	private String category;
+	/**
+	 * Department name
+	 */
+	@TableField(exist = false)
+	private String deptName;
+	/**
+	 * Manager name
+	 */
+	@TableField(exist = false)
+	private String managerName;
+	/**
+	 * Creator name
+	 */
+	@TableField(exist = false)
+	private String creatorName;
+	/**
+	 * Last updater name
+	 */
+	@TableField(exist = false)
+	private String updaterName;
+	/**
+	 * Booking rule entity
+	 */
+	@TableField(exist = false)
+	private AccBookingRuleEntity accBookingRuleEntity;
+	/**
+	 * Image url list
+	 */
+	@TableField(exist = false)
+	private List<AccImageEntity> accImageEntityList;
+	/**
+	 * Space tag list
+	 */
+	@TableField(exist = false)
+	private List<AccTagEntity> accTagEntityList;
 }
