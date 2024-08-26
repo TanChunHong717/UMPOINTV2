@@ -125,8 +125,7 @@
 </template>
 <script lang="ts" setup>
 import useView from "@/hooks/useView";
-import {computed, onActivated, onBeforeUpdate, onMounted, reactive, ref, toRefs} from "vue";
-import {useAppStore} from "@/store";
+import {onActivated, onMounted, reactive, ref, toRefs} from "vue";
 import {IObject} from "@/types/interface";
 import baseService from "@/service/baseService";
 import {ElMessage} from "element-plus";
