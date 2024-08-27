@@ -16,7 +16,7 @@
         RIGHT JOIN acc_accommodation a ON ct.id = a.cat_id
     </select>
 
-    <resultMap type="my.edu.um.umpoint.modules.accommodation.entity.AccCategoryEntity" id="accCategoryMap">
+    <resultMap type="my.edu.um.umpoint.modules.accommodation.entity.AccCategoryEntity" id="accCategoryMapWithCount">
         <result property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="accommodationCount" column="accommodation_count"/>
@@ -26,7 +26,7 @@
         SELECT DISTINCT
         ct.id,
         ct.name,
-        COUNT(s.id) AS space_count
+        COUNT(a.id) AS accommodation_count
         FROM acc_category ct
         LEFT JOIN acc_accommodation a ON ct.id = a.cat_id
         <where>
@@ -41,7 +41,7 @@
                 name
             </if>
             <if test="orderField == 'space_count'">
-                space_count
+                accommodation_count
             </if>
             <if test="order != 'desc'">
                 ASC

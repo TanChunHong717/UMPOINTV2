@@ -27,8 +27,8 @@ public class SvcTagEntity {
 	*/
 	private String tagName;
 	/**
-	 * Space Count
+	 * Service Count
 	 */
 	@TableField(exist = false)
-	private Long spaceCount;
+	private Long serviceCount;
 }

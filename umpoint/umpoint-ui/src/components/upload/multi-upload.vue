@@ -9,6 +9,7 @@
       :headers="headers"
       :data="uploadData"
       :with-credentials="false"
+      :on-remove="onRemove"
       list-type="picture"
       auto-upload
     >
@@ -103,6 +104,14 @@ export default {
         this.uploadPercentage = 0;
         console.error('Upload error:', error);
       });
+    },
+    onRemove(uploadFile, uploadFiles) {
+      this.$emit('upload', uploadFiles.map((file) => {
+        return {
+          spaceId: file.uid,
+          imageUrl: file.url
+        }
+      }));
     }
   },
   mounted() {

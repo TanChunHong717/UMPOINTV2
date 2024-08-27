@@ -131,8 +131,7 @@ public class AccAccommodationController {
         dto.getAccImageDTOList().forEach(imageDTO -> {
             ValidatorUtils.validateEntity(
                     imageDTO,
-                    AddGroup.class,
-                    DefaultGroup.class
+                    InsertGroup.class
             );
         });
     }

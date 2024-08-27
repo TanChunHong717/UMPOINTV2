@@ -19,14 +19,14 @@
     <resultMap type="my.edu.um.umpoint.modules.service.entity.SvcCategoryEntity" id="svcCategoryMapWithCount">
         <result property="id" column="id"/>
         <result property="name" column="name"/>
-        <result property="spaceCount" column="space_count"/>
+        <result property="serviceCount" column="service_count"/>
     </resultMap>
 
     <select id="listWithCount" resultMap="svcCategoryMapWithCount">
         SELECT DISTINCT
         ct.id,
         ct.name,
-        COUNT(s.id) AS space_count
+        COUNT(s.id) AS service_count
         FROM svc_category ct
         LEFT JOIN svc_service s ON ct.id = s.cat_id
         <where>
@@ -41,7 +41,7 @@
                 name
             </if>
             <if test="orderField == 'space_count'">
-                space_count
+                service_count
             </if>
             <if test="order != 'desc'">
                 ASC

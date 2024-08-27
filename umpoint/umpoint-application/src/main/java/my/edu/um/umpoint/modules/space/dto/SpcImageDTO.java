@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Null;
 import lombok.Data;
 import my.edu.um.umpoint.common.validator.group.AddGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
+import my.edu.um.umpoint.common.validator.group.InsertGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 
 import java.io.Serial;
@@ -27,7 +28,7 @@ public class SpcImageDTO implements Serializable {
 
 	@SchemaProperty(name = "ID")
 	@Null(groups = AddGroup.class)
-	@NotNull(groups = UpdateGroup.class)
+	@NotNull(groups = {UpdateGroup.class, InsertGroup.class})
 	private Long id;
 
 	@SchemaProperty(name = "Space ID")
@@ -35,6 +36,6 @@ public class SpcImageDTO implements Serializable {
 	private Long spaceId;
 
 	@SchemaProperty(name = "Image url")
-	@NotEmpty(groups = DefaultGroup.class)
+	@NotEmpty(groups = {DefaultGroup.class, InsertGroup.class})
 	private String imageUrl;
 }

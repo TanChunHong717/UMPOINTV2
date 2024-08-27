@@ -132,8 +132,7 @@ public class SvcServiceController {
         dto.getSvcImageDTOList().forEach(imageDTO -> {
             ValidatorUtils.validateEntity(
                     imageDTO,
-                    AddGroup.class,
-                    DefaultGroup.class
+                    InsertGroup.class
             );
         });
     }

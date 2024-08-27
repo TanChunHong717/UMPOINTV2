@@ -34,6 +34,6 @@ public class SvcCategoryDTO implements Serializable {
 	@NotEmpty(groups = {DefaultGroup.class})
 	private String name;
 
-	@SchemaProperty(name = "Space count")
-	private Long spaceCount;
+	@SchemaProperty(name = "Service count")
+	private Long serviceCount;
 }

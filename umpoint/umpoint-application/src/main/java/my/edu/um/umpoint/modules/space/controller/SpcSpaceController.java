@@ -135,8 +135,7 @@ public class SpcSpaceController {
         dto.getSpcImageDTOList().forEach(imageDTO -> {
             ValidatorUtils.validateEntity(
                     imageDTO,
-                    AddGroup.class,
-                    DefaultGroup.class
+                    InsertGroup.class
             );
         });
     }

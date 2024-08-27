@@ -16,7 +16,7 @@
     </el-form>
     <el-table v-loading="state.dataListLoading" :data="state.dataList" border @sort-change="state.dataListSortChangeHandle" style="width: 100%">
       <el-table-column prop="tagName" label="Tag name" header-align="center" align="center" sortable="custom"></el-table-column>
-      <el-table-column prop="spaceCount" label="Number of Space" header-align="center" align="center" sortable="custom"></el-table-column>
+      <el-table-column prop="serviceCount" label="Number of Service" header-align="center" align="center" sortable="custom"></el-table-column>
       <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="150">
         <template v-slot="scope">
           <el-button v-if="state.hasPermission('service:tag:update')" type="primary" link @click="addOrUpdateHandle(scope.row.id)">Update</el-button>

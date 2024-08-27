@@ -41,7 +41,7 @@
                 tag_name
             </if>
             <if test="orderField == 'space_count'">
-                space_count
+                accommodation_count
             </if>
             <if test="order != 'desc'">
                 ASC

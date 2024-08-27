@@ -27,8 +27,8 @@ public class SvcCategoryEntity {
      */
 	private String name;
 	/**
-	 * Space Count
+	 * Service Count
 	 */
 	@TableField(exist = false)
-	private Long spaceCount;
+	private Long serviceCount;
 }

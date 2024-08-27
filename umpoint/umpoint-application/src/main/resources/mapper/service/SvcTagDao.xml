@@ -19,14 +19,14 @@
     <resultMap type="my.edu.um.umpoint.modules.service.entity.SvcTagEntity" id="svcTagMapWithCount">
         <result property="id" column="id"/>
         <result property="tagName" column="tag_name"/>
-        <result property="spaceCount" column="space_count"/>
+        <result property="serviceCount" column="service_count"/>
     </resultMap>
 
     <select id="listWithCount" resultMap="svcTagMapWithCount">
         SELECT DISTINCT
         t.id,
         t.tag_name,
-        COUNT(st.space_id) AS space_count
+        COUNT(st.service_id) AS service_count
         FROM svc_tag t
         LEFT JOIN svc_service_tag st ON t.id = st.tag_id
         <where>
@@ -41,7 +41,7 @@
                 tag_name
             </if>
             <if test="orderField == 'space_count'">
-                space_count
+                service_count
             </if>
             <if test="order != 'desc'">
                 ASC
