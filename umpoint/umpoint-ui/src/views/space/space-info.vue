@@ -64,10 +64,10 @@
           </el-row>
           <div v-if="space.description?.trim().length > 0">
             <h2>Description</h2>
-            <div v-html="space.description"></div>
+            <div v-html="formatDescription(space.description)"></div>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="Availability">
+        <el-tab-pane label="Availability" v-if="space.spcBookingRuleDTO">
           <el-row v-if="state.hasPermission('space:booking-rule:update')" class="button-row" justify="end">
             <el-col :span="24">
               <el-button type="primary" size="small">Edit</el-button>
@@ -120,15 +120,25 @@ const isLoading = ref(true);
 const view = reactive({});
 const state = reactive({ ...useView(view), ...toRefs(view) });
 
-const getInfo = (id: number) => {
+const getInfo = (id: bigint) => {
   baseService.get("/space/space/" + id).then((res) => {
     space.value = res.data;
     isLoading.value = false;
   });
 };
 
+const formatDescription = (description: string) => {
+  if (description.startsWith('"'))
+    description = description.substring(1);
+  if (description.endsWith('"'))
+    description = description.substring(0, description.length-1);
+  description = description.replace("\\n", "");
+  return description;
+}
+
 onMounted(() => {
-  getInfo(Number(route.params.id))
+  const id = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id;
+  getInfo(BigInt(id))
 });
 </script>
 <style>

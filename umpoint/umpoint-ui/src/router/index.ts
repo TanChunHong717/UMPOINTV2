@@ -23,16 +23,17 @@ interface dynamicRouteParams {
 NProgress.configure({ showSpinner: false });
 
 const router = createRouter({
-  history: createWebHistory(), //createWebHashHistory() hash模式
+  history: createWebHistory(),
   routes: baseRoutes
 });
 
 // 路由加载前
-router.beforeEach((to, from) => {
+router.beforeEach((to, from, next) => {
   //外链
   if (to.meta.isNewPage) {
     if (to.query.pop !== "true") {
-      return;
+      next(undefined);
+      return false;
     }
   }
 
@@ -42,76 +43,73 @@ router.beforeEach((to, from) => {
   const token = getToken();
   const isPop = to.query.pop === "true"; //新窗口打开内页
   NProgress.start();
-
-  if (to.path === "/login") {
-    store.updateState({ appIsReady: true, appIsRender: true });
-    return true;
-  }
-
-  if (store.state.routes.length) {
-    // has logged in and routes has been loaded
-    if (to.name === "error") {
-      const isMatched = autoRegisterDynamicToRouterAndNext(to);
-      if (!isMatched) {
-        store.updateState({ appIsRender: true, appIsReady: true });
-        return true;
-      }
-    } else {
-      if (!to.query.pop) {
-        let routeMeta: IObject = store.state.routeToMeta[to.path];
-        if (!routeMeta) {
-          const param = to.path.substring(to.path.lastIndexOf("/"));
-          const newPath = to.path.replace(param, "/:id");
-          routeMeta = store.state.routeToMeta[newPath];
+  if (to.path !== "/login") {
+    if (store.state.routes.length) {
+      if (to.name === "error") {
+        const isMatched = autoRegisterDynamicToRouterAndNext(to);
+        if (!isMatched) {
+          store.updateState({ appIsRender: true, appIsReady: true });
+          next();
         }
-        emits.emit(EMitt.OnPushMenuToTabs, {
-          label: to.query._mt || routeMeta.title || to.path,
-          value: to.fullPath,
-          mete: routeMeta
-        });
+      } else {
+        if (!to.query.pop) {
+          let routeMeta: IObject = store.state.routeToMeta[to.path];
+          if (!routeMeta) {
+            const param = to.path.substring(to.path.lastIndexOf("/"));
+            const newPath = to.path.replace(param, "/:id");
+            routeMeta = store.state.routeToMeta[newPath];
+          }
+          emits.emit(EMitt.OnPushMenuToTabs, {
+            label: to.query._mt || routeMeta.title || to.path,
+            value: to.fullPath,
+            mete: routeMeta
+          });
+        }
+        store.updateState({ appIsRender: true, appIsReady: true });
+        next();
       }
-      store.updateState({ appIsRender: true, appIsReady: true });
-      return true;
-    }
-  }
-
-  if (token) {
-    // init store with local storage token and parse routes
-    return store.initApp().then((res: Array<RouteRecordRaw>) => {
-      const mergeRoute = baseRoutes.concat(res);
-      router.options.routes = mergeRoute;
-      registerToRouter(router, mergeRoute);
-      if (!to.matched.length) {
-        registerDynamicToRouterAndNext({ path: to.path, query: to.query });
-      }
-      store.updateState({
-        appIsReady: true,
-        routes: mergeRoute,
-        routeToMeta: { ...store.state.routeToMeta, ...getBaseRouteToMeta(baseRoutes) }
-      });
-      setTimeout(() => {
-        store.updateState({ appIsRender: true, appIsLogin: true });
-      }, 600);
-      return { ...to, replace: true };
-    });
-  }
-
-  if (!isPop) {
-    return "/login";
-  }
-
-  if (to.matched.length) {
-    store.updateState({ appIsRender: true, appIsReady: true });
-    if (to.meta.requiresAuth) {
-      return "/login";
     } else {
-      return true;
+      if (token) {
+        store.initApp().then((res: Array<RouteRecordRaw>) => {
+          const mergeRoute = baseRoutes.concat(res);
+          router.options.routes = mergeRoute;
+          registerToRouter(router, mergeRoute);
+          if (!to.matched.length) {
+            registerDynamicToRouterAndNext({ path: to.path, query: to.query });
+          }
+          store.updateState({
+            appIsReady: true,
+            routes: mergeRoute,
+            routeToMeta: { ...store.state.routeToMeta, ...getBaseRouteToMeta(baseRoutes) }
+          });
+          setTimeout(() => {
+            store.updateState({ appIsRender: true, appIsLogin: true });
+          }, 600);
+          next({ ...to, replace: true });
+        });
+      } else {
+        if (isPop) {
+          if (!to.matched.length) {
+            registerDynamicToRouterAndNext({ path: to.path, query: to.query });
+            store.updateState({ appIsRender: true, appIsReady: true });
+            next(to.fullPath);
+          } else {
+            store.updateState({ appIsRender: true, appIsReady: true });
+            if (to.meta.requiresAuth) {
+              next("/login");
+            } else {
+              next();
+            }
+          }
+        } else {
+          next("/login");
+        }
+      }
     }
+  } else {
+    store.updateState({ appIsReady: true, appIsRender: true });
+    next();
   }
-
-  registerDynamicToRouterAndNext({ path: to.path, query: to.query });
-  store.updateState({ appIsRender: true, appIsReady: true });
-  return to.fullPath;
 });
 
 // 路由加载后

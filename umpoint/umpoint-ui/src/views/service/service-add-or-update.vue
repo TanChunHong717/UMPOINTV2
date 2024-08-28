@@ -166,7 +166,7 @@ const init = (id?: number) => {
   getTagList();
 
   // Reset form data
-  if (dataFormRef.value) {
+  if (dataFormRef.value || !id) {
     dataFormRef.value.resetFields();
   }
 
@@ -191,7 +191,7 @@ const dataFormSubmitHandle = () => {
     selectTagList.value.forEach((tagId) => {
       dataForm.spcTagDTOList.push({id: tagId, spaceId: dataForm.id});
     });
-    (!dataForm.id ? baseService.post : baseService.put)("/service/service", dataForm).then((res) => {
+    (!dataForm.id ? baseService.post : baseService.put)("/service/service", dataForm, {"Contain-HTML": true}).then((res) => {
       emits.emit(EMitt.OnCloseCurrTab);
       ElMessage.success({
         message: 'Success',

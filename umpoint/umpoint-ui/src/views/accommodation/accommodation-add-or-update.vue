@@ -177,7 +177,7 @@ const init = (id?: number) => {
   getTagList();
 
   // Reset form data
-  if (dataFormRef.value) {
+  if (dataFormRef.value || !id) {
     dataFormRef.value.resetFields();
   }
 
@@ -202,7 +202,7 @@ const dataFormSubmitHandle = () => {
     selectTagList.value.forEach((tagId) => {
       dataForm.accTagDTOList.push({id: tagId, accommodationId: dataForm.id});
     });
-    (!dataForm.id ? baseService.post : baseService.put)("/accommodation/accommodation", dataForm).then((res) => {
+    (!dataForm.id ? baseService.post : baseService.put)("/accommodation/accommodation", dataForm, {"Contain-HTML": true}).then((res) => {
       emits.emit(EMitt.OnCloseCurrTab);
       ElMessage.success({
         message: 'Success',
