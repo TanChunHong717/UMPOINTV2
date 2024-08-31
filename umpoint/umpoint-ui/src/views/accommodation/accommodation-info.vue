@@ -6,7 +6,7 @@
           <h1 class="h1-text">{{ accommodation.name }}</h1>
         </el-col>
         <el-col :span="8" class="end-justify">
-          <el-button class="ml-5" type="danger" v-if="state.hasPermission('accommodation:accommodation:delete')">Delete</el-button>
+          <el-button class="ml-5" type="danger" v-if="state.hasPermission('accommodation:accommodation:delete')" @click="deleteHandle()">Delete</el-button>
         </el-col>
       </el-row>
       <el-carousel height="300px" class="carousel-container">
@@ -106,11 +106,12 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {onMounted, ref, reactive, toRefs} from 'vue';
+import {onMounted, ref, reactive, toRefs, onUpdated} from 'vue';
 import baseService from "@/service/baseService";
 import {useRoute} from "vue-router";
 import useView from "@/hooks/useView";
 import router from "@/router";
+import {ElMessage} from "element-plus";
 
 const route = useRoute()
 const accommodation = ref();
@@ -125,6 +126,11 @@ const getInfo = (id: bigint) => {
   });
 };
 
+const initialize = () => {
+  const id = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id;
+  getInfo(BigInt(id));
+}
+
 const formatDescription = (description: string) => {
   if (description.startsWith('"'))
     description = description.substring(1);
@@ -134,10 +140,25 @@ const formatDescription = (description: string) => {
   return description;
 }
 
+const deleteHandle = () => {
+  baseService.delete("/accommodation/accommodation", [accommodation.value.id]).then((res) => {
+    ElMessage.success({
+      message: "Success",
+      duration: 500,
+      onClose: () => {
+        state.closeCurrentTab();
+      }
+    });
+  })
+}
+
 onMounted(() => {
-  const id = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id;
-  getInfo(BigInt(id))
+  initialize();
 });
+
+onUpdated(() => {
+  initialize();
+})
 </script>
 <style>
 .h1-text {

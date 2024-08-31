@@ -1,13 +1,9 @@
 package my.edu.um.umpoint.common.xss;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class XssFilter implements Filter {
 

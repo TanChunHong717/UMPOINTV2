@@ -10,8 +10,6 @@ import my.edu.um.umpoint.modules.service.dto.SvcTagDTO;
 import my.edu.um.umpoint.modules.service.entity.SvcTagEntity;
 import my.edu.um.umpoint.modules.service.service.SvcTagService;
 import cn.hutool.core.util.StrUtil;
-import my.edu.um.umpoint.modules.space.dto.SpcTagDTO;
-import my.edu.um.umpoint.modules.space.entity.SpcTagEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -55,7 +55,7 @@
         </association>
         <collection property="accImageEntityList" ofType="my.edu.um.umpoint.modules.accommodation.entity.AccImageEntity">
             <id property="id" column="image_id"/>
-            <result property="spaceId" column="id"/>
+            <result property="accommodationId" column="image_accommodation_id"/>
             <result property="imageUrl" column="image_url"/>
         </collection>
         <collection property="accTagEntityList" ofType="my.edu.um.umpoint.modules.accommodation.entity.AccTagEntity">
@@ -95,6 +95,7 @@
         b.approval_required,
         b.min_booking_hours,
         i.id AS image_id,
+        i.accommodation_id AS image_accommodation_id,
         i.image_url,
         t.id AS tag_id,
         t.tag_name
@@ -109,6 +110,7 @@
         LEFT JOIN sys_user cr ON s.creator = cr.id
         LEFT JOIN sys_user u ON s.updater = u.id
         <where>
+            and a.status = 1
             <if test="name != null and name.trim() != ''">
                 and a.name like #{name}
             </if>

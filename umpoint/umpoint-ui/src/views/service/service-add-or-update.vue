@@ -3,7 +3,7 @@
     <el-form-item label="Name" prop="name">
       <el-input v-model="dataForm.name" placeholder="Name"></el-input>
     </el-form-item>
-    <el-form-item label="Category" prop="category">
+    <el-form-item label="Category" prop="catId">
       <el-select
         v-model="dataForm.catId"
         placeholder="Select category"
@@ -16,16 +16,13 @@
         />
       </el-select>
     </el-form-item>
-    <el-form-item label="Department" prop="department">
+    <el-form-item label="Department" prop="deptName">
       <el-popover :width="530" ref="deptListPopover" placement="bottom-start" trigger="click" popper-class="popover-pop">
         <template v-slot:reference>
           <el-input v-model="dataForm.deptName" :readonly="true" placeholder="Department"></el-input>
         </template>
         <div class="popover-pop-body"><el-tree :data="deptList" :props="{ label: 'name', children: 'children' }" node-key="id" ref="deptListTree" :highlight-current="true" :expand-on-click-node="false" accordion @current-change="deptListTreeCurrentChangeHandle"> </el-tree></div>
       </el-popover>
-    </el-form-item>
-    <el-form-item label="Address" prop="address">
-      <el-input v-model="dataForm.address" placeholder="Address" :rows="2" type="textarea"></el-input>
     </el-form-item>
     <el-form-item label="Description" prop="description">
       <Editor
@@ -60,7 +57,7 @@
   </el-form>
 </template>
 <script lang="ts" setup>
-import {onMounted, reactive, ref} from "vue";
+import {onMounted, onUpdated, reactive, ref} from "vue";
 import baseService from "@/service/baseService";
 import { ElMessage } from "element-plus";
 import {IObject} from "@/types/interface";
@@ -88,11 +85,10 @@ const dataForm = reactive<any>({
   name: '',
   catId: '',
   deptId: '',
-  address: '',
   description: '',
   deptName: '',
-  spcImageDTOList: [],
-  spcTagDTOList: [],
+  svcImageDTOList: [],
+  svcTagDTOList: [],
   status: 1
 });
 
@@ -104,9 +100,6 @@ const rules = ref({
     { required: true, message: 'Required fields cannot be empty', trigger: 'change' }
   ],
   deptName: [
-    { required: true, message: 'Required fields cannot be empty', trigger: 'change' }
-  ],
-  address: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'change' }
   ]
 });
@@ -144,21 +137,34 @@ const getTagList = () => {
   });
 };
 
-const getInfo = (id: number) => {
+const getInfo = (id: bigint) => {
   baseService.get("/service/service/" + id).then((res) => {
     Object.assign(dataForm, res.data);
-    for (let i = 0; i < res.data.spcImageDTOList.length; i++) {
-      let spcImageDTO = res.data.spcImageDTOList[i];
-      fileList.value.push({id: spcImageDTO.id, url: spcImageDTO.imageUrl})
+    for (let i = 0; res.data.svcImageDTOList && i < res.data.svcImageDTOList.length; i++) {
+      let svcImageDTO = res.data.svcImageDTOList[i];
+      fileList.value.push({id: svcImageDTO.id, url: svcImageDTO.imageUrl})
     }
-    for (let i = 0; i < res.data.spcTagDTOList.length; i++) {
-      let spcTagDTO = res.data.spcTagDTOList[i];
-      selectTagList.value.push(spcTagDTO.id);
+    for (let i = 0; res.data.svcTagDTOList && i < res.data.svcTagDTOList.length; i++) {
+      let svcTagDTO = res.data.svcTagDTOList[i];
+      selectTagList.value.push(svcTagDTO.id);
     }
+    dataForm.description = formatDescription(dataForm.description);
   });
 };
 
-const init = (id?: number) => {
+const formatDescription = (description: any) => {
+  if (!description || !(description instanceof String))
+    return "";
+  if (description.startsWith('"'))
+    description = description.substring(1);
+  if (description.endsWith('"'))
+    description = description.substring(0, description.length-1);
+  description = description.replace("\\n", "");
+  description = description.replace("null", "");
+  return description;
+}
+
+const init = (id?: bigint) => {
   dataForm.id = "";
 
   getCategoryList();
@@ -170,13 +176,18 @@ const init = (id?: number) => {
     dataFormRef.value.resetFields();
   }
 
-  if (id && !isNaN(id)) {
+  if (id && !isNaN(Number(id))) {
     getInfo(id);
   }
 };
 
-const imageUploadHandle = (spcImageDTOList: any) => {
-  dataForm.spcImageDTOList = spcImageDTOList
+const initialize = () => {
+  const id = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id;
+  init(id ? BigInt(id): undefined)
+}
+
+const imageUploadHandle = (svcImageDTOList: any) => {
+  dataForm.svcImageDTOList = svcImageDTOList
 }
 
 // Form submission
@@ -185,11 +196,12 @@ const dataFormSubmitHandle = () => {
     if (!valid) {
       return false;
     }
-    dataForm.spcImageDTOList.forEach((spcImageDTO: any) => {
-      spcImageDTO.spaceId = dataForm.id;
-    })
+    dataForm.svcImageDTOList.forEach((svcImageDTO: any) => {
+      svcImageDTO.serviceId = dataForm.id;
+    });
+    dataForm.svcTagDTOList = [];
     selectTagList.value.forEach((tagId) => {
-      dataForm.spcTagDTOList.push({id: tagId, spaceId: dataForm.id});
+      dataForm.svcTagDTOList.push({id: tagId, serviceId: dataForm.id});
     });
     (!dataForm.id ? baseService.post : baseService.put)("/service/service", dataForm, {"Contain-HTML": true}).then((res) => {
       emits.emit(EMitt.OnCloseCurrTab);
@@ -202,7 +214,11 @@ const dataFormSubmitHandle = () => {
 };
 
 onMounted(() => {
-  init(Number(route.params.id));
+  initialize();
+})
+
+onUpdated(() => {
+  initialize();
 })
 </script>
 <style>

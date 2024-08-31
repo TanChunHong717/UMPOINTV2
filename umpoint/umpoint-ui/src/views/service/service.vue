@@ -117,7 +117,7 @@ const tagList = ref([]);
 const currentChooseDepartment = ref();
 
 const view = reactive({
-  deleteIsBatch: false,
+  deleteIsBatch: true,
   getDataListURL: "/service/service/page",
   getDataListIsPage: true,
   exportURL: "/service/service/export",
@@ -133,7 +133,7 @@ const view = reactive({
 const state = reactive({ ...useView(view), ...toRefs(view) });
 
 const addHandle = () => {
-  router.push({name: "space-add"})
+  router.push({name: "service-add"})
 };
 
 const getDeptList = () => {

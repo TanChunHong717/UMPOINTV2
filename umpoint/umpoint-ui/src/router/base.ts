@@ -51,40 +51,58 @@ const routes: Array<RouteRecordRaw> = [
     component: Layout,
   },
   {
-    path: "/space-management/space-info/:id",
+    path: "/space/space-info/:id",
     name: "space-info",
     component: () => import("@/views/space/space-info.vue"),
     meta: { title: "Space Info", requiresAuth: true, isNavigationMenu: false }
   },
   {
-    path: "/space-management/space/add",
+    path: "/space/space/add",
     name: "space-add",
     component: () => import("@/views/space/space-add-or-update.vue"),
     meta: { title: "Space Add", requiresAuth: true, isNavigationMenu: false }
   },
   {
-    path: "/space-management/space/update/:id",
+    path: "/space/space/update/:id",
     name: "space-update",
     component: () => import("@/views/space/space-add-or-update.vue"),
     meta: { title: "Space Update", requiresAuth: true, isNavigationMenu: false }
   },
   {
-    path: "/service-management/service-info/:id",
+    path: "/service/service-info/:id",
     name: "service-info",
     component: () => import("@/views/service/service-info.vue"),
     meta: { title: "Service Info", requiresAuth: true, isNavigationMenu: false }
   },
   {
-    path: "/service-management/service/add",
+    path: "/service/service/add",
     name: "service-add",
     component: () => import("@/views/service/service-add-or-update.vue"),
     meta: { title: "Service Add", requiresAuth: true, isNavigationMenu: false }
   },
   {
-    path: "/service-management/service/update/:id",
+    path: "/service/service/update/:id",
     name: "service-update",
     component: () => import("@/views/service/service-add-or-update.vue"),
     meta: { title: "Service Update", requiresAuth: true, isNavigationMenu: false }
+  },
+  {
+    path: "/accommodation/accommodation-info/:id",
+    name: "accommodation-info",
+    component: () => import("@/views/accommodation/accommodation-info.vue"),
+    meta: { title: "Accommodation Info", requiresAuth: true, isNavigationMenu: false }
+  },
+  {
+    path: "/accommodation/accommodation/add",
+    name: "accommodation-add",
+    component: () => import("@/views/accommodation/accommodation-add-or-update.vue"),
+    meta: { title: "Accommodation Add", requiresAuth: true, isNavigationMenu: false }
+  },
+  {
+    path: "/accommodation/accommodation/update/:id",
+    name: "accommodation-update",
+    component: () => import("@/views/accommodation/accommodation-add-or-update.vue"),
+    meta: { title: "Accommodation Update", requiresAuth: true, isNavigationMenu: false }
   },
   // must be last to prevent redirecting to error page
   {

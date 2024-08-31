@@ -137,7 +137,7 @@ const tagList = ref([]);
 const currentChooseDepartment = ref();
 
 const view = reactive({
-  deleteIsBatch: false,
+  deleteIsBatch: true,
   getDataListURL: "/space/space/page",
   getDataListIsPage: true,
   exportURL: "/space/space/export",

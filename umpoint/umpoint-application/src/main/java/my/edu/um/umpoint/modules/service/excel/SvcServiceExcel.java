@@ -22,8 +22,6 @@ public class SvcServiceExcel {
     private Long catId;
     @ExcelProperty(value = "Department ID")
     private Long deptId;
-    @ExcelProperty(value = "Address")
-    private String address;
     @ExcelProperty(value = "Description")
     private String description;
     @ExcelProperty(value = "Manager ID")

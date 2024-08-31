@@ -119,20 +119,24 @@ public class AccAccommodationController {
     }
 
     private void validateAccommodationTagDTO(AccAccommodationDTO dto) {
-        dto.getAccTagDTOList().forEach(tagDTO -> {
-            ValidatorUtils.validateEntity(
-                    tagDTO,
-                    InsertGroup.class
-            );
-        });
+        if (dto != null && !dto.getAccTagDTOList().isEmpty()){
+            dto.getAccTagDTOList().forEach(tagDTO -> {
+                ValidatorUtils.validateEntity(
+                        tagDTO,
+                        InsertGroup.class
+                );
+            });
+        }
     }
 
     private void validateAccommodationImageDTO(AccAccommodationDTO dto) {
-        dto.getAccImageDTOList().forEach(imageDTO -> {
-            ValidatorUtils.validateEntity(
-                    imageDTO,
-                    InsertGroup.class
-            );
-        });
+        if (dto != null && !dto.getAccImageDTOList().isEmpty()) {
+            dto.getAccImageDTOList().forEach(imageDTO -> {
+                ValidatorUtils.validateEntity(
+                        imageDTO,
+                        InsertGroup.class
+                );
+            });
+        }
     }
 }

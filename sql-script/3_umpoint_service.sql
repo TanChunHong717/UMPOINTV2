@@ -24,7 +24,6 @@ CREATE TABLE svc_service (
     name varchar(50) NOT NULL COMMENT 'Name',
     cat_id bigint NOT NULL COMMENT 'Category ID',
     dept_id bigint NOT NULL COMMENT 'Department ID',
-    address varchar(250) NOT NULL COMMENT 'Address',
     description varchar(2500) COMMENT 'Description',
     manager bigint NULL COMMENT 'Manager ID',
     booking_rule_id bigint NOT NULL COMMENT 'Booking Rule ID',

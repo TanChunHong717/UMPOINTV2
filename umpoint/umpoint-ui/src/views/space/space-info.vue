@@ -6,7 +6,7 @@
           <h1 class="h1-text">{{ space.name }}</h1>
         </el-col>
         <el-col :span="8" class="end-justify">
-          <el-button class="ml-5" type="danger" v-if="state.hasPermission('space:space:delete')">Delete</el-button>
+          <el-button class="ml-5" type="danger" v-if="state.hasPermission('space:space:delete')" @click="deleteHandle()">Delete</el-button>
         </el-col>
       </el-row>
       <el-carousel height="300px" class="carousel-container">
@@ -25,7 +25,7 @@
         <el-tab-pane label="Details">
           <el-row v-if="state.hasPermission('space:space:update')" class="button-row" justify="end">
             <el-col :span="24">
-              <el-button type="primary" @click="router.push({name: 'space-update'})" size="small">Edit</el-button>
+              <el-button type="primary" @click="$router.push({name: 'space-update', params: {id: space.id}})" size="small">Edit</el-button>
             </el-col>
           </el-row>
           <el-row class="in-col-row">
@@ -108,11 +108,11 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {onMounted, ref, reactive, toRefs} from 'vue';
+import {onMounted, ref, reactive, toRefs, onUpdated} from 'vue';
 import baseService from "@/service/baseService";
 import {useRoute} from "vue-router";
 import useView from "@/hooks/useView";
-import router from "@/router";
+import {ElMessage} from "element-plus";
 
 const route = useRoute()
 const space = ref();
@@ -127,6 +127,11 @@ const getInfo = (id: bigint) => {
   });
 };
 
+const initialize = () => {
+  const id = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id;
+  getInfo(BigInt(id));
+}
+
 const formatDescription = (description: string) => {
   if (description.startsWith('"'))
     description = description.substring(1);
@@ -136,10 +141,25 @@ const formatDescription = (description: string) => {
   return description;
 }
 
+const deleteHandle = () => {
+  baseService.delete("/space/space", [space.value.id]).then((res) => {
+    ElMessage.success({
+      message: "Success",
+      duration: 500,
+      onClose: () => {
+        state.closeCurrentTab();
+      }
+    });
+  })
+}
+
 onMounted(() => {
-  const id = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id;
-  getInfo(BigInt(id))
+  initialize();
 });
+
+onUpdated(() => {
+  initialize();
+})
 </script>
 <style>
 .h1-text {

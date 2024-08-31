@@ -53,7 +53,7 @@
         </association>
         <collection property="spcImageEntityList" ofType="my.edu.um.umpoint.modules.space.entity.SpcImageEntity">
             <id property="id" column="image_id"/>
-            <result property="spaceId" column="id"/>
+            <result property="spaceId" column="image_space_id"/>
             <result property="imageUrl" column="image_url"/>
         </collection>
         <collection property="spcTagEntityList" ofType="my.edu.um.umpoint.modules.space.entity.SpcTagEntity">
@@ -93,6 +93,7 @@
             b.approval_required,
             b.min_booking_hours,
             i.id AS image_id,
+            i.space_id AS image_space_id,
             i.image_url,
             t.id AS tag_id,
             t.tag_name
@@ -107,6 +108,7 @@
         LEFT JOIN sys_user cr ON s.creator = cr.id
         LEFT JOIN sys_user u ON s.updater = u.id
         <where>
+            and s.status = 1
             <if test="name != null and name.trim() != ''">
                 and s.name like #{name}
             </if>
@@ -155,6 +157,7 @@
             b.approval_required,
             b.min_booking_hours,
             i.id AS image_id,
+            i.space_id AS image_space_id,
             i.image_url,
             t.id AS tag_id,
             t.tag_name

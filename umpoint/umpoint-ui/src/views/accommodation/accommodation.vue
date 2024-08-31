@@ -134,7 +134,7 @@ const tagList = ref([]);
 const currentChooseDepartment = ref();
 
 const view = reactive({
-  deleteIsBatch: false,
+  deleteIsBatch: true,
   getDataListURL: "/accommodation/accommodation/page",
   getDataListIsPage: true,
   exportURL: "/accommodation/accommodation/export",

@@ -6,7 +6,7 @@
           <h1 class="h1-text">{{ service.name }}</h1>
         </el-col>
         <el-col :span="8" class="end-justify">
-          <el-button class="ml-5" type="danger" v-if="state.hasPermission('service:service:delete')">Delete</el-button>
+          <el-button class="ml-5" type="danger" v-if="state.hasPermission('service:service:delete')" @click="deleteHandle()">Delete</el-button>
         </el-col>
       </el-row>
       <el-carousel height="300px" class="carousel-container">
@@ -88,16 +88,20 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {onMounted, ref, reactive, toRefs} from 'vue';
+import {onMounted, ref, reactive, toRefs, onUpdated} from 'vue';
 import baseService from "@/service/baseService";
 import {useRoute} from "vue-router";
 import useView from "@/hooks/useView";
 import router from "@/router";
+import {ElMessage} from "element-plus";
 
 const route = useRoute()
 const service = ref();
 const isLoading = ref(true);
-const view = reactive({});
+const view = reactive({
+  deleteIsBatch: true,
+  deleteURL: "/service/service",
+});
 const state = reactive({ ...useView(view), ...toRefs(view) });
 
 const getInfo = (id: bigint) => {
@@ -106,6 +110,11 @@ const getInfo = (id: bigint) => {
     isLoading.value = false;
   });
 };
+
+const initialize = () => {
+  const id = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id;
+  getInfo(BigInt(id));
+}
 
 const formatDescription = (description: string) => {
   if (description.startsWith('"'))
@@ -116,10 +125,25 @@ const formatDescription = (description: string) => {
   return description;
 }
 
+const deleteHandle = () => {
+  baseService.delete("/service/service", [service.value.id]).then((res) => {
+    ElMessage.success({
+      message: "Success",
+      duration: 500,
+      onClose: () => {
+        state.closeCurrentTab();
+      }
+    });
+  })
+}
+
 onMounted(() => {
-  const id = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id;
-  getInfo(BigInt(id))
+  initialize();
 });
+
+onUpdated(() => {
+  initialize();
+})
 </script>
 <style>
 .h1-text {

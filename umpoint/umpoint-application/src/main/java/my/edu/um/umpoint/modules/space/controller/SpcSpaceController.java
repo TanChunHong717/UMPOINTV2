@@ -123,20 +123,24 @@ public class SpcSpaceController {
     }
 
     private void validateSpaceTagDTO(SpcSpaceDTO dto) {
-        dto.getSpcTagDTOList().forEach(tagDTO -> {
-            ValidatorUtils.validateEntity(
-                    tagDTO,
-                    InsertGroup.class
-            );
-        });
+        if (dto.getSpcTagDTOList() != null && !dto.getSpcTagDTOList().isEmpty()) {
+            dto.getSpcTagDTOList().forEach(tagDTO -> {
+                ValidatorUtils.validateEntity(
+                        tagDTO,
+                        InsertGroup.class
+                );
+            });
+        }
     }
 
     private void validateSpaceImageDTO(SpcSpaceDTO dto) {
-        dto.getSpcImageDTOList().forEach(imageDTO -> {
-            ValidatorUtils.validateEntity(
-                    imageDTO,
-                    InsertGroup.class
-            );
-        });
+        if (dto.getSpcImageDTOList() != null && !dto.getSpcImageDTOList().isEmpty()) {
+            dto.getSpcImageDTOList().forEach(imageDTO -> {
+                ValidatorUtils.validateEntity(
+                        imageDTO,
+                        InsertGroup.class
+                );
+            });
+        }
     }
 }

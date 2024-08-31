@@ -46,10 +46,6 @@ public class SvcServiceDTO implements Serializable {
 	@NotNull(groups = {DefaultGroup.class})
 	private Long deptId;
 
-	@SchemaProperty(name = "Address")
-	@NotEmpty(groups = {DefaultGroup.class})
-	private String address;
-
 	@SchemaProperty(name = "Description")
 	private String description;
 

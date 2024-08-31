@@ -10,9 +10,6 @@
       <el-form-item>
         <el-button v-if="state.hasPermission('service:tag:save')" type="primary" @click="addOrUpdateHandle()">Add</el-button>
       </el-form-item>
-      <el-form-item>
-        <el-button v-if="state.hasPermission('service:tag:delete')" type="danger" @click="state.deleteHandle()">Delete</el-button>
-      </el-form-item>
     </el-form>
     <el-table v-loading="state.dataListLoading" :data="state.dataList" border @sort-change="state.dataListSortChangeHandle" style="width: 100%">
       <el-table-column prop="tagName" label="Tag name" header-align="center" align="center" sortable="custom"></el-table-column>
@@ -36,7 +33,7 @@ import { reactive, ref, toRefs } from "vue";
 import AddOrUpdate from "./tag-add-or-update.vue";
 
 const view = reactive({
-  deleteIsBatch: false,
+  deleteIsBatch: true,
   getDataListURL: "/service/tag/page",
   getDataListIsPage: true,
   exportURL: "/service/tag/export",

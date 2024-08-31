@@ -34,10 +34,6 @@ public class SvcServiceEntity extends BaseEntity {
      */
 	private Long deptId;
     /**
-     * Address
-     */
-	private String address;
-    /**
      * Description
      */
 	private String description;

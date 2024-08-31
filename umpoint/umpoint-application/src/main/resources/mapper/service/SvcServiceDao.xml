@@ -41,12 +41,12 @@
             <result property="price" column="price"/>
             <result property="approvalRequired" column="approval_required"/>
         </association>
-        <collection property="svcImageEntityList" ofType="my.edu.um.umpoint.modules.space.entity.SpcImageEntity">
+        <collection property="svcImageEntityList" ofType="my.edu.um.umpoint.modules.service.entity.SvcImageEntity">
             <id property="id" column="image_id"/>
-            <result property="spaceId" column="id"/>
+            <result property="serviceId" column="image_service_id"/>
             <result property="imageUrl" column="image_url"/>
         </collection>
-        <collection property="svcTagEntityList" ofType="my.edu.um.umpoint.modules.space.entity.SpcTagEntity">
+        <collection property="svcTagEntityList" ofType="my.edu.um.umpoint.modules.service.entity.SvcTagEntity">
             <id property="id" column="tag_id"/>
             <result column="tag_name" property="tagName"/>
         </collection>
@@ -75,6 +75,7 @@
         b.price,
         b.approval_required,
         i.id AS image_id,
+        i.service_id AS image_service_id,
         i.image_url,
         t.id AS tag_id,
         t.tag_name
@@ -89,6 +90,7 @@
         LEFT JOIN sys_user cr ON s.creator = cr.id
         LEFT JOIN sys_user u ON s.updater = u.id
         <where>
+            and s.status = 1
             <if test="name != null and name.trim() != ''">
                 and s.name like #{name}
             </if>
@@ -135,6 +137,7 @@
             b.approval_required,
             b.min_booking_hours,
             i.id AS image_id,
+            i.service_id AS image_service_id,
             i.image_url,
             t.id AS tag_id,
             t.tag_name

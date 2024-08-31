@@ -3,7 +3,7 @@
     <el-form-item label="Name" prop="name">
       <el-input v-model="dataForm.name" placeholder="Name"></el-input>
     </el-form-item>
-    <el-form-item label="Category" prop="category">
+    <el-form-item label="Category" prop="catId">
       <el-select
         v-model="dataForm.catId"
         placeholder="Select category"
@@ -16,7 +16,7 @@
         />
       </el-select>
     </el-form-item>
-    <el-form-item label="Department" prop="department">
+    <el-form-item label="Department" prop="deptName">
       <el-popover :width="530" ref="deptListPopover" placement="bottom-start" trigger="click" popper-class="popover-pop">
         <template v-slot:reference>
           <el-input v-model="dataForm.deptName" :readonly="true" placeholder="Department"></el-input>
@@ -66,7 +66,7 @@
   </el-form>
 </template>
 <script lang="ts" setup>
-import {onMounted, reactive, ref} from "vue";
+import {onMounted, onUpdated, reactive, ref} from "vue";
 import baseService from "@/service/baseService";
 import { ElMessage } from "element-plus";
 import {IObject} from "@/types/interface";
@@ -155,21 +155,34 @@ const getTagList = () => {
   });
 };
 
-const getInfo = (id: number) => {
+const getInfo = (id: bigint) => {
   baseService.get("/accommodation/accommodation/" + id).then((res) => {
     Object.assign(dataForm, res.data);
-    for (let i = 0; i < res.data.accImageDTOList.length; i++) {
+    for (let i = 0; res.data.accImageDTOList && i < res.data.accImageDTOList.length; i++) {
       let accImageDTO = res.data.accImageDTOList[i];
       fileList.value.push({id: accImageDTO.id, url: accImageDTO.imageUrl})
     }
-    for (let i = 0; i < res.data.accTagDTOList.length; i++) {
+    for (let i = 0; res.data.accTagDTOList && i < res.data.accTagDTOList.length; i++) {
       let accTagDTO = res.data.accTagDTOList[i];
       selectTagList.value.push(accTagDTO.id);
     }
+    dataForm.description = formatDescription(dataForm.description);
   });
 };
 
-const init = (id?: number) => {
+const formatDescription = (description: any) => {
+  if (!description || !(description instanceof String))
+    return "";
+  if (description.startsWith('"'))
+    description = description.substring(1);
+  if (description.endsWith('"'))
+    description = description.substring(0, description.length-1);
+  description = description.replace("\\n", "");
+  description = description.replace("null", "");
+  return description;
+}
+
+const init = (id?: bigint) => {
   dataForm.id = "";
 
   getCategoryList();
@@ -181,10 +194,15 @@ const init = (id?: number) => {
     dataFormRef.value.resetFields();
   }
 
-  if (id && !isNaN(id)) {
+  if (id && !isNaN(Number(id))) {
     getInfo(id);
   }
 };
+
+const initialize = () => {
+  const id = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id;
+  init(id ? BigInt(id): undefined)
+}
 
 const imageUploadHandle = (accImageDTOList: any) => {
   dataForm.accImageDTOList = accImageDTOList
@@ -198,7 +216,8 @@ const dataFormSubmitHandle = () => {
     }
     dataForm.accImageDTOList.forEach((accImageDTO: any) => {
       accImageDTO.accommodationId = dataForm.id;
-    })
+    });
+    dataForm.accTagDTOList = [];
     selectTagList.value.forEach((tagId) => {
       dataForm.accTagDTOList.push({id: tagId, accommodationId: dataForm.id});
     });
@@ -213,7 +232,11 @@ const dataFormSubmitHandle = () => {
 };
 
 onMounted(() => {
-  init(Number(route.params.id));
+  initialize();
+})
+
+onUpdated(() => {
+  initialize();
 })
 </script>
 <style>

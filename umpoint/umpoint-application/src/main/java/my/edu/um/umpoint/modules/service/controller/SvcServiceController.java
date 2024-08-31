@@ -120,20 +120,24 @@ public class SvcServiceController {
     }
 
     private void validateServiceTagDTO(SvcServiceDTO dto) {
-        dto.getSvcTagDTOList().forEach(tagDTO -> {
-            ValidatorUtils.validateEntity(
-                    tagDTO,
-                    InsertGroup.class
-            );
-        });
+        if (dto.getSvcTagDTOList() != null && !dto.getSvcTagDTOList().isEmpty()) {
+            dto.getSvcTagDTOList().forEach(tagDTO -> {
+                ValidatorUtils.validateEntity(
+                        tagDTO,
+                        InsertGroup.class
+                );
+            });
+        }
     }
 
     private void validateServiceImageDTO(SvcServiceDTO dto) {
-        dto.getSvcImageDTOList().forEach(imageDTO -> {
-            ValidatorUtils.validateEntity(
-                    imageDTO,
-                    InsertGroup.class
-            );
-        });
+        if (dto.getSvcImageDTOList() != null && !dto.getSvcImageDTOList().isEmpty()) {
+            dto.getSvcImageDTOList().forEach(imageDTO -> {
+                ValidatorUtils.validateEntity(
+                        imageDTO,
+                        InsertGroup.class
+                );
+            });
+        }
     }
 }
