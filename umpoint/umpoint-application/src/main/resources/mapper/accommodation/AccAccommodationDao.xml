@@ -86,14 +86,13 @@
         cr.username AS creator_name,
         u.username AS updater_name,
         b.id AS booking_rule_id,
-        b.hour_price,
-        b.four_hours_price,
         b.day_price,
+        b.week_price,
         b.open_days_before_event,
         b.close_days_before_event,
         b.max_reservation_days,
         b.approval_required,
-        b.min_booking_hours,
+        b.min_booking_days,
         i.id AS image_id,
         i.accommodation_id AS image_accommodation_id,
         i.image_url,
@@ -102,13 +101,13 @@
         FROM acc_accommodation a
         LEFT JOIN acc_category c ON a.cat_id = c.id
         LEFT JOIN sys_dept d ON a.dept_id = d.id
-        LEFT JOIN acc_image i ON a.id = i.space_id
+        LEFT JOIN acc_image i ON a.id = i.accommodation_id
         LEFT JOIN acc_booking_rule b ON a.booking_rule_id = b.id
-        LEFT JOIN acc_accommodation_tag at ON a.id = at.space_id
+        LEFT JOIN acc_accommodation_tag at ON a.id = at.accommodation_id
         LEFT JOIN acc_tag t ON at.tag_id = t.id
-        LEFT JOIN sys_user m ON s.manager = m.id
-        LEFT JOIN sys_user cr ON s.creator = cr.id
-        LEFT JOIN sys_user u ON s.updater = u.id
+        LEFT JOIN sys_user m ON a.manager = m.id
+        LEFT JOIN sys_user cr ON a.creator = cr.id
+        LEFT JOIN sys_user u ON a.updater = u.id
         <where>
             and a.status = 1
             <if test="name != null and name.trim() != ''">
@@ -150,14 +149,13 @@
         cr.username AS creator_name,
         u.username AS updater_name,
         b.id AS booking_rule_id,
-        b.hour_price,
-        b.four_hours_price,
         b.day_price,
+        b.week_price,
         b.open_days_before_event,
         b.close_days_before_event,
         b.max_reservation_days,
         b.approval_required,
-        b.min_booking_hours,
+        b.min_booking_days,
         i.id AS image_id,
         i.image_url,
         t.id AS tag_id,
@@ -165,13 +163,13 @@
         FROM acc_accommodation a
         LEFT JOIN acc_category c ON a.cat_id = c.id
         LEFT JOIN sys_dept d ON a.dept_id = d.id
-        LEFT JOIN acc_image i ON a.id = i.space_id
+        LEFT JOIN acc_image i ON a.id = i.accommodation_id
         LEFT JOIN acc_booking_rule b ON a.booking_rule_id = b.id
-        LEFT JOIN acc_accommodation_tag at ON a.id = at.space_id
+        LEFT JOIN acc_accommodation_tag at ON a.id = at.accommodation_id
         LEFT JOIN acc_tag t ON at.tag_id = t.id
-        LEFT JOIN sys_user m ON s.manager = m.id
-        LEFT JOIN sys_user cr ON s.creator = cr.id
-        LEFT JOIN sys_user u ON s.updater = u.id
+        LEFT JOIN sys_user m ON a.manager = m.id
+        LEFT JOIN sys_user cr ON a.creator = cr.id
+        LEFT JOIN sys_user u ON a.updater = u.id
         WHERE a.id = #{id}
     </select>
 </mapper>

@@ -171,7 +171,7 @@ const getInfo = (id: bigint) => {
 };
 
 const formatDescription = (description: any) => {
-  if (!description || !(description instanceof String))
+  if (!description || typeof description !== 'string')
     return "";
   if (description.startsWith('"'))
     description = description.substring(1);

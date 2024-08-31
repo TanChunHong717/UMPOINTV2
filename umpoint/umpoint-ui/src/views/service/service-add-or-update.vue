@@ -149,11 +149,12 @@ const getInfo = (id: bigint) => {
       selectTagList.value.push(svcTagDTO.id);
     }
     dataForm.description = formatDescription(dataForm.description);
+    console.log(dataForm);
   });
 };
 
 const formatDescription = (description: any) => {
-  if (!description || !(description instanceof String))
+  if (!description || typeof description !== 'string')
     return "";
   if (description.startsWith('"'))
     description = description.substring(1);

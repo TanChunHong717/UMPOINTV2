@@ -1,5 +1,6 @@
 package my.edu.um.umpoint.modules.accommodation.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -60,12 +61,14 @@ public class AccAccommodationEntity extends BaseEntity {
 	*/
 	private Integer status;
 	/**
-	* Updater
-	*/
+	 * Last updater
+	 */
+	@TableField(fill = FieldFill.INSERT_UPDATE)
 	private Long updater;
 	/**
-	* Update date
-	*/
+	 * Last update date
+	 */
+	@TableField(fill = FieldFill.INSERT_UPDATE)
 	private Date updateDate;
 	/**
 	 * Category name

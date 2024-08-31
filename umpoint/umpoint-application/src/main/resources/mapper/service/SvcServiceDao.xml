@@ -8,7 +8,6 @@
         <result property="name" column="name"/>
         <result property="catId" column="cat_id"/>
         <result property="deptId" column="dept_id"/>
-        <result property="address" column="address"/>
         <result property="description" column="description"/>
         <result property="manager" column="manager"/>
         <result property="bookingRuleId" column="booking_rule_id"/>
@@ -23,7 +22,6 @@
         <result property="name" column="name"/>
         <result property="catId" column="cat_id"/>
         <result property="deptId" column="dept_id"/>
-        <result property="address" column="address"/>
         <result property="description" column="description"/>
         <result property="manager" column="manager"/>
         <result property="bookingRuleId" column="booking_rule_id"/>
@@ -58,7 +56,6 @@
         s.name,
         s.cat_id,
         s.dept_id,
-        s.address,
         s.description,
         s.manager,
         s.booking_rule_id,
@@ -82,9 +79,9 @@
         FROM svc_service s
         LEFT JOIN svc_category c ON s.cat_id = c.id
         LEFT JOIN sys_dept d ON s.dept_id = d.id
-        LEFT JOIN svc_image i ON s.id = i.space_id
+        LEFT JOIN svc_image i ON s.id = i.service_id
         LEFT JOIN svc_booking_rule b ON s.booking_rule_id = b.id
-        LEFT JOIN svc_service_tag st ON s.id = st.space_id
+        LEFT JOIN svc_service_tag st ON s.id = st.service_id
         LEFT JOIN svc_tag t ON st.tag_id = t.id
         LEFT JOIN sys_user m ON s.manager = m.id
         LEFT JOIN sys_user cr ON s.creator = cr.id
@@ -114,7 +111,6 @@
             s.name,
             s.cat_id,
             s.dept_id,
-            s.address,
             s.description,
             s.manager,
             s.booking_rule_id,
@@ -128,14 +124,8 @@
             cr.username AS creator_name,
             u.username AS updater_name,
             b.id AS booking_rule_id,
-            b.hour_price,
-            b.four_hours_price,
-            b.day_price,
-            b.open_days_before_event,
-            b.close_days_before_event,
-            b.max_reservation_days,
+            b.price,
             b.approval_required,
-            b.min_booking_hours,
             i.id AS image_id,
             i.service_id AS image_service_id,
             i.image_url,
@@ -144,9 +134,9 @@
         FROM svc_service s
         LEFT JOIN svc_category c ON s.cat_id = c.id
         LEFT JOIN sys_dept d ON s.dept_id = d.id
-        LEFT JOIN svc_image i ON s.id = i.space_id
+        LEFT JOIN svc_image i ON s.id = i.service_id
         LEFT JOIN svc_booking_rule b ON s.booking_rule_id = b.id
-        LEFT JOIN svc_service_tag st ON s.id = st.space_id
+        LEFT JOIN svc_service_tag st ON s.id = st.service_id
         LEFT JOIN svc_tag t ON st.tag_id = t.id
         LEFT JOIN sys_user m ON s.manager = m.id
         LEFT JOIN sys_user cr ON s.creator = cr.id

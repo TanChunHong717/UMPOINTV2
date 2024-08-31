@@ -35,7 +35,7 @@ CREATE TABLE spc_space (
     facilities varchar(250) COMMENT 'Facilities',
     capacity decimal(5,0) COMMENT 'Max capacity',
     manager bigint NULL COMMENT 'Manager ID',
-    booking_rule_id bigint NOT NULL COMMENT 'Booking Rule ID',
+    booking_rule_id bigint NULL COMMENT 'Booking Rule ID',
     status tinyint COMMENT 'Status 0:Suspend 1:Normal',
     creator bigint NOT NULL COMMENT 'Creator',
     create_date datetime NOT NULL COMMENT 'Create date',
