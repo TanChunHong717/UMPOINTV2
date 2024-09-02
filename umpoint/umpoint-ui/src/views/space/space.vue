@@ -55,15 +55,15 @@
         <el-button v-if="state.hasPermission('space:space:save')" type="primary" @click="addHandle()">Add</el-button>
       </el-form-item>
     </el-form>
-    <div v-for="space in state.dataList" :key="space.id" class="space-container">
-      <el-row align="middle" justify="start" style="margin-bottom: 10px;" :gutter="10">
-        <el-col :span="5">
+    <div v-for="space in state.dataList" :key="space.id">
+      <el-row align="middle" justify="start" :gutter="10" style="padding-bottom: 3px">
+        <el-col :span="4">
           <div v-if="space.spcImageDTOList && space.spcImageDTOList.length > 0">
             <el-image class="space-image" :src="space.spcImageDTOList[0].imageUrl" fit="cover"/>
           </div>
-          <el-empty v-else :image-size="100" description="No Image"></el-empty>
+          <el-empty v-else :image-size="65" style="padding: 0 !important;" description="No Image"></el-empty>
         </el-col>
-        <el-col :span="16">
+        <el-col :span="17">
           <el-row class="in-col-row">
             <el-col :span="24" class="title">{{ space.name }}</el-col>
           </el-row>
@@ -74,7 +74,7 @@
             </el-col>
           </el-row>
           <el-row class="in-col-row">
-            <el-col :span="8">
+            <el-col :span="12">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-apartment"></use></svg>
               Department: {{ space.deptName }}
             </el-col>
@@ -82,7 +82,7 @@
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-appstore"></use></svg>
               Category: {{ space.category }}
             </el-col>
-            <el-col :span="8">
+            <el-col :span="4">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-team"></use></svg>
               Capacity: {{ space.capacity }}
             </el-col>
@@ -99,18 +99,6 @@
               Tag:
               <el-tag v-if="space.spcTagDTOList?.length > 0" v-for="tag in space.spcTagDTOList" type="primary">{{ tag.tagName }} </el-tag>
               <el-tag v-else type="info">No Tag</el-tag>
-            </el-col>
-          </el-row>
-          <el-divider style="margin: 10px 0;"></el-divider>
-          <el-row>
-            <el-col :span="8">
-              <span class="hour_price">RM{{ space.hour_price }}</span> / Hour
-            </el-col>
-            <el-col :span="8" v-if="space.four_hour_price">
-              <span class="four_hour_price">RM{{ space.four_hour_price }}</span> / 4 Hours
-            </el-col>
-            <el-col :span="8" v-if="space.day_price">
-              <span class="day_price">RM{{ space.day_price }}</span> / Day
             </el-col>
           </el-row>
         </el-col>
@@ -210,8 +198,8 @@ onActivated(() => {
 }
 .space-image {
   width: 100%;
-  max-width: 250px;
-  max-height: 150px;
+  max-width: 200px;
+  max-height: 125px;
   padding: 0 10px;
 }
 .title {

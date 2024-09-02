@@ -24,15 +24,6 @@ public class SpcBookingRuleDTO implements Serializable {
 	@SchemaProperty(name = "ID")
 	private Long id;
 
-	@SchemaProperty(name = "Price for book an hour")
-	private BigDecimal hourPrice;
-
-	@SchemaProperty(name = "Price for book four hours")
-	private BigDecimal fourHoursPrice;
-
-	@SchemaProperty(name = "Price for book a day")
-	private BigDecimal dayPrice;
-
 	@SchemaProperty(name = "Days open for booking before event")
 	private Integer openDaysBeforeEvent;
 
@@ -42,7 +33,7 @@ public class SpcBookingRuleDTO implements Serializable {
 	@SchemaProperty(name = "Maximum reservation days")
 	private Integer maxReservationDays;
 
-	@SchemaProperty(name = "Is booking require approve by manager")
+	@SchemaProperty(name = "0:Automatic approve 1: Require admin approve")
 	private Integer approvalRequired;
 
 	@SchemaProperty(name = "Minimum booking hours per day")

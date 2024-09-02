@@ -67,7 +67,7 @@
             <div v-html="formatDescription(space.description)"></div>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="Availability" v-if="space.spcBookingRuleDTO">
+        <el-tab-pane label="Availability">
           <el-row v-if="state.hasPermission('space:booking-rule:update')" class="button-row" justify="end">
             <el-col :span="24">
               <el-button type="primary" size="small">Edit</el-button>
@@ -96,11 +96,25 @@
               </el-col>
             </el-row>
           </div>
-          <h2>Price</h2>
-          <el-row>
-            <el-col :span="8"><span class="hour_price">RM{{ space.hour_price }}</span> / Hour</el-col>
-            <el-col :span="8" v-if="space.four_hour_price"><span class="four_hour_price">RM{{ space.four_hour_price }}</span> / 4 Hours</el-col>
-            <el-col :span="8" v-if="space.day_price"><span class="day_price">RM{{ space.day_price }}</span> / Day</el-col>
+          <div v-else>
+            No booking rule is config for this space.
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="Price">
+          <el-row v-if="state.hasPermission('space:space:update')" class="button-row" justify="end">
+            <el-col :span="24">
+              <el-button type="primary" @click="router.push({name: 'space-update'})" size="small">Edit</el-button>
+            </el-col>
+          </el-row>
+          <el-row v-if="space.hourPrice">
+            <el-col :span="8"><span class="hour_price">RM{{ space.hourPrice }}</span> / Hour</el-col>
+            <el-col :span="8" v-if="space.fourHoursPrice"><span class="four_hour_price">RM{{ space.fourHoursPrice }}</span> / 4 Hours</el-col>
+            <el-col :span="8" v-if="space.dayPrice"><span class="day_price">RM{{ space.dayPrice }}</span> / Day</el-col>
+          </el-row>
+          <el-row v-else>
+            <el-col :span="24">
+              Price is not set for this accommodation.
+            </el-col>
           </el-row>
         </el-tab-pane>
       </el-tabs>
@@ -113,6 +127,7 @@ import baseService from "@/service/baseService";
 import {useRoute} from "vue-router";
 import useView from "@/hooks/useView";
 import {ElMessage} from "element-plus";
+import router from "@/router";
 
 const route = useRoute()
 const space = ref();

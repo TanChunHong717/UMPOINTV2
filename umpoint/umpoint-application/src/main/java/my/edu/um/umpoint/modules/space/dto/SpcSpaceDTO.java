@@ -13,6 +13,7 @@ import org.hibernate.validator.constraints.Range;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -33,6 +34,10 @@ public class SpcSpaceDTO implements Serializable {
 	@Null(groups = {AddGroup.class})
 	@NotNull(groups = {UpdateGroup.class})
 	private Long id;
+
+	@Schema(title = "Status 0:suspend 1:normal")
+	@Range(min=0, max=1, groups = DefaultGroup.class)
+	private Integer status;
 
 	@SchemaProperty(name = "Name")
 	@NotEmpty(groups = {DefaultGroup.class})
@@ -63,12 +68,17 @@ public class SpcSpaceDTO implements Serializable {
 	@SchemaProperty(name = "Manager ID")
 	private Long manager;
 
+	@SchemaProperty(name = "Price for book an hour")
+	private BigDecimal hourPrice;
+
+	@SchemaProperty(name = "Price for book four hours")
+	private BigDecimal fourHoursPrice;
+
+	@SchemaProperty(name = "Price for book a day")
+	private BigDecimal dayPrice;
+
 	@SchemaProperty(name = "Booking Rule ID")
 	private Long bookingRuleId;
-
-	@Schema(title = "status 0:suspend 1:normal", required = true)
-	@Range(min=0, max=1, groups = DefaultGroup.class)
-	private Integer status;
 
 	@SchemaProperty(name = "Creator ID")
 	private Long creator;

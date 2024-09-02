@@ -5,6 +5,7 @@
 
     <resultMap type="my.edu.um.umpoint.modules.accommodation.entity.AccAccommodationEntity" id="accAccommodationMap">
         <id property="id" column="id"/>
+        <result property="status" column="status"/>
         <result property="name" column="name"/>
         <result property="catId" column="cat_id"/>
         <result property="deptId" column="dept_id"/>
@@ -13,6 +14,8 @@
         <result property="facilities" column="facilities"/>
         <result property="capacity" column="capacity"/>
         <result property="manager" column="manager"/>
+        <result property="dayPrice" column="day_price"/>
+        <result property="weekPrice" column="week_price"/>
         <result property="bookingRuleId" column="booking_rule_id"/>
         <result property="status" column="status"/>
         <result property="creator" column="creator"/>
@@ -23,6 +26,7 @@
 
     <resultMap type="my.edu.um.umpoint.modules.accommodation.entity.AccAccommodationEntity" id="accAccommodationSelectMap">
         <id property="id" column="id"/>
+        <result property="status" column="status"/>
         <result property="name" column="name"/>
         <result property="catId" column="cat_id"/>
         <result property="deptId" column="dept_id"/>
@@ -31,6 +35,8 @@
         <result property="facilities" column="facilities"/>
         <result property="capacity" column="capacity"/>
         <result property="manager" column="manager"/>
+        <result property="dayPrice" column="day_price"/>
+        <result property="weekPrice" column="week_price"/>
         <result property="bookingRuleId" column="booking_rule_id"/>
         <result property="status" column="status"/>
         <result property="creator" column="creator"/>
@@ -44,9 +50,6 @@
         <result column="updater_name" property="updaterName" />
         <association property="accBookingRuleEntity">
             <id property="id" column="booking_rule_id"/>
-            <result property="dayPrice" column="day_price"/>
-            <result property="weekPrice" column="week_price"/>
-            <result property="dayPrice" column="day_price"/>
             <result property="openDaysBeforeEvent" column="open_days_before_event"/>
             <result property="closeDaysBeforeEvent" column="close_days_before_event"/>
             <result property="maxReservationDays" column="max_reservation_days"/>
@@ -66,38 +69,39 @@
 
     <select id="getList" resultMap="accAccommodationSelectMap">
         SELECT
-        a.id,
-        a.name,
-        a.cat_id,
-        a.dept_id,
-        a.address,
-        a.description,
-        a.facilities,
-        a.capacity,
-        a.manager,
-        a.booking_rule_id,
-        a.creator,
-        a.create_date,
-        a.updater,
-        a.update_date,
-        c.name AS category,
-        d.name AS dept_name,
-        m.username AS manager_name,
-        cr.username AS creator_name,
-        u.username AS updater_name,
-        b.id AS booking_rule_id,
-        b.day_price,
-        b.week_price,
-        b.open_days_before_event,
-        b.close_days_before_event,
-        b.max_reservation_days,
-        b.approval_required,
-        b.min_booking_days,
-        i.id AS image_id,
-        i.accommodation_id AS image_accommodation_id,
-        i.image_url,
-        t.id AS tag_id,
-        t.tag_name
+            a.id,
+            a.status,
+            a.name,
+            a.cat_id,
+            a.dept_id,
+            a.address,
+            a.description,
+            a.facilities,
+            a.capacity,
+            a.manager,
+            a.day_price,
+            a.week_price,
+            a.booking_rule_id,
+            a.creator,
+            a.create_date,
+            a.updater,
+            a.update_date,
+            c.name AS category,
+            d.name AS dept_name,
+            m.username AS manager_name,
+            cr.username AS creator_name,
+            u.username AS updater_name,
+            b.id AS booking_rule_id,
+            b.open_days_before_event,
+            b.close_days_before_event,
+            b.max_reservation_days,
+            b.approval_required,
+            b.min_booking_days,
+            i.id AS image_id,
+            i.accommodation_id AS image_accommodation_id,
+            i.image_url,
+            t.id AS tag_id,
+            t.tag_name
         FROM acc_accommodation a
         LEFT JOIN acc_category c ON a.cat_id = c.id
         LEFT JOIN sys_dept d ON a.dept_id = d.id
@@ -129,37 +133,40 @@
     </select>
     <select id="selectById" resultMap="accAccommodationSelectMap">
         SELECT
-        a.id,
-        a.name,
-        a.cat_id,
-        a.dept_id,
-        a.address,
-        a.description,
-        a.facilities,
-        a.capacity,
-        a.manager,
-        a.booking_rule_id,
-        a.creator,
-        a.create_date,
-        a.updater,
-        a.update_date,
-        c.name AS category,
-        d.name AS dept_name,
-        m.username AS manager_name,
-        cr.username AS creator_name,
-        u.username AS updater_name,
-        b.id AS booking_rule_id,
-        b.day_price,
-        b.week_price,
-        b.open_days_before_event,
-        b.close_days_before_event,
-        b.max_reservation_days,
-        b.approval_required,
-        b.min_booking_days,
-        i.id AS image_id,
-        i.image_url,
-        t.id AS tag_id,
-        t.tag_name
+            a.id,
+            a.status,
+            a.name,
+            a.cat_id,
+            a.dept_id,
+            a.address,
+            a.description,
+            a.facilities,
+            a.capacity,
+            a.manager,
+            a.day_price,
+            a.week_price,
+            a.booking_rule_id,
+            a.creator,
+            a.create_date,
+            a.updater,
+            a.update_date,
+            c.name AS category,
+            d.name AS dept_name,
+            m.username AS manager_name,
+            cr.username AS creator_name,
+            u.username AS updater_name,
+            b.id AS booking_rule_id,
+            b.day_price,
+            b.week_price,
+            b.open_days_before_event,
+            b.close_days_before_event,
+            b.max_reservation_days,
+            b.approval_required,
+            b.min_booking_days,
+            i.id AS image_id,
+            i.image_url,
+            t.id AS tag_id,
+            t.tag_name
         FROM acc_accommodation a
         LEFT JOIN acc_category c ON a.cat_id = c.id
         LEFT JOIN sys_dept d ON a.dept_id = d.id

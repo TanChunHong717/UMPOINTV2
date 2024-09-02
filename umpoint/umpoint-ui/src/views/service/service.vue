@@ -56,23 +56,23 @@
       </el-form-item>
     </el-form>
     <div v-for="service in state.dataList" :key="service.id" class="service-container">
-      <el-row align="middle" justify="start" style="margin-bottom: 10px;" :gutter="10">
-        <el-col :span="5">
+      <el-row align="middle" justify="start" :gutter="10"  style="margin-bottom: 3px;">
+        <el-col :span="4">
           <div v-if="service.svcImageDTOList && service.svcImageDTOList.length > 0">
             <el-image class="service-image" :src="service.svcImageDTOList[0].imageUrl" fit="cover"/>
           </div>
-          <el-empty v-else :image-size="100" description="No Image"></el-empty>
+          <el-empty v-else :image-size="65" style="padding: 0 !important;" description="No Image"></el-empty>
         </el-col>
         <el-col :span="16">
           <el-row class="in-col-row">
             <el-col :span="24" class="title">{{ service.name }}</el-col>
           </el-row>
           <el-row class="in-col-row">
-            <el-col :span="8">
+            <el-col :span="12">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-apartment"></use></svg>
               Department: {{ service.deptName }}
             </el-col>
-            <el-col :span="8">
+            <el-col :span="12">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-appstore"></use></svg>
               Category: {{ service.category }}
             </el-col>
@@ -83,12 +83,6 @@
               Tag:
               <el-tag v-if="service.svcTagDTOList?.length > 0" v-for="tag in service.svcTagDTOList" type="primary">{{ tag.tagName }} </el-tag>
               <el-tag v-else type="info">No Tag</el-tag>
-            </el-col>
-          </el-row>
-          <el-divider style="margin: 10px 0;"></el-divider>
-          <el-row>
-            <el-col :span="8">
-              <span>RM{{ service.price }}</span> / Service
             </el-col>
           </el-row>
         </el-col>
@@ -190,8 +184,8 @@ onActivated(() => {
 }
 .service-image {
   width: 100%;
-  max-width: 250px;
-  max-height: 150px;
+  max-width: 200px;
+  max-height: 125px;
   padding: 0 10px;
 }
 .title {

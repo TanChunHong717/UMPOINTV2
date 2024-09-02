@@ -5,9 +5,6 @@
 
     <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcBookingRuleEntity" id="spcBookingRuleMap">
         <result property="id" column="id"/>
-        <result property="hourPrice" column="hour_price"/>
-        <result property="fourHoursPrice" column="four_hours_price"/>
-        <result property="dayPrice" column="day_price"/>
         <result property="openDaysBeforeEvent" column="open_days_before_event"/>
         <result property="closeDaysBeforeEvent" column="close_days_before_event"/>
         <result property="maxReservationDays" column="max_reservation_days"/>

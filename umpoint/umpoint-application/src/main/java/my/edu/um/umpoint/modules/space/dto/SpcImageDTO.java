@@ -27,8 +27,6 @@ public class SpcImageDTO implements Serializable {
     private static final long serialVersionUID = -3389885882502784485L;
 
 	@SchemaProperty(name = "ID")
-	@Null(groups = AddGroup.class)
-	@NotNull(groups = {UpdateGroup.class, InsertGroup.class})
 	private Long id;
 
 	@SchemaProperty(name = "Space ID")

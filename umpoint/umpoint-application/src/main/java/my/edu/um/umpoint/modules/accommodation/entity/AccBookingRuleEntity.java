@@ -21,14 +21,6 @@ public class AccBookingRuleEntity {
 	@TableId
 	private Long id;
 	/**
-	* Price for book a day
-	*/
-	private BigDecimal dayPrice;
-	/**
-	* Price for book a week
-	*/
-	private BigDecimal weekPrice;
-	/**
 	* Days open for booking before event
 	*/
 	private Integer openDaysBeforeEvent;
@@ -41,7 +33,7 @@ public class AccBookingRuleEntity {
 	*/
 	private Integer maxReservationDays;
 	/**
-	* Is booking require approve by manager
+	* 0:Automatic approve 1: Require admin approve
 	*/
 	private Integer approvalRequired;
 	/**

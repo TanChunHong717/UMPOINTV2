@@ -21,18 +21,6 @@ public class SpcBookingRuleEntity {
 	@TableId
 	private Long id;
     /**
-     * Price for book an hour
-     */
-	private BigDecimal hourPrice;
-    /**
-     * Price for book four hours
-     */
-	private BigDecimal fourHoursPrice;
-    /**
-     * Price for book a day
-     */
-	private BigDecimal dayPrice;
-    /**
      * Days open for booking before event
      */
 	private Integer openDaysBeforeEvent;
@@ -45,7 +33,7 @@ public class SpcBookingRuleEntity {
      */
 	private Integer maxReservationDays;
     /**
-     * Is booking require approve by manager
+     * 0:Automatic approve 1: Require admin approve
      */
 	private Integer approvalRequired;
     /**

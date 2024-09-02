@@ -4,13 +4,15 @@
 <mapper namespace="my.edu.um.umpoint.modules.service.dao.SvcServiceDao">
 
     <resultMap type="my.edu.um.umpoint.modules.service.entity.SvcServiceEntity" id="svcServiceMap">
-        <result property="id" column="id"/>
+        <id property="id" column="id"/>
+        <result property="status" column="status"/>
         <result property="name" column="name"/>
         <result property="catId" column="cat_id"/>
         <result property="deptId" column="dept_id"/>
         <result property="description" column="description"/>
         <result property="manager" column="manager"/>
-        <result property="bookingRuleId" column="booking_rule_id"/>
+        <result property="price" column="price"/>
+        <result property="approvalRequired" column="approval_required"/>
         <result property="creator" column="creator"/>
         <result property="createDate" column="create_date"/>
         <result property="updater" column="updater"/>
@@ -19,12 +21,14 @@
 
     <resultMap type="my.edu.um.umpoint.modules.service.entity.SvcServiceEntity" id="svcServiceSelectMap">
         <id property="id" column="id"/>
+        <result property="status" column="status"/>
         <result property="name" column="name"/>
         <result property="catId" column="cat_id"/>
         <result property="deptId" column="dept_id"/>
         <result property="description" column="description"/>
         <result property="manager" column="manager"/>
-        <result property="bookingRuleId" column="booking_rule_id"/>
+        <result property="price" column="price"/>
+        <result property="approvalRequired" column="approval_required"/>
         <result property="creator" column="creator"/>
         <result property="createDate" column="create_date"/>
         <result property="updater" column="updater"/>
@@ -34,11 +38,6 @@
         <result column="manager_name" property="managerName" />
         <result column="creator_name" property="creatorName" />
         <result column="updater_name" property="updaterName" />
-        <association property="svcBookingRuleEntity">
-            <id property="id" column="booking_rule_id"/>
-            <result property="price" column="price"/>
-            <result property="approvalRequired" column="approval_required"/>
-        </association>
         <collection property="svcImageEntityList" ofType="my.edu.um.umpoint.modules.service.entity.SvcImageEntity">
             <id property="id" column="image_id"/>
             <result property="serviceId" column="image_service_id"/>
@@ -52,35 +51,33 @@
 
     <select id="getList" resultMap="svcServiceSelectMap">
         SELECT
-        s.id,
-        s.name,
-        s.cat_id,
-        s.dept_id,
-        s.description,
-        s.manager,
-        s.booking_rule_id,
-        s.creator,
-        s.create_date,
-        s.updater,
-        s.update_date,
-        c.name AS category,
-        d.name AS dept_name,
-        m.username AS manager_name,
-        cr.username AS creator_name,
-        u.username AS updater_name,
-        b.id AS booking_rule_id,
-        b.price,
-        b.approval_required,
-        i.id AS image_id,
-        i.service_id AS image_service_id,
-        i.image_url,
-        t.id AS tag_id,
-        t.tag_name
+            s.id,
+            s.status,
+            s.name,
+            s.cat_id,
+            s.dept_id,
+            s.description,
+            s.manager,
+            s.price,
+            s.approval_required,
+            s.creator,
+            s.create_date,
+            s.updater,
+            s.update_date,
+            c.name AS category,
+            d.name AS dept_name,
+            m.username AS manager_name,
+            cr.username AS creator_name,
+            u.username AS updater_name,
+            i.id AS image_id,
+            i.service_id AS image_service_id,
+            i.image_url,
+            t.id AS tag_id,
+            t.tag_name
         FROM svc_service s
         LEFT JOIN svc_category c ON s.cat_id = c.id
         LEFT JOIN sys_dept d ON s.dept_id = d.id
         LEFT JOIN svc_image i ON s.id = i.service_id
-        LEFT JOIN svc_booking_rule b ON s.booking_rule_id = b.id
         LEFT JOIN svc_service_tag st ON s.id = st.service_id
         LEFT JOIN svc_tag t ON st.tag_id = t.id
         LEFT JOIN sys_user m ON s.manager = m.id
@@ -108,12 +105,14 @@
     <select id="selectById" resultMap="svcServiceSelectMap">
         SELECT
             s.id,
+            s.status,
             s.name,
             s.cat_id,
             s.dept_id,
             s.description,
             s.manager,
-            s.booking_rule_id,
+            s.price,
+            s.approval_required,
             s.creator,
             s.create_date,
             s.updater,
@@ -123,9 +122,6 @@
             m.username AS manager_name,
             cr.username AS creator_name,
             u.username AS updater_name,
-            b.id AS booking_rule_id,
-            b.price,
-            b.approval_required,
             i.id AS image_id,
             i.service_id AS image_service_id,
             i.image_url,
@@ -135,7 +131,6 @@
         LEFT JOIN svc_category c ON s.cat_id = c.id
         LEFT JOIN sys_dept d ON s.dept_id = d.id
         LEFT JOIN svc_image i ON s.id = i.service_id
-        LEFT JOIN svc_booking_rule b ON s.booking_rule_id = b.id
         LEFT JOIN svc_service_tag st ON s.id = st.service_id
         LEFT JOIN svc_tag t ON st.tag_id = t.id
         LEFT JOIN sys_user m ON s.manager = m.id

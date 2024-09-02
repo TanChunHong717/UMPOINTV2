@@ -81,8 +81,18 @@ public class AccAccommodationServiceImpl extends CrudServiceImpl<AccAccommodatio
     }
 
     private void updateAccommodationImage(AccAccommodationDTO dto) {
+        List<AccImageEntity> imageEntityList = dto.getAccImageDTOList()
+                .stream()
+                .map((accImageDTO) -> {
+                    AccImageEntity entity = new AccImageEntity();
+                    entity.setId(accImageDTO.getId());
+                    entity.setAccommodationId(dto.getId());
+                    entity.setImageUrl(accImageDTO.getImageUrl());
+                    return entity;
+                }).toList();
+
         accImageService.deleteByAccommodationId(dto.getId());
-        accImageService.insertBatch(ConvertUtils.sourceToTarget(dto.getAccImageDTOList(), AccImageEntity.class));
+        accImageService.insertBatch(imageEntityList);
     }
 
     private void updateAccommodationTag(AccAccommodationDTO dto) {

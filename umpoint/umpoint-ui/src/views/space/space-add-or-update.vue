@@ -190,6 +190,7 @@ const init = (id?: bigint) => {
   getTagList();
 
   dataFormRef.value.resetFields();
+  fileList.value = [];
 
   if (id && !isNaN(Number(id))) {
     getInfo(id);
@@ -202,7 +203,7 @@ const initialize = () => {
 }
 
 const imageUploadHandle = (spcImageDTOList: any) => {
-  dataForm.spcImageDTOList = spcImageDTOList
+  dataForm.spcImageDTOList = spcImageDTOList;
 }
 
 // Form submission

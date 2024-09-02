@@ -149,7 +149,6 @@ const getInfo = (id: bigint) => {
       selectTagList.value.push(svcTagDTO.id);
     }
     dataForm.description = formatDescription(dataForm.description);
-    console.log(dataForm);
   });
 };
 
@@ -172,10 +171,8 @@ const init = (id?: bigint) => {
   getDeptList();
   getTagList();
 
-  // Reset form data
-  if (dataFormRef.value || !id) {
-    dataFormRef.value.resetFields();
-  }
+  dataFormRef.value.resetFields();
+  fileList.value = [];
 
   if (id && !isNaN(Number(id))) {
     getInfo(id);

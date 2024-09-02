@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import my.edu.um.umpoint.common.entity.BaseEntity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +22,12 @@ import java.util.List;
 @EqualsAndHashCode(callSuper=false)
 @TableName("spc_space")
 public class SpcSpaceEntity extends BaseEntity {
-    /**
+	/**
+	 * Status 0:Suspend 1:Normal
+	 */
+	@TableLogic(value = "1", delval = "0")
+	private Integer status;
+	/**
      * Name
      */
 	private String name;
@@ -54,14 +60,21 @@ public class SpcSpaceEntity extends BaseEntity {
 	 */
 	private Long manager;
 	/**
+	 * Price for book an hour
+	 */
+	private BigDecimal hourPrice;
+	/**
+	 * Price for book four hours
+	 */
+	private BigDecimal fourHoursPrice;
+	/**
+	 * Price for book a day
+	 */
+	private BigDecimal dayPrice;
+	/**
 	 * Booking rule ID
 	 */
 	private Long bookingRuleId;
-	/**
-	 * Status 0:Suspend 1:Normal
-	 */
-	@TableLogic(value = "1", delval = "0")
-	private Integer status;
 	/**
 	 * Last updater
 	 */

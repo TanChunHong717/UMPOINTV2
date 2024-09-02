@@ -189,10 +189,8 @@ const init = (id?: bigint) => {
   getDeptList();
   getTagList();
 
-  // Reset form data
-  if (dataFormRef.value || !id) {
-    dataFormRef.value.resetFields();
-  }
+  dataFormRef.value.resetFields();
+  fileList.value = [];
 
   if (id && !isNaN(Number(id))) {
     getInfo(id);

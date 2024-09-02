@@ -95,13 +95,24 @@
               </el-col>
             </el-row>
           </div>
-          <h2>Price</h2>
-          <el-row>
-            <el-col :span="8"><span class="hour_price">RM{{ accommodation.day_price }}</span> / Day</el-col>
-            <el-col :span="8" v-if="accommodation.four_hour_price"><span class="four_hour_price">RM{{ accommodation.week_price }}</span> / Week</el-col>
-          </el-row>
         </el-tab-pane>
       </el-tabs>
+      <el-tab-pane label="Price">
+        <el-row v-if="state.hasPermission('accommodation:accommodation:update')" class="button-row" justify="end">
+          <el-col :span="24">
+            <el-button type="primary" @click="router.push({name: 'accommodation-update'})" size="small">Edit</el-button>
+          </el-col>
+        </el-row>
+        <el-row v-if="accommodation.dayPrice">
+          <el-col :span="12"><span class="day_price">RM{{ accommodation.dayPrice }}</span> / Day</el-col>
+          <el-col :span="12" v-if="accommodation.weekPrice"><span class="week_price">RM{{ accommodation.weekPrice }}</span> / Week</el-col>
+        </el-row>
+        <el-row v-else>
+          <el-col :span="24">
+            Price is not set for this accommodation.
+          </el-col>
+        </el-row>
+      </el-tab-pane>
     </div>
   </div>
 </template>

@@ -71,9 +71,6 @@ public class SvcServiceController {
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
         validateServiceTagDTO(dto);
         validateServiceImageDTO(dto);
-        if (dto.getSvcBookingRuleDTO() != null) {
-            ValidatorUtils.validateEntity(dto.getSvcBookingRuleDTO(), AddGroup.class, DefaultGroup.class);
-        }
 
         svcServiceService.save(dto);
 
@@ -88,9 +85,6 @@ public class SvcServiceController {
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
         validateServiceTagDTO(dto);
         validateServiceImageDTO(dto);
-        if (dto.getSvcBookingRuleDTO() != null) {
-            ValidatorUtils.validateEntity(dto.getSvcBookingRuleDTO(), UpdateGroup.class, DefaultGroup.class);
-        }
 
         svcServiceService.update(dto);
 

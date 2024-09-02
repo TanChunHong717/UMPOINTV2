@@ -13,6 +13,7 @@ import org.hibernate.validator.constraints.Range;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -34,6 +35,10 @@ public class SvcServiceDTO implements Serializable {
 	@NotNull(groups = {UpdateGroup.class})
 	private Long id;
 
+	@Schema(title = "Status 0:suspend 1:normal")
+	@Range(min=0, max=1, groups = DefaultGroup.class)
+	private Integer status;
+
 	@SchemaProperty(name = "Name")
 	@NotEmpty(groups = {DefaultGroup.class})
 	private String name;
@@ -52,12 +57,11 @@ public class SvcServiceDTO implements Serializable {
 	@SchemaProperty(name = "Manager ID")
 	private Long manager;
 
-	@SchemaProperty(name = "Booking Rule ID")
-	private Long bookingRuleId;
+	@SchemaProperty(name = "Price")
+	private BigDecimal price;
 
-	@Schema(title = "status 0:suspend 1:normal", required = true)
-	@Range(min=0, max=1, groups = DefaultGroup.class)
-	private Integer status;
+	@SchemaProperty(name = "0:Automatic approve 1: Require admin approve")
+	private Integer approvalRequired;
 
 	@SchemaProperty(name = "Creator")
 	private Long creator;
@@ -85,9 +89,6 @@ public class SvcServiceDTO implements Serializable {
 
 	@SchemaProperty(name = "Last Updater Name")
 	private String updaterName;
-
-	@SchemaProperty(name = "Booking Rule DTO")
-	private SvcBookingRuleDTO svcBookingRuleDTO;
 
 	@SchemaProperty(name = "Image DTO List")
 	private List<SvcImageDTO> svcImageDTOList;

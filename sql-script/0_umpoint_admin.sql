@@ -34,7 +34,7 @@ CREATE TABLE sys_dept (
   key idx_sort (sort)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Department';
 
-create table sys_role (
+CREATE TABLE sys_role (
   id                   bigint NOT NULL COMMENT 'ID',
   name                 varchar(50) COMMENT 'Name',
   remark               varchar(100) COMMENT 'Remark',
@@ -47,7 +47,7 @@ create table sys_role (
   key idx_dept_id (dept_id)
 )ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COMMENT='Role';
 
-create table sys_menu (
+CREATE TABLE sys_menu (
   id                   bigint NOT NULL COMMENT 'ID',
   pid                  bigint COMMENT 'Parent ID, 0 for first class menu',
   name                 varchar(200) COMMENT 'name',
@@ -65,7 +65,7 @@ create table sys_menu (
   key idx_sort (sort)
 )ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COMMENT='Menu';
 
-create table sys_role_user (
+CREATE TABLE sys_role_user (
   id                   bigint NOT NULL COMMENT 'ID',
   role_id              bigint COMMENT 'Role ID',
   user_id              bigint COMMENT 'User ID',
@@ -76,7 +76,7 @@ create table sys_role_user (
   key idx_user_id (user_id)
 )ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COMMENT='User role relationship';
 
-create table sys_role_menu (
+CREATE TABLE sys_role_menu (
   id                   bigint NOT NULL COMMENT 'ID',
   role_id              bigint COMMENT 'Role ID',
   menu_id              bigint COMMENT 'Menu ID',
@@ -87,7 +87,7 @@ create table sys_role_menu (
   key idx_menu_id (menu_id)
 )ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COMMENT='Role menu relationship';
 
-create table sys_role_data_scope (
+CREATE TABLE sys_role_data_scope (
   id                   bigint NOT NULL COMMENT 'ID',
   role_id              bigint COMMENT 'Role ID',
   dept_id              bigint COMMENT 'Department ID',
@@ -97,7 +97,7 @@ create table sys_role_data_scope (
   key idx_role_id (role_id)
 )ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COMMENT='Role data scope';
 
-create table sys_params (
+CREATE TABLE sys_params (
   id                   bigint NOT NULL COMMENT 'ID',
   param_code           varchar(32) COMMENT 'Param code',
   param_value          varchar(2000) COMMENT 'Param value',
@@ -112,7 +112,7 @@ create table sys_params (
   key idx_create_date (create_date)
 )ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COMMENT='Params';
 
-create table sys_dict_type (
+CREATE TABLE sys_dict_type (
     id                   bigint NOT NULL COMMENT 'ID',
     dict_type            varchar(100) NOT NULL COMMENT 'Dictionary type',
     dict_name            varchar(255) NOT NULL COMMENT 'Dictionary name',
@@ -126,7 +126,7 @@ create table sys_dict_type (
     UNIQUE KEY(dict_type)
 )ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COMMENT='Dictionary type';
 
-create table sys_dict_data (
+CREATE TABLE sys_dict_data (
     id                   bigint NOT NULL COMMENT 'ID',
     dict_type_id         bigint NOT NULL COMMENT 'Dictionary type ID',
     dict_label           varchar(255) NOT NULL COMMENT 'Dictionary label',
@@ -142,7 +142,7 @@ create table sys_dict_data (
     key idx_sort (sort)
 )ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COMMENT='Dictionary data';
 
-create table sys_log_login (
+CREATE TABLE sys_log_login (
   id                   bigint NOT NULL COMMENT 'ID',
   operation            tinyint unsigned COMMENT 'Operation 0:Login 1:Logout',
   status               tinyint unsigned NOT NULL COMMENT 'Status 0:Failed 1:Success 2:Account lock',
@@ -156,7 +156,7 @@ create table sys_log_login (
   key idx_create_date (create_date)
 )ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COMMENT='Login log';
 
-create table sys_log_operation (
+CREATE TABLE sys_log_operation (
   id                   bigint NOT NULL COMMENT 'ID',
   operation            varchar(50) COMMENT 'Operation',
   request_uri          varchar(200) COMMENT 'Request URI',
@@ -173,7 +173,7 @@ create table sys_log_operation (
   key idx_create_date (create_date)
 )ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COMMENT='Operation log';
 
-create table sys_log_error (
+CREATE TABLE sys_log_error (
   id                   bigint NOT NULL COMMENT 'ID',
   request_uri          varchar(200) COMMENT 'Request URI',
   request_method       varchar(20) COMMENT 'Request method',
@@ -325,8 +325,8 @@ CREATE TABLE QRTZ_JOB_DETAILS(
   IS_UPDATE_DATA VARCHAR(1) NOT NULL,
   REQUESTS_RECOVERY VARCHAR(1) NOT NULL,
   JOB_DATA BLOB NULL,
-  PRIMARY KEY (SCHED_NAME,JOB_NAME,JOB_GROUP))
-  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (SCHED_NAME,JOB_NAME,JOB_GROUP)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE QRTZ_TRIGGERS (
   SCHED_NAME VARCHAR(120) NOT NULL,
@@ -347,8 +347,8 @@ CREATE TABLE QRTZ_TRIGGERS (
   JOB_DATA BLOB NULL,
   PRIMARY KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP),
   FOREIGN KEY (SCHED_NAME,JOB_NAME,JOB_GROUP)
-  REFERENCES QRTZ_JOB_DETAILS(SCHED_NAME,JOB_NAME,JOB_GROUP))
-  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  REFERENCES QRTZ_JOB_DETAILS(SCHED_NAME,JOB_NAME,JOB_GROUP)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE QRTZ_SIMPLE_TRIGGERS (
   SCHED_NAME VARCHAR(120) NOT NULL,
@@ -359,8 +359,8 @@ CREATE TABLE QRTZ_SIMPLE_TRIGGERS (
   TIMES_TRIGGERED BIGINT(10) NOT NULL,
   PRIMARY KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP),
   FOREIGN KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)
-  REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP))
-  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE QRTZ_CRON_TRIGGERS (
   SCHED_NAME VARCHAR(120) NOT NULL,
@@ -370,11 +370,10 @@ CREATE TABLE QRTZ_CRON_TRIGGERS (
   TIME_ZONE_ID VARCHAR(80),
   PRIMARY KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP),
   FOREIGN KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)
-  REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP))
-  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE QRTZ_SIMPROP_TRIGGERS
-(
+CREATE TABLE QRTZ_SIMPROP_TRIGGERS(
   SCHED_NAME VARCHAR(120) NOT NULL,
   TRIGGER_NAME VARCHAR(200) NOT NULL,
   TRIGGER_GROUP VARCHAR(200) NOT NULL,
@@ -391,8 +390,8 @@ CREATE TABLE QRTZ_SIMPROP_TRIGGERS
   BOOL_PROP_2 VARCHAR(1) NULL,
   PRIMARY KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP),
   FOREIGN KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)
-  REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP))
-  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE QRTZ_BLOB_TRIGGERS (
   SCHED_NAME VARCHAR(120) NOT NULL,
@@ -402,21 +401,21 @@ CREATE TABLE QRTZ_BLOB_TRIGGERS (
   PRIMARY KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP),
   INDEX (SCHED_NAME,TRIGGER_NAME, TRIGGER_GROUP),
   FOREIGN KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)
-  REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP))
-  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE QRTZ_CALENDARS (
   SCHED_NAME VARCHAR(120) NOT NULL,
   CALENDAR_NAME VARCHAR(200) NOT NULL,
   CALENDAR BLOB NOT NULL,
-  PRIMARY KEY (SCHED_NAME,CALENDAR_NAME))
-  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (SCHED_NAME,CALENDAR_NAME)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE QRTZ_PAUSED_TRIGGER_GRPS (
   SCHED_NAME VARCHAR(120) NOT NULL,
   TRIGGER_GROUP VARCHAR(200) NOT NULL,
-  PRIMARY KEY (SCHED_NAME,TRIGGER_GROUP))
-  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (SCHED_NAME,TRIGGER_GROUP)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE QRTZ_FIRED_TRIGGERS (
   SCHED_NAME VARCHAR(120) NOT NULL,
@@ -432,22 +431,22 @@ CREATE TABLE QRTZ_FIRED_TRIGGERS (
   JOB_GROUP VARCHAR(200) NULL,
   IS_NONCONCURRENT VARCHAR(1) NULL,
   REQUESTS_RECOVERY VARCHAR(1) NULL,
-  PRIMARY KEY (SCHED_NAME,ENTRY_ID))
-  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (SCHED_NAME,ENTRY_ID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE QRTZ_SCHEDULER_STATE (
   SCHED_NAME VARCHAR(120) NOT NULL,
   INSTANCE_NAME VARCHAR(200) NOT NULL,
   LAST_CHECKIN_TIME BIGINT(13) NOT NULL,
   CHECKIN_INTERVAL BIGINT(13) NOT NULL,
-  PRIMARY KEY (SCHED_NAME,INSTANCE_NAME))
-  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (SCHED_NAME,INSTANCE_NAME)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE QRTZ_LOCKS (
   SCHED_NAME VARCHAR(120) NOT NULL,
   LOCK_NAME VARCHAR(40) NOT NULL,
-  PRIMARY KEY (SCHED_NAME,LOCK_NAME))
-  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (SCHED_NAME,LOCK_NAME)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE INDEX IDX_QRTZ_J_REQ_RECOVERY ON QRTZ_JOB_DETAILS(SCHED_NAME,REQUESTS_RECOVERY);
 CREATE INDEX IDX_QRTZ_J_GRP ON QRTZ_JOB_DETAILS(SCHED_NAME,JOB_GROUP);

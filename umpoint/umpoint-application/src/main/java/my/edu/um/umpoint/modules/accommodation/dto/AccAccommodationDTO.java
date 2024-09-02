@@ -35,6 +35,10 @@ public class AccAccommodationDTO implements Serializable {
 	@NotNull(groups = {UpdateGroup.class})
 	private Long id;
 
+	@SchemaProperty(name = "Status 0:Suspend 1:Normal")
+	@Range(min=0, max=1, groups = DefaultGroup.class)
+	private Integer status;
+
 	@SchemaProperty(name = "Name")
 	@NotEmpty(groups = {DefaultGroup.class})
 	private String name;
@@ -63,12 +67,14 @@ public class AccAccommodationDTO implements Serializable {
 	@SchemaProperty(name = "Manager ID")
 	private Long manager;
 
+	@SchemaProperty(name = "Price for book a day")
+	private BigDecimal dayPrice;
+
+	@SchemaProperty(name = "Price for book a week")
+	private BigDecimal weekPrice;
+
 	@SchemaProperty(name = "Booking Rule ID")
 	private Long bookingRuleId;
-
-	@SchemaProperty(name = "Status 0:Suspend 1:Normal")
-	@Range(min=0, max=1, groups = DefaultGroup.class)
-	private Integer status;
 
 	@SchemaProperty(name = "Creator")
 	private Long creator;

@@ -14,19 +14,17 @@ CREATE TABLE spc_tag (
 
 CREATE TABLE spc_booking_rule (
     id bigint NOT NULL COMMENT 'ID',
-    hour_price decimal(10, 2) NOT NULL COMMENT 'Price for book an hour',
-    four_hours_price decimal(10, 2) NOT NULL COMMENT 'Price for book four hours',
-    day_price decimal(10, 2) NOT NULL COMMENT 'Price for book a day',
     open_days_before_event decimal(5,0) NOT NULL COMMENT 'Days open for booking before event',
     close_days_before_event decimal(5,0) NOT NULL COMMENT 'Days close for booking before event',
     max_reservation_days decimal(5, 0) NOT NULL COMMENT 'Maximum reservation days',
-    approval_required BOOLEAN NOT NULL COMMENT 'Is booking require approve by manager',
+    approval_required BOOLEAN NOT NULL COMMENT '0:Automatic approve 1: Require admin approve',
     min_booking_hours decimal(5, 0) NOT NULL COMMENT 'Minimum booking hours per day',
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space Booking Rule';
 
 CREATE TABLE spc_space (
     id bigint NOT NULL COMMENT 'ID',
+    status tinyint COMMENT 'Status 0:Suspend 1:Normal',
     name varchar(50) NOT NULL COMMENT 'Name',
     cat_id bigint NOT NULL COMMENT 'Category ID',
     dept_id bigint NOT NULL COMMENT 'Department ID',
@@ -35,8 +33,10 @@ CREATE TABLE spc_space (
     facilities varchar(250) COMMENT 'Facilities',
     capacity decimal(5,0) COMMENT 'Max capacity',
     manager bigint NULL COMMENT 'Manager ID',
+    hour_price decimal(10, 2) NULL COMMENT 'Price for book an hour',
+    four_hours_price decimal(10, 2) NULL COMMENT 'Price for book four hours',
+    day_price decimal(10, 2) NULL COMMENT 'Price for book a day',
     booking_rule_id bigint NULL COMMENT 'Booking Rule ID',
-    status tinyint COMMENT 'Status 0:Suspend 1:Normal',
     creator bigint NOT NULL COMMENT 'Creator',
     create_date datetime NOT NULL COMMENT 'Create date',
     updater bigint NOT NULL COMMENT 'Updater',

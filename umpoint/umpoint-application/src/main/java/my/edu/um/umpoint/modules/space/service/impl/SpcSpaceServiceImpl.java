@@ -77,8 +77,18 @@ public class SpcSpaceServiceImpl extends CrudServiceImpl<SpcSpaceDao, SpcSpaceEn
     }
 
     private void updateSpaceImage(SpcSpaceDTO dto) {
+        List<SpcImageEntity> imageEntityList = dto.getSpcImageDTOList()
+                .stream()
+                .map((spcImageDTO) -> {
+                    SpcImageEntity entity = new SpcImageEntity();
+                    entity.setId(spcImageDTO.getId());
+                    entity.setSpaceId(dto.getId());
+                    entity.setImageUrl(spcImageDTO.getImageUrl());
+                    return entity;
+                }).toList();
+
         spcImageService.deleteBySpaceId(dto.getId());
-        spcImageService.insertBatch(ConvertUtils.sourceToTarget(dto.getSpcImageDTOList(), SpcImageEntity.class));
+        spcImageService.insertBatch(imageEntityList);
     }
 
     private void updateSpaceTag(SpcSpaceDTO dto) {

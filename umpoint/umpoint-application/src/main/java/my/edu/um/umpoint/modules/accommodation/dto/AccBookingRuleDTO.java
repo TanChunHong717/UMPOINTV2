@@ -25,12 +25,6 @@ public class AccBookingRuleDTO implements Serializable {
 	@SchemaProperty(name = "ID")
 	private Long id;
 
-	@SchemaProperty(name = "Price for book a day")
-	private BigDecimal dayPrice;
-
-	@SchemaProperty(name = "Price for book a week")
-	private BigDecimal weekPrice;
-
 	@SchemaProperty(name = "Days open for booking before event")
 	private Integer openDaysBeforeEvent;
 
@@ -40,7 +34,7 @@ public class AccBookingRuleDTO implements Serializable {
 	@SchemaProperty(name = "Maximum reservation days")
 	private Integer maxReservationDays;
 
-	@SchemaProperty(name = "Is booking require approve by manager")
+	@SchemaProperty(name = "0:Automatic approve 1: Require admin approve")
 	private Integer approvalRequired;
 
 	@SchemaProperty(name = "Minimum booking days")

@@ -69,18 +69,19 @@
               Contact: {{ service.managerName }}
             </el-col>
           </el-row>
-          <div v-if="service.svcBookingRuleDTO">
+          <div>
             <el-row class="in-col-row">
               <el-col :span="24">
                 Approval Required:
-                <el-tag v-if="service.svcBookingRuleDTO.approvalRequired" type="primary">Yes</el-tag>
+                <el-tag v-if="service.approvalRequired" type="primary">Yes</el-tag>
                 <el-tag v-else type="info">No</el-tag>
               </el-col>
             </el-row>
           </div>
           <h2>Price</h2>
           <el-row>
-            <el-col :span="8"><span class="price">RM{{ service.price }}</span> / Service</el-col>
+            <el-col v-if="service.price" :span="24"><span class="price">RM{{ service.price }}</span> / Service</el-col>
+            <el-col v-else>Price is not set for this service.</el-col>
           </el-row>
         </el-tab-pane>
       </el-tabs>

@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import my.edu.um.umpoint.common.entity.BaseEntity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +22,12 @@ import java.util.List;
 @EqualsAndHashCode(callSuper=false)
 @TableName("svc_service")
 public class SvcServiceEntity extends BaseEntity {
-    /**
+	/**
+	 * Status 0:Suspend 1:Normal
+	 */
+	@TableLogic(value = "1", delval = "0")
+	private Integer status;
+	/**
      * Name
      */
 	private String name;
@@ -41,15 +47,14 @@ public class SvcServiceEntity extends BaseEntity {
      * Manager ID
      */
 	private Long manager;
-    /**
-     * Booking Rule ID
-     */
-	private Long bookingRuleId;
 	/**
-	 * Status 0:Suspend 1:Normal
+	 * Price
 	 */
-	@TableLogic(value = "1", delval = "0")
-	private Integer status;
+	private BigDecimal price;
+	/**
+	 * 0:Automatic approve 1: Require admin approve
+	 */
+	private Integer approvalRequired;
 	/**
 	 * Last updater
 	 */
@@ -85,11 +90,6 @@ public class SvcServiceEntity extends BaseEntity {
 	 */
 	@TableField(exist = false)
 	private String updaterName;
-	/**
-	 * Booking rule entity
-	 */
-	@TableField(exist = false)
-	private SvcBookingRuleEntity svcBookingRuleEntity;
 	/**
 	 * Image url list
 	 */

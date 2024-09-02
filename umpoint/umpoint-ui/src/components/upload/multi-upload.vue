@@ -8,8 +8,10 @@
       :before-upload="beforeUpload"
       :headers="headers"
       :data="uploadData"
+      :limit="maxCount"
       :with-credentials="false"
       :on-remove="onRemove"
+      :on-exceed="onExceed"
       list-type="picture"
       auto-upload
     >
@@ -35,17 +37,24 @@ export default {
     buttonType: {
       type: String,
       default: "primary"
+    },
+    maxCount: {
+      type: Number,
+      default: 30
     }
   },
   watch: {
     url: {
       handler(newVal, oldVal) {
-        for (let i = 0; i < newVal.length; i++) {
-          if (newVal[i].url.trim().length > 0) {
-            const parts = newVal[i].url.split('/');
-            const fileName = parts[parts.length-1].split('_')[1];
-            this.fileList.push({uid: newVal[i].id, name: fileName, url: newVal[i].url});
-          }
+        this.fileList = [];
+        this.uploadFileList = [];
+        for (let i = 0; i < this.url.length; i++) {
+          this.fileList.push({
+            id: this.url[i].id,
+            name: this.url[i].url.substring(this.url[i].url.lastIndexOf('_')+1, this.url[i].url.length-1),
+            url: this.url[i].url
+          })
+          this.uploadFileList.push({id: this.url[i].id, url: this.url[i].url})
         }
       },
       deep: true
@@ -58,7 +67,7 @@ export default {
       containerName: 'upload',
       newFileName: '',
       fileList: [],
-      uploadPercentage: 0,
+      uploadFileList: [],
       headers: {},
       uploadData: {}
     };
@@ -88,33 +97,35 @@ export default {
       formData.append('file', options.file);
       axios.put(options.action, options.file, {
         headers: this.headers,
-        onUploadProgress: progressEvent => {
-          this.uploadPercentage = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-        }
       }).then(response => {
-        this.uploadPercentage = 0;
-        console.log(this.fileList)
-        this.$emit('upload', this.fileList.map((file) => {
-          return {
-            spaceId: file.uid,
-            imageUrl: file.url
-          }
-        }));
+        this.$message({
+          message: "Upload successfully",
+          type: "success",
+          duration: 1000
+        });
+        this.uploadFileList.push({id:undefined, url:`https://mallstore.blob.core.windows.net/${this.containerName}/${this.newFileName}`});
+        this.$emit('upload', this.uploadFileList);
       }).catch(error => {
-        this.uploadPercentage = 0;
-        console.error('Upload error:', error);
       });
     },
     onRemove(uploadFile, uploadFiles) {
-      this.$emit('upload', uploadFiles.map((file) => {
+      this.uploadFileList = uploadFiles.map((file) => {
         return {
-          spaceId: file.uid,
+          id: file.id,
           imageUrl: file.url
         }
-      }));
+      });
+      this.$emit('upload', this.uploadFileList);
+    },
+    onExceed(files, fileList) {
+      this.$message({
+        message: "Can only upload " + this.maxCount + " document(s).",
+        type: "warning",
+        duration: 1000
+      });
     }
   },
-  mounted() {
+  activated() {
     this.getSasToken();
   }
 };

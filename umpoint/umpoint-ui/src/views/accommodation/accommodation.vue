@@ -56,12 +56,12 @@
       </el-form-item>
     </el-form>
     <div v-for="accommodation in state.dataList" :key="accommodation.id" class="accommodation-container">
-      <el-row align="middle" justify="start" style="margin-bottom: 10px;" :gutter="10">
-        <el-col :span="5">
+      <el-row align="middle" justify="start" :gutter="10" style="margin-bottom: 3px;">
+        <el-col :span="4">
           <div v-if="accommodation.accImageDTOList && accommodation.accImageDTOList.length > 0">
             <el-image class="accommodation-image" :src="accommodation.accImageDTOList[0].imageUrl" fit="cover"/>
           </div>
-          <el-empty v-else :image-size="100" description="No Image"></el-empty>
+          <el-empty v-else :image-size="65" description="No Image"></el-empty>
         </el-col>
         <el-col :span="16">
           <el-row class="in-col-row">
@@ -74,7 +74,7 @@
             </el-col>
           </el-row>
           <el-row class="in-col-row">
-            <el-col :span="8">
+            <el-col :span="12">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-apartment"></use></svg>
               Department: {{ accommodation.deptName }}
             </el-col>
@@ -82,7 +82,7 @@
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-appstore"></use></svg>
               Category: {{ accommodation.category }}
             </el-col>
-            <el-col :span="8">
+            <el-col :span="4">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-team"></use></svg>
               Capacity: {{ accommodation.capacity }}
             </el-col>
@@ -99,15 +99,6 @@
               Tag:
               <el-tag v-if="accommodation.accTagDTOList?.length > 0" v-for="tag in accommodation.accTagDTOList" type="primary">{{ tag.tagName }} </el-tag>
               <el-tag v-else type="info">No Tag</el-tag>
-            </el-col>
-          </el-row>
-          <el-divider style="margin: 10px 0;"></el-divider>
-          <el-row>
-            <el-col :span="8">
-              <span class="hour_price">RM{{ accommodation.day_price }}</span> / Day
-            </el-col>
-            <el-col :span="8" v-if="accommodation.four_hour_price">
-              <span class="four_hour_price">RM{{ accommodation.week_price }}</span> / Week
             </el-col>
           </el-row>
         </el-col>
@@ -207,8 +198,8 @@ onActivated(() => {
 }
 .accommodation-image {
   width: 100%;
-  max-width: 250px;
-  max-height: 150px;
+  max-width: 200px;
+  max-height: 125px;
   padding: 0 10px;
 }
 .title {

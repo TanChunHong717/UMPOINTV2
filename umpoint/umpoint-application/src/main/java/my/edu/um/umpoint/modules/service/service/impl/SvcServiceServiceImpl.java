@@ -78,8 +78,18 @@ public class SvcServiceServiceImpl extends CrudServiceImpl<SvcServiceDao, SvcSer
     }
 
     private void updateServiceImage(SvcServiceDTO dto) {
+        List<SvcImageEntity> imageEntityList = dto.getSvcImageDTOList()
+                .stream()
+                .map((svcImageDTO) -> {
+                    SvcImageEntity entity = new SvcImageEntity();
+                    entity.setId(svcImageDTO.getId());
+                    entity.setServiceId(dto.getId());
+                    entity.setImageUrl(svcImageDTO.getImageUrl());
+                    return entity;
+                }).toList();
+
         svcImageService.deleteByServiceId(dto.getId());
-        svcImageService.insertBatch(ConvertUtils.sourceToTarget(dto.getSvcImageDTOList(), SvcImageEntity.class));
+        svcImageService.insertBatch(imageEntityList);
     }
 
     private void updateServiceTag(SvcServiceDTO dto) {

@@ -2,11 +2,13 @@ package my.edu.um.umpoint.modules.accommodation.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import my.edu.um.umpoint.common.entity.BaseEntity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +22,11 @@ import java.util.List;
 @EqualsAndHashCode(callSuper=false)
 @TableName("acc_accommodation")
 public class AccAccommodationEntity extends BaseEntity {
+	/**
+	 * Status 0:Suspend 1:Normal
+	 */
+	@TableLogic(value = "1", delval = "0")
+	private Integer status;
 	/**
 	* Name
 	*/
@@ -53,13 +60,17 @@ public class AccAccommodationEntity extends BaseEntity {
 	*/
 	private Long manager;
 	/**
+	 * Price for book a day
+	 */
+	private BigDecimal dayPrice;
+	/**
+	 * Price for book a week
+	 */
+	private BigDecimal weekPrice;
+	/**
 	* Booking Rule ID
 	*/
 	private Long bookingRuleId;
-	/**
-	* Status 0:Suspend 1:Normal
-	*/
-	private Integer status;
 	/**
 	 * Last updater
 	 */

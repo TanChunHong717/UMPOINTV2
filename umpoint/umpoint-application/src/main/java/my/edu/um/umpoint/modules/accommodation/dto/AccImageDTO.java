@@ -29,8 +29,6 @@ public class AccImageDTO implements Serializable {
     private static final long serialVersionUID = -8677818412532826317L;
 
 	@SchemaProperty(name = "ID")
-	@Null(groups = AddGroup.class)
-	@NotNull(groups = {UpdateGroup.class, InsertGroup.class})
 	private Long id;
 
 	@SchemaProperty(name = "Accommodation ID")

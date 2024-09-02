@@ -27,8 +27,6 @@ public class SvcImageDTO implements Serializable {
     private static final long serialVersionUID = -1763475943198748177L;
 
 	@SchemaProperty(name = "ID")
-	@Null(groups = AddGroup.class)
-	@NotNull(groups = {UpdateGroup.class, InsertGroup.class})
 	private Long id;
 
 	@SchemaProperty(name = "Service ID")
