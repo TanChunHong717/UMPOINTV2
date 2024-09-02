@@ -85,7 +85,7 @@ public class AccAccommodationController {
     @LogOperation("Update")
     @RequiresPermissions("accommodation:accommodation:update")
     public Result update(@RequestBody AccAccommodationDTO dto){
-        ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
+        ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
         validateAccommodationTagDTO(dto);
         validateAccommodationImageDTO(dto);
         if (dto.getAccBookingRuleDTO() != null) {

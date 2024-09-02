@@ -29,8 +29,6 @@ public class SvcTagDTO implements Serializable {
     private static final long serialVersionUID = 3478201506629761368L;
 
 	@SchemaProperty(name = "ID")
-	@Null(groups = {AddGroup.class})
-	@NotNull(groups = {UpdateGroup.class, InsertGroup.class})
 	private Long id;
 
 	@SchemaProperty(name = "Tag name")

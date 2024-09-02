@@ -29,8 +29,6 @@ public class AccTagDTO implements Serializable {
     private static final long serialVersionUID = 5995528915989449681L;
 
 	@SchemaProperty(name = "ID")
-	@Null(groups = {AddGroup.class})
-	@NotNull(groups = {UpdateGroup.class, InsertGroup.class})
 	private Long id;
 
 	@SchemaProperty(name = "Tag name")

@@ -23,15 +23,13 @@
       </el-carousel>
       <el-tabs>
         <el-tab-pane label="Details">
-          <el-row v-if="state.hasPermission('service:service:update')" class="button-row" justify="end">
-            <el-col :span="24">
-              <el-button type="primary" @click="router.push({name: 'service-update'})" size="small">Edit</el-button>
-            </el-col>
-          </el-row>
           <el-row class="in-col-row">
-            <el-col :span="24">
+            <el-col :span="23">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-location"></use></svg>
               {{ service.address }}
+            </el-col>
+            <el-col :span="1">
+              <el-button v-if="state.hasPermission('service:service:update')" type="primary" @click="router.push({name: 'service-update'})" size="small">Edit</el-button>
             </el-col>
           </el-row>
           <el-row class="in-col-row">
@@ -57,31 +55,37 @@
             <div v-html="formatDescription(service.description)"></div>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="Availability" v-if="service.svcBookingRuleDTO">
-          <el-row v-if="state.hasPermission('service:booking-rule:update')" class="button-row" justify="end">
-            <el-col :span="24">
-              <el-button type="primary" size="small">Edit</el-button>
+        <el-tab-pane label="Booking Rule">
+          <el-row class="in-col-row">
+            <el-col :span="23">
+              <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-user"></use></svg>
+              Contact:
+              <el-tag type="success" v-if="service.manager">{{ service.managerName }}</el-tag>
+              <el-tag type="warning" v-else>Manager is not config for this space.</el-tag>
+            </el-col>
+            <el-col :span="1">
+              <el-button v-if="state.hasPermission('service:booking-rule:update')" type="primary" size="small">Edit</el-button>
             </el-col>
           </el-row>
           <el-row class="in-col-row">
             <el-col :span="24">
-              <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-user"></use></svg>
-              Contact: {{ service.managerName }}
+              Approval Required:
+              <el-tag v-if="service.approvalRequired" type="primary">Yes</el-tag>
+              <el-tag v-else type="info">No</el-tag>
             </el-col>
           </el-row>
-          <div>
-            <el-row class="in-col-row">
-              <el-col :span="24">
-                Approval Required:
-                <el-tag v-if="service.approvalRequired" type="primary">Yes</el-tag>
-                <el-tag v-else type="info">No</el-tag>
-              </el-col>
-            </el-row>
-          </div>
-          <h2>Price</h2>
+        </el-tab-pane>
+        <el-tab-pane label="Price">
           <el-row>
-            <el-col v-if="service.price" :span="24"><span class="price">RM{{ service.price }}</span> / Service</el-col>
-            <el-col v-else>Price is not set for this service.</el-col>
+            <el-col :span="23">
+              <el-row>
+                <el-col v-if="service.price" :span="24"><span class="price">RM{{ service.price }}</span> / Service</el-col>
+                <el-col v-else :span="24">Price is not set for this service.</el-col>
+              </el-row>
+            </el-col>
+            <el-col :span="1">
+              <el-button v-if="state.hasPermission('service:service:update')" type="primary" @click="router.push({name: 'space-update'})" size="small">Edit</el-button>
+            </el-col>
           </el-row>
         </el-tab-pane>
       </el-tabs>
@@ -175,8 +179,5 @@ onUpdated(() => {
 }
 .in-col-row {
   margin-bottom: 5px;
-}
-.button-row {
-  padding-bottom: 10px;
 }
 </style>

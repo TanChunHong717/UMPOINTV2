@@ -156,8 +156,6 @@
             cr.username AS creator_name,
             u.username AS updater_name,
             b.id AS booking_rule_id,
-            b.day_price,
-            b.week_price,
             b.open_days_before_event,
             b.close_days_before_event,
             b.max_reservation_days,

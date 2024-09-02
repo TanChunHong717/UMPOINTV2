@@ -62,7 +62,7 @@ public class AccAccommodationDTO implements Serializable {
 	private String facilities;
 
 	@SchemaProperty(name = "Max capacity")
-	private BigDecimal capacity;
+	private Integer capacity;
 
 	@SchemaProperty(name = "Manager ID")
 	private Long manager;

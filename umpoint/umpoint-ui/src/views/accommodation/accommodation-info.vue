@@ -23,15 +23,13 @@
       </el-carousel>
       <el-tabs>
         <el-tab-pane label="Details">
-          <el-row v-if="state.hasPermission('accommodation:accommodation:update')" class="button-row" justify="end">
-            <el-col :span="24">
-              <el-button type="primary" @click="router.push({name: 'accommodation-update'})" size="small">Edit</el-button>
-            </el-col>
-          </el-row>
           <el-row class="in-col-row">
-            <el-col :span="24">
+            <el-col :span="23">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-location"></use></svg>
               {{ accommodation.address }}
+            </el-col>
+            <el-col :span="1">
+              <el-button v-if="state.hasPermission('accommodation:accommodation:update')" type="primary" @click="router.push({name: 'accommodation-update'})" size="small">Edit</el-button>
             </el-col>
           </el-row>
           <el-row class="in-col-row">
@@ -67,18 +65,19 @@
             <div v-html="formatDescription(accommodation.description)"></div>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="Availability" v-if="accommodation.accBookingRuleDTO">
-          <el-row v-if="state.hasPermission('accommodation:booking-rule:update')" class="button-row" justify="end">
-            <el-col :span="24">
-              <el-button type="primary" size="small">Edit</el-button>
-            </el-col>
-          </el-row>
+        <el-tab-pane label="Booking Rule">
           <el-row class="in-col-row">
-            <el-col :span="24">
+            <el-col :span="23">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-user"></use></svg>
-              Contact: {{ accommodation.managerName }}
+              Contact:
+              <el-tag type="success" v-if="accommodation.manager">{{ accommodation.managerName }}</el-tag>
+              <el-tag type="warning" v-else>Manager is not config for this space.</el-tag>
+            </el-col>
+            <el-col :span="1">
+              <el-button v-if="state.hasPermission('accommodation:booking-rule:update')" type="primary" size="small">Edit</el-button>
             </el-col>
           </el-row>
+          <h1>Booking Rule</h1>
           <div v-if="accommodation.accBookingRuleDTO">
             <el-row class="in-col-row">
               <el-col :span="12">Days open for booking before event: {{ accommodation.accBookingRuleDTO.openDaysBeforeEvent }}</el-col>
@@ -95,24 +94,29 @@
               </el-col>
             </el-row>
           </div>
+          <div v-else>
+            Booking rule is not set for this space.
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="Price">
+          <el-row class="button-row" justify="end">
+            <el-col :span="23">
+              <el-row v-if="accommodation.dayPrice">
+                <el-col :span="12"><span class="day_price">RM{{ accommodation.dayPrice }}</span> / Day</el-col>
+                <el-col :span="12" v-if="accommodation.weekPrice"><span class="week_price">RM{{ accommodation.weekPrice }}</span> / Week</el-col>
+              </el-row>
+              <el-row v-else>
+                <el-col :span="24">
+                  Price is not set for this accommodation.
+                </el-col>
+              </el-row>
+            </el-col>
+            <el-col :span="1">
+              <el-button v-if="state.hasPermission('accommodation:accommodation:update')" type="primary" @click="router.push({name: 'accommodation-update'})" size="small">Edit</el-button>
+            </el-col>
+          </el-row>
         </el-tab-pane>
       </el-tabs>
-      <el-tab-pane label="Price">
-        <el-row v-if="state.hasPermission('accommodation:accommodation:update')" class="button-row" justify="end">
-          <el-col :span="24">
-            <el-button type="primary" @click="router.push({name: 'accommodation-update'})" size="small">Edit</el-button>
-          </el-col>
-        </el-row>
-        <el-row v-if="accommodation.dayPrice">
-          <el-col :span="12"><span class="day_price">RM{{ accommodation.dayPrice }}</span> / Day</el-col>
-          <el-col :span="12" v-if="accommodation.weekPrice"><span class="week_price">RM{{ accommodation.weekPrice }}</span> / Week</el-col>
-        </el-row>
-        <el-row v-else>
-          <el-col :span="24">
-            Price is not set for this accommodation.
-          </el-col>
-        </el-row>
-      </el-tab-pane>
     </div>
   </div>
 </template>
@@ -200,8 +204,5 @@ onUpdated(() => {
 }
 .in-col-row {
   margin-bottom: 5px;
-}
-.button-row {
-  padding-bottom: 10px;
 }
 </style>

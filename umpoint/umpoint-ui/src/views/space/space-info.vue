@@ -23,15 +23,13 @@
       </el-carousel>
       <el-tabs>
         <el-tab-pane label="Details">
-          <el-row v-if="state.hasPermission('space:space:update')" class="button-row" justify="end">
-            <el-col :span="24">
-              <el-button type="primary" @click="$router.push({name: 'space-update', params: {id: space.id}})" size="small">Edit</el-button>
-            </el-col>
-          </el-row>
           <el-row class="in-col-row">
-            <el-col :span="24">
+            <el-col :span="23">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-location"></use></svg>
               {{ space.address }}
+            </el-col>
+            <el-col :span="1">
+              <el-button type="primary" @click="$router.push({name: 'space-update', params: {id: space.id}})" size="small">Edit</el-button>
             </el-col>
           </el-row>
           <el-row class="in-col-row">
@@ -67,18 +65,19 @@
             <div v-html="formatDescription(space.description)"></div>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="Availability">
-          <el-row v-if="state.hasPermission('space:booking-rule:update')" class="button-row" justify="end">
-            <el-col :span="24">
-              <el-button type="primary" size="small">Edit</el-button>
-            </el-col>
-          </el-row>
+        <el-tab-pane label="Booking Rule">
           <el-row class="in-col-row">
-            <el-col :span="24">
+            <el-col :span="23">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-user"></use></svg>
-              Contact: {{ space.managerName }}
+              Contact:
+              <el-tag type="success" v-if="space.manager">{{ space.managerName }}</el-tag>
+              <el-tag type="warning" v-else>Manager is not config for this space.</el-tag>
+            </el-col>
+            <el-col :span="1">
+              <el-button v-if="state.hasPermission('space:booking-rule:update')" type="primary" size="small">Edit</el-button>
             </el-col>
           </el-row>
+          <h1>Booking Rule</h1>
           <div v-if="space.spcBookingRuleDTO">
             <el-row class="in-col-row">
               <el-col :span="12">Days open for booking before event: {{ space.spcBookingRuleDTO.openDaysBeforeEvent }}</el-col>
@@ -97,23 +96,23 @@
             </el-row>
           </div>
           <div v-else>
-            No booking rule is config for this space.
+            Booking rule is not set for this space.
           </div>
         </el-tab-pane>
         <el-tab-pane label="Price">
-          <el-row v-if="state.hasPermission('space:space:update')" class="button-row" justify="end">
-            <el-col :span="24">
-              <el-button type="primary" @click="router.push({name: 'space-update'})" size="small">Edit</el-button>
+          <el-row>
+            <el-col :span="23">
+              <el-row v-if="space.hourPrice">
+                <el-col :span="8"><span class="hour_price">RM{{ space.hourPrice }}</span> / Hour</el-col>
+                <el-col :span="8" v-if="space.fourHoursPrice"><span class="four_hour_price">RM{{ space.fourHoursPrice }}</span> / 4 Hours</el-col>
+                <el-col :span="8" v-if="space.dayPrice"><span class="day_price">RM{{ space.dayPrice }}</span> / Day</el-col>
+              </el-row>
+              <el-row v-else>
+                <el-col :span="24">Price is not set for this space.</el-col>
+              </el-row>
             </el-col>
-          </el-row>
-          <el-row v-if="space.hourPrice">
-            <el-col :span="8"><span class="hour_price">RM{{ space.hourPrice }}</span> / Hour</el-col>
-            <el-col :span="8" v-if="space.fourHoursPrice"><span class="four_hour_price">RM{{ space.fourHoursPrice }}</span> / 4 Hours</el-col>
-            <el-col :span="8" v-if="space.dayPrice"><span class="day_price">RM{{ space.dayPrice }}</span> / Day</el-col>
-          </el-row>
-          <el-row v-else>
-            <el-col :span="24">
-              Price is not set for this accommodation.
+            <el-col :span="1">
+              <el-button v-if="state.hasPermission('space:space:update')" type="primary" @click="router.push({name: 'space-update'})" size="small">Edit</el-button>
             </el-col>
           </el-row>
         </el-tab-pane>
@@ -205,8 +204,5 @@ onUpdated(() => {
 }
 .in-col-row {
   margin-bottom: 5px;
-}
-.button-row {
-  padding-bottom: 10px;
 }
 </style>

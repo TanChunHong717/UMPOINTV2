@@ -172,6 +172,7 @@ const init = (id?: bigint) => {
   getTagList();
 
   dataFormRef.value.resetFields();
+  selectTagList.value = [];
   fileList.value = [];
 
   if (id && !isNaN(Number(id))) {

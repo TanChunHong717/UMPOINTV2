@@ -61,9 +61,9 @@
           <div v-if="accommodation.accImageDTOList && accommodation.accImageDTOList.length > 0">
             <el-image class="accommodation-image" :src="accommodation.accImageDTOList[0].imageUrl" fit="cover"/>
           </div>
-          <el-empty v-else :image-size="65" description="No Image"></el-empty>
+          <el-empty v-else :image-size="65" style="padding: 0 !important;" description="No Image"></el-empty>
         </el-col>
-        <el-col :span="16">
+        <el-col :span="17">
           <el-row class="in-col-row">
             <el-col :span="24" class="title">{{ accommodation.name }}</el-col>
           </el-row>
