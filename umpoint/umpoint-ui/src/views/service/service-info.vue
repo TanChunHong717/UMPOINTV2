@@ -23,7 +23,7 @@
       </el-carousel>
       <el-tabs>
         <el-tab-pane label="Details">
-          <el-row class="in-col-row">
+          <el-row class="content-row">
             <el-col :span="23">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-location"></use></svg>
               {{ service.address }}
@@ -32,7 +32,7 @@
               <el-button v-if="state.hasPermission('service:service:update')" type="primary" @click="router.push({name: 'service-update'})" size="small">Edit</el-button>
             </el-col>
           </el-row>
-          <el-row class="in-col-row">
+          <el-row class="content-row">
             <el-col :span="8">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-apartment"></use></svg>
               Department: {{ service.deptName }}
@@ -42,7 +42,7 @@
               Category: {{ service.category }}
             </el-col>
           </el-row>
-          <el-row class="in-col-row">
+          <el-row class="content-row">
             <el-col :span="24">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-tag"></use></svg>
               Tag:
@@ -56,7 +56,7 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="Booking Rule">
-          <el-row class="in-col-row">
+          <el-row class="content-row">
             <el-col :span="23">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-user"></use></svg>
               Contact:
@@ -67,25 +67,16 @@
               <el-button v-if="state.hasPermission('service:booking-rule:update')" type="primary" size="small">Edit</el-button>
             </el-col>
           </el-row>
-          <el-row class="in-col-row">
+          <el-row class="content-row">
             <el-col :span="24">
               Approval Required:
               <el-tag v-if="service.approvalRequired" type="primary">Yes</el-tag>
               <el-tag v-else type="info">No</el-tag>
             </el-col>
           </el-row>
-        </el-tab-pane>
-        <el-tab-pane label="Price">
-          <el-row>
-            <el-col :span="23">
-              <el-row>
-                <el-col v-if="service.price" :span="24"><span class="price">RM{{ service.price }}</span> / Service</el-col>
-                <el-col v-else :span="24">Price is not set for this service.</el-col>
-              </el-row>
-            </el-col>
-            <el-col :span="1">
-              <el-button v-if="state.hasPermission('service:service:update')" type="primary" @click="router.push({name: 'space-update'})" size="small">Edit</el-button>
-            </el-col>
+          <el-row class="content-row">
+            <el-col v-if="service.price" :span="24">Price: <span class="price">RM{{ service.price }}</span></el-col>
+            <el-col v-else :span="24">Price is not set for this service.</el-col>
           </el-row>
         </el-tab-pane>
       </el-tabs>
@@ -93,7 +84,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {onMounted, ref, reactive, toRefs, onUpdated} from 'vue';
+import {onMounted, ref, reactive, toRefs, onUpdated, onActivated} from 'vue';
 import baseService from "@/service/baseService";
 import {useRoute} from "vue-router";
 import useView from "@/hooks/useView";
@@ -146,7 +137,7 @@ onMounted(() => {
   initialize();
 });
 
-onUpdated(() => {
+onActivated() => {
   initialize();
 })
 </script>
@@ -177,7 +168,7 @@ onUpdated(() => {
 .ml-5 {
   margin-left: 5px;
 }
-.in-col-row {
+.content-row {
   margin-bottom: 5px;
 }
 </style>
