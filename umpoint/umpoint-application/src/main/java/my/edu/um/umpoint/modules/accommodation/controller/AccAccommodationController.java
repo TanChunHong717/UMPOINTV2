@@ -17,6 +17,7 @@ import my.edu.um.umpoint.modules.accommodation.service.AccAccommodationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import my.edu.um.umpoint.modules.space.dto.SpcSpaceDTO;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -69,11 +70,8 @@ public class AccAccommodationController {
     @RequiresPermissions("accommodation:accommodation:save")
     public Result save(@RequestBody AccAccommodationDTO dto){
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
-        validateAccommodationTagDTO(dto);
         validateAccommodationImageDTO(dto);
-        if (dto.getAccBookingRuleDTO() != null) {
-            ValidatorUtils.validateEntity(dto.getAccBookingRuleDTO(), AddGroup.class, DefaultGroup.class);
-        }
+        validateAccommodationTagDTO(dto);
 
         accAccommodationService.save(dto);
 
@@ -86,11 +84,10 @@ public class AccAccommodationController {
     @RequiresPermissions("accommodation:accommodation:update")
     public Result update(@RequestBody AccAccommodationDTO dto){
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
-        validateAccommodationTagDTO(dto);
+        validateAccommodationBookingRuleDTO(dto);
         validateAccommodationImageDTO(dto);
-        if (dto.getAccBookingRuleDTO() != null) {
-            ValidatorUtils.validateEntity(dto.getAccBookingRuleDTO(), AddGroup.class, DefaultGroup.class);
-        }
+        validateAccommodationTagDTO(dto);
+
         accAccommodationService.update(dto);
 
         return new Result();
@@ -118,14 +115,12 @@ public class AccAccommodationController {
         ExcelUtils.exportExcelToTarget(response, null, "Accommodation", list, AccAccommodationExcel.class);
     }
 
-    private void validateAccommodationTagDTO(AccAccommodationDTO dto) {
-        if (dto != null && !dto.getAccTagDTOList().isEmpty()){
-            dto.getAccTagDTOList().forEach(tagDTO -> {
-                ValidatorUtils.validateEntity(
-                        tagDTO,
-                        InsertGroup.class
-                );
-            });
+    private static void validateAccommodationBookingRuleDTO(AccAccommodationDTO dto) {
+        if (dto.getAccBookingRuleDTO() != null) {
+            if (dto.getBookingRuleId() == null)
+                ValidatorUtils.validateEntity(dto.getAccBookingRuleDTO(), AddGroup.class, DefaultGroup.class);
+            else
+                ValidatorUtils.validateEntity(dto.getAccBookingRuleDTO(), UpdateGroup.class, DefaultGroup.class);
         }
     }
 
@@ -134,6 +129,17 @@ public class AccAccommodationController {
             dto.getAccImageDTOList().forEach(imageDTO -> {
                 ValidatorUtils.validateEntity(
                         imageDTO,
+                        InsertGroup.class
+                );
+            });
+        }
+    }
+
+    private void validateAccommodationTagDTO(AccAccommodationDTO dto) {
+        if (dto != null && !dto.getAccTagDTOList().isEmpty()){
+            dto.getAccTagDTOList().forEach(tagDTO -> {
+                ValidatorUtils.validateEntity(
+                        tagDTO,
                         InsertGroup.class
                 );
             });

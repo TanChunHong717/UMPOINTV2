@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="my.edu.um.umpoint.modules.space.dao.SpcBookingRuleDao">
+<mapper namespace="my.edu.um.umpoint.modules.service.dao.SvcBookingRuleDao">
 
-    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcBookingRuleEntity" id="spcBookingRuleMap">
+    <resultMap type="my.edu.um.umpoint.modules.service.entity.SvcBookingRuleEntity" id="svcBookingRuleMap">
         <result property="id" column="id"/>
         <result property="approvalRequired" column="approval_required"/>
         <result property="openForStaff" column="open_for_staff"/>
         <result property="openForStudent" column="open_for_student"/>
         <result property="openForPublic" column="open_for_public"/>
-        <result property="closeDaysBeforeEvent" column="close_days_before_event"/>
-        <result property="closeDaysAfterEvent" column="close_days_after_event"/>
-        <result property="maxReservationDays" column="max_reservation_days"/>
-        <result property="minBookingHours" column="min_booking_hours"/>
     </resultMap>
 
 

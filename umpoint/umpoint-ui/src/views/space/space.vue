@@ -87,10 +87,12 @@
               Capacity: {{ space.capacity }}
             </el-col>
           </el-row>
-          <el-row v-if="space.facilities?.trim().length > 0">
+          <el-row>
             <el-col :span="24">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-wrench"></use></svg>
-              Facilities: {{ space.facilities }}
+              Facilities:
+              <span v-if="space.facilities?.trim().length > 0">{{ space.facilities }}</span>
+              <span v-else>NA</span>
             </el-col>
           </el-row>
           <el-row class="in-col-row">

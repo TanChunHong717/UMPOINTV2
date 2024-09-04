@@ -91,17 +91,23 @@
           <h1>Booking Rule</h1>
           <div v-if="space.spcBookingRuleDTO">
             <el-row class="content-row">
-              <el-col :span="12">Days open for booking before event: {{ space.spcBookingRuleDTO.openDaysBeforeEvent }}</el-col>
-              <el-col :span="12">Maximum reservation days: {{ space.spcBookingRuleDTO.maxReservationDays }}</el-col>
+              Open booking:
+              <el-checkbox v-model="space.spcBookingRuleDTO.openForStaff" disabled>Staff</el-checkbox>
+              <el-checkbox v-model="space.spcBookingRuleDTO.openForStudent" disabled>Student</el-checkbox>
+              <el-checkbox v-model="space.spcBookingRuleDTO.openForPublic" disabled>Public</el-checkbox>
             </el-row>
             <el-row class="content-row">
               <el-col :span="12">Days close for booking before event: {{ space.spcBookingRuleDTO.closeDaysBeforeEvent }}</el-col>
+              <el-col :span="12">Maximum reservation days: {{ space.spcBookingRuleDTO.maxReservationDays }}</el-col>
+            </el-row>
+            <el-row class="content-row">
+              <el-col :span="12">Days close for booking after event: {{ space.spcBookingRuleDTO.closeDaysAfterEvent }}</el-col>
               <el-col :span="12">Minimum booking hours: {{ space.spcBookingRuleDTO.minBookingHours }}</el-col>
             </el-row>
             <el-row class="content-row">
               <el-col :span="24">
                 Approval Required:
-                <el-tag v-if="space.spcBookingRuleDTO.approvalRequired" type="primary">Yes</el-tag>
+                <el-tag v-if="space.spcBookingRuleDTO.approvalRequired == 1" type="primary">Yes</el-tag>
                 <el-tag v-else type="info">No</el-tag>
               </el-col>
             </el-row>
@@ -113,6 +119,8 @@
       </el-tabs>
     </div>
   </div>
+  <!-- Popup, Add / Edit -->
+  <update-booking-rule ref="bookingRuleUpdateRef" @refreshData="initialize">Confirm</update-booking-rule>
 </template>
 <script lang="ts" setup>
 import {onMounted, ref, reactive, toRefs, onActivated} from 'vue';
@@ -148,6 +156,11 @@ const formatDescription = (description: string) => {
   description = description.replace("\\n", "");
   return description;
 }
+
+const bookingRuleUpdateRef = ref();
+const bookingRuleUpdateHandle = () => {
+  bookingRuleUpdateRef.value.init(space.value);
+};
 
 const deleteHandle = () => {
   baseService.delete("/space/space", [space.value.id]).then((res) => {

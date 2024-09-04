@@ -64,24 +64,38 @@
               <el-tag type="warning" v-else>Manager is not config for this space.</el-tag>
             </el-col>
             <el-col :span="1">
-              <el-button v-if="state.hasPermission('service:booking-rule:update')" type="primary" size="small">Edit</el-button>
-            </el-col>
-          </el-row>
-          <el-row class="content-row">
-            <el-col :span="24">
-              Approval Required:
-              <el-tag v-if="service.approvalRequired" type="primary">Yes</el-tag>
-              <el-tag v-else type="info">No</el-tag>
+              <el-button v-if="state.hasPermission('service:booking-rule:update')" type="primary" size="small" @click="bookingRuleUpdateHandle">Edit</el-button>
             </el-col>
           </el-row>
           <el-row class="content-row">
             <el-col v-if="service.price" :span="24">Price: <span class="price">RM{{ service.price }}</span></el-col>
             <el-col v-else :span="24">Price is not set for this service.</el-col>
           </el-row>
+          <h1>Booking Rule</h1>
+          <div v-if="space.spcBookingRuleDTO">
+            <el-row class="content-row">
+              <el-col :span="24">
+                Approval Required:
+                <el-tag v-if="service.approvalRequired" type="primary">Yes</el-tag>
+                <el-tag v-else type="info">No</el-tag>
+              </el-col>
+            </el-row>
+            <el-row class="content-row">
+              Open booking:
+              <el-checkbox v-model="space.spcBookingRuleDTO.openForStaff" disabled>Staff</el-checkbox>
+              <el-checkbox v-model="space.spcBookingRuleDTO.openForStudent" disabled>Student</el-checkbox>
+              <el-checkbox v-model="space.spcBookingRuleDTO.openForPublic" disabled>Public</el-checkbox>
+            </el-row>
+          </div>
+          <div v-else>
+            Booking rule is not set for this space.
+          </div>
         </el-tab-pane>
       </el-tabs>
     </div>
   </div>
+  <!-- Popup, Add / Edit -->
+  <update-booking-rule ref="bookingRuleUpdateRef" @refreshData="initialize">Confirm</update-booking-rule>
 </template>
 <script lang="ts" setup>
 import {onMounted, ref, reactive, toRefs, onUpdated, onActivated} from 'vue';
@@ -90,6 +104,7 @@ import {useRoute} from "vue-router";
 import useView from "@/hooks/useView";
 import router from "@/router";
 import {ElMessage} from "element-plus";
+import UpdateBookingRule from "@/views/service/service-booking-rule-add-or-update.vue";
 
 const route = useRoute()
 const service = ref();
@@ -120,6 +135,11 @@ const formatDescription = (description: string) => {
   description = description.replace("\\n", "");
   return description;
 }
+
+const bookingRuleUpdateRef = ref();
+const bookingRuleUpdateHandle = () => {
+  bookingRuleUpdateRef.value.init(service.value);
+};
 
 const deleteHandle = () => {
   baseService.delete("/service/service", [service.value.id]).then((res) => {

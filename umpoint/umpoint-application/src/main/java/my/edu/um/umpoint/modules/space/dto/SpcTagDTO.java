@@ -28,6 +28,8 @@ public class SpcTagDTO implements Serializable {
     private static final long serialVersionUID = -6417179702850712420L;
 
 	@SchemaProperty(name = "ID")
+	@Null(groups = {AddGroup.class})
+	@NotNull(groups = {UpdateGroup.class, InsertGroup.class})
 	private Long id;
 
 	@SchemaProperty(name = "Tag name")

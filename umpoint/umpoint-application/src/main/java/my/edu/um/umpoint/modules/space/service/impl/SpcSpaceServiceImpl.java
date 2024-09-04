@@ -8,10 +8,12 @@ import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
 import my.edu.um.umpoint.common.utils.ConvertUtils;
 import my.edu.um.umpoint.modules.space.dao.SpcSpaceDao;
+import my.edu.um.umpoint.modules.space.dto.SpcBookingRuleDTO;
 import my.edu.um.umpoint.modules.space.dto.SpcSpaceDTO;
 import my.edu.um.umpoint.modules.space.entity.SpcImageEntity;
 import my.edu.um.umpoint.modules.space.entity.SpcSpaceEntity;
 import my.edu.um.umpoint.modules.space.entity.SpcSpaceTagEntity;
+import my.edu.um.umpoint.modules.space.service.SpcBookingRuleService;
 import my.edu.um.umpoint.modules.space.service.SpcImageService;
 import my.edu.um.umpoint.modules.space.service.SpcSpaceService;
 import cn.hutool.core.util.StrUtil;
@@ -37,6 +39,9 @@ public class SpcSpaceServiceImpl extends CrudServiceImpl<SpcSpaceDao, SpcSpaceEn
 
     @Autowired
     private SpcImageService spcImageService;
+
+    @Autowired
+    private SpcBookingRuleService spcBookingRuleService;
 
     @Override
     public QueryWrapper<SpcSpaceEntity> getWrapper(Map<String, Object> params){
@@ -64,16 +69,28 @@ public class SpcSpaceServiceImpl extends CrudServiceImpl<SpcSpaceDao, SpcSpaceEn
     @Transactional(rollbackFor = Exception.class)
     public void save(SpcSpaceDTO dto) {
         super.save(dto);
-        updateSpaceTag(dto);
         updateSpaceImage(dto);
+        updateSpaceTag(dto);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(SpcSpaceDTO dto) {
+        updateBookingRule(dto);
         super.update(dto);
-        updateSpaceTag(dto);
         updateSpaceImage(dto);
+        updateSpaceTag(dto);
+    }
+
+    private void updateBookingRule(SpcSpaceDTO dto) {
+        SpcBookingRuleDTO spcBookingRuleDTO = dto.getSpcBookingRuleDTO();
+        if (spcBookingRuleDTO != null) {
+            if (dto.getBookingRuleId() == null) {
+                spcBookingRuleService.save(spcBookingRuleDTO);
+                dto.setBookingRuleId(spcBookingRuleDTO.getId());
+            } else
+                spcBookingRuleService.update(spcBookingRuleDTO);
+        }
     }
 
     private void updateSpaceImage(SpcSpaceDTO dto) {

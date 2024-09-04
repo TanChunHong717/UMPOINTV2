@@ -60,8 +60,8 @@ public class SvcServiceDTO implements Serializable {
 	@SchemaProperty(name = "Price")
 	private BigDecimal price;
 
-	@SchemaProperty(name = "0:Automatic approve 1: Require admin approve")
-	private Integer approvalRequired;
+	@SchemaProperty(name = "Booking Rule ID")
+	private Long bookingRuleId;
 
 	@SchemaProperty(name = "Creator")
 	private Long creator;
@@ -89,6 +89,9 @@ public class SvcServiceDTO implements Serializable {
 
 	@SchemaProperty(name = "Last Updater Name")
 	private String updaterName;
+
+	@SchemaProperty(name = "Booking Rule DTO")
+	private SvcBookingRuleDTO svcBookingRuleDTO;
 
 	@SchemaProperty(name = "Image DTO List")
 	private List<SvcImageDTO> svcImageDTOList;

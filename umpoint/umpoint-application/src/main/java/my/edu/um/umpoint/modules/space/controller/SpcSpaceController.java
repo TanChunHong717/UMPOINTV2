@@ -71,11 +71,8 @@ public class SpcSpaceController {
     @Transactional
     public Result save(@RequestBody SpcSpaceDTO dto){
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
-        validateSpaceTagDTO(dto);
         validateSpaceImageDTO(dto);
-        if (dto.getSpcBookingRuleDTO() != null) {
-            ValidatorUtils.validateEntity(dto.getSpcBookingRuleDTO(), AddGroup.class, DefaultGroup.class);
-        }
+        validateSpaceTagDTO(dto);
 
         spcSpaceService.save(dto);
 
@@ -89,11 +86,9 @@ public class SpcSpaceController {
     @Transactional
     public Result update(@RequestBody SpcSpaceDTO dto){
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
-        validateSpaceTagDTO(dto);
+        validateSpaceBookingRuleDTO(dto);
         validateSpaceImageDTO(dto);
-        if (dto.getSpcBookingRuleDTO() != null) {
-            ValidatorUtils.validateEntity(dto.getSpcBookingRuleDTO(), UpdateGroup.class, DefaultGroup.class);
-        }
+        validateSpaceTagDTO(dto);
 
         spcSpaceService.update(dto);
 
@@ -122,14 +117,12 @@ public class SpcSpaceController {
         ExcelUtils.exportExcelToTarget(response, null, "Space", list, SpcSpaceExcel.class);
     }
 
-    private void validateSpaceTagDTO(SpcSpaceDTO dto) {
-        if (dto.getSpcTagDTOList() != null && !dto.getSpcTagDTOList().isEmpty()) {
-            dto.getSpcTagDTOList().forEach(tagDTO -> {
-                ValidatorUtils.validateEntity(
-                        tagDTO,
-                        InsertGroup.class
-                );
-            });
+    private static void validateSpaceBookingRuleDTO(SpcSpaceDTO dto) {
+        if (dto.getSpcBookingRuleDTO() != null) {
+            if (dto.getBookingRuleId() == null)
+                ValidatorUtils.validateEntity(dto.getSpcBookingRuleDTO(), AddGroup.class, DefaultGroup.class);
+            else
+                ValidatorUtils.validateEntity(dto.getSpcBookingRuleDTO(), UpdateGroup.class, DefaultGroup.class);
         }
     }
 
@@ -138,6 +131,17 @@ public class SpcSpaceController {
             dto.getSpcImageDTOList().forEach(imageDTO -> {
                 ValidatorUtils.validateEntity(
                         imageDTO,
+                        InsertGroup.class
+                );
+            });
+        }
+    }
+
+    private void validateSpaceTagDTO(SpcSpaceDTO dto) {
+        if (dto.getSpcTagDTOList() != null && !dto.getSpcTagDTOList().isEmpty()) {
+            dto.getSpcTagDTOList().forEach(tagDTO -> {
+                ValidatorUtils.validateEntity(
+                        tagDTO,
                         InsertGroup.class
                 );
             });

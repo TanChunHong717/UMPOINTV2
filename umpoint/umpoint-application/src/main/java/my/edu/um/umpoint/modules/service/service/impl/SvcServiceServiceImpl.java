@@ -6,13 +6,13 @@ import my.edu.um.umpoint.common.annotation.DataFilter;
 import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
-import my.edu.um.umpoint.common.utils.ConvertUtils;
-import my.edu.um.umpoint.modules.accommodation.entity.AccAccommodationTagEntity;
 import my.edu.um.umpoint.modules.service.dao.SvcServiceDao;
+import my.edu.um.umpoint.modules.service.dto.SvcBookingRuleDTO;
 import my.edu.um.umpoint.modules.service.dto.SvcServiceDTO;
 import my.edu.um.umpoint.modules.service.entity.SvcImageEntity;
 import my.edu.um.umpoint.modules.service.entity.SvcServiceEntity;
 import my.edu.um.umpoint.modules.service.entity.SvcServiceTagEntity;
+import my.edu.um.umpoint.modules.service.service.SvcBookingRuleService;
 import my.edu.um.umpoint.modules.service.service.SvcImageService;
 import my.edu.um.umpoint.modules.service.service.SvcServiceService;
 import cn.hutool.core.util.StrUtil;
@@ -38,6 +38,9 @@ public class SvcServiceServiceImpl extends CrudServiceImpl<SvcServiceDao, SvcSer
 
     @Autowired
     private SvcImageService svcImageService;
+
+    @Autowired
+    private SvcBookingRuleService svcBookingRuleService;
 
     @Override
     public QueryWrapper<SvcServiceEntity> getWrapper(Map<String, Object> params){
@@ -65,16 +68,28 @@ public class SvcServiceServiceImpl extends CrudServiceImpl<SvcServiceDao, SvcSer
     @Transactional(rollbackFor = Exception.class)
     public void save(SvcServiceDTO dto) {
         super.save(dto);
-        updateServiceTag(dto);
         updateServiceImage(dto);
+        updateServiceTag(dto);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(SvcServiceDTO dto) {
+        updateBookingRule(dto);
         super.update(dto);
-        updateServiceTag(dto);
         updateServiceImage(dto);
+        updateServiceTag(dto);
+    }
+
+    private void updateBookingRule(SvcServiceDTO dto) {
+        SvcBookingRuleDTO svcBookingRuleDTO = dto.getSvcBookingRuleDTO();
+        if (svcBookingRuleDTO != null) {
+            if (dto.getBookingRuleId() == null) {
+                svcBookingRuleService.save(svcBookingRuleDTO);
+                dto.setBookingRuleId(svcBookingRuleDTO.getId());
+            } else
+                svcBookingRuleService.update(svcBookingRuleDTO);
+        }
     }
 
     private void updateServiceImage(SvcServiceDTO dto) {

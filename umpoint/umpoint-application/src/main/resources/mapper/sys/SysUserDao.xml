@@ -5,7 +5,7 @@
 
 	<select id="getList" resultType="my.edu.um.umpoint.modules.sys.entity.SysUserEntity">
 		select t1.*, (select t2.name from sys_dept t2 where t2.id=t1.dept_id) deptName from sys_user t1
-		where t1.super_admin = 0
+		where t1.super_admin in (0,1)
 		<if test="username != null and username.trim() != ''">
 			and t1.username like #{username}
 		</if>

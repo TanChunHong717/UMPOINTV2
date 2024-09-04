@@ -4,8 +4,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import java.math.BigDecimal;
-
 /**
  * Accommodation Booking Rule
  *
@@ -21,21 +19,33 @@ public class AccBookingRuleEntity {
 	@TableId
 	private Long id;
 	/**
-	* Days open for booking before event
-	*/
-	private Integer openDaysBeforeEvent;
+	 * 0:Automatic approve 1: Require admin approve
+	 */
+	private Integer approvalRequired;
 	/**
-	* Days close for booking before event
-	*/
+	 * 0:Staff not allow to book 1:Staff allow to book
+	 */
+	private Integer openForStaff;
+	/**
+	 * 0:Student not allow to book 1:Student allow to book
+	 */
+	private Integer openForStudent;
+	/**
+	 * 0:Public not allow to book 1:Public allow to book
+	 */
+	private Integer openForPublic;
+	/**
+	 * Days close for booking before event
+	 */
 	private Integer closeDaysBeforeEvent;
+	/**
+	 * Days close for booking after event
+	 */
+	private Integer closeDaysAfterEvent;
 	/**
 	* Maximum reservation days
 	*/
 	private Integer maxReservationDays;
-	/**
-	* 0:Automatic approve 1: Require admin approve
-	*/
-	private Integer approvalRequired;
 	/**
 	* Minimum booking days
 	*/

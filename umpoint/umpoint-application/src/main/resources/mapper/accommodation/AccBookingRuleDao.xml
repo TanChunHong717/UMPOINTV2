@@ -5,10 +5,13 @@
 
     <resultMap type="my.edu.um.umpoint.modules.accommodation.entity.AccBookingRuleEntity" id="accBookingRuleMap">
         <result property="id" column="id"/>
-        <result property="openDaysBeforeEvent" column="open_days_before_event"/>
-        <result property="closeDaysBeforeEvent" column="close_days_before_event"/>
-        <result property="maxReservationDays" column="max_reservation_days"/>
         <result property="approvalRequired" column="approval_required"/>
+        <result property="openForStaff" column="open_for_staff"/>
+        <result property="openForStudent" column="open_for_student"/>
+        <result property="openForPublic" column="open_for_public"/>
+        <result property="closeDaysBeforeEvent" column="close_days_before_event"/>
+        <result property="closeDaysAfterEvent" column="close_days_after_event"/>
+        <result property="maxReservationDays" column="max_reservation_days"/>
         <result property="minBookingDays" column="min_booking_days"/>
     </resultMap>
 

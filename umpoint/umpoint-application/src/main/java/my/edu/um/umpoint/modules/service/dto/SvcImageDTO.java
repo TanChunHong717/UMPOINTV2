@@ -30,10 +30,9 @@ public class SvcImageDTO implements Serializable {
 	private Long id;
 
 	@SchemaProperty(name = "Service ID")
-	@NotNull(groups = DefaultGroup.class)
 	private Long serviceId;
 
 	@SchemaProperty(name = "Image url")
-	@NotEmpty(groups = {DefaultGroup.class, InsertGroup.class})
+	@NotEmpty(groups = {InsertGroup.class})
 	private String imageUrl;
 }

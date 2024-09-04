@@ -12,7 +12,7 @@
         <result property="description" column="description"/>
         <result property="manager" column="manager"/>
         <result property="price" column="price"/>
-        <result property="approvalRequired" column="approval_required"/>
+        <result property="bookingRuleId" column="booking_rule_id"/>
         <result property="creator" column="creator"/>
         <result property="createDate" column="create_date"/>
         <result property="updater" column="updater"/>
@@ -28,7 +28,7 @@
         <result property="description" column="description"/>
         <result property="manager" column="manager"/>
         <result property="price" column="price"/>
-        <result property="approvalRequired" column="approval_required"/>
+        <result property="bookingRuleId" column="booking_rule_id"/>
         <result property="creator" column="creator"/>
         <result property="createDate" column="create_date"/>
         <result property="updater" column="updater"/>
@@ -38,6 +38,13 @@
         <result column="manager_name" property="managerName" />
         <result column="creator_name" property="creatorName" />
         <result column="updater_name" property="updaterName" />
+        <association property="svcBookingRuleEntity">
+            <id property="id" column="booking_rule_id"/>
+            <result property="approvalRequired" column="approval_required"/>
+            <result property="openForStaff" column="open_for_staff"/>
+            <result property="openForStudent" column="open_for_student"/>
+            <result property="openForPublic" column="open_for_public"/>
+        </association>
         <collection property="svcImageEntityList" ofType="my.edu.um.umpoint.modules.service.entity.SvcImageEntity">
             <id property="id" column="image_id"/>
             <result property="serviceId" column="image_service_id"/>
@@ -59,7 +66,7 @@
             s.description,
             s.manager,
             s.price,
-            s.approval_required,
+            s.booking_rule_id,
             s.creator,
             s.create_date,
             s.updater,
@@ -69,6 +76,10 @@
             m.username AS manager_name,
             cr.username AS creator_name,
             u.username AS updater_name,
+            b.approval_required,
+            b.open_for_staff,
+            b.open_for_student,
+            b.open_for_public,
             i.id AS image_id,
             i.service_id AS image_service_id,
             i.image_url,
@@ -78,6 +89,7 @@
         LEFT JOIN svc_category c ON s.cat_id = c.id
         LEFT JOIN sys_dept d ON s.dept_id = d.id
         LEFT JOIN svc_image i ON s.id = i.service_id
+        LEFT JOIN svc_booking_rule b ON s.booking_rule_id = b.id
         LEFT JOIN svc_service_tag st ON s.id = st.service_id
         LEFT JOIN svc_tag t ON st.tag_id = t.id
         LEFT JOIN sys_user m ON s.manager = m.id
@@ -112,7 +124,7 @@
             s.description,
             s.manager,
             s.price,
-            s.approval_required,
+            s.booking_rule_id,
             s.creator,
             s.create_date,
             s.updater,
@@ -122,6 +134,10 @@
             m.username AS manager_name,
             cr.username AS creator_name,
             u.username AS updater_name,
+            b.approval_required,
+            b.open_for_staff,
+            b.open_for_student,
+            b.open_for_public,
             i.id AS image_id,
             i.service_id AS image_service_id,
             i.image_url,
@@ -131,6 +147,7 @@
         LEFT JOIN svc_category c ON s.cat_id = c.id
         LEFT JOIN sys_dept d ON s.dept_id = d.id
         LEFT JOIN svc_image i ON s.id = i.service_id
+        LEFT JOIN svc_booking_rule b ON s.booking_rule_id = b.id
         LEFT JOIN svc_service_tag st ON s.id = st.service_id
         LEFT JOIN svc_tag t ON st.tag_id = t.id
         LEFT JOIN sys_user m ON s.manager = m.id

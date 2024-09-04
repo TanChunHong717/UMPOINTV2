@@ -52,9 +52,9 @@ public class SvcServiceEntity extends BaseEntity {
 	 */
 	private BigDecimal price;
 	/**
-	 * 0:Automatic approve 1: Require admin approve
+	 * Booking Rule Id
 	 */
-	private Integer approvalRequired;
+	private Long bookingRuleId;
 	/**
 	 * Last updater
 	 */
@@ -90,6 +90,11 @@ public class SvcServiceEntity extends BaseEntity {
 	 */
 	@TableField(exist = false)
 	private String updaterName;
+	/**
+	 * Booking rule entity
+	 */
+	@TableField(exist = false)
+	private SvcBookingRuleEntity svcBookingRuleEntity;
 	/**
 	 * Image url list
 	 */

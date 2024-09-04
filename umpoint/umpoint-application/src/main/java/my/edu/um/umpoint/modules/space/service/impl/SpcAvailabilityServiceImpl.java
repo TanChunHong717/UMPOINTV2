@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 /**
- * Space Image
+ * Space Availability
  *
  * @author Tan Chun Hong tanchunhong717@gmail.com
  * @since 1.0.0 2024-08-03

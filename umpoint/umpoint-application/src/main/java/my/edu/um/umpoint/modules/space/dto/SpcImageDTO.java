@@ -30,10 +30,9 @@ public class SpcImageDTO implements Serializable {
 	private Long id;
 
 	@SchemaProperty(name = "Space ID")
-	@NotNull(groups = DefaultGroup.class)
 	private Long spaceId;
 
 	@SchemaProperty(name = "Image url")
-	@NotEmpty(groups = {DefaultGroup.class, InsertGroup.class})
+	@NotEmpty(groups = {InsertGroup.class})
 	private String imageUrl;
 }

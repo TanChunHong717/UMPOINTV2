@@ -10,13 +10,13 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
- * Space Image
+ * Space Availability
  *
  * @author Tan Chun Hong tanchunhong717@gmail.com
  * @since 1.0.0 2024-08-03
  */
 @Data
-@Schema(name = "Space Image")
+@Schema(name = "Space Availability")
 public class SpcAvailabilityDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = -7799356344051686910L;

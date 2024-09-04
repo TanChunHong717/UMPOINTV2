@@ -12,6 +12,15 @@ CREATE TABLE svc_tag (
     UNIQUE INDEX (tag_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Service Tag';
 
+CREATE TABLE svc_booking_rule (
+    id bigint NOT NULL COMMENT 'ID',
+    approval_required tinyint NOT NULL COMMENT '0:Automatic approve 1:Require admin approve',
+    open_for_staff tinyint NOT NULL COMMENT '0:Staff not allow to book 1:Staff allow to book',
+    open_for_student tinyint NOT NULL COMMENT '0:Student not allow to book 1:Student allow to book',
+    open_for_public tinyint NOT NULL COMMENT '0:Public not allow to book 1:Public allow to book',
+    PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Service Booking Rule';
+
 CREATE TABLE svc_service (
     id bigint NOT NULL COMMENT 'ID',
     status tinyint COMMENT 'Status 0:Suspend 1:Normal',
@@ -21,7 +30,7 @@ CREATE TABLE svc_service (
     description varchar(2500) COMMENT 'Description',
     manager bigint NULL COMMENT 'Manager ID',
     price decimal(10, 2) NULL COMMENT 'Price',
-    approval_required BOOLEAN NOT NULL DEFAULT 1 COMMENT '0:Automatic approve 1: Require admin approve',
+    booking_rule_id bigint NULL COMMENT 'Booking Rule ID',
     creator bigint NOT NULL COMMENT 'Creator',
     create_date datetime NOT NULL COMMENT 'Create date',
     updater bigint NOT NULL COMMENT 'Updater',
@@ -30,6 +39,7 @@ CREATE TABLE svc_service (
     FOREIGN KEY (cat_id) REFERENCES svc_category(id),
     FOREIGN KEY (dept_id) REFERENCES sys_dept(id),
     FOREIGN KEY (manager) REFERENCES sys_user(id),
+    FOREIGN KEY (booking_rule_id) REFERENCES spc_booking_rule(id),
     FOREIGN KEY (creator) REFERENCES sys_user(id),
     FOREIGN KEY (updater) REFERENCES sys_user(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Service';

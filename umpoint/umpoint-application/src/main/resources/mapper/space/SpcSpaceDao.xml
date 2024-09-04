@@ -50,10 +50,13 @@
         <result column="updater_name" property="updaterName" />
         <association property="spcBookingRuleEntity">
             <id property="id" column="booking_rule_id"/>
-            <result property="openDaysBeforeEvent" column="open_days_before_event"/>
-            <result property="closeDaysBeforeEvent" column="close_days_before_event"/>
-            <result property="maxReservationDays" column="max_reservation_days"/>
             <result property="approvalRequired" column="approval_required"/>
+            <result property="openForStaff" column="open_for_staff"/>
+            <result property="openForStudent" column="open_for_student"/>
+            <result property="openForPublic" column="open_for_public"/>
+            <result property="closeDaysBeforeEvent" column="close_days_before_event"/>
+            <result property="closeDaysAfterEvent" column="close_days_after_event"/>
+            <result property="maxReservationDays" column="max_reservation_days"/>
             <result property="minBookingHours" column="min_booking_hours"/>
         </association>
         <collection property="spcImageEntityList" ofType="my.edu.um.umpoint.modules.space.entity.SpcImageEntity">
@@ -92,11 +95,13 @@
             m.username AS manager_name,
             cr.username AS creator_name,
             u.username AS updater_name,
-            b.id AS booking_rule_id,
-            b.open_days_before_event,
-            b.close_days_before_event,
-            b.max_reservation_days,
             b.approval_required,
+            b.open_for_staff,
+            b.open_for_student,
+            b.open_for_public,
+            b.close_days_before_event,
+            b.close_days_after_event,
+            b.max_reservation_days,
             b.min_booking_hours,
             i.id AS image_id,
             i.space_id AS image_space_id,
@@ -157,11 +162,13 @@
             m.username AS manager_name,
             cr.username AS creator_name,
             u.username AS updater_name,
-            b.id AS booking_rule_id,
-            b.open_days_before_event,
-            b.close_days_before_event,
-            b.max_reservation_days,
             b.approval_required,
+            b.open_for_staff,
+            b.open_for_student,
+            b.open_for_public,
+            b.close_days_before_event,
+            b.close_days_after_event,
+            b.max_reservation_days,
             b.min_booking_hours,
             i.id AS image_id,
             i.space_id AS image_space_id,

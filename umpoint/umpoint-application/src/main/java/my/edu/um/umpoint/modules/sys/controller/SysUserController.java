@@ -60,6 +60,20 @@ public class SysUserController {
         return new Result<PageData<SysUserDTO>>().ok(page);
     }
 
+    @GetMapping("list")
+    @Operation(summary = "list")
+    @Parameters({
+            @Parameter(name = "username", description = "Username", in = ParameterIn.QUERY, ref = "String"),
+            @Parameter(name = "gender", description = "Gender", in = ParameterIn.QUERY, ref = "String"),
+            @Parameter(name = "deptId", description = "Department ID", in = ParameterIn.QUERY, ref = "String")
+    })
+    @RequiresPermissions("sys:user:list")
+    public Result<List<SysUserDTO>> list(@Parameter(hidden = true) @RequestParam Map<String, Object> params) {
+        List<SysUserDTO> page = sysUserService.list(params);
+
+        return new Result<List<SysUserDTO>>().ok(page);
+    }
+
     @GetMapping("{id}")
     @Operation(summary = "info")
     @RequiresPermissions("sys:user:info")

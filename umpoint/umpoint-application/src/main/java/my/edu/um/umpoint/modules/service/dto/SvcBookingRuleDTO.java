@@ -1,4 +1,4 @@
-package my.edu.um.umpoint.modules.space.dto;
+package my.edu.um.umpoint.modules.service.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.SchemaProperty;
@@ -12,21 +12,21 @@ import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import java.io.Serial;
 import java.io.Serializable;
 
-import java.math.BigDecimal;
-
 /**
- * Space Booking Rule
+ * Service Booking Rule
  *
  * @author Tan Chun Hong tanchunhong717@gmail.com
  * @since 1.0.0 2024-08-11
  */
 @Data
-@Schema(name = "Space Booking Rule")
-public class SpcBookingRuleDTO implements Serializable {
+@Schema(name = "Service Booking Rule")
+public class SvcBookingRuleDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = 3105155482684743857L;
 
 	@SchemaProperty(name = "ID")
+	@Null(groups = {AddGroup.class})
+	@NotNull(groups = {UpdateGroup.class})
 	private Long id;
 
 	@SchemaProperty(name = "0:Automatic approve 1: Require admin approve")

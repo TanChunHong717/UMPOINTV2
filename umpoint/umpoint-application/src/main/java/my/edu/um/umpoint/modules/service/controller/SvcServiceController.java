@@ -17,6 +17,7 @@ import my.edu.um.umpoint.modules.service.service.SvcServiceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import my.edu.um.umpoint.modules.space.dto.SpcSpaceDTO;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -83,8 +84,9 @@ public class SvcServiceController {
     @RequiresPermissions("service:service:update")
     public Result update(@RequestBody SvcServiceDTO dto){
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
-        validateServiceTagDTO(dto);
+        validateServiceBookingRuleDTO(dto);
         validateServiceImageDTO(dto);
+        validateServiceTagDTO(dto);
 
         svcServiceService.update(dto);
 
@@ -113,14 +115,12 @@ public class SvcServiceController {
         ExcelUtils.exportExcelToTarget(response, null, "Service", list, SvcServiceExcel.class);
     }
 
-    private void validateServiceTagDTO(SvcServiceDTO dto) {
-        if (dto.getSvcTagDTOList() != null && !dto.getSvcTagDTOList().isEmpty()) {
-            dto.getSvcTagDTOList().forEach(tagDTO -> {
-                ValidatorUtils.validateEntity(
-                        tagDTO,
-                        InsertGroup.class
-                );
-            });
+    private static void validateServiceBookingRuleDTO(SvcServiceDTO dto) {
+        if (dto.getSvcBookingRuleDTO() != null) {
+            if (dto.getBookingRuleId() == null)
+                ValidatorUtils.validateEntity(dto.getSvcBookingRuleDTO(), AddGroup.class, DefaultGroup.class);
+            else
+                ValidatorUtils.validateEntity(dto.getSvcBookingRuleDTO(), UpdateGroup.class, DefaultGroup.class);
         }
     }
 
@@ -134,4 +134,16 @@ public class SvcServiceController {
             });
         }
     }
+
+    private void validateServiceTagDTO(SvcServiceDTO dto) {
+        if (dto.getSvcTagDTOList() != null && !dto.getSvcTagDTOList().isEmpty()) {
+            dto.getSvcTagDTOList().forEach(tagDTO -> {
+                ValidatorUtils.validateEntity(
+                        tagDTO,
+                        InsertGroup.class
+                );
+            });
+        }
+    }
+
 }

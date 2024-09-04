@@ -14,10 +14,13 @@ CREATE TABLE spc_tag (
 
 CREATE TABLE spc_booking_rule (
     id bigint NOT NULL COMMENT 'ID',
-    open_days_before_event decimal(5,0) NOT NULL COMMENT 'Days open for booking before event',
+    approval_required tinyint NOT NULL COMMENT '0:Automatic approve 1:Require admin approve',
+    open_for_staff tinyint NOT NULL COMMENT '0:Staff not allow to book 1:Staff allow to book',
+    open_for_student tinyint NOT NULL COMMENT '0:Student not allow to book 1:Student allow to book',
+    open_for_public tinyint NOT NULL COMMENT '0:Public not allow to book 1:Public allow to book',
     close_days_before_event decimal(5,0) NOT NULL COMMENT 'Days close for booking before event',
+    close_days_after_event decimal(5,0) NOT NULL COMMENT 'Days close for booking after event',
     max_reservation_days decimal(5, 0) NOT NULL COMMENT 'Maximum reservation days',
-    approval_required BOOLEAN NOT NULL COMMENT '0:Automatic approve 1: Require admin approve',
     min_booking_hours decimal(5, 0) NOT NULL COMMENT 'Minimum booking hours per day',
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space Booking Rule';

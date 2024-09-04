@@ -5,7 +5,7 @@ import my.edu.um.umpoint.modules.space.dto.SpcBookingRuleDTO;
 import my.edu.um.umpoint.modules.space.entity.SpcBookingRuleEntity;
 
 /**
- * Space Availability
+ * Space Booking Rule
  *
  * @author Tan Chun Hong tanchunhong717@gmail.com
  * @since 1.0.0 2024-08-11
