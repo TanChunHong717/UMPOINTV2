@@ -130,7 +130,7 @@ const addHandle = () => {
   router.push({name: "service-add"})
 };
 
-const getDeptList = () => {
+const getDeptList = async () => {
   return baseService.get("/sys/dept/list").then((res) => {
     if (res.code !== 0) {
       return ElMessage.error(res.msg);
@@ -149,7 +149,7 @@ const deptListTreeCurrentChangeHandle = (data: IObject) => {
   currentChooseDepartment.value = data.name;
 };
 
-const getCategoryList = () => {
+const getCategoryList = async () => {
   return baseService.get("/service/category/list/filter").then((res) => {
     if (res.code !== 0) {
       return ElMessage.error(res.msg);
@@ -158,7 +158,7 @@ const getCategoryList = () => {
   });
 };
 
-const getTagList = () => {
+const getTagList = async () => {
   return baseService.get("/service/tag/list/filter").then((res) => {
     if (res.code !== 0) {
       return ElMessage.error(res.msg);

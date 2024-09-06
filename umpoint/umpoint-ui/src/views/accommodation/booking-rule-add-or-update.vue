@@ -27,14 +27,11 @@
           <el-checkbox label="Public" v-model="dataForm.openForPublic" :true-value="Number(1)" :false-value="Number(0)"/>
         </div>
       </el-form-item>
-      <el-form-item label="Price for an hour" prop="hourPrice">
-        <el-input-number v-model="dataForm.hourPrice" controls-position="right" :precision="2" :step="0.5" :min="0"/>
-      </el-form-item>
-      <el-form-item label="Price for 4 hours" prop="fourHoursPrice">
-        <el-input-number v-model="dataForm.fourHoursPrice" controls-position="right" :precision="2" :step="0.5" :min="0"/>
-      </el-form-item>
       <el-form-item label="Price for one day" prop="dayPrice">
         <el-input-number v-model="dataForm.dayPrice" controls-position="right" :precision="2" :step="0.5" :min="0"/>
+      </el-form-item>
+      <el-form-item label="Price for a week" prop="weekPrice">
+        <el-input-number v-model="dataForm.weekPrice" controls-position="right" :precision="2" :step="0.5" :min="0"/>
       </el-form-item>
       <el-form-item label="Close days before event" prop="closeDaysBeforeEvent">
         <el-input-number v-model="dataForm.closeDaysBeforeEvent" controls-position="right" :min="0"/>
@@ -46,7 +43,7 @@
         <el-input-number v-model="dataForm.maxReservationDays" controls-position="right" :min="1"/>
       </el-form-item>
       <el-form-item label="Min booking hours" prop="minBookingHours">
-        <el-input-number v-model="dataForm.minBookingHours" controls-position="right" :min="1"/>
+        <el-input-number v-model="dataForm.minBookingDays" controls-position="right" :min="1"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -74,13 +71,12 @@ const dataForm = reactive({
   openForStaff: null,
   openForStudent: null,
   openForPublic: null,
-  hourPrice: null,
-  fourHoursPrice: null,
   dayPrice: null,
+  weekPrice: null,
   closeDaysBeforeEvent: null,
   closeDaysAfterEvent: null,
   maxReservationDays: null,
-  minBookingHours: null
+  minBookingDays: null,
 });
 
 const rules = ref({
@@ -90,7 +86,7 @@ const rules = ref({
   approvalRequired: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
-  hourPrice: [
+  dayPrice: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
   closeDaysBeforeEvent: [
@@ -102,7 +98,7 @@ const rules = ref({
   maxReservationDays: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
-  minBookingHours: [
+  minBookingDays: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ]
 });
@@ -116,16 +112,16 @@ const getUserList = () => {
   });
 };
 
-const init = (space?: any) => {
+const init = (accommodation?: any) => {
   getUserList();
 
   visible.value = true;
-  dataForm.id = "";
+  dataForm.id = null;
 
-  if (dataForm.value)
+  if (dataFormRef.value)
     dataFormRef.value.resetFields();
 
-  Object.assign(dataForm, space, space.spcBookingRuleDTO);
+  Object.assign(dataForm, accommodation, accommodation.accBookingRuleDTO);
 };
 
 // Form submission
@@ -134,13 +130,12 @@ const dataFormSubmitHandle = () => {
     if (!valid) {
       return false;
     }
-    const space = {
+    const accommodation = {
       id: dataForm.id,
       manager: dataForm.manager,
-      hourPrice: dataForm.hourPrice,
-      fourHoursPrice: dataForm.fourHoursPrice,
       dayPrice: dataForm.dayPrice,
-      spcBookingRuleDTO: {
+      weekPrice: dataForm.weekPrice,
+      accBookingRuleDTO: {
         approvalRequired: dataForm.approvalRequired,
         openForStaff: dataForm.openForStaff,
         openForStudent: dataForm.openForStudent,
@@ -151,7 +146,7 @@ const dataFormSubmitHandle = () => {
         minBookingHours: dataForm.minBookingHours
       }
     };
-    baseService.put("/space/space", space).then((res) => {
+    baseService.put("/accommodation/accommodation", accommodation).then((res) => {
       ElMessage.success({
         message: 'Success',
         duration: 500,

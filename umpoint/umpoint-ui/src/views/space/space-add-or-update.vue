@@ -122,7 +122,7 @@ const rules = ref({
   ]
 });
 
-const getCategoryList = () => {
+const getCategoryList = async () => {
   return baseService.get("/space/category/list").then((res) => {
     if (res.code !== 0) {
       return ElMessage.error(res.msg);
@@ -137,7 +137,7 @@ const deptListTreeCurrentChangeHandle = (data: IObject) => {
   deptListPopover.value.hide();
 };
 
-const getDeptList = () => {
+const getDeptList = async () => {
   return baseService.get("/sys/dept/list").then((res) => {
     if (res.code !== 0) {
       return ElMessage.error(res.msg);
@@ -146,7 +146,7 @@ const getDeptList = () => {
   });
 };
 
-const getTagList = () => {
+const getTagList = async () => {
   return baseService.get("/space/tag/list").then((res) => {
     if (res.code !== 0) {
       return ElMessage.error(res.msg);

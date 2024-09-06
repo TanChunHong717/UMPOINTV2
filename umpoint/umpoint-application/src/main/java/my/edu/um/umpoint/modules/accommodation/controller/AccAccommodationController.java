@@ -17,7 +17,6 @@ import my.edu.um.umpoint.modules.accommodation.service.AccAccommodationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import my.edu.um.umpoint.modules.space.dto.SpcSpaceDTO;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -83,7 +82,8 @@ public class AccAccommodationController {
     @LogOperation("Update")
     @RequiresPermissions("accommodation:accommodation:update")
     public Result update(@RequestBody AccAccommodationDTO dto){
-        ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
+        //Allow to update partial field
+        ValidatorUtils.validateEntity(dto, UpdateGroup.class);
         validateAccommodationBookingRuleDTO(dto);
         validateAccommodationImageDTO(dto);
         validateAccommodationTagDTO(dto);
@@ -120,7 +120,7 @@ public class AccAccommodationController {
             if (dto.getBookingRuleId() == null)
                 ValidatorUtils.validateEntity(dto.getAccBookingRuleDTO(), AddGroup.class, DefaultGroup.class);
             else
-                ValidatorUtils.validateEntity(dto.getAccBookingRuleDTO(), UpdateGroup.class, DefaultGroup.class);
+                ValidatorUtils.validateEntity(dto.getAccBookingRuleDTO(), UpdateGroup.class);
         }
     }
 

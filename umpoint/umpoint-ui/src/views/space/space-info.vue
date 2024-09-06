@@ -128,7 +128,7 @@ import baseService from "@/service/baseService";
 import {useRoute} from "vue-router";
 import useView from "@/hooks/useView";
 import {ElMessage} from "element-plus";
-import UpdateBookingRule from "@/views/space/space-booking-rule-add-or-update.vue";
+import UpdateBookingRule from "@/views/space/booking-rule-add-or-update.vue";
 
 const route = useRoute()
 const space = ref();

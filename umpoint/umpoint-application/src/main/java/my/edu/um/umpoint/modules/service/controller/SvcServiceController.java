@@ -17,7 +17,6 @@ import my.edu.um.umpoint.modules.service.service.SvcServiceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import my.edu.um.umpoint.modules.space.dto.SpcSpaceDTO;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -83,7 +82,8 @@ public class SvcServiceController {
     @LogOperation("Update")
     @RequiresPermissions("service:service:update")
     public Result update(@RequestBody SvcServiceDTO dto){
-        ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
+        //Allow to update partial field
+        ValidatorUtils.validateEntity(dto, UpdateGroup.class);
         validateServiceBookingRuleDTO(dto);
         validateServiceImageDTO(dto);
         validateServiceTagDTO(dto);
@@ -120,7 +120,7 @@ public class SvcServiceController {
             if (dto.getBookingRuleId() == null)
                 ValidatorUtils.validateEntity(dto.getSvcBookingRuleDTO(), AddGroup.class, DefaultGroup.class);
             else
-                ValidatorUtils.validateEntity(dto.getSvcBookingRuleDTO(), UpdateGroup.class, DefaultGroup.class);
+                ValidatorUtils.validateEntity(dto.getSvcBookingRuleDTO(), UpdateGroup.class);
         }
     }
 

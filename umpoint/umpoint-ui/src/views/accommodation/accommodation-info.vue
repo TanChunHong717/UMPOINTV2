@@ -71,7 +71,7 @@
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-user"></use></svg>
               Contact:
               <el-tag type="success" v-if="accommodation.manager">{{ accommodation.managerName }}</el-tag>
-              <el-tag type="warning" v-else>Manager is not config for this space.</el-tag>
+              <el-tag type="warning" v-else>Manager is not config for this accommodation.</el-tag>
             </el-col>
             <el-col :span="1">
               <el-button v-if="state.hasPermission('accommodation:booking-rule:update')" type="primary" size="small" @click="bookingRuleUpdateHandle">Edit</el-button>
@@ -91,9 +91,9 @@
           <div v-if="accommodation.accBookingRuleDTO">
             <el-row class="content-row">
               Open booking:
-              <el-checkbox v-model="space.spcBookingRuleDTO.openForStaff" disabled>Staff</el-checkbox>
-              <el-checkbox v-model="space.spcBookingRuleDTO.openForStudent" disabled>Student</el-checkbox>
-              <el-checkbox v-model="space.spcBookingRuleDTO.openForPublic" disabled>Public</el-checkbox>
+              <el-checkbox v-model="accommodation.accBookingRuleDTO.openForStaff" disabled>Staff</el-checkbox>
+              <el-checkbox v-model="accommodation.accBookingRuleDTO.openForStudent" disabled>Student</el-checkbox>
+              <el-checkbox v-model="accommodation.accBookingRuleDTO.openForPublic" disabled>Public</el-checkbox>
             </el-row>
             <el-row class="content-row">
               <el-col :span="12">Days close for booking before event: {{ accommodation.accBookingRuleDTO.openDaysBeforeEvent }}</el-col>
@@ -101,6 +101,7 @@
             </el-row>
             <el-row class="content-row">
               <el-col :span="12">Days close for booking after event: {{ accommodation.accBookingRuleDTO.closeDaysAfterEvent }}</el-col>
+              <el-col :span="12">Minimum booking days: {{ accommodation.accBookingRuleDTO.minBookingDays }}</el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
@@ -111,7 +112,7 @@
             </el-row>
           </div>
           <div v-else>
-            Booking rule is not set for this space.
+            Booking rule is not set for this accommodation.
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -127,7 +128,7 @@ import {useRoute} from "vue-router";
 import useView from "@/hooks/useView";
 import router from "@/router";
 import {ElMessage} from "element-plus";
-import UpdateBookingRule from "@/views/accommodation/accommodation-booking-rule-add-or-update.vue";
+import UpdateBookingRule from "@/views/accommodation/booking-rule-add-or-update.vue";
 
 const route = useRoute()
 const accommodation = ref();

@@ -61,7 +61,7 @@
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-user"></use></svg>
               Contact:
               <el-tag type="success" v-if="service.manager">{{ service.managerName }}</el-tag>
-              <el-tag type="warning" v-else>Manager is not config for this space.</el-tag>
+              <el-tag type="warning" v-else>Manager is not config for this service.</el-tag>
             </el-col>
             <el-col :span="1">
               <el-button v-if="state.hasPermission('service:booking-rule:update')" type="primary" size="small" @click="bookingRuleUpdateHandle">Edit</el-button>
@@ -72,7 +72,7 @@
             <el-col v-else :span="24">Price is not set for this service.</el-col>
           </el-row>
           <h1>Booking Rule</h1>
-          <div v-if="space.spcBookingRuleDTO">
+          <div v-if="service.svcBookingRuleDTO">
             <el-row class="content-row">
               <el-col :span="24">
                 Approval Required:
@@ -82,13 +82,13 @@
             </el-row>
             <el-row class="content-row">
               Open booking:
-              <el-checkbox v-model="space.spcBookingRuleDTO.openForStaff" disabled>Staff</el-checkbox>
-              <el-checkbox v-model="space.spcBookingRuleDTO.openForStudent" disabled>Student</el-checkbox>
-              <el-checkbox v-model="space.spcBookingRuleDTO.openForPublic" disabled>Public</el-checkbox>
+              <el-checkbox v-model="service.svcBookingRuleDTO.openForStaff" disabled>Staff</el-checkbox>
+              <el-checkbox v-model="service.svcBookingRuleDTO.openForStudent" disabled>Student</el-checkbox>
+              <el-checkbox v-model="service.svcBookingRuleDTO.openForPublic" disabled>Public</el-checkbox>
             </el-row>
           </div>
           <div v-else>
-            Booking rule is not set for this space.
+            Booking rule is not set for this service.
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -104,7 +104,7 @@ import {useRoute} from "vue-router";
 import useView from "@/hooks/useView";
 import router from "@/router";
 import {ElMessage} from "element-plus";
-import UpdateBookingRule from "@/views/service/service-booking-rule-add-or-update.vue";
+import UpdateBookingRule from "@/views/service/booking-rule-add-or-update.vue";
 
 const route = useRoute()
 const service = ref();
@@ -157,9 +157,9 @@ onMounted(() => {
   initialize();
 });
 
-onActivated() => {
+onActivated(() => {
   initialize();
-})
+});
 </script>
 <style>
 .h1-text {

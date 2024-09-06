@@ -84,9 +84,9 @@ const init = (service?: any) => {
   getUserList();
 
   visible.value = true;
-  dataForm.id = "";
+  dataForm.id = null;
 
-  if (dataForm.value)
+  if (dataFormRef.value)
     dataFormRef.value.resetFields();
 
   Object.assign(dataForm, service, service.svcBookingRuleDTO);
@@ -103,8 +103,6 @@ const dataFormSubmitHandle = () => {
       id: dataForm.id,
       manager: dataForm.manager,
       price: dataForm.price,
-      fourHoursPrice: dataForm.fourHoursPrice,
-      dayPrice: dataForm.dayPrice,
       svcBookingRuleDTO: {
         approvalRequired: dataForm.approvalRequired,
         openForStaff: dataForm.openForStaff,

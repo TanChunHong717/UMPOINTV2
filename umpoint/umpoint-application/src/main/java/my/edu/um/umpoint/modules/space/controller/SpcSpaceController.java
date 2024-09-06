@@ -85,7 +85,8 @@ public class SpcSpaceController {
     @RequiresPermissions("space:space:update")
     @Transactional
     public Result update(@RequestBody SpcSpaceDTO dto){
-        ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
+        //Allow to update partial field
+        ValidatorUtils.validateEntity(dto, UpdateGroup.class);
         validateSpaceBookingRuleDTO(dto);
         validateSpaceImageDTO(dto);
         validateSpaceTagDTO(dto);
@@ -122,7 +123,7 @@ public class SpcSpaceController {
             if (dto.getBookingRuleId() == null)
                 ValidatorUtils.validateEntity(dto.getSpcBookingRuleDTO(), AddGroup.class, DefaultGroup.class);
             else
-                ValidatorUtils.validateEntity(dto.getSpcBookingRuleDTO(), UpdateGroup.class, DefaultGroup.class);
+                ValidatorUtils.validateEntity(dto.getSpcBookingRuleDTO(), UpdateGroup.class);
         }
     }
 
