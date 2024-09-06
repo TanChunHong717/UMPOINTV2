@@ -11,5 +11,5 @@ import my.edu.um.umpoint.modules.accommodation.entity.AccAccommodationEntity;
  * @since 1.0.0 2024-08-23
  */
 public interface AccAccommodationService extends CrudService<AccAccommodationEntity, AccAccommodationDTO> {
-
+    void applyDefaultBookingRule(Long[] ids);
 }

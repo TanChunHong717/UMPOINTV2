@@ -19,7 +19,6 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -68,7 +67,6 @@ public class SpcSpaceController {
     @Operation(summary = "Save")
     @LogOperation("Save")
     @RequiresPermissions("space:space:save")
-    @Transactional
     public Result save(@RequestBody SpcSpaceDTO dto){
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
         validateSpaceImageDTO(dto);
@@ -83,7 +81,6 @@ public class SpcSpaceController {
     @Operation(summary = "Update")
     @LogOperation("Update")
     @RequiresPermissions("space:space:update")
-    @Transactional
     public Result update(@RequestBody SpcSpaceDTO dto){
         //Allow to update partial field
         ValidatorUtils.validateEntity(dto, UpdateGroup.class);

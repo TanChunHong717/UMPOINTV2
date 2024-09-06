@@ -23,7 +23,7 @@ public class ConvertUtils {
             BeanUtils.copyProperties(source, targetObject);
             for (Field field : getField(target)) {
                 field.setAccessible(true);
-                field.set(targetObject, sourceToTarget(getObject(source, field.getName()), field.getDeclaringClass()));
+                field.set(targetObject, sourceToTarget(getObject(source, field.getName()), field.getType()));
             }
             for (Field dtoList : getFieldList(target)) {
                 ParameterizedType genericType = (ParameterizedType) dtoList.getGenericType();

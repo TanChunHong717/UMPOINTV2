@@ -11,15 +11,19 @@
       </div>
       <div>
         <el-form-item>
-          <el-button v-if="state.hasPermission('accommodation:default-booking-rule:update')" type="primary">Update Default Booking Rule</el-button>
+          <el-button
+            v-if="state.hasPermission('accommodation:default-booking-rule:update')"
+            @click="defaultBookingRuleUpdateHandle"
+            type="primary"
+          >Update Default Booking Rule</el-button>
         </el-form-item>
         <el-form-item>
           <el-button
             v-if="state.hasPermission('accommodation:booking-rule:update')"
             :disabled="!(state.dataListSelections && state.dataListSelections.length > 0)"
+            @click="applyDefaultBookingRuleHandle"
             type="primary"
-          >Apply Default Booking Rule
-          </el-button>
+          >Apply Default Booking Rule</el-button>
         </el-form-item>
       </div>
     </el-form>
@@ -83,11 +87,13 @@
   </div>
   <!-- Popup, Add / Edit -->
   <update-booking-rule ref="bookingRuleUpdateRef" @refreshData="state.getDataList">Confirm</update-booking-rule>
+  <update-default-booking-rule ref="defaultBookingRuleUpdateRef" @refreshDataList="state.getDataList">Confirm</update-default-booking-rule>
 </template>
 <script lang="ts" setup>
 import useView from "@/hooks/useView";
 import {onActivated, reactive, ref, toRefs} from "vue";
 import UpdateBookingRule from "@/views/accommodation/booking-rule-add-or-update.vue";
+import UpdateDefaultBookingRule from "@/views/accommodation/default-booking-rule-add-or-update.vue";
 
 const view = reactive({
   deleteIsBatch: true,
@@ -105,10 +111,33 @@ const view = reactive({
 
 const state = reactive({ ...useView(view), ...toRefs(view) });
 
+const defaultBookingRuleUpdateRef = ref();
+const defaultBookingRuleUpdateHandle = () => {
+  defaultBookingRuleUpdateRef.value.init();
+};
+
 const bookingRuleUpdateRef = ref();
 const bookingRuleUpdateHandle = (accommodation: any) => {
   bookingRuleUpdateRef.value.init(accommodation);
 };
+
+const applyDefaultBookingRuleHandle = () => {
+  baseService.post(
+    "/accommodation/booking-rule/apply",
+    state.dataListSelections.map(
+      (item: IObject) => item["id"]
+    )
+  ).then((res) => {
+    ElMessage.success({
+      message: 'Success',
+      duration: 500,
+      onClose: () => {
+        visible.value = false;
+        state.getDataList();
+      }
+    });
+  });
+}
 
 onActivated(() => {
   state.getDataList();

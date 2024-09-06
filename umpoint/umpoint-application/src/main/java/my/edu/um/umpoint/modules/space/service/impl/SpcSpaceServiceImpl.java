@@ -6,7 +6,6 @@ import my.edu.um.umpoint.common.annotation.DataFilter;
 import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
-import my.edu.um.umpoint.common.utils.ConvertUtils;
 import my.edu.um.umpoint.modules.space.dao.SpcSpaceDao;
 import my.edu.um.umpoint.modules.space.dto.SpcBookingRuleDTO;
 import my.edu.um.umpoint.modules.space.dto.SpcSpaceDTO;
@@ -22,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -80,6 +81,23 @@ public class SpcSpaceServiceImpl extends CrudServiceImpl<SpcSpaceDao, SpcSpaceEn
         super.update(dto);
         updateSpaceImage(dto);
         updateSpaceTag(dto);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void applyDefaultBookingRule(Long[] ids) {
+        List<SpcSpaceEntity> spcSpaceEntities = baseDao.selectBatchIds(Arrays.asList(ids));
+        List<Long> bookingRuleIds = new ArrayList<>();
+
+        for (SpcSpaceEntity spcSpaceEntity : spcSpaceEntities) {
+            if (spcSpaceEntity.getBookingRuleId() != null)
+                bookingRuleIds.add(spcSpaceEntity.getBookingRuleId());
+            spcSpaceEntity.setBookingRuleId(0L);
+        }
+
+        if (!bookingRuleIds.isEmpty())
+            spcBookingRuleService.deleteBatchIds(bookingRuleIds);
+        updateBatchById(spcSpaceEntities);
     }
 
     private void updateBookingRule(SpcSpaceDTO dto) {

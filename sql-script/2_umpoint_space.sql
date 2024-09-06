@@ -77,3 +77,5 @@ CREATE TABLE spc_availability (
     PRIMARY KEY (id),
     FOREIGN KEY (space_id) REFERENCES spc_space(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space Availability';
+
+INSERT INTO spc_booking_rule VALUE (0,1,1,1,1,0,0,5,1);

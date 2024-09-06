@@ -27,6 +27,8 @@ public class SpcBookingRuleDTO implements Serializable {
     private static final long serialVersionUID = 3105155482684743857L;
 
 	@SchemaProperty(name = "ID")
+	@Null(groups = {AddGroup.class})
+	@NotNull(groups = {UpdateGroup.class})
 	private Long id;
 
 	@SchemaProperty(name = "0:Automatic approve 1: Require admin approve")

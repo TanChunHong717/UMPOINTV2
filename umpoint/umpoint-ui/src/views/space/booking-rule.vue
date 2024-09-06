@@ -11,15 +11,19 @@
       </div>
       <div>
         <el-form-item>
-          <el-button v-if="state.hasPermission('space:default-booking-rule:update')" type="primary">Update Default Booking Rule</el-button>
+          <el-button
+            v-if="state.hasPermission('space:default-booking-rule:update')"
+            @click="defaultBookingRuleUpdateHandle"
+            type="primary"
+          >Update Default Booking Rule</el-button>
         </el-form-item>
         <el-form-item>
           <el-button
             v-if="state.hasPermission('accommodation:booking-rule:update')"
             :disabled="!(state.dataListSelections && state.dataListSelections.length > 0)"
+            @click="applyDefaultBookingRuleHandle"
             type="primary"
-          >Apply Default Booking Rule
-          </el-button>
+          >Apply Default Booking Rule</el-button>
         </el-form-item>
       </div>
     </el-form>
@@ -75,8 +79,8 @@
       </el-table-column>
       <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="150">
         <template v-slot="scope">
-          <el-button v-if="state.hasPermission('space:space:info')" type="primary" link @click="$router.push({name:`space-info`, params: {id:scope.row.row.id}})">Details</el-button>
-          <el-button v-if="state.hasPermission('space:booking-rule:update')" type="primary" link @click="bookingRuleUpdateHandle(scope.row.row)">Update</el-button>
+          <el-button v-if="state.hasPermission('space:space:info')" type="primary" link @click="$router.push({name:`space-info`, params: {id:scope.row.id}})">Details</el-button>
+          <el-button v-if="state.hasPermission('space:booking-rule:update')" type="primary" link @click="bookingRuleUpdateHandle(scope.row)">Update</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -84,11 +88,16 @@
   </div>
   <!-- Popup, Add / Edit -->
   <update-booking-rule ref="bookingRuleUpdateRef" @refreshData="state.getDataList">Confirm</update-booking-rule>
+  <update-default-booking-rule ref="defaultBookingRuleUpdateRef" @refreshDataList="state.getDataList">Confirm</update-default-booking-rule>
 </template>
 <script lang="ts" setup>
 import useView from "@/hooks/useView";
 import {onActivated, reactive, ref, toRefs} from "vue";
 import UpdateBookingRule from "@/views/space/booking-rule-add-or-update.vue";
+import UpdateDefaultBookingRule from "@/views/space/default-booking-rule-add-or-update.vue";
+import baseService from "@/service/baseService";
+import {IObject} from "@/types/interface";
+import {ElMessage} from "element-plus";
 
 const view = reactive({
   deleteIsBatch: true,
@@ -106,10 +115,33 @@ const view = reactive({
 
 const state = reactive({ ...useView(view), ...toRefs(view) });
 
+const defaultBookingRuleUpdateRef = ref();
+const defaultBookingRuleUpdateHandle = () => {
+  defaultBookingRuleUpdateRef.value.init();
+};
+
 const bookingRuleUpdateRef = ref();
 const bookingRuleUpdateHandle = (space: any) => {
   bookingRuleUpdateRef.value.init(space);
 };
+
+const applyDefaultBookingRuleHandle = () => {
+  baseService.post(
+   "/space/booking-rule/apply",
+    state.dataListSelections.map(
+      (item: IObject) => item["id"]
+    )
+  ).then((res) => {
+    ElMessage.success({
+      message: 'Success',
+      duration: 500,
+      onClose: () => {
+        visible.value = false;
+        state.getDataList();
+      }
+    });
+  });
+}
 
 onActivated(() => {
   state.getDataList();

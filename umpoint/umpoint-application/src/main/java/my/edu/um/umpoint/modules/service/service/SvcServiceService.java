@@ -11,5 +11,5 @@ import my.edu.um.umpoint.modules.service.entity.SvcServiceEntity;
  * @since 1.0.0 2024-08-20
  */
 public interface SvcServiceService extends CrudService<SvcServiceEntity, SvcServiceDTO> {
-
+    void applyDefaultBookingRule(Long[] ids);
 }

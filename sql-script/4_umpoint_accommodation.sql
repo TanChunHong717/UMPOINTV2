@@ -76,3 +76,5 @@ CREATE TABLE acc_availability (
   PRIMARY KEY (id),
   FOREIGN KEY (accommodation_id) REFERENCES acc_accommodation(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Accommodation Availability';
+
+INSERT INTO acc_booking_rule VALUE (0,1,1,1,1,0,0,5,1);

@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -80,7 +82,24 @@ public class SvcServiceServiceImpl extends CrudServiceImpl<SvcServiceDao, SvcSer
         updateServiceImage(dto);
         updateServiceTag(dto);
     }
+    
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void applyDefaultBookingRule(Long[] ids) {
+        List<SvcServiceEntity> svcServiceEntities = baseDao.selectBatchIds(Arrays.asList(ids));
+        List<Long> bookingRuleIds = new ArrayList<>();
 
+        for (SvcServiceEntity svcServiceEntity : svcServiceEntities) {
+            if (svcServiceEntity.getBookingRuleId() != null)
+                bookingRuleIds.add(svcServiceEntity.getBookingRuleId());
+            svcServiceEntity.setBookingRuleId(0L);
+        }
+
+        if (!bookingRuleIds.isEmpty())
+            svcBookingRuleService.deleteBatchIds(bookingRuleIds);
+        updateBatchById(svcServiceEntities);
+    }
+    
     private void updateBookingRule(SvcServiceDTO dto) {
         SvcBookingRuleDTO svcBookingRuleDTO = dto.getSvcBookingRuleDTO();
         if (svcBookingRuleDTO != null) {

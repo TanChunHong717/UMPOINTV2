@@ -59,3 +59,5 @@ CREATE TABLE svc_image (
     PRIMARY KEY (id),
     FOREIGN KEY (service_id) REFERENCES svc_service(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Service Image';
+
+INSERT INTO svc_booking_rule VALUE (0,1,1,1,1);

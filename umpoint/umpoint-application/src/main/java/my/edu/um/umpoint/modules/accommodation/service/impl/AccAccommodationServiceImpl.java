@@ -17,10 +17,13 @@ import cn.hutool.core.util.StrUtil;
 import my.edu.um.umpoint.modules.accommodation.service.AccAccommodationTagService;
 import my.edu.um.umpoint.modules.accommodation.service.AccBookingRuleService;
 import my.edu.um.umpoint.modules.accommodation.service.AccImageService;
+import my.edu.um.umpoint.modules.space.entity.SpcSpaceEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -79,6 +82,23 @@ public class AccAccommodationServiceImpl extends CrudServiceImpl<AccAccommodatio
         super.update(dto);
         updateAccommodationImage(dto);
         updateAccommodationTag(dto);
+    }
+    
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void applyDefaultBookingRule(Long[] ids) {
+        List<AccAccommodationEntity> accAccommodationEntities = baseDao.selectBatchIds(Arrays.asList(ids));
+        List<Long> bookingRuleIds = new ArrayList<>();
+
+        for (AccAccommodationEntity accAccommodationEntity : accAccommodationEntities) {
+            if (accAccommodationEntity.getBookingRuleId() != null)
+                bookingRuleIds.add(accAccommodationEntity.getBookingRuleId());
+            accAccommodationEntity.setBookingRuleId(0L);
+        }
+
+        if (!bookingRuleIds.isEmpty())
+            accBookingRuleService.deleteBatchIds(bookingRuleIds);
+        updateBatchById(accAccommodationEntities);
     }
 
     private void updateBookingRule(AccAccommodationDTO dto) {
