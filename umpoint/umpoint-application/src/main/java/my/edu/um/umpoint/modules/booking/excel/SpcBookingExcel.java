@@ -7,6 +7,7 @@ import com.alibaba.excel.annotation.write.style.HeadRowHeight;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.sql.Time;
 import java.util.Date;
 
 /**
@@ -38,9 +39,9 @@ public class SpcBookingExcel {
     @ExcelProperty(value = "End day of booking")
     private Date endDay;
     @ExcelProperty(value = "Start time of booking in a day")
-    private unknowType startTime;
+    private Time startTime;
     @ExcelProperty(value = "End time of booking in a day")
-    private unknowType endTime;
+    private Time endTime;
     @ExcelProperty(value = "Create date")
     private Date createDate;
     @ExcelProperty(value = "Update date")
