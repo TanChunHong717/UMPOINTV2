@@ -74,3 +74,12 @@ mybatis-plus:
     prefix:
     blobType: BLOB
     boolValue: TRUE
+
+umpoint:
+  booking:
+    space:
+      find-approve-admin-first: true
+    service:
+      find-approve-admin-first: true
+    accommodation:
+      find-approve-admin-first: true
