@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import my.edu.um.umpoint.common.validator.group.AddGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
@@ -20,6 +21,7 @@ import java.io.Serializable;
  */
 @Data
 @Schema(name = "Accommodation Booking Rule")
+@EqualsAndHashCode
 public class AccBookingRuleDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = 9187174069158066308L;

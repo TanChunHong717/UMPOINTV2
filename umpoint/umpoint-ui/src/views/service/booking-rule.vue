@@ -31,7 +31,7 @@
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
       <el-table-column prop="name" label="Name" header-align="center" align="center" sortable="custom"></el-table-column>
       <el-table-column label="Booking Rule" header-align="center" align="center">
-        <el-table-column prop="manager" label="Manager" header-align="center" align="center" sortable="custom"></el-table-column>
+        <el-table-column prop="managerName" label="Manager" header-align="center" align="center" sortable="custom"></el-table-column>
         <el-table-column label="Approve Required" header-align="center" align="center">
           <template v-slot="scope">
             <div v-if="scope.row.spcBookingRuleDTO">
@@ -49,7 +49,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="price" label="Price" header-align="center" align="center" sortable="custom"></el-table-column>
+        <el-table-column prop="price" label="Price(RM)" header-align="center" align="center" sortable="custom"></el-table-column>
       </el-table-column>
       <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="150">
         <template v-slot="scope">
@@ -69,6 +69,9 @@ import useView from "@/hooks/useView";
 import {onActivated, reactive, ref, toRefs} from "vue";
 import UpdateBookingRule from "@/views/service/booking-rule-add-or-update.vue";
 import UpdateDefaultBookingRule from "@/views/service/default-booking-rule-add-or-update.vue";
+import baseService from "@/service/baseService";
+import {IObject} from "@/types/interface";
+import {ElMessage} from "element-plus";
 
 const view = reactive({
   deleteIsBatch: true,
@@ -97,17 +100,20 @@ const bookingRuleUpdateHandle = (service: any) => {
 };
 
 const applyDefaultBookingRuleHandle = () => {
-  baseService.post(
-    "/service/service/apply",
-    state.dataListSelections.map(
+  let idList = [];
+  if (state.dataListSelections && state.dataListSelections.length > 0) {
+    idList = state.dataListSelections.map(
       (item: IObject) => item["id"]
     )
+  }
+  baseService.post(
+    "/service/service/apply",
+    idList
   ).then((res) => {
     ElMessage.success({
       message: 'Success',
       duration: 500,
       onClose: () => {
-        visible.value = false;
         state.getDataList();
       }
     });

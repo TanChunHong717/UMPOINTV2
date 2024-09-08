@@ -17,6 +17,7 @@ import my.edu.um.umpoint.modules.service.service.SvcImageService;
 import my.edu.um.umpoint.modules.service.service.SvcServiceService;
 import cn.hutool.core.util.StrUtil;
 import my.edu.um.umpoint.modules.service.service.SvcServiceTagService;
+import my.edu.um.umpoint.modules.space.dto.SpcBookingRuleDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,8 +91,9 @@ public class SvcServiceServiceImpl extends CrudServiceImpl<SvcServiceDao, SvcSer
         List<Long> bookingRuleIds = new ArrayList<>();
 
         for (SvcServiceEntity svcServiceEntity : svcServiceEntities) {
-            if (svcServiceEntity.getBookingRuleId() != null)
-                bookingRuleIds.add(svcServiceEntity.getBookingRuleId());
+            Long bookingRuleId = svcServiceEntity.getBookingRuleId();
+            if (bookingRuleId != null && bookingRuleId != 0)
+                bookingRuleIds.add(bookingRuleId);
             svcServiceEntity.setBookingRuleId(0L);
         }
 
@@ -103,40 +105,59 @@ public class SvcServiceServiceImpl extends CrudServiceImpl<SvcServiceDao, SvcSer
     private void updateBookingRule(SvcServiceDTO dto) {
         SvcBookingRuleDTO svcBookingRuleDTO = dto.getSvcBookingRuleDTO();
         if (svcBookingRuleDTO != null) {
+            SvcBookingRuleDTO defaultBookingRuleDTO = svcBookingRuleService.get(0L);
             if (dto.getBookingRuleId() == null) {
-                svcBookingRuleService.save(svcBookingRuleDTO);
-                dto.setBookingRuleId(svcBookingRuleDTO.getId());
+                //Have no booking rule yet
+                if (svcBookingRuleDTO.equals(defaultBookingRuleDTO)) {
+                    //Apply default booking rule
+                    dto.setBookingRuleId(0L);
+                } else {
+                    //Create new booking rule
+                    svcBookingRuleService.save(svcBookingRuleDTO);
+                    dto.setBookingRuleId(svcBookingRuleDTO.getId());
+                }
+            } else if (dto.getBookingRuleId() == 0) {
+                //Using default booking rule before
+                if (!svcBookingRuleDTO.equals(defaultBookingRuleDTO)) {
+                    //Change booking rule, need to create new one
+                    svcBookingRuleService.save(svcBookingRuleDTO);
+                    dto.setBookingRuleId(svcBookingRuleDTO.getId());
+                }
             } else
                 svcBookingRuleService.update(svcBookingRuleDTO);
         }
     }
 
     private void updateServiceImage(SvcServiceDTO dto) {
-        List<SvcImageEntity> imageEntityList = dto.getSvcImageDTOList()
-                .stream()
-                .map((svcImageDTO) -> {
-                    SvcImageEntity entity = new SvcImageEntity();
-                    entity.setId(svcImageDTO.getId());
-                    entity.setServiceId(dto.getId());
-                    entity.setImageUrl(svcImageDTO.getImageUrl());
-                    return entity;
-                }).toList();
+        if (dto.getSvcImageDTOList() != null) {
+            List<SvcImageEntity> imageEntityList = dto.getSvcImageDTOList()
+                    .stream()
+                    .map((svcImageDTO) -> {
+                        SvcImageEntity entity = new SvcImageEntity();
+                        entity.setId(svcImageDTO.getId());
+                        entity.setServiceId(dto.getId());
+                        entity.setImageUrl(svcImageDTO.getImageUrl());
+                        return entity;
+                    }).toList();
 
-        svcImageService.deleteByServiceId(dto.getId());
-        svcImageService.insertBatch(imageEntityList);
+            svcImageService.deleteByServiceId(dto.getId());
+            svcImageService.insertBatch(imageEntityList);
+        }
     }
 
     private void updateServiceTag(SvcServiceDTO dto) {
-        List<SvcServiceTagEntity> tagEntityList = dto.getSvcTagDTOList()
-                .stream()
-                .map((svcTagDao) -> {
-                    SvcServiceTagEntity entity = new SvcServiceTagEntity();
-                    entity.setServiceId(dto.getId());
-                    entity.setTagId(svcTagDao.getId());
-                    return entity;
-                }).toList();
+        if (dto.getSvcTagDTOList() != null) {
+            List<SvcServiceTagEntity> tagEntityList = dto.getSvcTagDTOList()
+                    .stream()
+                    .map((svcTagDao) -> {
+                        SvcServiceTagEntity entity = new SvcServiceTagEntity();
+                        entity.setServiceId(dto.getId());
+                        entity.setTagId(svcTagDao.getId());
+                        return entity;
+                    }).toList();
 
-        svcServiceTagService.deleteByServiceId(dto.getId());
-        svcServiceTagService.insertBatch(tagEntityList);
+            svcServiceTagService.deleteByServiceId(dto.getId());
+            svcServiceTagService.insertBatch(tagEntityList);
+        }
     }
 }

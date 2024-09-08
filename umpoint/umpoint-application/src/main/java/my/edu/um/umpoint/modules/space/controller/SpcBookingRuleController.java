@@ -37,7 +37,7 @@ public class SpcBookingRuleController {
         return new Result<SpcBookingRuleDTO>().ok(spcBookingRuleService.get(0L));
     }
 
-    @PostMapping("default")
+    @PutMapping("default")
     @Operation(summary = "Update Default Booking Rule")
     @LogOperation("Update")
     @RequiresPermissions("space:booking-rule:update")
@@ -49,7 +49,7 @@ public class SpcBookingRuleController {
         return new Result();
     }
 
-    @PostMapping("apply")
+    @PutMapping("apply")
     public Result applyDefaultBookingRule(@RequestBody Long[] ids) {
         AssertUtils.isArrayEmpty(ids, "id");
 

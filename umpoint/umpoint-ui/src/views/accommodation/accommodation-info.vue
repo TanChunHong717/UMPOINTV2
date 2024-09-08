@@ -89,11 +89,18 @@
           </div>
           <h1>Booking Rule</h1>
           <div v-if="accommodation.accBookingRuleDTO">
+            <el-row>
+              <el-col :span="24">
+                Approval Required:
+                <el-tag v-if="accommodation.accBookingRuleDTO.approvalRequired == 1" type="primary">Yes</el-tag>
+                <el-tag v-else type="info">No</el-tag>
+              </el-col>
+            </el-row>
             <el-row class="content-row">
-              Open booking:
-              <el-checkbox v-model="accommodation.accBookingRuleDTO.openForStaff" disabled>Staff</el-checkbox>
-              <el-checkbox v-model="accommodation.accBookingRuleDTO.openForStudent" disabled>Student</el-checkbox>
-              <el-checkbox v-model="accommodation.accBookingRuleDTO.openForPublic" disabled>Public</el-checkbox>
+              <span class="radio-label">Open booking:</span>
+              <el-checkbox v-model="accommodation.spcBookingRuleDTO.openForStaff" :true-value="Number(1)" disabled>Staff</el-checkbox>
+              <el-checkbox v-model="accommodation.spcBookingRuleDTO.openForStudent" :true-value="Number(1)" disabled>Student</el-checkbox>
+              <el-checkbox v-model="accommodation.spcBookingRuleDTO.openForPublic" :true-value="Number(1)" disabled>Public</el-checkbox>
             </el-row>
             <el-row class="content-row">
               <el-col :span="12">Days close for booking before event: {{ accommodation.accBookingRuleDTO.openDaysBeforeEvent }}</el-col>
@@ -102,13 +109,6 @@
             <el-row class="content-row">
               <el-col :span="12">Days close for booking after event: {{ accommodation.accBookingRuleDTO.closeDaysAfterEvent }}</el-col>
               <el-col :span="12">Minimum booking days: {{ accommodation.accBookingRuleDTO.minBookingDays }}</el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="24">
-                Approval Required:
-                <el-tag v-if="accommodation.accBookingRuleDTO.approvalRequired == 1" type="primary">Yes</el-tag>
-                <el-tag v-else type="info">No</el-tag>
-              </el-col>
             </el-row>
           </div>
           <div v-else>
@@ -211,5 +211,9 @@ onActivated(() => {
 }
 .content-row {
   margin-bottom: 5px;
+}
+.radio-label {
+  padding-top: 7px;
+  padding-right: 3px;
 }
 </style>

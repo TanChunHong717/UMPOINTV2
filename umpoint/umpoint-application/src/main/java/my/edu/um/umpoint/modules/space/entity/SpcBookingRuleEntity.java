@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.sql.Time;
+
 /**
  * Space Booking Rule
  *
@@ -34,6 +36,18 @@ public class SpcBookingRuleEntity {
 	 * 0:Public not allow to book 1:Public allow to book
 	 */
 	private Integer openForPublic;
+	/**
+	 * Availability in weekend, 1: Available, 0: Close
+	 */
+	private Integer weekendAvailable;
+	/**
+	 * Start time in a day when booking is allow,range: (0,24)
+	 */
+	private Time startTime;
+	/**
+	 * End time in a day when booking is allow,range: (0,24)
+	 */
+	private Time endTime;
     /**
      * Days close for booking before event
      */

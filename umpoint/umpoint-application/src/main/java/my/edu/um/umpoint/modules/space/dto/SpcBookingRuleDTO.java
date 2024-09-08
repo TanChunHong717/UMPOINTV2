@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import my.edu.um.umpoint.common.validator.group.AddGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
@@ -12,7 +13,7 @@ import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import java.io.Serial;
 import java.io.Serializable;
 
-import java.math.BigDecimal;
+import java.sql.Time;
 
 /**
  * Space Booking Rule
@@ -22,6 +23,7 @@ import java.math.BigDecimal;
  */
 @Data
 @Schema(name = "Space Booking Rule")
+@EqualsAndHashCode
 public class SpcBookingRuleDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = 3105155482684743857L;
@@ -46,6 +48,18 @@ public class SpcBookingRuleDTO implements Serializable {
 	@SchemaProperty(name = "0:Automatic approve 1: Require admin approve")
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer openForPublic;
+
+	@SchemaProperty(name = "Availability in weekend, 1: Available, 0: Close")
+	@NotNull(groups = {DefaultGroup.class})
+	private Integer weekendAvailable;
+
+	@SchemaProperty(name = "Start time in a day when booking is allow,range: (0,24)")
+	@NotNull(groups = {DefaultGroup.class})
+	private Time startTime;
+
+	@SchemaProperty(name = "End time in a day when booking is allow,range: (0,24)")
+	@NotNull(groups = {DefaultGroup.class})
+	private Time endTime;
 
 	@SchemaProperty(name = "Days close for booking before event")
 	@NotNull(groups = {DefaultGroup.class})

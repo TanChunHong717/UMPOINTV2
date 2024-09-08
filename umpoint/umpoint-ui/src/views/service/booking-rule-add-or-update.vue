@@ -101,6 +101,7 @@ const init = (service?: any) => {
     dataFormRef.value.resetFields();
 
   Object.assign(dataForm, service, service.svcBookingRuleDTO);
+  dataForm.id = service.id;
 };
 
 // Form submission

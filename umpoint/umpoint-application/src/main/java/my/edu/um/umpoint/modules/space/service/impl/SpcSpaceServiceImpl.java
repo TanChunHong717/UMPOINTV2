@@ -90,8 +90,9 @@ public class SpcSpaceServiceImpl extends CrudServiceImpl<SpcSpaceDao, SpcSpaceEn
         List<Long> bookingRuleIds = new ArrayList<>();
 
         for (SpcSpaceEntity spcSpaceEntity : spcSpaceEntities) {
-            if (spcSpaceEntity.getBookingRuleId() != null)
-                bookingRuleIds.add(spcSpaceEntity.getBookingRuleId());
+            Long bookingRuleId = spcSpaceEntity.getBookingRuleId();
+            if (bookingRuleId != null && bookingRuleId != 0)
+                bookingRuleIds.add(bookingRuleId);
             spcSpaceEntity.setBookingRuleId(0L);
         }
 
@@ -103,40 +104,59 @@ public class SpcSpaceServiceImpl extends CrudServiceImpl<SpcSpaceDao, SpcSpaceEn
     private void updateBookingRule(SpcSpaceDTO dto) {
         SpcBookingRuleDTO spcBookingRuleDTO = dto.getSpcBookingRuleDTO();
         if (spcBookingRuleDTO != null) {
+            SpcBookingRuleDTO defaultBookingRuleDTO = spcBookingRuleService.get(0L);
             if (dto.getBookingRuleId() == null) {
-                spcBookingRuleService.save(spcBookingRuleDTO);
-                dto.setBookingRuleId(spcBookingRuleDTO.getId());
+                //Have no booking rule yet
+                if (spcBookingRuleDTO.equals(defaultBookingRuleDTO)) {
+                    //Apply default booking rule
+                    dto.setBookingRuleId(0L);
+                } else {
+                    //Create new booking rule
+                    spcBookingRuleService.save(spcBookingRuleDTO);
+                    dto.setBookingRuleId(spcBookingRuleDTO.getId());
+                }
+            } else if (dto.getBookingRuleId() == 0) {
+                //Using default booking rule before
+                if (!spcBookingRuleDTO.equals(defaultBookingRuleDTO)) {
+                    //Change booking rule, need to create new one
+                    spcBookingRuleService.save(spcBookingRuleDTO);
+                    dto.setBookingRuleId(spcBookingRuleDTO.getId());
+                }
             } else
                 spcBookingRuleService.update(spcBookingRuleDTO);
         }
     }
 
     private void updateSpaceImage(SpcSpaceDTO dto) {
-        List<SpcImageEntity> imageEntityList = dto.getSpcImageDTOList()
-                .stream()
-                .map((spcImageDTO) -> {
-                    SpcImageEntity entity = new SpcImageEntity();
-                    entity.setId(spcImageDTO.getId());
-                    entity.setSpaceId(dto.getId());
-                    entity.setImageUrl(spcImageDTO.getImageUrl());
-                    return entity;
-                }).toList();
+        if (dto.getSpcImageDTOList() != null) {
+            List<SpcImageEntity> imageEntityList = dto.getSpcImageDTOList()
+                    .stream()
+                    .map((spcImageDTO) -> {
+                        SpcImageEntity entity = new SpcImageEntity();
+                        entity.setId(spcImageDTO.getId());
+                        entity.setSpaceId(dto.getId());
+                        entity.setImageUrl(spcImageDTO.getImageUrl());
+                        return entity;
+                    }).toList();
 
-        spcImageService.deleteBySpaceId(dto.getId());
-        spcImageService.insertBatch(imageEntityList);
+            spcImageService.deleteBySpaceId(dto.getId());
+            spcImageService.insertBatch(imageEntityList);
+        }
     }
 
     private void updateSpaceTag(SpcSpaceDTO dto) {
-        List<SpcSpaceTagEntity> tagEntityList = dto.getSpcTagDTOList()
-                .stream()
-                .map((spcTagDao) -> {
-                    SpcSpaceTagEntity entity = new SpcSpaceTagEntity();
-                    entity.setSpaceId(dto.getId());
-                    entity.setTagId(spcTagDao.getId());
-                    return entity;
-                }).toList();
+        if (dto.getSpcTagDTOList() != null) {
+            List<SpcSpaceTagEntity> tagEntityList = dto.getSpcTagDTOList()
+                    .stream()
+                    .map((spcTagDao) -> {
+                        SpcSpaceTagEntity entity = new SpcSpaceTagEntity();
+                        entity.setSpaceId(dto.getId());
+                        entity.setTagId(spcTagDao.getId());
+                        return entity;
+                    }).toList();
 
-        spcSpaceTagService.deleteBySpaceId(dto.getId());
-        spcSpaceTagService.insertBatch(tagEntityList);
+            spcSpaceTagService.deleteBySpaceId(dto.getId());
+            spcSpaceTagService.insertBatch(tagEntityList);
+        }
     }
 }

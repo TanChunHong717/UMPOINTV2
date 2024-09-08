@@ -133,6 +133,7 @@ const init = (accommodation?: any) => {
     dataFormRef.value.resetFields();
 
   Object.assign(dataForm, accommodation, accommodation.accBookingRuleDTO);
+  dataForm.id = accommodation.id;
 };
 
 // Form submission

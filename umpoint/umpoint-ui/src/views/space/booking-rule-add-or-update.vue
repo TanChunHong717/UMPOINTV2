@@ -27,6 +27,24 @@
           <el-checkbox label="Public" v-model="dataForm.openForPublic" :true-value="Number(1)" :false-value="Number(0)"/>
         </div>
       </el-form-item>
+      <el-form-item label="Available in weekend" prop="weekendAvailable">
+        <el-radio-group v-model="dataForm.weekendAvailable">
+          <el-radio :value="Number(1)">Yes</el-radio>
+          <el-radio :value="Number(0)">No</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="Start time" prop="startTime">
+        <el-time-picker
+          v-model="dataForm.startTime"
+          placeholder="Start time"
+        />
+      </el-form-item>
+      <el-form-item label="End time" prop="endTime">
+        <el-time-picker
+          v-model="dataForm.endTime"
+          placeholder="End time"
+        />
+      </el-form-item>
       <el-form-item label="Price for an hour" prop="hourPrice">
         <el-input-number v-model="dataForm.hourPrice" controls-position="right" :precision="2" :step="0.5" :min="0"/>
       </el-form-item>
@@ -75,6 +93,9 @@ const dataForm = reactive({
   openForStaff: null,
   openForStudent: null,
   openForPublic: null,
+  weekendAvailable: null,
+  startTime: null,
+  endTime: null,
   hourPrice: null,
   fourHoursPrice: null,
   dayPrice: null,
@@ -89,6 +110,15 @@ const rules = ref({
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
   approvalRequired: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ],
+  weekendAvailable: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ],
+  startTime: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ],
+  endTime: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
   hourPrice: [
@@ -126,6 +156,31 @@ const getUserList = async () => {
   });
 };
 
+const timeStringToDate = (timeString) => {
+  if (!timeString)
+    return null;
+
+  const [hours, minutes, seconds] = timeString.split(':').map(Number);
+  if (
+    isNaN(hours) || hours < 0 || hours > 23 ||
+    isNaN(minutes) || minutes < 0 || minutes > 59 ||
+    isNaN(seconds) || seconds < 0 || seconds > 59
+  )
+    return null;
+
+  const date = new Date();
+  date.setHours(hours, minutes, seconds, 0); // Set hours, minutes, and seconds
+  return date;
+}
+
+const dateToTimeString = (date) => {
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+
+  return `${hours}:${minutes}:${seconds}`;
+}
+
 const init = (space?: any) => {
   getDefaultBookingRule();
   getUserList();
@@ -137,6 +192,9 @@ const init = (space?: any) => {
     dataFormRef.value.resetFields();
 
   Object.assign(dataForm, space, space.spcBookingRuleDTO);
+  dataForm.id = space.id;
+  dataForm.startTime = timeStringToDate(dataForm.startTime);
+  dataForm.endTime = timeStringToDate(dataForm.endTime);
 };
 
 // Form submission
@@ -156,6 +214,9 @@ const dataFormSubmitHandle = () => {
         openForStaff: dataForm.openForStaff,
         openForStudent: dataForm.openForStudent,
         openForPublic: dataForm.openForPublic,
+        weekendAvailable: dataForm.weekendAvailable,
+        startTime: dateToTimeString(dataForm.startTime),
+        endTime: dateToTimeString(dataForm.endTime),
         closeDaysBeforeEvent: dataForm.closeDaysBeforeEvent,
         closeDaysAfterEvent: dataForm.closeDaysAfterEvent,
         maxReservationDays: dataForm.maxReservationDays,

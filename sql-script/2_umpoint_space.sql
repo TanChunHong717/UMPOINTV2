@@ -18,6 +18,9 @@ CREATE TABLE spc_booking_rule (
     open_for_staff tinyint NOT NULL COMMENT '0:Staff not allow to book 1:Staff allow to book',
     open_for_student tinyint NOT NULL COMMENT '0:Student not allow to book 1:Student allow to book',
     open_for_public tinyint NOT NULL COMMENT '0:Public not allow to book 1:Public allow to book',
+    weekend_available tinyint NOT NULL COMMENT 'Availability in weekend, 1: Available, 0: Close',
+    start_time time NOT NULL COMMENT 'Start time in a day when booking is allow',
+    end_time time NOT NULL COMMENT 'End time in a day when booking is allow',
     close_days_before_event decimal(5,0) NOT NULL COMMENT 'Days close for booking before event',
     close_days_after_event decimal(5,0) NOT NULL COMMENT 'Days close for booking after event',
     max_reservation_days decimal(5, 0) NOT NULL COMMENT 'Maximum reservation days',
@@ -78,4 +81,4 @@ CREATE TABLE spc_availability (
     FOREIGN KEY (space_id) REFERENCES spc_space(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space Availability';
 
-INSERT INTO spc_booking_rule VALUE (0,1,1,1,1,0,0,5,1);
+INSERT INTO spc_booking_rule VALUE (0,1,1,1,1,1,('00:00:00'),('23:59:59'),0,0,5,1);

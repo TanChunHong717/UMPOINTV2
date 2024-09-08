@@ -17,7 +17,7 @@ import cn.hutool.core.util.StrUtil;
 import my.edu.um.umpoint.modules.accommodation.service.AccAccommodationTagService;
 import my.edu.um.umpoint.modules.accommodation.service.AccBookingRuleService;
 import my.edu.um.umpoint.modules.accommodation.service.AccImageService;
-import my.edu.um.umpoint.modules.space.entity.SpcSpaceEntity;
+import my.edu.um.umpoint.modules.space.dto.SpcBookingRuleDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -91,8 +91,9 @@ public class AccAccommodationServiceImpl extends CrudServiceImpl<AccAccommodatio
         List<Long> bookingRuleIds = new ArrayList<>();
 
         for (AccAccommodationEntity accAccommodationEntity : accAccommodationEntities) {
-            if (accAccommodationEntity.getBookingRuleId() != null)
-                bookingRuleIds.add(accAccommodationEntity.getBookingRuleId());
+            Long bookingRuleId = accAccommodationEntity.getBookingRuleId();
+            if (bookingRuleId != null && bookingRuleId != 0)
+                bookingRuleIds.add(bookingRuleId);
             accAccommodationEntity.setBookingRuleId(0L);
         }
 
@@ -104,40 +105,59 @@ public class AccAccommodationServiceImpl extends CrudServiceImpl<AccAccommodatio
     private void updateBookingRule(AccAccommodationDTO dto) {
         AccBookingRuleDTO accBookingRuleDTO = dto.getAccBookingRuleDTO();
         if (accBookingRuleDTO != null) {
+            AccBookingRuleDTO defaultBookingRuleDTO = accBookingRuleService.get(0L);
             if (dto.getBookingRuleId() == null) {
-                accBookingRuleService.save(accBookingRuleDTO);
-                dto.setBookingRuleId(accBookingRuleDTO.getId());
+                //Have no booking rule yet
+                if (accBookingRuleDTO.equals(defaultBookingRuleDTO)) {
+                    //Apply default booking rule
+                    dto.setBookingRuleId(0L);
+                } else {
+                    //Create new booking rule
+                    accBookingRuleService.save(accBookingRuleDTO);
+                    dto.setBookingRuleId(accBookingRuleDTO.getId());
+                }
+            } else if (dto.getBookingRuleId() == 0) {
+                //Using default booking rule before
+                if (!accBookingRuleDTO.equals(defaultBookingRuleDTO)) {
+                    //Change booking rule, need to create new one
+                    accBookingRuleService.save(accBookingRuleDTO);
+                    dto.setBookingRuleId(accBookingRuleDTO.getId());
+                }
             } else
                 accBookingRuleService.update(accBookingRuleDTO);
         }
     }
 
     private void updateAccommodationImage(AccAccommodationDTO dto) {
-        List<AccImageEntity> imageEntityList = dto.getAccImageDTOList()
-                .stream()
-                .map((accImageDTO) -> {
-                    AccImageEntity entity = new AccImageEntity();
-                    entity.setId(accImageDTO.getId());
-                    entity.setAccommodationId(dto.getId());
-                    entity.setImageUrl(accImageDTO.getImageUrl());
-                    return entity;
-                }).toList();
+        if (dto.getAccImageDTOList() != null) {
+            List<AccImageEntity> imageEntityList = dto.getAccImageDTOList()
+                    .stream()
+                    .map((accImageDTO) -> {
+                        AccImageEntity entity = new AccImageEntity();
+                        entity.setId(accImageDTO.getId());
+                        entity.setAccommodationId(dto.getId());
+                        entity.setImageUrl(accImageDTO.getImageUrl());
+                        return entity;
+                    }).toList();
 
-        accImageService.deleteByAccommodationId(dto.getId());
-        accImageService.insertBatch(imageEntityList);
+            accImageService.deleteByAccommodationId(dto.getId());
+            accImageService.insertBatch(imageEntityList);
+        }
     }
 
     private void updateAccommodationTag(AccAccommodationDTO dto) {
-        List<AccAccommodationTagEntity> tagEntityList = dto.getAccTagDTOList()
-                .stream()
-                .map((accTagDao) -> {
-                    AccAccommodationTagEntity entity = new AccAccommodationTagEntity();
-                    entity.setAccommodationId(dto.getId());
-                    entity.setTagId(accTagDao.getId());
-                    return entity;
-                }).toList();
+        if (dto.getAccTagDTOList() != null) {
+            List<AccAccommodationTagEntity> tagEntityList = dto.getAccTagDTOList()
+                    .stream()
+                    .map((accTagDao) -> {
+                        AccAccommodationTagEntity entity = new AccAccommodationTagEntity();
+                        entity.setAccommodationId(dto.getId());
+                        entity.setTagId(accTagDao.getId());
+                        return entity;
+                    }).toList();
 
-        accAccommodationTagService.deleteByAccommodationId(dto.getId());
-        accAccommodationTagService.insertBatch(tagEntityList);
+            accAccommodationTagService.deleteByAccommodationId(dto.getId());
+            accAccommodationTagService.insertBatch(tagEntityList);
+        }
     }
 }

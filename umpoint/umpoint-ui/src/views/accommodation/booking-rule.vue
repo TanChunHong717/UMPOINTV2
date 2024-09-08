@@ -29,9 +29,39 @@
     </el-form>
     <el-table v-loading="state.dataListLoading" :data="state.dataList" border @selection-change="state.dataListSelectionChangeHandle" @sort-change="state.dataListSortChangeHandle" style="width: 100%">
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-      <el-table-column prop="name" label="Name" header-align="center" align="center" sortable="custom"></el-table-column>
+      <el-table-column type="expand">
+        <template #default="scope">
+          <div class="expand-row">
+            <div v-if="scope.row.accBookingRuleDTO">
+              <el-row class="content-row">
+                <el-col :span="24">
+                  Available in weekend:
+                  <el-tag v-if="scope.row.accBookingRuleDTO.weekendAvailable == 1" type="primary">Yes</el-tag>
+                  <el-tag v-else type="info">No</el-tag>
+                </el-col>
+              </el-row>
+              <el-row class="content-row">
+                <el-col :span="12">Start Time: {{ scope.row.accBookingRuleDTO.startTime }}</el-col>
+                <el-col :span="12">End Time: {{ scope.row.accBookingRuleDTO.endTime }}</el-col>
+              </el-row>
+              <el-row class="content-row">
+                <el-col :span="12">Days close for booking before event: {{ scope.row.accBookingRuleDTO.closeDaysBeforeEvent }}</el-col>
+                <el-col :span="12">Maximum reservation days: {{ scope.row.accBookingRuleDTO.maxReservationDays }}</el-col>
+              </el-row>
+              <el-row class="content-row">
+                <el-col :span="12">Days close for booking after event: {{ scope.row.accBookingRuleDTO.closeDaysAfterEvent }}</el-col>
+                <el-col :span="12">Minimum booking hours: {{ scope.row.accBookingRuleDTO.minBookingHours }}</el-col>
+              </el-row>
+            </div>
+            <div v-else>
+              Booking rule is not set for this space.
+            </div>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column prop="name" label="Name" header-align="center" align="center" sortable="custom" width="200"></el-table-column>
       <el-table-column label="Booking Rule" header-align="center" align="center">
-        <el-table-column prop="manager" label="Manager" header-align="center" align="center" sortable="custom"></el-table-column>
+        <el-table-column prop="managerName" label="Manager" header-align="center" align="center" sortable="custom"></el-table-column>
         <el-table-column label="Approve Required" header-align="center" align="center">
           <template v-slot="scope">
             <div v-if="scope.row.spcBookingRuleDTO">
@@ -40,7 +70,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="Open To" header-align="center" align="center">
+        <el-table-column label="Open To" header-align="center" align="center" width="275">
           <template v-slot="scope">
             <div v-if="scope.row.spcBookingRuleDTO">
               <el-checkbox label="Staff" v-model="scope.row.spcBookingRuleDTO.openForStaff" :true-value="Number(1)" :false-value="Number(0)" disabled/>
@@ -49,37 +79,15 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="Price" header-align="center" align="center">
+        <el-table-column label="Price(RM)" header-align="center" align="center">
           <el-table-column prop="dayPrice" label="Day" header-align="center" align="center" sortable="custom"></el-table-column>
           <el-table-column prop="weekPrice" label="Week" header-align="center" align="center" sortable="custom"></el-table-column>
           </el-table-column>
-        <el-table-column label="Close Days" header-align="center" align="center">
-          <el-table-column label="Before" header-align="center" align="center">
-            <template v-slot="scope">
-              <div v-if="scope.row.spcBookingRuleDTO">{{scope.row.spcBookingRuleDTO.closeDaysBeforeEvent}}</div>
-            </template>
-          </el-table-column>
-          <el-table-column label="After" header-align="center" align="center">
-            <template v-slot="scope">
-              <div v-if="scope.row.spcBookingRuleDTO">{{scope.row.spcBookingRuleDTO.closeDaysAfterEvent}}</div>
-            </template>
-          </el-table-column>
-        </el-table-column>
-        <el-table-column label="Max Reservation Days" header-align="center" align="center">
-          <template v-slot="scope">
-            <div v-if="scope.row.spcBookingRuleDTO">{{scope.row.spcBookingRuleDTO.maxReservationDays}}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="Min Booking Days" header-align="center" align="center">
-          <template v-slot="scope">
-            <div v-if="scope.row.spcBookingRuleDTO">{{scope.row.spcBookingRuleDTO.minBookingDays}}</div>
-          </template>
-        </el-table-column>
       </el-table-column>
-      <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="150">
+      <el-table-column label="Actions" fixed="right" header-align="center" align="left" width="80">
         <template v-slot="scope">
           <el-button v-if="state.hasPermission('accommodation:accommodation:info')" type="primary" link @click="$router.push({name:`accommodation-info`, params: {id:scope.row.id}})">Details</el-button>
-          <el-button v-if="state.hasPermission('accommodation:booking-rule:update')" type="primary" link @click="bookingRuleUpdateHandle(scope.row)">Update</el-button>
+          <el-button style="margin-left: 0" v-if="state.hasPermission('accommodation:booking-rule:update')" type="primary" link @click="bookingRuleUpdateHandle(scope.row)">Update</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -94,6 +102,9 @@ import useView from "@/hooks/useView";
 import {onActivated, reactive, ref, toRefs} from "vue";
 import UpdateBookingRule from "@/views/accommodation/booking-rule-add-or-update.vue";
 import UpdateDefaultBookingRule from "@/views/accommodation/default-booking-rule-add-or-update.vue";
+import baseService from "@/service/baseService";
+import {IObject} from "@/types/interface";
+import {ElMessage} from "element-plus";
 
 const view = reactive({
   deleteIsBatch: true,
@@ -122,17 +133,20 @@ const bookingRuleUpdateHandle = (accommodation: any) => {
 };
 
 const applyDefaultBookingRuleHandle = () => {
-  baseService.post(
-    "/accommodation/booking-rule/apply",
-    state.dataListSelections.map(
+  let idList = [];
+  if (state.dataListSelections && state.dataListSelections.length > 0) {
+    idList = state.dataListSelections.map(
       (item: IObject) => item["id"]
     )
+  }
+  baseService.post(
+    "/accommodation/booking-rule/apply",
+    idList
   ).then((res) => {
     ElMessage.success({
       message: 'Success',
       duration: 500,
       onClose: () => {
-        visible.value = false;
         state.getDataList();
       }
     });
@@ -147,5 +161,15 @@ onActivated(() => {
 .header-form {
   display:flex;
   justify-content: space-between;
+}
+.content-row {
+  margin-bottom: 5px;
+  min-height: 24px;
+}
+.expand-row {
+  padding: 0 30px;
+  h1 {
+    margin: 5px 0;
+  }
 }
 </style>

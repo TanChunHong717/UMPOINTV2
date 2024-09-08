@@ -91,25 +91,36 @@
           <h1>Booking Rule</h1>
           <div v-if="space.spcBookingRuleDTO">
             <el-row class="content-row">
-              Open booking:
-              <el-checkbox v-model="space.spcBookingRuleDTO.openForStaff" disabled>Staff</el-checkbox>
-              <el-checkbox v-model="space.spcBookingRuleDTO.openForStudent" disabled>Student</el-checkbox>
-              <el-checkbox v-model="space.spcBookingRuleDTO.openForPublic" disabled>Public</el-checkbox>
-            </el-row>
-            <el-row class="content-row">
-              <el-col :span="12">Days close for booking before event: {{ space.spcBookingRuleDTO.closeDaysBeforeEvent }}</el-col>
-              <el-col :span="12">Maximum reservation days: {{ space.spcBookingRuleDTO.maxReservationDays }}</el-col>
-            </el-row>
-            <el-row class="content-row">
-              <el-col :span="12">Days close for booking after event: {{ space.spcBookingRuleDTO.closeDaysAfterEvent }}</el-col>
-              <el-col :span="12">Minimum booking hours: {{ space.spcBookingRuleDTO.minBookingHours }}</el-col>
-            </el-row>
-            <el-row class="content-row">
               <el-col :span="24">
                 Approval Required:
                 <el-tag v-if="space.spcBookingRuleDTO.approvalRequired == 1" type="primary">Yes</el-tag>
                 <el-tag v-else type="info">No</el-tag>
               </el-col>
+            </el-row>
+            <el-row class="content-row">
+              <span class="radio-label">Open booking:</span>
+              <el-checkbox v-model="space.spcBookingRuleDTO.openForStaff" :true-value="Number(1)" disabled>Staff</el-checkbox>
+              <el-checkbox v-model="space.spcBookingRuleDTO.openForStudent" :true-value="Number(1)" disabled>Student</el-checkbox>
+              <el-checkbox v-model="space.spcBookingRuleDTO.openForPublic" :true-value="Number(1)" disabled>Public</el-checkbox>
+            </el-row>
+            <el-row style="margin-bottom: 10px">
+              <el-col :span="24">
+                Available in weekend:
+                <el-tag v-if="space.spcBookingRuleDTO.weekendAvailable == 1" type="primary">Yes</el-tag>
+                <el-tag v-else type="info">No</el-tag>
+              </el-col>
+            </el-row>
+            <el-row style="margin-bottom: 14px">
+              <el-col :span="12">Start Time: {{ space.spcBookingRuleDTO.startTime }}</el-col>
+              <el-col :span="12">End Time: {{ space.spcBookingRuleDTO.endTime }}</el-col>
+            </el-row>
+            <el-row style="margin-bottom: 14px">
+              <el-col :span="12">Days close for booking before event: {{ space.spcBookingRuleDTO.closeDaysBeforeEvent }}</el-col>
+              <el-col :span="12">Maximum reservation days: {{ space.spcBookingRuleDTO.maxReservationDays }}</el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">Days close for booking after event: {{ space.spcBookingRuleDTO.closeDaysAfterEvent }}</el-col>
+              <el-col :span="12">Minimum booking hours: {{ space.spcBookingRuleDTO.minBookingHours }}</el-col>
             </el-row>
           </div>
           <div v-else>
@@ -211,5 +222,12 @@ onActivated(() => {
 }
 .content-row {
   margin-bottom: 5px;
+}
+h1 {
+  margin-bottom: 10px;
+}
+.radio-label {
+  padding-top: 7px;
+  padding-right: 3px;
 }
 </style>

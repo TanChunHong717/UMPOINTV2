@@ -81,10 +81,10 @@
               </el-col>
             </el-row>
             <el-row class="content-row">
-              Open booking:
-              <el-checkbox v-model="service.svcBookingRuleDTO.openForStaff" disabled>Staff</el-checkbox>
-              <el-checkbox v-model="service.svcBookingRuleDTO.openForStudent" disabled>Student</el-checkbox>
-              <el-checkbox v-model="service.svcBookingRuleDTO.openForPublic" disabled>Public</el-checkbox>
+              <span class="radio-label">Open booking:</span>
+              <el-checkbox v-model="service.spcBookingRuleDTO.openForStaff" :true-value="Number(1)" disabled>Staff</el-checkbox>
+              <el-checkbox v-model="service.spcBookingRuleDTO.openForStudent" :true-value="Number(1)" disabled>Student</el-checkbox>
+              <el-checkbox v-model="service.spcBookingRuleDTO.openForPublic" :true-value="Number(1)" disabled>Public</el-checkbox>
             </el-row>
           </div>
           <div v-else>
@@ -190,5 +190,9 @@ onActivated(() => {
 }
 .content-row {
   margin-bottom: 5px;
+}
+.radio-label {
+  padding-top: 7px;
+  padding-right: 3px;
 }
 </style>
