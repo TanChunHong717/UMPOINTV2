@@ -106,7 +106,7 @@
             <el-row style="margin-bottom: 10px">
               <el-col :span="24">
                 Available in weekend:
-                <el-tag v-if="space.spcBookingRuleDTO.weekendAvailable == 1" type="primary">Yes</el-tag>
+                <el-tag v-if="space.spcBookingRuleDTO.holidayAvailable == 1" type="primary">Yes</el-tag>
                 <el-tag v-else type="info">No</el-tag>
               </el-col>
             </el-row>

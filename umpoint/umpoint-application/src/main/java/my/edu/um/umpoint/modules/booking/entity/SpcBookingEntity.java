@@ -45,7 +45,7 @@ public class SpcBookingEntity {
 	*/
 	private Long workerId;
 	/**
-	* Payment ID
+	* Payment ID, point latest payment if there is no success/refund payment
 	*/
 	private Long paymentId;
 	/**
@@ -78,4 +78,29 @@ public class SpcBookingEntity {
 	*/
 	@TableField(fill = FieldFill.INSERT_UPDATE)
 	private Date updateDate;
+	/**
+	 * Name of space that being booked
+	 */
+	@TableField(exist = false)
+	private String space;
+	/**
+	 * Name of admin who approve/reject booking
+	 */
+	@TableField(exist = false)
+	private String admin;
+	/**
+	 * Name of user who make booking
+	 */
+	@TableField(exist = false)
+	private String username;
+	/**
+	 * Name of worker that being assigned to this booking
+	 */
+	@TableField(exist = false)
+	private String worker;
+	/**
+	 * Payment Status
+	 */
+	@TableField(exist = false)
+	private String paymentStatus;
 }

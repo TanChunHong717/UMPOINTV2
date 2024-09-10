@@ -102,7 +102,7 @@
             b.open_for_staff,
             b.open_for_student,
             b.open_for_public,
-            b.weekend_available,
+            b.holiday_available,
             b.start_time,
             b.end_time,
             b.close_days_before_event,
@@ -141,7 +141,28 @@
                     #{id}
                 </foreach>
             </if>
+            <if test="approvalRequire != null">
+                AND b.approval_required = #{approvalRequire}
+            </if>
         </where>
+        <if test="orderField != null and orderField.trim() != ''">
+            ORDER BY
+            <if test="orderField == 'name'">
+                name
+            </if>
+            <if test="orderField == 'capacity'">
+                capacity
+            </if>
+            <if test="orderField == 'hour_price'">
+                hour_price
+            </if>
+            <if test="order != 'desc'">
+                ASC
+            </if>
+            <if test="order == 'desc'">
+                DESC
+            </if>
+        </if>
     </select>
     <select id="selectById" resultMap="spcSpaceSelectMap">
         SELECT
@@ -172,7 +193,7 @@
             b.open_for_staff,
             b.open_for_student,
             b.open_for_public,
-            b.weekend_available,
+            b.holiday_available,
             b.start_time,
             b.end_time,
             b.close_days_before_event,

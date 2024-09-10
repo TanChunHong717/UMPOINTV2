@@ -18,7 +18,7 @@ CREATE TABLE spc_booking_rule (
     open_for_staff tinyint NOT NULL COMMENT '0:Staff not allow to book 1:Staff allow to book',
     open_for_student tinyint NOT NULL COMMENT '0:Student not allow to book 1:Student allow to book',
     open_for_public tinyint NOT NULL COMMENT '0:Public not allow to book 1:Public allow to book',
-    weekend_available tinyint NOT NULL COMMENT 'Availability in weekend, 1: Available, 0: Close',
+    holiday_available tinyint NOT NULL COMMENT 'Availability in public holiday, 1: Available, 0: Close',
     start_time time NOT NULL COMMENT 'Start time in a day when booking is allow',
     end_time time NOT NULL COMMENT 'End time in a day when booking is allow',
     close_days_before_event decimal(5,0) NOT NULL COMMENT 'Days close for booking before event',

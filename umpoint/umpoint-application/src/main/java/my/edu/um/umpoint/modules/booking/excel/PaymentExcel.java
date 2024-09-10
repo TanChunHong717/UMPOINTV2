@@ -16,7 +16,7 @@ import java.util.Date;
  * @since 1.0.0 2024-09-08
  */
 @Data
-public class AccPaymentExcel {
+public class PaymentExcel {
     @ExcelProperty(value = "ID")
     private Long id;
     @ExcelProperty(value = "Status: 0:Pending, 1:Success, 2:Failed, 3:Refund")
@@ -25,8 +25,8 @@ public class AccPaymentExcel {
     private Long userId;
     @ExcelProperty(value = "Payment Amount")
     private BigDecimal amount;
-    @ExcelProperty(value = "Payment Method")
-    private String method;
+    @ExcelProperty(value = "Payment Method ID")
+    private Long method_id;
     @ExcelProperty(value = "Payment date")
     private Date date;
 

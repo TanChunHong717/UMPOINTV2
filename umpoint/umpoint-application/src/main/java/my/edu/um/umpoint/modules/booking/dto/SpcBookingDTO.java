@@ -40,7 +40,7 @@ public class SpcBookingDTO implements Serializable {
 	@SchemaProperty(name = "Worker responsible if booking is not in working day")
 	private Long workerId;
 
-	@SchemaProperty(name = "Payment ID")
+	@SchemaProperty(name = "Payment ID, point latest payment if there is no success/refund payment")
 	private Long paymentId;
 
 	@SchemaProperty(name = "Amount need to be pay")
@@ -63,4 +63,19 @@ public class SpcBookingDTO implements Serializable {
 
 	@SchemaProperty(name = "Update date")
 	private Date updateDate;
+
+	@SchemaProperty(name = "Name of space that being booked")
+	private String space;
+
+	@SchemaProperty(name = "Name of admin who approve/reject booking")
+	private String admin;
+
+	@SchemaProperty(name = "Name of user who make booking")
+	private String username;
+
+	@SchemaProperty(name = "Name of worker that being assigned to this booking")
+	private String worker;
+
+	@SchemaProperty(name = "Payment status")
+	private String paymentStatus;
 }

@@ -40,7 +40,7 @@ public class SvcBookingEntity {
 	*/
 	private Long userId;
 	/**
-	* Payment ID
+	* Payment ID, point latest payment if there is no success/refund payment
 	*/
 	private Long paymentId;
 	/**
@@ -57,4 +57,24 @@ public class SvcBookingEntity {
 	*/
 	@TableField(fill = FieldFill.INSERT_UPDATE)
 	private Date updateDate;
+	/**
+	 * Name of service that being booked
+	 */
+	@TableField(exist = false)
+	private String service;
+	/**
+	 * Name of admin who approve/reject booking
+	 */
+	@TableField(exist = false)
+	private String admin;
+	/**
+	 * Name of user who make booking
+	 */
+	@TableField(exist = false)
+	private String username;
+	/**
+	 * Payment Status
+	 */
+	@TableField(exist = false)
+	private String paymentStatus;
 }

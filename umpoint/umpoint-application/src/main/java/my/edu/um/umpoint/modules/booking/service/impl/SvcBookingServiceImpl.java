@@ -1,6 +1,9 @@
 package my.edu.um.umpoint.modules.booking.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import my.edu.um.umpoint.common.constant.BookingConstant;
+import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
 import my.edu.um.umpoint.modules.booking.dao.SvcBookingDao;
 import my.edu.um.umpoint.modules.booking.dto.SvcBookingDTO;
@@ -9,6 +12,7 @@ import my.edu.um.umpoint.modules.booking.service.SvcBookingService;
 import cn.hutool.core.util.StrUtil;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,5 +34,29 @@ public class SvcBookingServiceImpl extends CrudServiceImpl<SvcBookingDao, SvcBoo
         return wrapper;
     }
 
+    @Override
+    public PageData<SvcBookingDTO> page(Map<String, Object> params) {
+        paramsToLike(params, "service");
 
+        IPage<SvcBookingEntity> page = getPage(params, "create_date", false);
+        List<SvcBookingEntity> list = baseDao.getList(params);
+
+        return getPageData(list, page.getTotal(), currentDtoClass());
+    }
+
+    @Override
+    public void approve(Long id) {
+        SvcBookingEntity entity = new SvcBookingEntity();
+        entity.setStatus(BookingConstant.BookingStatus.APPROVED.getValue());
+
+        baseDao.update(entity, new QueryWrapper<SvcBookingEntity>().eq("id", id));
+    }
+
+    @Override
+    public void reject(Long id) {
+        SvcBookingEntity entity = new SvcBookingEntity();
+        entity.setStatus(BookingConstant.BookingStatus.REJECT.getValue());
+
+        baseDao.update(entity, new QueryWrapper<SvcBookingEntity>().eq("id", id));
+    }
 }

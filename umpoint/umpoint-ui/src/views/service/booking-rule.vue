@@ -6,6 +6,16 @@
           <el-input v-model="state.dataForm.name" placeholder="Name" clearable></el-input>
         </el-form-item>
         <el-form-item>
+          <el-select
+            v-model="state.dataForm.approvalRequire"
+            placeholder="Approval Required"
+            clearable
+          >
+            <el-option label="Automatic approve" value="0"/>
+            <el-option label="Require Admin Approve" value="1"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
           <el-button @click="state.getDataList()">Search</el-button>
         </el-form-item>
       </div>
@@ -31,7 +41,7 @@
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
       <el-table-column prop="name" label="Name" header-align="center" align="center" sortable="custom"></el-table-column>
       <el-table-column label="Booking Rule" header-align="center" align="center">
-        <el-table-column prop="managerName" label="Manager" header-align="center" align="center" sortable="custom"></el-table-column>
+        <el-table-column prop="managerName" label="Manager" header-align="center" align="center"></el-table-column>
         <el-table-column label="Approve Required" header-align="center" align="center">
           <template v-slot="scope">
             <div v-if="scope.row.spcBookingRuleDTO">
@@ -81,9 +91,7 @@ const view = reactive({
   deleteURL: "/service/service",
   dataForm: {
     name: "",
-    deptId: null,
-    catId: null,
-    tagId: null
+    approvalRequire: null
   }
 });
 

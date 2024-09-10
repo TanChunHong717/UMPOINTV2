@@ -37,9 +37,9 @@ public class SpcBookingRuleEntity {
 	 */
 	private Integer openForPublic;
 	/**
-	 * Availability in weekend, 1: Available, 0: Close
+	 * Availability in public holiday, 1: Available, 0: Close
 	 */
-	private Integer weekendAvailable;
+	private Integer holidayAvailable;
 	/**
 	 * Start time in a day when booking is allow,range: (0,24)
 	 */

@@ -15,5 +15,95 @@
         <result property="updateDate" column="update_date"/>
     </resultMap>
 
+    <resultMap type="my.edu.um.umpoint.modules.booking.entity.SvcBookingEntity" id="svcBookingSelectMap">
+        <id property="id" column="id"/>
+        <result property="status" column="status"/>
+        <result property="serviceId" column="service_id"/>
+        <result property="adminId" column="admin_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="paymentId" column="payment_id"/>
+        <result property="paymentAmount" column="payment_amount"/>
+        <result property="createDate" column="create_date"/>
+        <result property="updateDate" column="update_date"/>
+        <result property="service" column="service"/>
+        <result property="admin" column="admin"/>
+        <result property="username" column="username"/>
+    </resultMap>
 
+    <select id="getList" resultMap="svcBookingSelectMap">
+        SELECT
+            sb.id,
+            sb.status,
+            sb.service_id,
+            sb.admin_id,
+            sb.user_id,
+            sb.payment_id,
+            sb.payment_amount,
+            sb.create_date,
+            sb.update_date,
+            s.name AS service,
+            a.username AS admin,
+            c.username AS username,
+            p.status AS payment_status
+        FROM spc_booking sb
+        LEFT JOIN svc_service s ON sb.space_id = s.id
+        LEFT JOIN sys_user a ON sb.admin_id = a.id
+        LEFT JOIN cli_user c ON sb.user_id = c.id
+        LEFT JOIN payment p ON sb.payment_id = p.id
+        <where>
+            <if test="id != null">
+                AND sb.id = #{id}
+            </if>
+            <if test="status != null">
+                AND sb.status = #{status}
+            </if>
+            <if test="service != null and service.trim() != ''">
+                AND service LIKE #{service}
+            </if>
+        </where>
+        <if test="orderField != null and orderField.trim() != ''">
+            ORDER BY
+            <if test="orderField == 'id'">
+                id
+            </if>
+            <if test="orderField == 'space'">
+                space
+            </if>
+            <if test="orderField == 'create_date'">
+                create_date
+            </if>
+            <if test="order != 'desc'">
+                ASC
+            </if>
+            <if test="order == 'desc'">
+                DESC
+            </if>
+        </if>
+    </select>
+    <select id="selectById" resultMap="svcBookingSelectMap">
+        SELECT
+            sb.id,
+            sb.status,
+            sb.service_id,
+            sb.admin_id,
+            sb.user_id,
+            sb.payment_id,
+            sb.payment_amount,
+            sb.create_date,
+            sb.update_date,
+            s.name AS service,
+            a.username AS admin,
+            c.username AS username,
+            p.status AS payment_status
+        FROM svc_booking sb
+        LEFT JOIN svc_service s ON sb.space_id = s.id
+        LEFT JOIN sys_user a ON sb.admin_id = a.id
+        LEFT JOIN cli_user c ON sb.user_id = c.id
+        LEFT JOIN spc_space s ON sb.space_id = s.id
+        LEFT JOIN sys_user a ON sb.admin_id = a.id
+        LEFT JOIN cli_user c ON sb.user_id = c.id
+        LEFT JOIN sys_user w ON sb.worker_id = w.id
+        LEFT JOIN payment p ON sb.payment_id = p.id
+        WHERE sb.id = #{id}
+    </select>
 </mapper>

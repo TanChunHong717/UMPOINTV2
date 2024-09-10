@@ -4,6 +4,10 @@ import my.edu.um.umpoint.common.dao.BaseDao;
 import my.edu.um.umpoint.modules.booking.entity.SvcBookingEntity;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Space Booking
  *
@@ -12,5 +16,8 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface SvcBookingDao extends BaseDao<SvcBookingEntity> {
-	
+    List<SvcBookingEntity> getList(Map<String, Object> params);
+
+    @Override
+    SvcBookingEntity selectById(Serializable id);
 }

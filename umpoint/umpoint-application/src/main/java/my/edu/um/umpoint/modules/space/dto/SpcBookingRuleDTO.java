@@ -51,7 +51,7 @@ public class SpcBookingRuleDTO implements Serializable {
 
 	@SchemaProperty(name = "Availability in weekend, 1: Available, 0: Close")
 	@NotNull(groups = {DefaultGroup.class})
-	private Integer weekendAvailable;
+	private Integer holidayAvailable;
 
 	@SchemaProperty(name = "Start time in a day when booking is allow,range: (0,24)")
 	@NotNull(groups = {DefaultGroup.class})

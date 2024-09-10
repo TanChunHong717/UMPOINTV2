@@ -27,8 +27,8 @@
           <el-checkbox label="Public" v-model="dataForm.openForPublic" :true-value="Number(1)" :false-value="Number(0)"/>
         </div>
       </el-form-item>
-      <el-form-item label="Available in weekend" prop="weekendAvailable">
-        <el-radio-group v-model="dataForm.weekendAvailable">
+      <el-form-item label="Available in Public Holiday(Include weekend)" prop="holidayAvailable">
+        <el-radio-group v-model="dataForm.holidayAvailable">
           <el-radio :value="Number(1)">Yes</el-radio>
           <el-radio :value="Number(0)">No</el-radio>
         </el-radio-group>
@@ -93,7 +93,7 @@ const dataForm = reactive({
   openForStaff: null,
   openForStudent: null,
   openForPublic: null,
-  weekendAvailable: null,
+  holidayAvailable: null,
   startTime: null,
   endTime: null,
   hourPrice: null,
@@ -112,7 +112,7 @@ const rules = ref({
   approvalRequired: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
-  weekendAvailable: [
+  holidayAvailable: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
   startTime: [
@@ -156,7 +156,7 @@ const getUserList = async () => {
   });
 };
 
-const timeStringToDate = (timeString) => {
+const timeStringToDate = (timeString:any):any => {
   if (!timeString)
     return null;
 
@@ -173,7 +173,7 @@ const timeStringToDate = (timeString) => {
   return date;
 }
 
-const dateToTimeString = (date) => {
+const dateToTimeString = (date:any):any => {
   const hours = String(date.getHours()).padStart(2, '0');
   const minutes = String(date.getMinutes()).padStart(2, '0');
   const seconds = String(date.getSeconds()).padStart(2, '0');

@@ -37,7 +37,7 @@ public class SvcBookingDTO implements Serializable {
 	@SchemaProperty(name = "User ID")
 	private Long userId;
 
-	@SchemaProperty(name = "Payment ID")
+	@SchemaProperty(name = "Payment ID, point latest payment if there is no success/refund payment")
 	private Long paymentId;
 
 	@SchemaProperty(name = "Amount need to be pay")
@@ -48,4 +48,16 @@ public class SvcBookingDTO implements Serializable {
 
 	@SchemaProperty(name = "Update date")
 	private Date updateDate;
+
+	@SchemaProperty(name = "Name of service that being booked")
+	private String service;
+
+	@SchemaProperty(name = "Name of admin who approve/reject booking")
+	private String admin;
+
+	@SchemaProperty(name = "Name of user who make booking")
+	private String username;
+
+	@SchemaProperty(name = "Payment status")
+	private String paymentStatus;
 }

@@ -150,7 +150,7 @@ const useView = (props: IViewHooksOptions | IObject): IViewHooks => {
           return;
         }
         ElMessageBox.confirm(state.deleteMessage, "Hint", {
-          confirmButtonText: "Confrim",
+          confirmButtonText: "Confirm",
           cancelButtonText: "Cancel",
           type: "warning"
         })

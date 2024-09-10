@@ -10,9 +10,9 @@ import my.edu.um.umpoint.common.validator.ValidatorUtils;
 import my.edu.um.umpoint.common.validator.group.AddGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
-import my.edu.um.umpoint.modules.booking.dto.SpcPaymentDTO;
-import my.edu.um.umpoint.modules.booking.excel.SpcPaymentExcel;
-import my.edu.um.umpoint.modules.booking.service.SpcPaymentService;
+import my.edu.um.umpoint.modules.booking.dto.PaymentDTO;
+import my.edu.um.umpoint.modules.booking.excel.PaymentExcel;
+import my.edu.um.umpoint.modules.booking.service.PaymentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,11 +33,11 @@ import java.util.Map;
  * @since 1.0.0 2024-09-08
  */
 @RestController
-@RequestMapping("booking/spc-payment")
+@RequestMapping("booking/payment")
 @Tag(name="Payment")
-public class SpcPaymentController {
+public class PaymentController {
     @Autowired
-    private SpcPaymentService spcPaymentService;
+    private PaymentService paymentService;
 
     @GetMapping("page")
     @Operation(summary = "Pagination")
@@ -47,30 +47,30 @@ public class SpcPaymentController {
         @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, ref="String") ,
         @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String")
     })
-    @RequiresPermissions("booking:spc-payment:page")
-    public Result<PageData<SpcPaymentDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
-        PageData<SpcPaymentDTO> page = spcPaymentService.page(params);
+    @RequiresPermissions("booking:payment:page")
+    public Result<PageData<PaymentDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
+        PageData<PaymentDTO> page = paymentService.page(params);
 
-        return new Result<PageData<SpcPaymentDTO>>().ok(page);
+        return new Result<PageData<PaymentDTO>>().ok(page);
     }
 
     @GetMapping("{id}")
     @Operation(summary = "Information")
-    @RequiresPermissions("booking:spc-payment:info")
-    public Result<SpcPaymentDTO> get(@PathVariable("id") Long id){
-        SpcPaymentDTO data = spcPaymentService.get(id);
+    @RequiresPermissions("booking:payment:info")
+    public Result<PaymentDTO> get(@PathVariable("id") Long id){
+        PaymentDTO data = paymentService.get(id);
 
-        return new Result<SpcPaymentDTO>().ok(data);
+        return new Result<PaymentDTO>().ok(data);
     }
 
     @PostMapping
     @Operation(summary = "Save")
     @LogOperation("Save")
-    @RequiresPermissions("booking:spc-payment:save")
-    public Result save(@RequestBody SpcPaymentDTO dto){
+    @RequiresPermissions("booking:payment:save")
+    public Result save(@RequestBody PaymentDTO dto){
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
 
-        spcPaymentService.save(dto);
+        paymentService.save(dto);
 
         return new Result();
     }
@@ -78,11 +78,21 @@ public class SpcPaymentController {
     @PutMapping
     @Operation(summary = "Update")
     @LogOperation("Update")
-    @RequiresPermissions("booking:spc-payment:update")
-    public Result update(@RequestBody SpcPaymentDTO dto){
+    @RequiresPermissions("booking:payment:update")
+    public Result update(@RequestBody PaymentDTO dto){
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
 
-        spcPaymentService.update(dto);
+        paymentService.update(dto);
+
+        return new Result();
+    }
+
+    @PutMapping("refund/{id}")
+    @Operation(summary = "Update")
+    @LogOperation("Update")
+    @RequiresPermissions("booking:payment:update")
+    public Result refund(@PathVariable("id") Long id){
+        paymentService.refund(id);
 
         return new Result();
     }
@@ -90,11 +100,11 @@ public class SpcPaymentController {
     @DeleteMapping
     @Operation(summary = "Delete")
     @LogOperation("Delete")
-    @RequiresPermissions("booking:spc-payment:delete")
+    @RequiresPermissions("booking:payment:delete")
     public Result delete(@RequestBody Long[] ids){
         AssertUtils.isArrayEmpty(ids, "id");
 
-        spcPaymentService.delete(ids);
+        paymentService.delete(ids);
 
         return new Result();
     }
@@ -102,11 +112,11 @@ public class SpcPaymentController {
     @GetMapping("export")
     @Operation(summary = "Export")
     @LogOperation("Export")
-    @RequiresPermissions("booking:spc-payment:export")
+    @RequiresPermissions("booking:payment:export")
     public void export(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletResponse response) throws Exception {
-        List<SpcPaymentDTO> list = spcPaymentService.list(params);
+        List<PaymentDTO> list = paymentService.list(params);
 
-        ExcelUtils.exportExcelToTarget(response, null, "Payment", list, SpcPaymentExcel.class);
+        ExcelUtils.exportExcelToTarget(response, null, "Payment", list, PaymentExcel.class);
     }
 
 }

@@ -18,7 +18,7 @@ import java.math.BigDecimal;
  */
 @Data
 @Schema(name = "Payment")
-public class AccPaymentDTO implements Serializable {
+public class PaymentDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = -1511545322184053328L;
 
@@ -28,15 +28,27 @@ public class AccPaymentDTO implements Serializable {
 	@SchemaProperty(name = "Status: 0:Pending, 1:Success, 2:Failed, 3:Refund")
 	private Integer status;
 
+	@SchemaProperty(name = "Resource Type: 0:Space, 1:Service, 2:Accommodation")
+	private Integer resourceType;
+
+	@SchemaProperty(name = "Space/Service/Accommodation ID")
+	private Long resourceId;
+
 	@SchemaProperty(name = "User ID")
 	private Long userId;
+
+	@SchemaProperty(name = "Payment Method ID")
+	private String method_id;
 
 	@SchemaProperty(name = "Payment Amount")
 	private BigDecimal amount;
 
-	@SchemaProperty(name = "Payment Method")
+	@SchemaProperty(name = "Payment Date")
+	private Date date;
+
+	@SchemaProperty(name = "Payment Method name")
 	private String method;
 
-	@SchemaProperty(name = "Payment date")
-	private Date date;
+	@SchemaProperty(name = "Name of user who make payment")
+	private String username;
 }

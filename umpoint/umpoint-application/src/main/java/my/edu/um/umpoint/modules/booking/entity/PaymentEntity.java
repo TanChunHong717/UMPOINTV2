@@ -16,8 +16,8 @@ import java.util.Date;
  * @since 1.0.0 2024-09-08
  */
 @Data
-@TableName("spc_payment")
-public class SpcPaymentEntity {
+@TableName("payment")
+public class PaymentEntity {
 	/**
 	* ID
 	*/
@@ -28,20 +28,38 @@ public class SpcPaymentEntity {
 	*/
 	private Integer status;
 	/**
+	 * Resource Type: 0:Space, 1:Service, 2:Accommodation
+	 */
+	private Integer resourceType;
+	/**
+	 * Space/Service/Accommodation ID
+	 */
+	private Long resourceId;
+	/**
 	* User ID
 	*/
 	private Long userId;
+	/**
+	 * Payment Method ID
+	 */
+	private Long method_id;
 	/**
 	* Payment Amount
 	*/
 	private BigDecimal amount;
 	/**
-	* Payment Method
-	*/
-	private String method;
-	/**
-	* Payment date
+	* Payment Date
 	*/
 	@TableField(fill = FieldFill.INSERT)
 	private Date date;
+	/**
+	 * Payment Method Name
+	 */
+	@TableField(exist = false)
+	private String method;
+	/**
+	 * Name of user who make payment
+	 */
+	@TableField(exist = false)
+	private String username;
 }

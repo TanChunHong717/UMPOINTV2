@@ -13,6 +13,7 @@ import my.edu.um.umpoint.modules.log.service.SysLogErrorService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -38,6 +39,14 @@ public class RenExceptionHandler {
     public Result handleDuplicateKeyException(DuplicateKeyException ex) {
         Result result = new Result();
         result.error(ErrorCode.DB_RECORD_EXISTS);
+
+        return result;
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public Result handleUnauthorizedException(UnauthorizedException ex) {
+        Result result = new Result();
+        result.error(ErrorCode.UNAUTHORIZED);
 
         return result;
     }

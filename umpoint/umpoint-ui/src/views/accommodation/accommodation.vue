@@ -23,7 +23,7 @@
           <el-select
             v-model="state.dataForm.catId"
             placeholder="Category"
-            filterable
+            clearable
           >
             <el-option
               v-for="category in categoryList"
@@ -37,7 +37,7 @@
           <el-select
             v-model="state.dataForm.tagId"
             placeholder="Tag"
-            filterable
+            clearable
           >
             <el-option
               v-for="tag in tagList"

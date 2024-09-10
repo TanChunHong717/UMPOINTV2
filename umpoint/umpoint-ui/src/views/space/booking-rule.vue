@@ -6,6 +6,16 @@
           <el-input v-model="state.dataForm.name" placeholder="Name" clearable></el-input>
         </el-form-item>
         <el-form-item>
+          <el-select
+            v-model="state.dataForm.approvalRequire"
+            placeholder="Approval Required"
+            clearable
+          >
+            <el-option label="Automatic approve" value="0"/>
+            <el-option label="Require Admin Approve" value="1"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
           <el-button @click="state.getDataList()">Search</el-button>
         </el-form-item>
       </div>
@@ -35,8 +45,8 @@
             <div v-if="scope.row.spcBookingRuleDTO">
               <el-row class="content-row">
                 <el-col :span="24">
-                  Available in weekend:
-                  <el-tag v-if="scope.row.spcBookingRuleDTO.weekendAvailable == 1" type="primary">Yes</el-tag>
+                  Available in Public Holiday(Include weekend):
+                  <el-tag v-if="scope.row.spcBookingRuleDTO.holidayAvailable == 1" type="primary">Yes</el-tag>
                   <el-tag v-else type="info">No</el-tag>
                 </el-col>
               </el-row>
@@ -61,7 +71,7 @@
       </el-table-column>
       <el-table-column prop="name" label="Name" header-align="center" align="center" sortable="custom" width="200"></el-table-column>
       <el-table-column label="Booking Rule" header-align="center" align="center">
-        <el-table-column prop="managerName" label="Manager" header-align="center" align="center" sortable="custom" width="110"></el-table-column>
+        <el-table-column prop="managerName" label="Manager" header-align="center" align="center" width="110"></el-table-column>
         <el-table-column label="Approve Required" header-align="center" align="center">
           <template v-slot="scope">
             <div v-if="scope.row.spcBookingRuleDTO">
@@ -81,8 +91,8 @@
         </el-table-column>
         <el-table-column label="Price(RM)" header-align="center" align="center">
           <el-table-column prop="hourPrice" label="Hour" header-align="center" align="center" sortable="custom"></el-table-column>
-          <el-table-column prop="fourHoursPrice" label="4 Hours" header-align="center" align="center" sortable="custom" width="150"></el-table-column>
-          <el-table-column prop="dayPrice" label="Day" header-align="center" align="center" sortable="custom"></el-table-column>
+          <el-table-column prop="fourHoursPrice" label="4 Hours" header-align="center" align="center" width="150"></el-table-column>
+          <el-table-column prop="dayPrice" label="Day" header-align="center" align="center"></el-table-column>
         </el-table-column>
       </el-table-column>
       <el-table-column label="Actions" fixed="right" header-align="center" align="left" width="80">
@@ -115,9 +125,7 @@ const view = reactive({
   deleteURL: "/space/space",
   dataForm: {
     name: "",
-    deptId: null,
-    catId: null,
-    tagId: null
+    approvalRequire: null
   }
 });
 

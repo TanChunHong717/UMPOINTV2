@@ -10,9 +10,9 @@ import my.edu.um.umpoint.common.validator.ValidatorUtils;
 import my.edu.um.umpoint.common.validator.group.AddGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
-import my.edu.um.umpoint.modules.booking.dto.AccPaymentDTO;
-import my.edu.um.umpoint.modules.booking.excel.AccPaymentExcel;
-import my.edu.um.umpoint.modules.booking.service.AccPaymentService;
+import my.edu.um.umpoint.modules.booking.dto.PaymentMethodDTO;
+import my.edu.um.umpoint.modules.booking.excel.PaymentMethodExcel;
+import my.edu.um.umpoint.modules.booking.service.PaymentMethodService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,17 +27,17 @@ import java.util.Map;
 
 
 /**
- * Payment
+ * Payment Method
  *
  * @author Tan Chun Hong tanchunhong717@gmail.com
- * @since 1.0.0 2024-09-08
+ * @since 1.0.0 2024-09-10
  */
 @RestController
-@RequestMapping("booking/acc-payment")
-@Tag(name="Payment")
-public class AccPaymentController {
+@RequestMapping("booking/payment-method")
+@Tag(name="Payment Method")
+public class PaymentMethodController {
     @Autowired
-    private AccPaymentService accPaymentService;
+    private PaymentMethodService paymentMethodService;
 
     @GetMapping("page")
     @Operation(summary = "Pagination")
@@ -47,30 +47,30 @@ public class AccPaymentController {
         @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, ref="String") ,
         @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String")
     })
-    @RequiresPermissions("booking:acc-payment:page")
-    public Result<PageData<AccPaymentDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
-        PageData<AccPaymentDTO> page = accPaymentService.page(params);
+    @RequiresPermissions("booking:payment-method:page")
+    public Result<PageData<PaymentMethodDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
+        PageData<PaymentMethodDTO> page = paymentMethodService.page(params);
 
-        return new Result<PageData<AccPaymentDTO>>().ok(page);
+        return new Result<PageData<PaymentMethodDTO>>().ok(page);
     }
 
     @GetMapping("{id}")
     @Operation(summary = "Information")
-    @RequiresPermissions("booking:acc-payment:info")
-    public Result<AccPaymentDTO> get(@PathVariable("id") Long id){
-        AccPaymentDTO data = accPaymentService.get(id);
+    @RequiresPermissions("booking:payment-method:info")
+    public Result<PaymentMethodDTO> get(@PathVariable("id") Long id){
+        PaymentMethodDTO data = paymentMethodService.get(id);
 
-        return new Result<AccPaymentDTO>().ok(data);
+        return new Result<PaymentMethodDTO>().ok(data);
     }
 
     @PostMapping
     @Operation(summary = "Save")
     @LogOperation("Save")
-    @RequiresPermissions("booking:acc-payment:save")
-    public Result save(@RequestBody AccPaymentDTO dto){
+    @RequiresPermissions("booking:payment-method:save")
+    public Result save(@RequestBody PaymentMethodDTO dto){
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
 
-        accPaymentService.save(dto);
+        paymentMethodService.save(dto);
 
         return new Result();
     }
@@ -78,11 +78,11 @@ public class AccPaymentController {
     @PutMapping
     @Operation(summary = "Update")
     @LogOperation("Update")
-    @RequiresPermissions("booking:acc-payment:update")
-    public Result update(@RequestBody AccPaymentDTO dto){
+    @RequiresPermissions("booking:payment-method:update")
+    public Result update(@RequestBody PaymentMethodDTO dto){
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
 
-        accPaymentService.update(dto);
+        paymentMethodService.update(dto);
 
         return new Result();
     }
@@ -90,11 +90,11 @@ public class AccPaymentController {
     @DeleteMapping
     @Operation(summary = "Delete")
     @LogOperation("Delete")
-    @RequiresPermissions("booking:acc-payment:delete")
+    @RequiresPermissions("booking:payment-method:delete")
     public Result delete(@RequestBody Long[] ids){
         AssertUtils.isArrayEmpty(ids, "id");
 
-        accPaymentService.delete(ids);
+        paymentMethodService.delete(ids);
 
         return new Result();
     }
@@ -102,11 +102,11 @@ public class AccPaymentController {
     @GetMapping("export")
     @Operation(summary = "Export")
     @LogOperation("Export")
-    @RequiresPermissions("booking:acc-payment:export")
+    @RequiresPermissions("booking:payment-method:export")
     public void export(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletResponse response) throws Exception {
-        List<AccPaymentDTO> list = accPaymentService.list(params);
+        List<PaymentMethodDTO> list = paymentMethodService.list(params);
 
-        ExcelUtils.exportExcelToTarget(response, null, "Payment", list, AccPaymentExcel.class);
+        ExcelUtils.exportExcelToTarget(response, null, "Payment Method", list, PaymentMethodExcel.class);
     }
 
 }

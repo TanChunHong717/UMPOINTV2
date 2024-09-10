@@ -86,6 +86,26 @@ public class AccBookingController {
         return new Result();
     }
 
+    @PutMapping("approve/{id}")
+    @Operation(summary = "Approve")
+    @LogOperation("Approve")
+    @RequiresPermissions("booking:accommodation:update")
+    public Result approve(@PathVariable("id") Long id){
+        accBookingService.approve(id);
+
+        return new Result();
+    }
+
+    @PutMapping("reject/{id}")
+    @Operation(summary = "Reject")
+    @LogOperation("Reject")
+    @RequiresPermissions("booking:accommodation:update")
+    public Result reject(@PathVariable("id") Long id){
+        accBookingService.reject(id);
+
+        return new Result();
+    }
+
     @DeleteMapping
     @Operation(summary = "Delete")
     @LogOperation("Delete")

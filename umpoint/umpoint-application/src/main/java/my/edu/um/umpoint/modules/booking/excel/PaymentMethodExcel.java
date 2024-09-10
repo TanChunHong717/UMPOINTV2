@@ -6,28 +6,19 @@ import com.alibaba.excel.annotation.write.style.ContentRowHeight;
 import com.alibaba.excel.annotation.write.style.HeadRowHeight;
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * Payment
+ * Payment Method
  *
  * @author Tan Chun Hong tanchunhong717@gmail.com
- * @since 1.0.0 2024-09-08
+ * @since 1.0.0 2024-09-10
  */
 @Data
-public class SvcPaymentExcel {
+public class PaymentMethodExcel {
     @ExcelProperty(value = "ID")
     private Long id;
-    @ExcelProperty(value = "Status: 0:Pending, 1:Success, 2:Failed, 3:Refund")
-    private Integer status;
-    @ExcelProperty(value = "User ID")
-    private Long userId;
-    @ExcelProperty(value = "Payment Amount")
-    private BigDecimal amount;
-    @ExcelProperty(value = "Payment Method")
+    @ExcelProperty(value = "Method")
     private String method;
-    @ExcelProperty(value = "Payment date")
-    private Date date;
 
 }

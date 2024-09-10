@@ -87,6 +87,26 @@ public class SpcBookingController {
         return new Result();
     }
 
+    @PutMapping("approve/{id}")
+    @Operation(summary = "Approve")
+    @LogOperation("Approve")
+    @RequiresPermissions("booking:space:update")
+    public Result approve(@PathVariable("id") Long id){
+        spcBookingService.approve(id);
+
+        return new Result();
+    }
+
+    @PutMapping("reject/{id}")
+    @Operation(summary = "Reject")
+    @LogOperation("Reject")
+    @RequiresPermissions("booking:space:update")
+    public Result reject(@PathVariable("id") Long id){
+        spcBookingService.reject(id);
+
+        return new Result();
+    }
+
     @DeleteMapping
     @Operation(summary = "Delete")
     @LogOperation("Delete")
