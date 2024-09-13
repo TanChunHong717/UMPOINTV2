@@ -9,6 +9,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.sql.Time;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Space Booking
@@ -44,10 +45,6 @@ public class SpcBookingEntity {
 	* Worker responsible if booking is not in working day
 	*/
 	private Long workerId;
-	/**
-	* Payment ID, point latest payment if there is no success/refund payment
-	*/
-	private Long paymentId;
 	/**
 	* Amount need to be pay
 	*/
@@ -99,8 +96,8 @@ public class SpcBookingEntity {
 	@TableField(exist = false)
 	private String worker;
 	/**
-	 * Payment Status
+	 * Payment entity list
 	 */
 	@TableField(exist = false)
-	private String paymentStatus;
+	private List<SpcPaymentEntity> spcPaymentEntityList;
 }

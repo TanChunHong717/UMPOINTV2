@@ -47,6 +47,10 @@ public class AccBookingRuleDTO implements Serializable {
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer openForPublic;
 
+	@SchemaProperty(name = "Availability in weekend, 1: Available, 0: Close")
+	@NotNull(groups = {DefaultGroup.class})
+	private Integer holidayAvailable;
+
 	@SchemaProperty(name = "Days close for booking before event")
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer closeDaysBeforeEvent;

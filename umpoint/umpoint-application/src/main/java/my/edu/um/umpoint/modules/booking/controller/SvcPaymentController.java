@@ -1,5 +1,11 @@
 package my.edu.um.umpoint.modules.booking.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import my.edu.um.umpoint.common.annotation.LogOperation;
 import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.page.PageData;
@@ -10,34 +16,29 @@ import my.edu.um.umpoint.common.validator.ValidatorUtils;
 import my.edu.um.umpoint.common.validator.group.AddGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
-import my.edu.um.umpoint.modules.booking.dto.PaymentDTO;
+import my.edu.um.umpoint.modules.booking.dto.SvcPaymentDTO;
 import my.edu.um.umpoint.modules.booking.excel.PaymentExcel;
-import my.edu.um.umpoint.modules.booking.service.PaymentService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import my.edu.um.umpoint.modules.booking.service.SvcPaymentService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import jakarta.servlet.http.HttpServletResponse;
+
 import java.util.List;
 import java.util.Map;
 
 
 /**
- * Payment
+ * Service Payment
  *
  * @author Tan Chun Hong tanchunhong717@gmail.com
  * @since 1.0.0 2024-09-08
  */
 @RestController
-@RequestMapping("booking/payment")
-@Tag(name="Payment")
-public class PaymentController {
+@RequestMapping("booking/payment/service")
+@Tag(name="Service Payment")
+public class SvcPaymentController {
     @Autowired
-    private PaymentService paymentService;
+    private SvcPaymentService svcPaymentService;
 
     @GetMapping("page")
     @Operation(summary = "Pagination")
@@ -48,29 +49,29 @@ public class PaymentController {
         @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String")
     })
     @RequiresPermissions("booking:payment:page")
-    public Result<PageData<PaymentDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
-        PageData<PaymentDTO> page = paymentService.page(params);
+    public Result<PageData<SvcPaymentDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
+        PageData<SvcPaymentDTO> page = svcPaymentService.page(params);
 
-        return new Result<PageData<PaymentDTO>>().ok(page);
+        return new Result<PageData<SvcPaymentDTO>>().ok(page);
     }
 
     @GetMapping("{id}")
     @Operation(summary = "Information")
     @RequiresPermissions("booking:payment:info")
-    public Result<PaymentDTO> get(@PathVariable("id") Long id){
-        PaymentDTO data = paymentService.get(id);
+    public Result<SvcPaymentDTO> get(@PathVariable("id") Long id){
+        SvcPaymentDTO data = svcPaymentService.get(id);
 
-        return new Result<PaymentDTO>().ok(data);
+        return new Result<SvcPaymentDTO>().ok(data);
     }
 
     @PostMapping
     @Operation(summary = "Save")
     @LogOperation("Save")
     @RequiresPermissions("booking:payment:save")
-    public Result save(@RequestBody PaymentDTO dto){
+    public Result save(@RequestBody SvcPaymentDTO dto){
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
 
-        paymentService.save(dto);
+        svcPaymentService.save(dto);
 
         return new Result();
     }
@@ -79,10 +80,10 @@ public class PaymentController {
     @Operation(summary = "Update")
     @LogOperation("Update")
     @RequiresPermissions("booking:payment:update")
-    public Result update(@RequestBody PaymentDTO dto){
+    public Result update(@RequestBody SvcPaymentDTO dto){
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
 
-        paymentService.update(dto);
+        svcPaymentService.update(dto);
 
         return new Result();
     }
@@ -92,7 +93,7 @@ public class PaymentController {
     @LogOperation("Update")
     @RequiresPermissions("booking:payment:update")
     public Result refund(@PathVariable("id") Long id){
-        paymentService.refund(id);
+        svcPaymentService.refund(id);
 
         return new Result();
     }
@@ -104,7 +105,7 @@ public class PaymentController {
     public Result delete(@RequestBody Long[] ids){
         AssertUtils.isArrayEmpty(ids, "id");
 
-        paymentService.delete(ids);
+        svcPaymentService.delete(ids);
 
         return new Result();
     }
@@ -114,7 +115,7 @@ public class PaymentController {
     @LogOperation("Export")
     @RequiresPermissions("booking:payment:export")
     public void export(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletResponse response) throws Exception {
-        List<PaymentDTO> list = paymentService.list(params);
+        List<SvcPaymentDTO> list = svcPaymentService.list(params);
 
         ExcelUtils.exportExcelToTarget(response, null, "Payment", list, PaymentExcel.class);
     }

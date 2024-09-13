@@ -10,6 +10,8 @@ import my.edu.um.umpoint.modules.booking.dto.SpcBookingDTO;
 import my.edu.um.umpoint.modules.booking.entity.SpcBookingEntity;
 import my.edu.um.umpoint.modules.booking.service.SpcBookingService;
 import cn.hutool.core.util.StrUtil;
+import my.edu.um.umpoint.modules.security.user.SecurityUser;
+import my.edu.um.umpoint.modules.security.user.UserDetail;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,7 +48,9 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
 
     @Override
     public void approve(Long id) {
+        UserDetail user = SecurityUser.getUser();
         SpcBookingEntity entity = new SpcBookingEntity();
+        entity.setAdminId(user.getId());
         entity.setStatus(BookingConstant.BookingStatus.APPROVED.getValue());
 
         baseDao.update(entity, new QueryWrapper<SpcBookingEntity>().eq("id", id));
@@ -54,7 +58,9 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
 
     @Override
     public void reject(Long id) {
+        UserDetail user = SecurityUser.getUser();
         SpcBookingEntity entity = new SpcBookingEntity();
+        entity.setAdminId(user.getId());
         entity.setStatus(BookingConstant.BookingStatus.REJECT.getValue());
 
         baseDao.update(entity, new QueryWrapper<SpcBookingEntity>().eq("id", id));

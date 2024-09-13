@@ -1,6 +1,6 @@
 <template>
-  <el-dialog v-model="visible" :title="'Configure Default Booking Rule'" width="700" :close-on-click-modal="false" :close-on-press-escape="false" align-center>
-    <el-form :model="dataForm" :rules="rules" ref="dataFormRef" @keyup.enter="dataFormSubmitHandle()" label-width="180px">
+  <el-dialog v-model="visible" :title="'Configure Default Booking Rule'" width="900" :close-on-click-modal="false" :close-on-press-escape="false" align-center>
+    <el-form :model="dataForm" :rules="rules" ref="dataFormRef" @keyup.enter="dataFormSubmitHandle()" label-width="300px">
       <el-form-item label="Required Approve" prop="approvalRequired">
         <el-radio-group v-model="dataForm.approvalRequired">
           <el-radio :value="Number(1)">Require Admin Approve</el-radio>
@@ -13,6 +13,12 @@
           <el-checkbox label="Student" v-model="dataForm.openForStudent" :true-value="Number(1)" :false-value="Number(0)"/>
           <el-checkbox label="Public" v-model="dataForm.openForPublic" :true-value="Number(1)" :false-value="Number(0)"/>
         </div>
+      </el-form-item>
+      <el-form-item label="Available in Public Holiday(Include weekend)" prop="holidayAvailable">
+        <el-radio-group v-model="dataForm.holidayAvailable">
+          <el-radio :value="Number(1)">Yes</el-radio>
+          <el-radio :value="Number(0)">No</el-radio>
+        </el-radio-group>
       </el-form-item>
       <el-form-item label="Close days before event" prop="closeDaysBeforeEvent">
         <el-input-number v-model="dataForm.closeDaysBeforeEvent" controls-position="right" :min="0"/>
@@ -49,6 +55,7 @@ const dataForm = reactive({
   openForStaff: null,
   openForStudent: null,
   openForPublic: null,
+  holidayAvailable: null,
   closeDaysBeforeEvent: null,
   closeDaysAfterEvent: null,
   maxReservationDays: null,
@@ -57,6 +64,9 @@ const dataForm = reactive({
 
 const rules = ref({
   approvalRequired: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ],
+  holidayAvailable: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
   closeDaysBeforeEvent: [

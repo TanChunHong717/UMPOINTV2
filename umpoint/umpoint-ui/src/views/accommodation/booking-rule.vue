@@ -45,8 +45,8 @@
             <div v-if="scope.row.accBookingRuleDTO">
               <el-row class="content-row">
                 <el-col :span="24">
-                  Available in weekend:
-                  <el-tag v-if="scope.row.accBookingRuleDTO.weekendAvailable == 1" type="primary">Yes</el-tag>
+                  Available in Public Holiday(Include weekend):
+                  <el-tag v-if="scope.row.accBookingRuleDTO.holidayAvailable == 1" type="primary">Yes</el-tag>
                   <el-tag v-else type="info">No</el-tag>
                 </el-col>
               </el-row>

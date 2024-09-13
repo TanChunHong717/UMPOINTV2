@@ -1,6 +1,6 @@
 <template>
-  <el-dialog v-model="visible" :title="'Configure Booking Rule'" width="700" :close-on-click-modal="false" :close-on-press-escape="false" align-center>
-    <el-form :model="dataForm" :rules="rules" ref="dataFormRef" @keyup.enter="dataFormSubmitHandle()" label-width="180px">
+  <el-dialog v-model="visible" :title="'Configure Booking Rule'" width="900" :close-on-click-modal="false" :close-on-press-escape="false" align-center>
+    <el-form :model="dataForm" :rules="rules" ref="dataFormRef" @keyup.enter="dataFormSubmitHandle()" label-width="300px">
       <el-form-item label="Manager" prop="manager">
         <el-select
           v-model="dataForm.manager"
@@ -26,6 +26,12 @@
           <el-checkbox label="Student" v-model="dataForm.openForStudent" :true-value="Number(1)" :false-value="Number(0)"/>
           <el-checkbox label="Public" v-model="dataForm.openForPublic" :true-value="Number(1)" :false-value="Number(0)"/>
         </div>
+      </el-form-item>
+      <el-form-item label="Available in Public Holiday(Include weekend)" prop="holidayAvailable">
+        <el-radio-group v-model="dataForm.holidayAvailable">
+          <el-radio :value="Number(1)">Yes</el-radio>
+          <el-radio :value="Number(0)">No</el-radio>
+        </el-radio-group>
       </el-form-item>
       <el-form-item label="Price for one day" prop="dayPrice">
         <el-input-number v-model="dataForm.dayPrice" controls-position="right" :precision="2" :step="0.5" :min="0"/>
@@ -72,6 +78,7 @@ const dataForm = reactive({
   openForStaff: null,
   openForStudent: null,
   openForPublic: null,
+  holidayAvailable: null,
   dayPrice: null,
   weekPrice: null,
   closeDaysBeforeEvent: null,
@@ -85,6 +92,9 @@ const rules = ref({
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
   approvalRequired: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ],
+  holidayAvailable: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
   dayPrice: [

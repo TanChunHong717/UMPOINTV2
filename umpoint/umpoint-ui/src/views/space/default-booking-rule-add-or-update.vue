@@ -1,6 +1,6 @@
 <template>
-  <el-dialog v-model="visible" :title="'Configure Default Booking Rule'" width="700" :close-on-click-modal="false" :close-on-press-escape="false" align-center>
-    <el-form :model="dataForm" :rules="rules" ref="dataFormRef" @keyup.enter="dataFormSubmitHandle()" label-width="180px">
+  <el-dialog v-model="visible" :title="'Configure Default Booking Rule'" width="900" :close-on-click-modal="false" :close-on-press-escape="false" align-center>
+    <el-form :model="dataForm" :rules="rules" ref="dataFormRef" @keyup.enter="dataFormSubmitHandle()" label-width="300px">
       <el-form-item label="Required Approve" prop="approvalRequired">
         <el-radio-group v-model="dataForm.approvalRequired">
           <el-radio :value="Number(1)">Require Admin Approve</el-radio>

@@ -102,11 +102,18 @@
               <el-checkbox v-model="accommodation.spcBookingRuleDTO.openForStudent" :true-value="Number(1)" disabled>Student</el-checkbox>
               <el-checkbox v-model="accommodation.spcBookingRuleDTO.openForPublic" :true-value="Number(1)" disabled>Public</el-checkbox>
             </el-row>
-            <el-row class="content-row">
+            <el-row style="margin-bottom: 10px">
+              <el-col :span="24">
+                Available in Public Holiday(Include weekend):
+                <el-tag v-if="accommodation.accBookingRuleDTO.holidayAvailable == 1" type="primary">Yes</el-tag>
+                <el-tag v-else type="info">No</el-tag>
+              </el-col>
+            </el-row>
+            <el-row style="margin-bottom: 14px">
               <el-col :span="12">Days close for booking before event: {{ accommodation.accBookingRuleDTO.openDaysBeforeEvent }}</el-col>
               <el-col :span="12">Maximum reservation days: {{ accommodation.accBookingRuleDTO.maxReservationDays }}</el-col>
             </el-row>
-            <el-row class="content-row">
+            <el-row style="margin-bottom: 14px">
               <el-col :span="12">Days close for booking after event: {{ accommodation.accBookingRuleDTO.closeDaysAfterEvent }}</el-col>
               <el-col :span="12">Minimum booking days: {{ accommodation.accBookingRuleDTO.minBookingDays }}</el-col>
             </el-row>
@@ -114,6 +121,14 @@
           <div v-else>
             Booking rule is not set for this accommodation.
           </div>
+        </el-tab-pane>
+        <el-tab-pane label="Availability">
+          <vue-cal
+            :disable-views="['years', 'year', 'week','day']"
+            :disable-days="disabledDays"
+            @view-change="onViewChange"
+            style="height: 400px"
+          ></vue-cal>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -129,10 +144,12 @@ import useView from "@/hooks/useView";
 import router from "@/router";
 import {ElMessage} from "element-plus";
 import UpdateBookingRule from "@/views/accommodation/booking-rule-add-or-update.vue";
+import {formatDescription, generateDisabledWeekends} from "@/utils/custom-utils";
 
 const route = useRoute()
 const accommodation = ref();
 const isLoading = ref(true);
+const disabledDays = ref<any[]>([]);
 const view = reactive({});
 const state = reactive({ ...useView(view), ...toRefs(view) });
 
@@ -140,6 +157,7 @@ const getInfo = (id: bigint) => {
   baseService.get("/accommodation/accommodation/" + id).then((res) => {
     accommodation.value = res.data;
     isLoading.value = false;
+    initializeTimeTable();
   });
 };
 
@@ -148,13 +166,20 @@ const initialize = () => {
   getInfo(BigInt(id));
 }
 
-const formatDescription = (description: string) => {
-  if (description.startsWith('"'))
-    description = description.substring(1);
-  if (description.endsWith('"'))
-    description = description.substring(0, description.length-1);
-  description = description.replace("\\n", "");
-  return description;
+const onViewChange = (object: any) => {
+  if (accommodation.value.spcBookingRuleDTO.holidayAvailable != '1')
+    disabledDays.value = generateDisabledWeekends(object.startDate, object.endDate, true);
+};
+
+const initializeTimeTable = () => {
+  if (accommodation.value.spcBookingRuleDTO.holidayAvailable != '1') {
+    const startDate = new Date();
+    startDate.setDate(1)
+    const endDate = new Date();
+    endDate.setDate(1);
+    endDate.setMonth(endDate.getMonth() + 1);
+    disabledDays.value = generateDisabledWeekends(startDate, endDate, false);
+  }
 }
 
 const bookingRuleUpdateRef = ref();

@@ -105,7 +105,7 @@
             </el-row>
             <el-row style="margin-bottom: 10px">
               <el-col :span="24">
-                Available in weekend:
+                Available in Public Holiday(Include weekend):
                 <el-tag v-if="space.spcBookingRuleDTO.holidayAvailable == 1" type="primary">Yes</el-tag>
                 <el-tag v-else type="info">No</el-tag>
               </el-col>
@@ -127,6 +127,17 @@
             Booking rule is not set for this space.
           </div>
         </el-tab-pane>
+        <el-tab-pane label="Availability">
+          <vue-cal
+            :disable-views="['years', 'year', 'day']"
+            :disable-days="disabledDays"
+            :time-from="startTime"
+            :time-to="endTime"
+            :time-step="30"
+            @view-change="onViewChange"
+            style="height: 400px"
+          ></vue-cal>
+        </el-tab-pane>
       </el-tabs>
     </div>
   </div>
@@ -139,11 +150,17 @@ import baseService from "@/service/baseService";
 import {useRoute} from "vue-router";
 import useView from "@/hooks/useView";
 import {ElMessage} from "element-plus";
+import 'vue-cal/dist/vuecal.css';
+import VueCal from 'vue-cal';
 import UpdateBookingRule from "@/views/space/booking-rule-add-or-update.vue";
+import {formatDescription, generateDisabledWeekends} from "@/utils/custom-utils";
 
 const route = useRoute()
 const space = ref();
 const isLoading = ref(true);
+const disabledDays = ref<any[]>([]);
+const startTime = ref();
+const endTime = ref();
 const view = reactive({});
 const state = reactive({ ...useView(view), ...toRefs(view) });
 
@@ -151,6 +168,7 @@ const getInfo = (id: bigint) => {
   baseService.get("/space/space/" + id).then((res) => {
     space.value = res.data;
     isLoading.value = false;
+    initializeTimeTable();
   });
 };
 
@@ -159,13 +177,25 @@ const initialize = () => {
   getInfo(BigInt(id));
 }
 
-const formatDescription = (description: string) => {
-  if (description.startsWith('"'))
-    description = description.substring(1);
-  if (description.endsWith('"'))
-    description = description.substring(0, description.length-1);
-  description = description.replace("\\n", "");
-  return description;
+const onViewChange = (object: any) => {
+  if (space.value.spcBookingRuleDTO.holidayAvailable != '1')
+    disabledDays.value = generateDisabledWeekends(object.startDate, object.endDate, true);
+};
+
+const initializeTimeTable = () => {
+  if (space.value.spcBookingRuleDTO.holidayAvailable != '1') {
+    const startDate = new Date();
+    startDate.setDate(1)
+    const endDate = new Date();
+    endDate.setDate(1);
+    endDate.setMonth(endDate.getMonth() + 1);
+    disabledDays.value = generateDisabledWeekends(startDate, endDate, false);
+  }
+
+  const startTimeArray = space.value.spcBookingRuleDTO.startTime.split(':')
+  endTime.value = Number(startTimeArray[0]) * 60 + Number(startTimeArray[1])
+  const endTimeArray = space.value.spcBookingRuleDTO.endTime.split(':')
+  endTime.value = Number(endTimeArray[0]) * 60 + Number(endTimeArray[1])
 }
 
 const bookingRuleUpdateRef = ref();

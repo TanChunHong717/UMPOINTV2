@@ -35,6 +35,10 @@ public class AccBookingRuleEntity {
 	 */
 	private Integer openForPublic;
 	/**
+	 * Availability in public holiday, 1: Available, 0: Close
+	 */
+	private Integer holidayAvailable;
+	/**
 	 * Days close for booking before event
 	 */
 	private Integer closeDaysBeforeEvent;

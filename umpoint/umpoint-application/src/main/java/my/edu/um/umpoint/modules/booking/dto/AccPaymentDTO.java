@@ -6,19 +6,18 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
-import java.math.BigDecimal;
-
 /**
- * Payment
+ * Accommodation Payment
  *
  * @author Tan Chun Hong tanchunhong717@gmail.com
  * @since 1.0.0 2024-09-08
  */
 @Data
 @Schema(name = "Payment")
-public class PaymentDTO implements Serializable {
+public class AccPaymentDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = -1511545322184053328L;
 
@@ -28,17 +27,14 @@ public class PaymentDTO implements Serializable {
 	@SchemaProperty(name = "Status: 0:Pending, 1:Success, 2:Failed, 3:Refund")
 	private Integer status;
 
-	@SchemaProperty(name = "Resource Type: 0:Space, 1:Service, 2:Accommodation")
-	private Integer resourceType;
-
-	@SchemaProperty(name = "Space/Service/Accommodation ID")
-	private Long resourceId;
+	@SchemaProperty(name = "Accommodation Booking ID")
+	private Long bookingId;
 
 	@SchemaProperty(name = "User ID")
 	private Long userId;
 
 	@SchemaProperty(name = "Payment Method ID")
-	private String method_id;
+	private String methodId;
 
 	@SchemaProperty(name = "Payment Amount")
 	private BigDecimal amount;
@@ -48,7 +44,4 @@ public class PaymentDTO implements Serializable {
 
 	@SchemaProperty(name = "Payment Method name")
 	private String method;
-
-	@SchemaProperty(name = "Name of user who make payment")
-	private String username;
 }

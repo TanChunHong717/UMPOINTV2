@@ -1,7 +1,7 @@
 package my.edu.um.umpoint.modules.booking.dao;
 
 import my.edu.um.umpoint.common.dao.BaseDao;
-import my.edu.um.umpoint.modules.booking.entity.PaymentEntity;
+import my.edu.um.umpoint.modules.booking.entity.SvcPaymentEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.io.Serializable;
@@ -15,9 +15,9 @@ import java.util.Map;
  * @since 1.0.0 2024-09-08
  */
 @Mapper
-public interface PaymentDao extends BaseDao<PaymentEntity> {
-    List<PaymentEntity> getList(Map<String, Object> params);
+public interface SvcPaymentDao extends BaseDao<SvcPaymentEntity> {
+    List<SvcPaymentEntity> getList(Map<String, Object> params);
 
     @Override
-    PaymentEntity selectById(Serializable id);
+    SvcPaymentEntity selectById(Serializable id);
 }

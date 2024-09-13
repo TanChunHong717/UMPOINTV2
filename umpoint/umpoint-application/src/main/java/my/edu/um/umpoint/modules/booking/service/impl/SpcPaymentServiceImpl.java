@@ -5,11 +5,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import my.edu.um.umpoint.common.constant.BookingConstant;
 import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
-import my.edu.um.umpoint.modules.booking.dao.PaymentDao;
-import my.edu.um.umpoint.modules.booking.dto.PaymentDTO;
-import my.edu.um.umpoint.modules.booking.entity.PaymentEntity;
+import my.edu.um.umpoint.modules.booking.dao.SpcPaymentDao;
+import my.edu.um.umpoint.modules.booking.dto.SpcPaymentDTO;
 import cn.hutool.core.util.StrUtil;
-import my.edu.um.umpoint.modules.booking.service.PaymentService;
+import my.edu.um.umpoint.modules.booking.entity.SpcPaymentEntity;
+import my.edu.um.umpoint.modules.booking.service.SpcPaymentService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,31 +22,31 @@ import java.util.Map;
  * @since 1.0.0 2024-09-08
  */
 @Service
-public class PaymentServiceImpl extends CrudServiceImpl<PaymentDao, PaymentEntity, PaymentDTO> implements PaymentService {
+public class SpcPaymentServiceImpl extends CrudServiceImpl<SpcPaymentDao, SpcPaymentEntity, SpcPaymentDTO> implements SpcPaymentService {
 
     @Override
-    public QueryWrapper<PaymentEntity> getWrapper(Map<String, Object> params){
+    public QueryWrapper<SpcPaymentEntity> getWrapper(Map<String, Object> params){
         String id = (String)params.get("id");
 
-        QueryWrapper<PaymentEntity> wrapper = new QueryWrapper<>();
+        QueryWrapper<SpcPaymentEntity> wrapper = new QueryWrapper<>();
         wrapper.eq(StrUtil.isNotBlank(id), "id", id);
 
         return wrapper;
     }
 
     @Override
-    public PageData<PaymentDTO> page(Map<String, Object> params) {
-        IPage<PaymentEntity> page = getPage(params, "create_date", false);
-        List<PaymentEntity> list = baseDao.getList(params);
+    public PageData<SpcPaymentDTO> page(Map<String, Object> params) {
+        IPage<SpcPaymentEntity> page = getPage(params, "create_date", false);
+        List<SpcPaymentEntity> list = baseDao.getList(params);
 
         return getPageData(list, page.getTotal(), currentDtoClass());
     }
 
     @Override
     public void refund(Long id) {
-        PaymentEntity entity = new PaymentEntity();
+        SpcPaymentEntity entity = new SpcPaymentEntity();
         entity.setStatus(BookingConstant.PaymentStatus.REFUNDED.getValue());
 
-        baseDao.update(entity, new QueryWrapper<PaymentEntity>().eq("id", id));
+        baseDao.update(entity, new QueryWrapper<SpcPaymentEntity>().eq("id", id));
     }
 }

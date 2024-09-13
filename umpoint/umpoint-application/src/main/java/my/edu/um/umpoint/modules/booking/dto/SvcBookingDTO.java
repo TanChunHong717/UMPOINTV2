@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Space Booking
@@ -37,9 +38,6 @@ public class SvcBookingDTO implements Serializable {
 	@SchemaProperty(name = "User ID")
 	private Long userId;
 
-	@SchemaProperty(name = "Payment ID, point latest payment if there is no success/refund payment")
-	private Long paymentId;
-
 	@SchemaProperty(name = "Amount need to be pay")
 	private BigDecimal paymentAmount;
 
@@ -58,6 +56,6 @@ public class SvcBookingDTO implements Serializable {
 	@SchemaProperty(name = "Name of user who make booking")
 	private String username;
 
-	@SchemaProperty(name = "Payment status")
-	private String paymentStatus;
+	@SchemaProperty(name = "Payment dto list")
+	private List<SvcPaymentDTO> svcPaymentDTOList;
 }

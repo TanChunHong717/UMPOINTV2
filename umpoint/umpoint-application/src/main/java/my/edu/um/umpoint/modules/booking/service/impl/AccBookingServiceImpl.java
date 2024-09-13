@@ -10,6 +10,8 @@ import my.edu.um.umpoint.modules.booking.dto.AccBookingDTO;
 import my.edu.um.umpoint.modules.booking.entity.AccBookingEntity;
 import my.edu.um.umpoint.modules.booking.service.AccBookingService;
 import cn.hutool.core.util.StrUtil;
+import my.edu.um.umpoint.modules.security.user.SecurityUser;
+import my.edu.um.umpoint.modules.security.user.UserDetail;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,7 +48,9 @@ public class AccBookingServiceImpl extends CrudServiceImpl<AccBookingDao, AccBoo
 
     @Override
     public void approve(Long id) {
+        UserDetail user = SecurityUser.getUser();
         AccBookingEntity entity = new AccBookingEntity();
+        entity.setAdminId(user.getId());
         entity.setStatus(BookingConstant.BookingStatus.APPROVED.getValue());
 
         baseDao.update(entity, new QueryWrapper<AccBookingEntity>().eq("id",id));
@@ -54,7 +58,9 @@ public class AccBookingServiceImpl extends CrudServiceImpl<AccBookingDao, AccBoo
 
     @Override
     public void reject(Long id) {
+        UserDetail user = SecurityUser.getUser();
         AccBookingEntity entity = new AccBookingEntity();
+        entity.setAdminId(user.getId());
         entity.setStatus(BookingConstant.BookingStatus.REJECT.getValue());
 
         baseDao.update(entity, new QueryWrapper<AccBookingEntity>().eq("id",id));

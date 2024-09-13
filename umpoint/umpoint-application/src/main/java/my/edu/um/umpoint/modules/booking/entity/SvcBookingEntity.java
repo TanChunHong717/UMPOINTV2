@@ -8,6 +8,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Space Booking
@@ -40,10 +41,6 @@ public class SvcBookingEntity {
 	*/
 	private Long userId;
 	/**
-	* Payment ID, point latest payment if there is no success/refund payment
-	*/
-	private Long paymentId;
-	/**
 	* Amount need to be pay
 	*/
 	private BigDecimal paymentAmount;
@@ -73,8 +70,8 @@ public class SvcBookingEntity {
 	@TableField(exist = false)
 	private String username;
 	/**
-	 * Payment Status
+	 * Payment entity list
 	 */
 	@TableField(exist = false)
-	private String paymentStatus;
+	private List<SvcPaymentEntity> svcPaymentEntityList;
 }

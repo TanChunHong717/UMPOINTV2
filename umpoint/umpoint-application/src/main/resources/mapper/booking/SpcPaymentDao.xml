@@ -1,47 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="my.edu.um.umpoint.modules.booking.dao.PaymentDao">
+<mapper namespace="my.edu.um.umpoint.modules.booking.dao.SpcPaymentDao">
 
-    <resultMap type="my.edu.um.umpoint.modules.booking.entity.PaymentEntity" id="paymentMap">
+    <resultMap type="my.edu.um.umpoint.modules.booking.entity.SpcPaymentEntity" id="spcPaymentMap">
         <id property="id" column="id"/>
         <result property="status" column="status"/>
-        <result property="resourceType" column="resource_type"/>
-        <result property="resourceId" column="resource_id"/>
-        <result property="userId" column="user_id"/>
+        <result property="bookingId" column="booking_id"/>
         <result property="methodId" column="method_id"/>
         <result property="amount" column="amount"/>
         <result property="date" column="date"/>
     </resultMap>
 
-    <resultMap type="my.edu.um.umpoint.modules.booking.entity.PaymentEntity" id="paymentSelectMap">
+    <resultMap type="my.edu.um.umpoint.modules.booking.entity.SpcPaymentEntity" id="spcPaymentSelectMap">
         <id property="id" column="id"/>
         <result property="status" column="status"/>
-        <result property="resourceType" column="resource_type"/>
-        <result property="resourceId" column="resource_id"/>
-        <result property="userId" column="user_id"/>
+        <result property="bookingId" column="booking_id"/>
         <result property="methodId" column="method_id"/>
         <result property="amount" column="amount"/>
         <result property="date" column="date"/>
         <result property="method" column="method"/>
-        <result property="username" column="username"/>
     </resultMap>
 
-    <select id="getList" resultMap="paymentSelectMap">
+    <select id="getList" resultMap="spcPaymentSelectMap">
         SELECT
             p.id,
             p.status,
-            p.resource_type,
-            p.resource_id,
-            p.user_id,
+            p.booking_id,
             p.method_id,
             p.amount,
             p.date,
-            pm.method,
-            c.username
-        FROM payment p
+            pm.method
+        FROM spc_payment p
         LEFT JOIN payment_method pm ON p.method_id = pm.id
-        LEFT JOIN cli_user c ON p.user_id = c.id
         <where>
             <if test="status != null">
                 AND p.status = #{status}
@@ -69,20 +60,17 @@
             </if>
         </if>
     </select>
-    <select id="selectById" resultMap="paymentSelectMap">
+    <select id="selectById" resultMap="spcPaymentSelectMap">
         SELECT
             p.id,
             p.status,
-            p.type,
-            p.user_id,
+            p.booking_id,
             p.method_id,
             p.amount,
             p.date,
-            pm.method,
-            c.username
-        FROM payment p
+            pm.method
+        FROM spc_payment p
         LEFT JOIN payment_method pm ON p.method_id = pm.id
-        LEFT JOIN cli_user c ON p.user_id = c.id
         WHERE p.id = #{id}
     </select>
 </mapper>

@@ -1,6 +1,6 @@
 <template>
-  <el-dialog v-model="visible" :title="'Configure Booking Rule'" width="700" :close-on-click-modal="false" :close-on-press-escape="false" align-center>
-    <el-form :model="dataForm" :rules="rules" ref="dataFormRef" @keyup.enter="dataFormSubmitHandle()" label-width="180px">
+  <el-dialog v-model="visible" :title="'Configure Booking Rule'" width="900" :close-on-click-modal="false" :close-on-press-escape="false" align-center>
+    <el-form :model="dataForm" :rules="rules" ref="dataFormRef" @keyup.enter="dataFormSubmitHandle()" label-width="300px">
       <el-form-item label="Manager" prop="manager">
         <el-select
           v-model="dataForm.manager"

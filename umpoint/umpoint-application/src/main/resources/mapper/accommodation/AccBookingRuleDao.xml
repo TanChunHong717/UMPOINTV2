@@ -9,6 +9,7 @@
         <result property="openForStaff" column="open_for_staff"/>
         <result property="openForStudent" column="open_for_student"/>
         <result property="openForPublic" column="open_for_public"/>
+        <result property="holidayAvailable" column="holiday_available"/>
         <result property="closeDaysBeforeEvent" column="close_days_before_event"/>
         <result property="closeDaysAfterEvent" column="close_days_after_event"/>
         <result property="maxReservationDays" column="max_reservation_days"/>

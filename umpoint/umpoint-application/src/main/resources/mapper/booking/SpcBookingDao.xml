@@ -10,7 +10,6 @@
         <result property="adminId" column="admin_id"/>
         <result property="userId" column="user_id"/>
         <result property="workerId" column="worker_id"/>
-        <result property="paymentId" column="payment_id"/>
         <result property="paymentAmount" column="payment_amount"/>
         <result property="startDay" column="start_day"/>
         <result property="endDay" column="end_day"/>
@@ -27,7 +26,6 @@
         <result property="adminId" column="admin_id"/>
         <result property="userId" column="user_id"/>
         <result property="workerId" column="worker_id"/>
-        <result property="paymentId" column="payment_id"/>
         <result property="paymentAmount" column="payment_amount"/>
         <result property="startDay" column="start_day"/>
         <result property="endDay" column="end_day"/>
@@ -39,6 +37,15 @@
         <result property="admin" column="admin"/>
         <result property="username" column="username"/>
         <result property="worker" column="worker"/>
+        <collection property="spcPaymentEntityList" javaType="java.util.List" ofType="my.edu.um.umpoint.modules.booking.entity.SpcPaymentEntity">
+            <id property="id" column="payment_id"/>
+            <result property="status" column="payment_status"/>
+            <result property="bookingId" column="booking_id"/>
+            <result property="methodId" column="method_id"/>
+            <result property="amount" column="amount"/>
+            <result property="date" column="date"/>
+            <result property="method" column="method"/>
+        </collection>
     </resultMap>
 
     <select id="getList" resultMap="spcBookingSelectMap">
@@ -49,7 +56,6 @@
             sb.admin_id,
             sb.user_id,
             sb.worker_id,
-            sb.payment_id,
             sb.payment_amount,
             sb.start_day,
             sb.end_day,
@@ -61,13 +67,20 @@
             a.username AS admin,
             c.username AS username,
             w.username AS worker,
-            p.status AS payment_status
+            p.id AS payment_id,
+            p.status AS payment_status,
+            p.booking_id,
+            p.method_id,
+            p.amount,
+            p.date,
+            pm.method
         FROM spc_booking sb
         LEFT JOIN spc_space s ON sb.space_id = s.id
         LEFT JOIN sys_user a ON sb.admin_id = a.id
         LEFT JOIN cli_user c ON sb.user_id = c.id
         LEFT JOIN sys_user w ON sb.worker_id = w.id
-        LEFT JOIN payment p ON sb.payment_id = p.id
+        LEFT JOIN spc_payment p ON sb.id = p.booking_id
+        LEFT JOIN payment_method pm ON p.method_id = pm.id
         <where>
             <if test="id != null">
                 AND sb.id = #{id}
@@ -106,7 +119,6 @@
             sb.admin_id,
             sb.user_id,
             sb.worker_id,
-            sb.payment_id,
             sb.payment_amount,
             sb.start_day,
             sb.end_day,
@@ -118,13 +130,20 @@
             a.username AS admin,
             c.username AS username,
             w.username AS worker,
-            p.status AS payment_status
+            p.id AS payment_id,
+            p.status AS payment_status,
+            p.booking_id,
+            p.method_id,
+            p.amount,
+            p.date,
+            pm.method
         FROM spc_booking sb
         LEFT JOIN spc_space s ON sb.space_id = s.id
         LEFT JOIN sys_user a ON sb.admin_id = a.id
         LEFT JOIN cli_user c ON sb.user_id = c.id
         LEFT JOIN sys_user w ON sb.worker_id = w.id
-        LEFT JOIN payment p ON sb.payment_id = p.id
+        LEFT JOIN spc_payment p ON sb.id = p.booking_id
+        LEFT JOIN payment_method pm ON p.method_id = pm.id
         WHERE sb.id = #{id}
     </select>
 </mapper>

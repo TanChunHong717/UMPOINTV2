@@ -23,6 +23,32 @@
 
     </el-form>
     <el-table v-loading="state.dataListLoading" :data="state.dataList" border @sort-change="state.dataListSortChangeHandle" style="width: 100%">
+      <el-table-column type="expand">
+        <template #default="props">
+          <div class="expand-row" v-if="props.row.accPaymentDTOList && props.row.accPaymentDTOList.length > 0">
+            <el-table :data="props.row.accPaymentDTOList">
+              <el-table-column prop="id" label="ID" header-align="center" align="center" sortable="custom"></el-table-column>
+              <el-table-column prop="status" label="Status" header-align="center" align="center">
+                <template v-slot="scope">
+                  <el-tag v-if="scope.row.status == 0" type="danger">Pending</el-tag>
+                  <el-tag v-if="scope.row.status == 1" type="info">Success</el-tag>
+                  <el-tag v-if="scope.row.status == 2" type="primary">Failed</el-tag>
+                  <el-tag v-if="scope.row.status == 3" type="success">Refunded</el-tag>
+                </template>
+              </el-table-column>
+              <el-table-column prop="method" label="Payment Method" header-align="center" align="center"></el-table-column>
+              <el-table-column prop="amount" label="Amount(RM)" header-align="center" align="center" sortable="custom"></el-table-column>
+              <el-table-column prop="date" label="Payment date" header-align="center" align="center" sortable="custom"></el-table-column>
+              <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="150">
+                <template v-slot="scope">
+                  <el-button v-if="state.hasPermission('booking:payment:update')" type="primary" link @click="refundHandle(scope.row.id)">Refund</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+          <div class="expand-row" v-else>No payment for this booking.</div>
+        </template>
+      </el-table-column>
       <el-table-column prop="id" label="ID" header-align="center" align="center" sortable="custom"></el-table-column>
       <el-table-column label="Status" header-align="center" align="center" width="100">
         <template v-slot="scope">
@@ -35,21 +61,10 @@
       </el-table-column>
       <el-table-column prop="accommodation" label="Accommodation" header-align="center" align="center" sortable="custom" width="175"></el-table-column>
       <el-table-column prop="username" label="User" header-align="center" align="center"></el-table-column>
-      <el-table-column label="Payment" header-align="center">
-        <el-table-column label="Status" header-align="center" align="center" width="90">
-          <template v-slot="scope">
-            <el-tag v-if="scope.row.paymentStatus == 0" type="danger">Pending</el-tag>
-            <el-tag v-if="scope.row.paymentStatus == 1" type="info">Success</el-tag>
-            <el-tag v-if="scope.row.paymentStatus == 2" type="primary">Failed</el-tag>
-            <el-tag v-if="scope.row.paymentStatus == 3" type="success">Refunded</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="paymentAmount" label="Amount(RM)" header-align="center" align="center" sortable="custom" width="135"></el-table-column>
-      </el-table-column>
+      <el-table-column prop="paymentAmount" label="Amount(RM)" header-align="center" align="center" sortable="custom" width="135"></el-table-column>
       <el-table-column label="Booking Period" header-align="center" align="center" width="200">
         <template v-slot="scope">
-          {{scope.row.startDate}} to {{scope.row.endDate}}
-          {{scope.row.startTime}} to {{scope.row.endTime}}
+          {{scope.row.startDay}} to {{scope.row.endDay}}
         </template>
       </el-table-column>
       <el-table-column prop="createDate" label="Create date" header-align="center" align="center" sortable="custom" width="150"></el-table-column>
@@ -101,4 +116,29 @@ const approveOrRejectHandle = (id: number, isApprove: boolean) => {
     })
     .catch(() => {});
 }
+
+const refundHandle = (id: number) => {
+  ElMessageBox.confirm("Confirm to refund this payment?", "Warning", {
+    confirmButtonText: "Confirm",
+    cancelButtonText: "Cancel",
+    type: "warning"
+  })
+    .then(() => {
+      baseService
+        .put("/booking/payment/accommodation/refund/" + id)
+        .then((res) => {
+          state.getDataList();
+          ElMessage.success({
+            message: "Success",
+            duration: 500,
+          });
+        });
+    })
+    .catch(() => {});
+}
 </script>
+<style>
+.expand-row {
+  padding: 0 85px 0 47px;
+}
+</style>

@@ -10,14 +10,14 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * Payment
+ * Space Payment
  *
  * @author Tan Chun Hong tanchunhong717@gmail.com
  * @since 1.0.0 2024-09-08
  */
 @Data
-@TableName("payment")
-public class PaymentEntity {
+@TableName("spc_payment")
+public class SpcPaymentEntity {
 	/**
 	* ID
 	*/
@@ -28,13 +28,9 @@ public class PaymentEntity {
 	*/
 	private Integer status;
 	/**
-	 * Resource Type: 0:Space, 1:Service, 2:Accommodation
+	 * Space Booking ID
 	 */
-	private Integer resourceType;
-	/**
-	 * Space/Service/Accommodation ID
-	 */
-	private Long resourceId;
+	private Long bookingId;
 	/**
 	* User ID
 	*/
@@ -42,7 +38,7 @@ public class PaymentEntity {
 	/**
 	 * Payment Method ID
 	 */
-	private Long method_id;
+	private Long methodId;
 	/**
 	* Payment Amount
 	*/
@@ -57,9 +53,4 @@ public class PaymentEntity {
 	 */
 	@TableField(exist = false)
 	private String method;
-	/**
-	 * Name of user who make payment
-	 */
-	@TableField(exist = false)
-	private String username;
 }

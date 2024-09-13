@@ -17,6 +17,7 @@ CREATE TABLE acc_booking_rule (
     open_for_staff tinyint NOT NULL COMMENT '0:Staff not allow to book 1:Staff allow to book',
     open_for_student tinyint NOT NULL COMMENT '0:Student not allow to book 1:Student allow to book',
     open_for_public tinyint NOT NULL COMMENT '0:Public not allow to book 1:Public allow to book',
+    holiday_available tinyint NOT NULL COMMENT 'Availability in public holiday, 1: Available, 0: Close',
     approval_required tinyint NOT NULL COMMENT '0:Automatic approve 1:Require admin approve',
     close_days_before_event decimal(5,0) NOT NULL COMMENT 'Days close for booking before event',
     close_days_after_event decimal(5,0) NOT NULL COMMENT 'Days close for booking after event',
@@ -77,4 +78,4 @@ CREATE TABLE acc_availability (
   FOREIGN KEY (accommodation_id) REFERENCES acc_accommodation(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Accommodation Availability';
 
-INSERT INTO acc_booking_rule VALUE (0,1,1,1,1,0,0,5,1);
+INSERT INTO acc_booking_rule VALUE (0,1,1,1,1,1,0,0,5,1);

@@ -36,6 +36,15 @@
         <result property="username" column="username"/>
         <result property="worker" column="worker"/>
         <result property="paymentStatus" column="payment_status"/>
+        <collection property="accPaymentEntityList" javaType="java.util.List"  ofType="my.edu.um.umpoint.modules.booking.entity.AccPaymentEntity">
+            <id property="id" column="payment_id"/>
+            <result property="status" column="payment_status"/>
+            <result property="bookingId" column="booking_id"/>
+            <result property="methodId" column="method_id"/>
+            <result property="amount" column="amount"/>
+            <result property="date" column="date"/>
+            <result property="method" column="method"/>
+        </collection>
     </resultMap>
     
     <select id="getList" resultMap="accBookingSelectMap">
@@ -56,13 +65,21 @@
             ad.username AS admin,
             c.username AS username,
             w.username AS worker,
-            p.status AS payment_status
+            p.id AS payment_id,
+            p.status AS payment_status,
+            p.booking_id,
+            p.method_id,
+            p.amount,
+            p.date,
+            pm.method
         FROM acc_booking ab
         LEFT JOIN acc_accommodation a ON ab.space_id = a.id
         LEFT JOIN sys_user ad ON ab.admin_id = ad.id
         LEFT JOIN cli_user c ON ab.user_id = c.id
         LEFT JOIN sys_user w ON ab.worker_id = w.id
         LEFT JOIN payment p ON ab.payment_id = p.id
+        LEFT JOIN acc_payment p ON ab.id = p.booking_id
+        LEFT JOIN payment_method pm ON p.method_id = pm.id
         <where>
             <if test="id != null">
                 AND ab.id = #{id}
@@ -95,31 +112,37 @@
     </select>
     <select id="selectById" resultMap="accBookingSelectMap">
         SELECT
-            sb.id,
-            sb.status,
-            sb.space_id,
-            sb.admin_id,
-            sb.user_id,
-            sb.worker_id,
-            sb.payment_id,
-            sb.payment_amount,
-            sb.start_day,
-            sb.end_day,
-            sb.start_time,
-            sb.end_time,
-            sb.create_date,
-            sb.update_date,
-            s.name AS space,
-            a.username AS admin,
+            ab.id,
+            ab.status,
+            ab.space_id,
+            ab.admin_id,
+            ab.user_id,
+            ab.worker_id,
+            ab.payment_id,
+            ab.payment_amount,
+            ab.start_day,
+            ab.end_day,
+            ab.create_date,
+            ab.update_date,
+            a.name AS accommodation,
+            ad.username AS admin,
             c.username AS username,
             w.username AS worker,
-            p.status AS payment_status
-        FROM spc_booking sb
-        LEFT JOIN spc_space s ON sb.space_id = s.id
-        LEFT JOIN sys_user a ON sb.admin_id = a.id
-        LEFT JOIN cli_user c ON sb.user_id = c.id
-        LEFT JOIN sys_user w ON sb.worker_id = w.id
+            p.id AS payment_id,
+            p.status AS payment_status,
+            p.booking_id,
+            p.method_id,
+            p.amount,
+            p.date,
+            pm.method
+        FROM acc_booking ab
+        LEFT JOIN acc_accommodation a ON ab.space_id = a.id
+        LEFT JOIN sys_user ad ON ab.admin_id = ad.id
+        LEFT JOIN cli_user c ON ab.user_id = c.id
+        LEFT JOIN sys_user w ON ab.worker_id = w.id
         LEFT JOIN payment p ON ab.payment_id = p.id
-        WHERE sb.id = #{id}
+        LEFT JOIN acc_payment p ON ab.id = p.booking_id
+        LEFT JOIN payment_method pm ON p.method_id = pm.id
+        WHERE ab.id = #{id}
     </select>
 </mapper>

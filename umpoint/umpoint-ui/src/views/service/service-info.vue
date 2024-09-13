@@ -105,6 +105,7 @@ import useView from "@/hooks/useView";
 import router from "@/router";
 import {ElMessage} from "element-plus";
 import UpdateBookingRule from "@/views/service/booking-rule-add-or-update.vue";
+import {formatDescription} from "@/utils/custom-utils";
 
 const route = useRoute()
 const service = ref();
@@ -125,15 +126,6 @@ const getInfo = (id: bigint) => {
 const initialize = () => {
   const id = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id;
   getInfo(BigInt(id));
-}
-
-const formatDescription = (description: string) => {
-  if (description.startsWith('"'))
-    description = description.substring(1);
-  if (description.endsWith('"'))
-    description = description.substring(0, description.length-1);
-  description = description.replace("\\n", "");
-  return description;
 }
 
 const bookingRuleUpdateRef = ref();
