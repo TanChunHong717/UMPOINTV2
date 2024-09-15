@@ -129,12 +129,13 @@
         <el-tab-pane label="Availability">
           <vue-cal
             :disable-views="['years', 'year', 'day']"
-            :disable-days="disabledDays"
+            :special-hours="specialHours"
+            :events="events"
             :time-from="startTime"
             :time-to="endTime"
             :time-step="30"
             @view-change="onViewChange"
-            style="height: 400px"
+            style="height: 580px"
           ></vue-cal>
         </el-tab-pane>
       </el-tabs>
@@ -152,16 +153,28 @@ import {ElMessage} from "element-plus";
 import 'vue-cal/dist/vuecal.css';
 import VueCal from 'vue-cal';
 import UpdateBookingRule from "@/views/space/booking-rule-add-or-update.vue";
-import {formatDescription, generateDisabledWeekends} from "@/utils/custom-utils";
+import {formatDescription, formatDateTime} from "@/utils/custom-utils";
 
 const route = useRoute()
 const space = ref();
 const isLoading = ref(true);
-const disabledDays = ref<any[]>([]);
+
+const holiday = ref([]);
+const specialHours = ref<any>({});
+let events = ref([]);
+const eventsCloseAfterBookingSet = new Set();
 const startTime = ref();
 const endTime = ref();
+const weekendDays = [6, 7];
+
 const view = reactive({});
 const state = reactive({ ...useView(view), ...toRefs(view) });
+
+const initialize = () => {
+  const id = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id;
+  //Disable for development getHoliday(new Date().getFullYear());
+  getInfo(BigInt(id));
+}
 
 const getInfo = (id: bigint) => {
   baseService.get("/space/space/" + id).then((res) => {
@@ -171,30 +184,114 @@ const getInfo = (id: bigint) => {
   });
 };
 
-const initialize = () => {
-  const id = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id;
-  getInfo(BigInt(id));
+const getHoliday = (year: number) => {
+  baseService.get("https://calendarific.com/api/v2/holidays?&api_key=bjgsLdWRYGYUsxteQAwtxx7uxf9AqKOz&country=MY&year=" + year).then((res) => {
+    holiday.value = res.response.holiday;
+  });
 }
 
-const onViewChange = (object: any) => {
-  if (space.value.spcBookingRuleDTO.holidayAvailable != '1')
-    disabledDays.value = generateDisabledWeekends(object.startDate, object.endDate, true);
-};
+const getMondayAndSunday = (currentDate: Date): { monday: Date; sunday: Date } => {
+  const currentDay = currentDate.getDay();
+  const dayDifferenceFromMonday = currentDay === 0 ? 6 : currentDay - 1;
+
+  const monday = new Date(currentDate);
+  monday.setDate(currentDate.getDate() - dayDifferenceFromMonday);
+
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+
+  return { startDate: monday, endDate: sunday };
+}
 
 const initializeTimeTable = () => {
-  if (space.value.spcBookingRuleDTO.holidayAvailable != '1') {
-    const startDate = new Date();
-    startDate.setDate(1)
-    const endDate = new Date();
-    endDate.setDate(1);
-    endDate.setMonth(endDate.getMonth() + 1);
-    disabledDays.value = generateDisabledWeekends(startDate, endDate, false);
-  }
-
   const startTimeArray = space.value.spcBookingRuleDTO.startTime.split(':')
   endTime.value = Number(startTimeArray[0]) * 60 + Number(startTimeArray[1])
   const endTimeArray = space.value.spcBookingRuleDTO.endTime.split(':')
   endTime.value = Number(endTimeArray[0]) * 60 + Number(endTimeArray[1])
+
+  onViewChange(getMondayAndSunday(new Date()));
+}
+
+const onViewChange = (object: any) => {
+  if (object.view == 'month')
+    return;
+
+  specialHours.value = generateWeekendAndHoliday(object.startDate, object.endDate);
+  getBooking(object.startDate, object.endDate);
+};
+
+const generateWeekendAndHoliday = (startDate: Date, endDate: Date) => {
+  const holidayObject: Record<number, { label: string }> = {};
+  const holidayClass = (space.value.spcBookingRuleDTO.holidayAvailable == 1)? 'close': 'info';
+
+  holiday.value.forEach((holiday) => {
+    const holidayDate = new Date(holiday.date.iso);
+    if (holidayDate >= startDate && holidayDate <= endDate) {
+      const dayOfWeek = (holidayDate.getDay() + 6) % 7 + 1;
+      holidayObject[dayOfWeek] = { from:0, to:24*60, label: holiday.name, class: holidayClass };
+    }
+  });
+
+  if (space.value.spcBookingRuleDTO.holidayAvailable == 1) {
+    weekendDays.forEach((day) => {
+      if (!holidayObject[day]) {
+        holidayObject[day] = { from:0, to:24*60, label: "Weekend", class: 'close' };
+      }
+    });
+  }
+
+  return holidayObject;
+}
+
+const getBooking = async (startDate: Date, endDate: Date) => {
+  baseService.get("/booking/space/page",
+    {
+      spaceId: space.value.id,
+      startDate: startDate,
+      endDate: endDate
+    }
+  ).then((res) => {
+    events.value = [];
+    eventsCloseAfterBookingSet.clear();
+
+    res.data.list.forEach((booking) => {
+      let currentDay = new Date(booking.startDay);
+      const endDay = new Date(booking.endDay);
+
+      while (currentDay <= endDay) {
+        const startDateTime = formatDateTime(currentDay, booking.startTime);
+        const endDateTime = formatDateTime(currentDay, booking.endTime);
+
+        const event = {
+          start: startDateTime,
+          end: endDateTime,
+          title: `Booking ID: ${booking.id}`,
+          class: 'booking',
+        };
+        events.value.push(event);
+        currentDay.setDate(currentDay.getDate() + 1);
+      }
+
+      if (space.value.spcBookingRuleDTO.closeDaysAfterBooking > 0) {
+        endDay.setDate(endDay.getDate() + 1)
+        const closeStartDay = new Date(endDay);
+        const closeEndDay = new Date(endDay);
+        closeEndDay.setDate(closeEndDay.getDate() + space.spcBookingRuleDTO.closeDaysAfterBooking + 1);
+        const fullDayEvent = {
+          start: `${closeStartDay.toISOString().split('T')[0]} 00:00`,
+          end: `${closeEndDay.toISOString().split('T')[0]} 23:59`,
+          title: `Space Close After Booking`,
+          class: 'close',
+        };
+        eventsCloseAfterBookingSet.add(JSON.stringify(fullDayEvent));
+      }
+    })
+
+    if (eventsCloseAfterBookingSet.size > 0)
+      Array.from(eventsCloseAfterBookingSet)
+        .map(eventString => JSON.parse(eventString))
+        .forEach(event => events.value.push(event))
+  });
 }
 
 const bookingRuleUpdateRef = ref();
@@ -258,5 +355,35 @@ h1 {
 .radio-label {
   padding-top: 7px;
   padding-right: 3px;
+}
+.close {
+  background:
+    #fff7f0
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255, 162, 87, 0.25),
+      rgba(255, 162, 87, 0.25) 5px,
+      rgba(255, 255, 255, 0) 5px,
+      rgba(255, 255, 255, 0) 15px
+    );
+  color: #f6984c;
+  .special-hours-label {
+    padding-top: 10px;
+  }
+}
+.vuecal__event-title {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin: 4px 0 8px;
+}
+.vuecal__event.booking {
+  background-color: rgba(253, 156, 66, 0.9);
+  border: 1px solid rgb(233, 136, 46);
+  color: #fff;
+}
+.vuecal__event.close {
+  background-color: rgba(255, 102, 102, 0.9);
+  border: 1px solid rgb(235, 82, 82);
+  color: #fff;
 }
 </style>

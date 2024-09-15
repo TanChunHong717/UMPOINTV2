@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.sql.Time;
 import java.util.Date;
 
 import java.math.BigDecimal;
@@ -51,10 +52,10 @@ public class SpcBookingDTO implements Serializable {
 	private Date endDay;
 
 	@SchemaProperty(name = "Start time of booking in a day")
-	private BigDecimal startTime;
+	private Time startTime;
 
 	@SchemaProperty(name = "End time of booking in a day")
-	private BigDecimal endTime;
+	private Time endTime;
 
 	@SchemaProperty(name = "Create date")
 	private Date createDate;

@@ -122,12 +122,7 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="Availability">
-          <vue-cal
-            :disable-views="['years', 'year', 'week','day']"
-            :disable-days="disabledDays"
-            @view-change="onViewChange"
-            style="height: 400px"
-          ></vue-cal>
+
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -143,12 +138,11 @@ import useView from "@/hooks/useView";
 import router from "@/router";
 import {ElMessage} from "element-plus";
 import UpdateBookingRule from "@/views/accommodation/booking-rule-add-or-update.vue";
-import {formatDescription, generateDisabledWeekends} from "@/utils/custom-utils";
+import {formatDescription} from "@/utils/custom-utils";
 
 const route = useRoute()
 const accommodation = ref();
 const isLoading = ref(true);
-const disabledDays = ref<any[]>([]);
 const view = reactive({});
 const state = reactive({ ...useView(view), ...toRefs(view) });
 
@@ -163,22 +157,6 @@ const getInfo = (id: bigint) => {
 const initialize = () => {
   const id = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id;
   getInfo(BigInt(id));
-}
-
-const onViewChange = (object: any) => {
-  if (accommodation.value.spcBookingRuleDTO.holidayAvailable != '1')
-    disabledDays.value = generateDisabledWeekends(object.startDate, object.endDate, true);
-};
-
-const initializeTimeTable = () => {
-  if (accommodation.value.spcBookingRuleDTO.holidayAvailable != '1') {
-    const startDate = new Date();
-    startDate.setDate(1)
-    const endDate = new Date();
-    endDate.setDate(1);
-    endDate.setMonth(endDate.getMonth() + 1);
-    disabledDays.value = generateDisabledWeekends(startDate, endDate, false);
-  }
 }
 
 const bookingRuleUpdateRef = ref();

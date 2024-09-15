@@ -1,18 +1,6 @@
-export const generateDisabledWeekends = (startDate: Date, endDate: Date, convertTimeZone: boolean) => {
-  const disabledDays = [];
-  const currentDate = new Date(startDate);
-
-  while (currentDate <= endDate) {
-    const day = currentDate.getDay();
-    if (day === 0 || day === 6) {
-      const temp = new Date(currentDate)
-      if (convertTimeZone)
-        temp.setDate(currentDate.getDate() + 1)
-      disabledDays.push(temp.toISOString().split('T')[0]); // Push formatted date string
-    }
-    currentDate.setDate(currentDate.getDate() + 1);
-  }
-  return disabledDays;
+export const formatDateTime = (date, time) => {
+  const [hours, minutes] = time.split(':').map(Number);
+  return `${date.toISOString().split('T')[0]} ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 };
 
 export const formatDescription = (description: string) => {

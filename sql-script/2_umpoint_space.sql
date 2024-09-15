@@ -81,4 +81,4 @@ CREATE TABLE spc_availability (
     FOREIGN KEY (space_id) REFERENCES spc_space(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space Availability';
 
-INSERT INTO spc_booking_rule VALUE (0,1,1,1,1,1,('00:00:00'),('23:59:59'),0,0,5,1);
+INSERT INTO spc_booking_rule VALUE (0,1,1,1,1,1,('00:00:00'),('23:59:59'),60,0,5,1);
