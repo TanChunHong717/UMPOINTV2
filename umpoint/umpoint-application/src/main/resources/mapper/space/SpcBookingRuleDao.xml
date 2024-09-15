@@ -12,8 +12,8 @@
         <result property="holidayAvailable" column="holiday_available"/>
         <result property="startTime" column="start_time"/>
         <result property="endTime" column="end_time"/>
-        <result property="closeDaysBeforeEvent" column="close_days_before_event"/>
-        <result property="closeDaysAfterEvent" column="close_days_after_event"/>
+        <result property="openDaysPriorBooking" column="open_days_prior_booking"/>
+        <result property="closeDaysAfterBooking" column="close_days_after_booking"/>
         <result property="maxReservationDays" column="max_reservation_days"/>
         <result property="minBookingHours" column="min_booking_hours"/>
     </resultMap>

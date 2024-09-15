@@ -32,11 +32,11 @@
           placeholder="End time"
         />
       </el-form-item>
-      <el-form-item label="Close days before event" prop="closeDaysBeforeEvent">
-        <el-input-number v-model="dataForm.closeDaysBeforeEvent" controls-position="right" :min="0"/>
+      <el-form-item label="Open days prior booking" prop="closeDaysBeforeBooking">
+        <el-input-number v-model="dataForm.openDaysPriorBooking" controls-position="right" :min="0"/>
       </el-form-item>
-      <el-form-item label="Close days after event" prop="closeDaysAfterEvent">
-        <el-input-number v-model="dataForm.closeDaysAfterEvent" controls-position="right" :min="0"/>
+      <el-form-item label="Close days after booking" prop="closeDaysAfterBooking">
+        <el-input-number v-model="dataForm.closeDaysAfterBooking" controls-position="right" :min="0"/>
       </el-form-item>
       <el-form-item label="Max reservation days" prop="maxReservationDays">
         <el-input-number v-model="dataForm.maxReservationDays" controls-position="right" :min="1"/>
@@ -70,8 +70,8 @@ const dataForm = reactive({
   holidayAvailable: null,
   startTime: null,
   endTime: null,
-  closeDaysBeforeEvent: null,
-  closeDaysAfterEvent: null,
+  openDaysPriorBooking: null,
+  closeDaysAfterBooking: null,
   maxReservationDays: null,
   minBookingHours: null
 });
@@ -89,10 +89,10 @@ const rules = ref({
   endTime: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
-  closeDaysBeforeEvent: [
+  openDaysPriorBooking: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
-  closeDaysAfterEvent: [
+  closeDaysAfterBooking: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
   maxReservationDays: [

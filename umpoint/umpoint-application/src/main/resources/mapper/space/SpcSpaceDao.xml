@@ -57,8 +57,8 @@
             <result property="holidayAvailable" column="holiday_available"/>
             <result property="startTime" column="start_time"/>
             <result property="endTime" column="end_time"/>
-            <result property="closeDaysBeforeEvent" column="close_days_before_event"/>
-            <result property="closeDaysAfterEvent" column="close_days_after_event"/>
+            <result property="openDaysPriorBooking" column="open_days_prior_booking"/>
+            <result property="closeDaysAfterBooking" column="close_days_after_booking"/>
             <result property="maxReservationDays" column="max_reservation_days"/>
             <result property="minBookingHours" column="min_booking_hours"/>
         </association>
@@ -105,8 +105,8 @@
             b.holiday_available,
             b.start_time,
             b.end_time,
-            b.close_days_before_event,
-            b.close_days_after_event,
+            b.open_days_prior_booking,
+            b.close_days_after_booking,
             b.max_reservation_days,
             b.min_booking_hours,
             i.id AS image_id,
@@ -196,8 +196,8 @@
             b.holiday_available,
             b.start_time,
             b.end_time,
-            b.close_days_before_event,
-            b.close_days_after_event,
+            b.open_days_prior_booking,
+            b.close_days_after_booking,
             b.max_reservation_days,
             b.min_booking_hours,
             i.id AS image_id,

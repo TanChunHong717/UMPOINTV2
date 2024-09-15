@@ -21,8 +21,8 @@ CREATE TABLE spc_booking_rule (
     holiday_available tinyint NOT NULL COMMENT 'Availability in public holiday, 1: Available, 0: Close',
     start_time time NOT NULL COMMENT 'Start time in a day when booking is allow',
     end_time time NOT NULL COMMENT 'End time in a day when booking is allow',
-    close_days_before_event decimal(5,0) NOT NULL COMMENT 'Days close for booking before event',
-    close_days_after_event decimal(5,0) NOT NULL COMMENT 'Days close for booking after event',
+    open_days_prior_booking decimal(5,0) NOT NULL COMMENT 'Days open prior booking',
+    close_days_after_booking decimal(5,0) NOT NULL COMMENT 'Days close after booking',
     max_reservation_days decimal(5, 0) NOT NULL COMMENT 'Maximum reservation days',
     min_booking_hours decimal(5, 0) NOT NULL COMMENT 'Minimum booking hours per day',
     PRIMARY KEY (id)

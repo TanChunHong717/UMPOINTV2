@@ -50,17 +50,12 @@
                   <el-tag v-else type="info">No</el-tag>
                 </el-col>
               </el-row>
-              <el-row class="content-row">
-                <el-col :span="12">Start Time: {{ scope.row.accBookingRuleDTO.startTime }}</el-col>
-                <el-col :span="12">End Time: {{ scope.row.accBookingRuleDTO.endTime }}</el-col>
+              <el-row style="margin-bottom: 14px">
+                The accommodation will be open for booking {{ scope.row.accBookingRuleDTO.openDaysPriorBooking }} day(s) prior the event and will be closed {{  accommodation.accBookingRuleDTO.closeDaysAfterBooking }} day(s) before space booking date.
               </el-row>
-              <el-row class="content-row">
-                <el-col :span="12">Days close for booking before event: {{ scope.row.accBookingRuleDTO.closeDaysBeforeEvent }}</el-col>
+              <el-row style="margin-bottom: 14px">
                 <el-col :span="12">Maximum reservation days: {{ scope.row.accBookingRuleDTO.maxReservationDays }}</el-col>
-              </el-row>
-              <el-row class="content-row">
-                <el-col :span="12">Days close for booking after event: {{ scope.row.accBookingRuleDTO.closeDaysAfterEvent }}</el-col>
-                <el-col :span="12">Minimum booking hours: {{ scope.row.accBookingRuleDTO.minBookingHours }}</el-col>
+                <el-col :span="12">Minimum booking days: {{ scope.row.accBookingRuleDTO.minBookingDays }}</el-col>
               </el-row>
             </div>
             <div v-else>

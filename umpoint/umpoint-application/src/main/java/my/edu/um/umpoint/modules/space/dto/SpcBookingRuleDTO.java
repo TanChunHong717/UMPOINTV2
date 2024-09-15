@@ -61,13 +61,13 @@ public class SpcBookingRuleDTO implements Serializable {
 	@NotNull(groups = {DefaultGroup.class})
 	private Time endTime;
 
-	@SchemaProperty(name = "Days close for booking before event")
+	@SchemaProperty(name = "Days open prior booking")
 	@NotNull(groups = {DefaultGroup.class})
-	private Integer closeDaysBeforeEvent;
+	private Integer openDaysPriorBooking;
 
-	@SchemaProperty(name = "Days close for booking after event")
+	@SchemaProperty(name = "Days close after booking")
 	@NotNull(groups = {DefaultGroup.class})
-	private Integer closeDaysAfterEvent;
+	private Integer closeDaysAfterBooking;
 
 	@SchemaProperty(name = "Maximum reservation days")
 	@NotNull(groups = {DefaultGroup.class})
