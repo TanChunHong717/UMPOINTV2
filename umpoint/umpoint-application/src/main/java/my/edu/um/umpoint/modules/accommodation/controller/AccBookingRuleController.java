@@ -47,13 +47,4 @@ public class AccBookingRuleController {
 
         return new Result();
     }
-
-    @PostMapping("apply")
-    public Result applyDefaultBookingRule(@RequestBody Long[] ids) {
-        AssertUtils.isArrayEmpty(ids, "id");
-
-        accAccommodationService.applyDefaultBookingRule(ids);
-
-        return new Result();
-    }
 }

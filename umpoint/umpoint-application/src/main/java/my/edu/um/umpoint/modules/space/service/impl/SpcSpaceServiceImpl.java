@@ -83,45 +83,14 @@ public class SpcSpaceServiceImpl extends CrudServiceImpl<SpcSpaceDao, SpcSpaceEn
         updateSpaceTag(dto);
     }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void applyDefaultBookingRule(Long[] ids) {
-        List<SpcSpaceEntity> spcSpaceEntities = baseDao.selectBatchIds(Arrays.asList(ids));
-        List<Long> bookingRuleIds = new ArrayList<>();
-
-        for (SpcSpaceEntity spcSpaceEntity : spcSpaceEntities) {
-            Long bookingRuleId = spcSpaceEntity.getBookingRuleId();
-            if (bookingRuleId != null && bookingRuleId != 0)
-                bookingRuleIds.add(bookingRuleId);
-            spcSpaceEntity.setBookingRuleId(0L);
-        }
-
-        if (!bookingRuleIds.isEmpty())
-            spcBookingRuleService.deleteBatchIds(bookingRuleIds);
-        updateBatchById(spcSpaceEntities);
-    }
-
     private void updateBookingRule(SpcSpaceDTO dto) {
         SpcBookingRuleDTO spcBookingRuleDTO = dto.getSpcBookingRuleDTO();
         if (spcBookingRuleDTO != null) {
-            SpcBookingRuleDTO defaultBookingRuleDTO = spcBookingRuleService.get(0L);
             if (dto.getBookingRuleId() == null) {
                 //Have no booking rule yet
-                if (spcBookingRuleDTO.equals(defaultBookingRuleDTO)) {
-                    //Apply default booking rule
-                    dto.setBookingRuleId(0L);
-                } else {
-                    //Create new booking rule
-                    spcBookingRuleService.save(spcBookingRuleDTO);
-                    dto.setBookingRuleId(spcBookingRuleDTO.getId());
-                }
-            } else if (dto.getBookingRuleId() == 0) {
-                //Using default booking rule before
-                if (!spcBookingRuleDTO.equals(defaultBookingRuleDTO)) {
-                    //Change booking rule, need to create new one
-                    spcBookingRuleService.save(spcBookingRuleDTO);
-                    dto.setBookingRuleId(spcBookingRuleDTO.getId());
-                }
+                //Create new booking rule
+                spcBookingRuleService.save(spcBookingRuleDTO);
+                dto.setBookingRuleId(spcBookingRuleDTO.getId());
             } else
                 spcBookingRuleService.update(spcBookingRuleDTO);
         }

@@ -48,13 +48,4 @@ public class SpcBookingRuleController {
 
         return new Result();
     }
-
-    @PutMapping("apply")
-    public Result applyDefaultBookingRule(@RequestBody Long[] ids) {
-        AssertUtils.isArrayEmpty(ids, "id");
-
-        spcSpaceService.applyDefaultBookingRule(ids);
-
-        return new Result();
-    }
 }

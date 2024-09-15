@@ -84,45 +84,15 @@ public class SvcServiceServiceImpl extends CrudServiceImpl<SvcServiceDao, SvcSer
         updateServiceTag(dto);
     }
     
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void applyDefaultBookingRule(Long[] ids) {
-        List<SvcServiceEntity> svcServiceEntities = baseDao.selectBatchIds(Arrays.asList(ids));
-        List<Long> bookingRuleIds = new ArrayList<>();
-
-        for (SvcServiceEntity svcServiceEntity : svcServiceEntities) {
-            Long bookingRuleId = svcServiceEntity.getBookingRuleId();
-            if (bookingRuleId != null && bookingRuleId != 0)
-                bookingRuleIds.add(bookingRuleId);
-            svcServiceEntity.setBookingRuleId(0L);
-        }
-
-        if (!bookingRuleIds.isEmpty())
-            svcBookingRuleService.deleteBatchIds(bookingRuleIds);
-        updateBatchById(svcServiceEntities);
-    }
-    
     private void updateBookingRule(SvcServiceDTO dto) {
         SvcBookingRuleDTO svcBookingRuleDTO = dto.getSvcBookingRuleDTO();
         if (svcBookingRuleDTO != null) {
             SvcBookingRuleDTO defaultBookingRuleDTO = svcBookingRuleService.get(0L);
             if (dto.getBookingRuleId() == null) {
                 //Have no booking rule yet
-                if (svcBookingRuleDTO.equals(defaultBookingRuleDTO)) {
-                    //Apply default booking rule
-                    dto.setBookingRuleId(0L);
-                } else {
-                    //Create new booking rule
-                    svcBookingRuleService.save(svcBookingRuleDTO);
-                    dto.setBookingRuleId(svcBookingRuleDTO.getId());
-                }
-            } else if (dto.getBookingRuleId() == 0) {
-                //Using default booking rule before
-                if (!svcBookingRuleDTO.equals(defaultBookingRuleDTO)) {
-                    //Change booking rule, need to create new one
-                    svcBookingRuleService.save(svcBookingRuleDTO);
-                    dto.setBookingRuleId(svcBookingRuleDTO.getId());
-                }
+                //Create new booking rule
+                svcBookingRuleService.save(svcBookingRuleDTO);
+                dto.setBookingRuleId(svcBookingRuleDTO.getId());
             } else
                 svcBookingRuleService.update(svcBookingRuleDTO);
         }

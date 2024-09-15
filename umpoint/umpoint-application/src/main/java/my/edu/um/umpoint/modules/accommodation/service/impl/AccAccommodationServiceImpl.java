@@ -83,46 +83,15 @@ public class AccAccommodationServiceImpl extends CrudServiceImpl<AccAccommodatio
         updateAccommodationImage(dto);
         updateAccommodationTag(dto);
     }
-    
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void applyDefaultBookingRule(Long[] ids) {
-        List<AccAccommodationEntity> accAccommodationEntities = baseDao.selectBatchIds(Arrays.asList(ids));
-        List<Long> bookingRuleIds = new ArrayList<>();
-
-        for (AccAccommodationEntity accAccommodationEntity : accAccommodationEntities) {
-            Long bookingRuleId = accAccommodationEntity.getBookingRuleId();
-            if (bookingRuleId != null && bookingRuleId != 0)
-                bookingRuleIds.add(bookingRuleId);
-            accAccommodationEntity.setBookingRuleId(0L);
-        }
-
-        if (!bookingRuleIds.isEmpty())
-            accBookingRuleService.deleteBatchIds(bookingRuleIds);
-        updateBatchById(accAccommodationEntities);
-    }
 
     private void updateBookingRule(AccAccommodationDTO dto) {
         AccBookingRuleDTO accBookingRuleDTO = dto.getAccBookingRuleDTO();
         if (accBookingRuleDTO != null) {
-            AccBookingRuleDTO defaultBookingRuleDTO = accBookingRuleService.get(0L);
             if (dto.getBookingRuleId() == null) {
                 //Have no booking rule yet
-                if (accBookingRuleDTO.equals(defaultBookingRuleDTO)) {
-                    //Apply default booking rule
-                    dto.setBookingRuleId(0L);
-                } else {
-                    //Create new booking rule
-                    accBookingRuleService.save(accBookingRuleDTO);
-                    dto.setBookingRuleId(accBookingRuleDTO.getId());
-                }
-            } else if (dto.getBookingRuleId() == 0) {
-                //Using default booking rule before
-                if (!accBookingRuleDTO.equals(defaultBookingRuleDTO)) {
-                    //Change booking rule, need to create new one
-                    accBookingRuleService.save(accBookingRuleDTO);
-                    dto.setBookingRuleId(accBookingRuleDTO.getId());
-                }
+                //Create new booking rule
+                accBookingRuleService.save(accBookingRuleDTO);
+                dto.setBookingRuleId(accBookingRuleDTO.getId());
             } else
                 accBookingRuleService.update(accBookingRuleDTO);
         }

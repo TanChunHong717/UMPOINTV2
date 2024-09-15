@@ -88,6 +88,7 @@ const defaultBookingRule = ref();
 
 const dataForm = reactive({
   id: null,
+  bookingRuleId: null,
   manager: null,
   approvalRequired: 1,
   openForStaff: null,
@@ -193,6 +194,7 @@ const init = (space?: any) => {
 
   Object.assign(dataForm, space, space.spcBookingRuleDTO);
   dataForm.id = space.id;
+  dataForm.bookingRuleId = space.bookingRuleId;
   dataForm.startTime = timeStringToDate(dataForm.startTime);
   dataForm.endTime = timeStringToDate(dataForm.endTime);
 };
@@ -205,11 +207,13 @@ const dataFormSubmitHandle = () => {
     }
     const space = {
       id: dataForm.id,
+      bookingRuleId: dataForm.bookingRuleId,
       manager: dataForm.manager,
       hourPrice: dataForm.hourPrice,
       fourHoursPrice: dataForm.fourHoursPrice,
       dayPrice: dataForm.dayPrice,
       spcBookingRuleDTO: {
+        id: dataForm.bookingRuleId,
         approvalRequired: dataForm.approvalRequired,
         openForStaff: dataForm.openForStaff,
         openForStudent: dataForm.openForStudent,

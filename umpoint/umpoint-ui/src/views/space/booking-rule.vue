@@ -27,18 +27,9 @@
             type="primary"
           >Update Default Booking Rule</el-button>
         </el-form-item>
-        <el-form-item>
-          <el-button
-            v-if="state.hasPermission('accommodation:booking-rule:update')"
-            :disabled="!(state.dataListSelections && state.dataListSelections.length > 0)"
-            @click="applyDefaultBookingRuleHandle"
-            type="primary"
-          >Apply Default Booking Rule</el-button>
-        </el-form-item>
       </div>
     </el-form>
-    <el-table v-loading="state.dataListLoading" :data="state.dataList" border @selection-change="state.dataListSelectionChangeHandle" @sort-change="state.dataListSortChangeHandle" style="width: 100%">
-      <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
+    <el-table v-loading="state.dataListLoading" :data="state.dataList" border @sort-change="state.dataListSortChangeHandle" style="width: 100%">
       <el-table-column type="expand">
         <template #default="scope">
           <div class="expand-row">
@@ -139,27 +130,6 @@ const bookingRuleUpdateRef = ref();
 const bookingRuleUpdateHandle = (space: any) => {
   bookingRuleUpdateRef.value.init(space);
 };
-
-const applyDefaultBookingRuleHandle = () => {
-  let idList = [];
-  if (state.dataListSelections && state.dataListSelections.length > 0) {
-    idList = state.dataListSelections.map(
-      (item: IObject) => item["id"]
-    )
-  }
-  baseService.put(
-   "/space/booking-rule/apply",
-    idList
-  ).then((res) => {
-    ElMessage.success({
-      message: 'Success',
-      duration: 500,
-      onClose: () => {
-        state.getDataList();
-      }
-    });
-  });
-}
 
 onActivated(() => {
   state.getDataList();

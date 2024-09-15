@@ -73,6 +73,7 @@ const defaultBookingRule = ref();
 
 const dataForm = reactive({
   id: null,
+  bookingRuleId: null,
   manager: null,
   approvalRequired: 1,
   openForStaff: null,
@@ -154,10 +155,12 @@ const dataFormSubmitHandle = () => {
     }
     const accommodation = {
       id: dataForm.id,
+      bookingRuleId: dataForm.bookingRuleId,
       manager: dataForm.manager,
       dayPrice: dataForm.dayPrice,
       weekPrice: dataForm.weekPrice,
       accBookingRuleDTO: {
+        id: dataForm.bookingRuleId,
         approvalRequired: dataForm.approvalRequired,
         openForStaff: dataForm.openForStaff,
         openForStudent: dataForm.openForStudent,
