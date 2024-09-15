@@ -49,6 +49,10 @@ public class AccBookingEntity {
 	*/
 	private BigDecimal paymentAmount;
 	/**
+	 * Description of the event or purpose for the booking
+	 */
+	private String event;
+	/**
 	* Start day of booking
 	*/
 	private Date startDay;

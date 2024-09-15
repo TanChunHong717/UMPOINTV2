@@ -45,6 +45,9 @@ public class AccBookingDTO implements Serializable {
 	@SchemaProperty(name = "Amount need to be pay")
 	private BigDecimal paymentAmount;
 
+	@SchemaProperty(name = "Description of the event or purpose for the booking")
+	private String event;
+
 	@SchemaProperty(name = "Start day of booking")
 	private Date startDay;
 

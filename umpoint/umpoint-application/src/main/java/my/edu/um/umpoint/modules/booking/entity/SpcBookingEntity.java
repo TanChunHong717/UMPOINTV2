@@ -50,6 +50,10 @@ public class SpcBookingEntity {
 	*/
 	private BigDecimal paymentAmount;
 	/**
+	 * Description of the event or purpose for the booking
+	 */
+	private String event;
+	/**
 	* Start day of booking
 	*/
 	private Date startDay;

@@ -12,6 +12,7 @@
         <result property="workerId" column="worker_id"/>
         <result property="paymentId" column="payment_id"/>
         <result property="paymentAmount" column="payment_amount"/>
+        <result property="event" column="event"/>
         <result property="startDay" column="start_day"/>
         <result property="endDay" column="end_day"/>
         <result property="createDate" column="create_date"/>
@@ -27,6 +28,7 @@
         <result property="workerId" column="worker_id"/>
         <result property="paymentId" column="payment_id"/>
         <result property="paymentAmount" column="payment_amount"/>
+        <result property="event" column="event"/>
         <result property="startDay" column="start_day"/>
         <result property="endDay" column="end_day"/>
         <result property="createDate" column="create_date"/>
@@ -57,6 +59,7 @@
             ab.worker_id,
             ab.payment_id,
             ab.payment_amount,
+            ab.event,
             ab.start_day,
             ab.end_day,
             ab.create_date,
@@ -120,6 +123,7 @@
             ab.worker_id,
             ab.payment_id,
             ab.payment_amount,
+            ab.event,
             ab.start_day,
             ab.end_day,
             ab.create_date,

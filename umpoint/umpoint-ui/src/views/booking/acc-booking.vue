@@ -26,6 +26,7 @@
       <el-table-column type="expand">
         <template #default="props">
           <div class="expand-row" v-if="props.row.accPaymentDTOList && props.row.accPaymentDTOList.length > 0">
+            <div class="event-description">Event: {{props.row.event }}</div>
             <el-table :data="props.row.accPaymentDTOList">
               <el-table-column prop="id" label="ID" header-align="center" align="center" sortable="custom"></el-table-column>
               <el-table-column prop="status" label="Status" header-align="center" align="center">
@@ -140,5 +141,8 @@ const refundHandle = (id: number) => {
 <style>
 .expand-row {
   padding: 0 85px 0 47px;
+  .event-description {
+    margin-bottom: 10px;
+  }
 }
 </style>
