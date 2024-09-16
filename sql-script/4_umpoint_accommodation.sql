@@ -114,11 +114,36 @@ CREATE TABLE acc_event (
     FOREIGN KEY (closure_id) REFERENCES acc_closure(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Accommodation Occupied Event';
 
-CREATE TABLE acc_availability (
-    id bigint NOT NULL COMMENT 'ID',
-    accommodation_id bigint NOT NULL COMMENT 'Accommodation ID',
-    year decimal(4,0) NOT NULL COMMENT 'Year',
-    availability BLOB NOT NULL COMMENT 'Availability of accommodation, consist of 366*24 bit, 1 represent available in specific day in one year',
-    PRIMARY KEY (id),
-    FOREIGN KEY (accommodation_id) REFERENCES acc_accommodation(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Accommodation Availability';
+CREATE TABLE acc_upcoming_event AS
+SELECT *
+FROM acc_event
+WHERE start_time > NOW();
+
+TRUNCATE TABLE acc_upcoming_event;
+
+CREATE TRIGGER trg_acc_event_insert
+    AFTER INSERT ON acc_event
+    FOR EACH ROW
+BEGIN
+    IF NEW.start_time > NOW() THEN
+        INSERT INTO acc_upcoming_event (id, accommodation_id, booking_id, closure_id, type, start_time, end_time)
+        VALUES (NEW.id, NEW.accommodation_id, NEW.booking_id, NEW.closure_id, NEW.type, NEW.start_time, NEW.end_time);
+    END IF;
+END;
+
+CREATE TRIGGER trg_acc_event_delete
+    AFTER DELETE ON acc_event
+    FOR EACH ROW
+BEGIN
+    DELETE FROM acc_upcoming_event WHERE id = OLD.id;
+END;
+
+SET GLOBAL event_scheduler = ON;
+
+CREATE EVENT delete_past_acc_upcoming_events
+ON SCHEDULE EVERY 1 DAY
+DO
+BEGIN
+    DELETE FROM acc_upcoming_event
+    WHERE end_time < NOW();
+END;

@@ -5,20 +5,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import my.edu.um.umpoint.common.constant.BookingConstant;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
 import my.edu.um.umpoint.common.utils.DateUtils;
-import my.edu.um.umpoint.modules.accommodation.availability.AccommodationAvailability;
 import my.edu.um.umpoint.modules.accommodation.dao.AccEventDao;
 import my.edu.um.umpoint.modules.accommodation.dto.*;
-import my.edu.um.umpoint.modules.accommodation.entity.AccAvailabilityEntity;
 import my.edu.um.umpoint.modules.accommodation.entity.AccEventEntity;
 import my.edu.um.umpoint.modules.accommodation.service.AccAccommodationService;
-import my.edu.um.umpoint.modules.accommodation.service.AccAvailabilityService;
 import my.edu.um.umpoint.modules.accommodation.service.AccEventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,9 +28,6 @@ public class AccEventServiceImpl extends CrudServiceImpl<AccEventDao, AccEventEn
 
     @Autowired
     private AccAccommodationService accAccommodationService;
-
-    @Autowired
-    private AccAvailabilityService accAvailabilityService;
 
     @Override
     public QueryWrapper<AccEventEntity> getWrapper(Map<String, Object> params){
@@ -64,10 +57,6 @@ public class AccEventServiceImpl extends CrudServiceImpl<AccEventDao, AccEventEn
 
         insert(eventEntity);
 
-        List<AccAvailabilityEntity> availabilityEntityList = accAvailabilityService.getByAccommodationId(bookingDTO.getAccommodationId());
-        AccommodationAvailability accommodationAvailability = new AccommodationAvailability(availabilityEntityList);
-        accommodationAvailability.markUnavailable(bookingDTO.getStartDay(), bookingDTO.getEndDay());
-
         AccAccommodationDTO accommodationDTO = accAccommodationService.get(bookingDTO.getAccommodationId());
         AccBookingRuleDTO bookingRuleDTO = accommodationDTO.getAccBookingRuleDTO();
         if (bookingRuleDTO.getCloseDaysAfterBooking() > 0) {
@@ -84,12 +73,8 @@ public class AccEventServiceImpl extends CrudServiceImpl<AccEventDao, AccEventEn
             closeEventEntity.setStartTime(DateUtils.convertLocalDateToDate(startDate));
             closeEventEntity.setEndTime(DateUtils.convertLocalDateToDate(endDate));
 
-            accommodationAvailability.markUnavailable(startDate, endDate);
-
             insert(closeEventEntity);
         }
-
-        accAvailabilityService.update(bookingDTO.getAccommodationId(), accommodationAvailability);
     }
 
     @Override
@@ -104,45 +89,16 @@ public class AccEventServiceImpl extends CrudServiceImpl<AccEventDao, AccEventEn
         eventEntity.setEndTime(closureDTO.getEndDay());
 
         insert(eventEntity);
-
-        List<AccAvailabilityEntity> availabilityEntityList = accAvailabilityService.getByAccommodationId(closureDTO.getAccommodationId());
-        AccommodationAvailability accommodationAvailability = new AccommodationAvailability(availabilityEntityList);
-        accommodationAvailability.markUnavailable(closureDTO.getStartDay(), closureDTO.getEndDay());
-        accAvailabilityService.update(closureDTO.getAccommodationId(), accommodationAvailability);
     }
 
     @Override
     public void deleteByClosureId(Long closureId) {
-        List<AccEventEntity> eventEntityList = baseDao.selectList(new QueryWrapper<AccEventEntity>().eq("closure_id", closureId));
-        if (eventEntityList != null && !eventEntityList.isEmpty()) {
-            Long accommodationId = eventEntityList.get(0).getAccommodationId();
-            List<AccAvailabilityEntity> availabilityEntityList = accAvailabilityService.getByAccommodationId(accommodationId);
-            AccommodationAvailability accommodationAvailability = new AccommodationAvailability(availabilityEntityList);
-
-            eventEntityList.forEach(accEventEntity ->
-                accommodationAvailability.markAvailable(accEventEntity.getStartTime(), accEventEntity.getEndTime())
-            );
-            accAvailabilityService.update(accommodationId, accommodationAvailability);
-        }
-
         baseDao.delete(new QueryWrapper<AccEventEntity>().eq("closure_id", closureId));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteByBookingId(Long bookingId) {
-        List<AccEventEntity> eventEntityList = baseDao.selectList(new QueryWrapper<AccEventEntity>().eq("booking_id", bookingId));
-        if (eventEntityList != null && !eventEntityList.isEmpty()) {
-            Long accommodationId = eventEntityList.get(0).getAccommodationId();
-            List<AccAvailabilityEntity> availabilityEntityList = accAvailabilityService.getByAccommodationId(accommodationId);
-            AccommodationAvailability accommodationAvailability = new AccommodationAvailability(availabilityEntityList);
-
-            eventEntityList.forEach(accEventEntity ->
-                    accommodationAvailability.markAvailable(accEventEntity.getStartTime(), accEventEntity.getEndTime())
-            );
-            accAvailabilityService.update(accommodationId, accommodationAvailability);
-        }
-
         baseDao.delete(new QueryWrapper<AccEventEntity>().eq("booking_id", bookingId));
     }
 }

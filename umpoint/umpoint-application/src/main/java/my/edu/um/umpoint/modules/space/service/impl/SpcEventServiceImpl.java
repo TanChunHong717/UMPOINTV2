@@ -5,13 +5,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import my.edu.um.umpoint.common.constant.BookingConstant;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
 import my.edu.um.umpoint.common.utils.DateUtils;
-import my.edu.um.umpoint.modules.space.availability.SpaceAvailability;
 import my.edu.um.umpoint.modules.space.dao.SpcEventDao;
 import my.edu.um.umpoint.modules.space.dto.*;
-import my.edu.um.umpoint.modules.space.entity.SpcAvailabilityEntity;
-import my.edu.um.umpoint.modules.space.entity.SpcClosureEntity;
 import my.edu.um.umpoint.modules.space.entity.SpcEventEntity;
-import my.edu.um.umpoint.modules.space.service.*;
+import my.edu.um.umpoint.modules.space.service.SpcEventService;
+import my.edu.um.umpoint.modules.space.service.SpcSpaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,9 +32,6 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
 
     @Autowired
     private SpcSpaceService spcSpaceService;
-
-    @Autowired
-    private SpcAvailabilityService spcAvailabilityService;
 
     @Override
     public QueryWrapper<SpcEventEntity> getWrapper(Map<String, Object> params){
@@ -94,13 +89,6 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
             eventEntityList.add(eventEntity);
         }
 
-        List<SpcAvailabilityEntity> availabilityEntityList = spcAvailabilityService.getBySpaceId(bookingDTO.getSpaceId());
-        SpaceAvailability spaceAvailability = new SpaceAvailability(availabilityEntityList);
-        eventEntityList.forEach(spcEventEntity -> {
-            spaceAvailability.markUnavailable(spcEventEntity.getStartTime(), spcEventEntity.getEndTime());
-        });
-        spcAvailabilityService.update(bookingDTO.getSpaceId(), spaceAvailability);
-
         insertBatch(eventEntityList);
     }
 
@@ -126,50 +114,18 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
             startDay = startDay.plusDays(1);
         }
 
-        List<SpcAvailabilityEntity> availabilityEntityList = spcAvailabilityService.getBySpaceId(closureDTO.getSpaceId());
-        SpaceAvailability spaceAvailability = new SpaceAvailability(availabilityEntityList);
-        eventEntityList.forEach(spcEventEntity -> {
-            spaceAvailability.markUnavailable(spcEventEntity.getStartTime(), spcEventEntity.getEndTime());
-        });
-        spcAvailabilityService.update(closureDTO.getSpaceId(), spaceAvailability);
-
         insertBatch(eventEntityList);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteByClosureId(Long closureId) {
-        List<SpcEventEntity> eventEntityList = baseDao.selectList(new QueryWrapper<SpcEventEntity>().eq("closure_id", closureId));
-        if (eventEntityList != null && !eventEntityList.isEmpty()) {
-            Long spaceId = eventEntityList.get(0).getSpaceId();
-            List<SpcAvailabilityEntity> availabilityEntityList = spcAvailabilityService.getBySpaceId(spaceId);
-            SpaceAvailability spaceAvailability = new SpaceAvailability(availabilityEntityList);
-
-            eventEntityList.forEach(spcEventEntity ->
-                spaceAvailability.markAvailable(spcEventEntity.getStartTime(), spcEventEntity.getEndTime())
-            );
-            spcAvailabilityService.update(spaceId, spaceAvailability);
-        }
-
         baseDao.delete(new QueryWrapper<SpcEventEntity>().eq("closure_id", closureId));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteByBookingId(Long bookingId) {
-        List<SpcEventEntity> eventEntityList = baseDao.selectList(new QueryWrapper<SpcEventEntity>().eq("booking_id", bookingId));
-        if (eventEntityList != null && !eventEntityList.isEmpty()) {
-            Long spaceId = eventEntityList.get(0).getSpaceId();
-            List<SpcAvailabilityEntity> availabilityEntityList = spcAvailabilityService.getBySpaceId(spaceId);
-            SpaceAvailability spaceAvailability = new SpaceAvailability(availabilityEntityList);
-
-            eventEntityList.forEach(spcEventEntity ->
-                spaceAvailability.markAvailable(spcEventEntity.getStartTime(), spcEventEntity.getEndTime())
-            );
-            spcAvailabilityService.update(spaceId, spaceAvailability);
-        }
-
-
         baseDao.delete(new QueryWrapper<SpcEventEntity>().eq("booking_id", bookingId));
     }
 

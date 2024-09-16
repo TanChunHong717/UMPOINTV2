@@ -128,11 +128,36 @@ CREATE TABLE spc_event (
     FOREIGN KEY (closure_id) REFERENCES spc_closure(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space Occupied Event';
 
-CREATE TABLE spc_availability (
-    id bigint NOT NULL COMMENT 'ID',
-    space_id bigint NOT NULL COMMENT 'Space ID',
-    year decimal(4,0) NOT NULL COMMENT 'Year',
-    availability BLOB NOT NULL COMMENT 'Availability of space, consist of 366*24*2 bit, 1 represent available in specific half hour in one year',
-    PRIMARY KEY (id),
-    FOREIGN KEY (space_id) REFERENCES spc_space(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space Availability';
+CREATE TABLE spc_upcoming_event AS
+SELECT *
+FROM spc_event
+WHERE start_time > NOW();
+
+TRUNCATE TABLE spc_upcoming_event;
+
+CREATE TRIGGER trg_spc_event_insert
+    AFTER INSERT ON spc_event
+    FOR EACH ROW
+BEGIN
+    IF NEW.start_time > NOW() THEN
+        INSERT INTO spc_upcoming_event (id, space_id, booking_id, closure_id, type, start_time, end_time)
+        VALUES (NEW.id, NEW.space_id, NEW.booking_id, NEW.closure_id, NEW.type, NEW.start_time, NEW.end_time);
+END IF;
+END;
+
+CREATE TRIGGER trg_spc_event_delete
+    AFTER DELETE ON spc_event
+    FOR EACH ROW
+BEGIN
+    DELETE FROM spc_upcoming_event WHERE id = OLD.id;
+END;
+
+SET GLOBAL event_scheduler = ON;
+
+CREATE EVENT delete_past_upcoming_events
+ON SCHEDULE EVERY 1 DAY
+DO
+BEGIN
+    DELETE FROM spc_upcoming_event
+    WHERE end_time < NOW();
+END;
