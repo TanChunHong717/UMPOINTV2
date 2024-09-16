@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import my.edu.um.umpoint.common.annotation.LogOperation;
 import my.edu.um.umpoint.common.utils.Result;
-import my.edu.um.umpoint.common.validator.AssertUtils;
 import my.edu.um.umpoint.common.validator.ValidatorUtils;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import my.edu.um.umpoint.modules.accommodation.dto.AccBookingRuleDTO;
@@ -32,6 +31,8 @@ public class AccBookingRuleController {
     private AccAccommodationService accAccommodationService;
 
     @GetMapping("default")
+    @Operation(summary = "Get Default Booking Rule")
+    @RequiresPermissions("accommodation:default-booking-rule:info")
     public Result<AccBookingRuleDTO> getDefaultBookingRule() {
         return new Result<AccBookingRuleDTO>().ok(accBookingRuleService.get(0L));
     }

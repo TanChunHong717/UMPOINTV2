@@ -29,7 +29,7 @@ public class AccAvailabilityDTO implements Serializable {
 	private Long accommodationId;
 
 	@SchemaProperty(name = "Year")
-	private Long year;
+	private Integer year;
 
 	@SchemaProperty(name = "Availability of accommodation, consist of 366*24 bit, 1 represent available in specific day in one year")
 	private byte[] availability;

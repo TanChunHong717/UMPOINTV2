@@ -21,6 +21,8 @@ CREATE TABLE svc_booking_rule (
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Service Booking Rule';
 
+INSERT INTO svc_booking_rule VALUE (0,1,1,1,1);
+
 CREATE TABLE svc_service (
     id bigint NOT NULL COMMENT 'ID',
     status tinyint COMMENT 'Status 0:Suspend 1:Normal',
@@ -60,4 +62,17 @@ CREATE TABLE svc_image (
     FOREIGN KEY (service_id) REFERENCES svc_service(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Service Image';
 
-INSERT INTO svc_booking_rule VALUE (0,1,1,1,1);
+CREATE TABLE svc_booking (
+    id bigint NOT NULL COMMENT 'ID',
+    status tinyint NOT NULL COMMENT 'Status: 0:Pending, 1:Reject, 2:Approve(Pending Payment), 3:Approve(Payment Complete), 4:Cancel',
+    service_id bigint NOT NULL COMMENT 'Space ID',
+    admin_id bigint NULL COMMENT 'Admin that approve/reject, user will contact this admin rather manager if umpoint.service.booking.find-approve-admin-first=true',
+    user_id bigint NOT NULL COMMENT 'User ID',
+    payment_amount decimal(10,2) NOT NULL COMMENT 'Amount need to be pay',
+    create_date datetime NOT NULL COMMENT 'Create date',
+    update_date datetime NOT NULL COMMENT 'Update date',
+    PRIMARY KEY (id),
+    FOREIGN KEY (service_id) REFERENCES svc_service(id),
+    FOREIGN KEY (admin_id) REFERENCES sys_user(id),
+    FOREIGN KEY (user_id) REFERENCES cli_user(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space Booking';

@@ -1,7 +1,12 @@
 package my.edu.um.umpoint.common.utils;
 
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 public class DateUtils {
@@ -27,5 +32,28 @@ public class DateUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static LocalDate convertDateToLocalDate(Date date) {
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
+    public static LocalDateTime convertDateTimeToLocalDateTime(Date date, Time time) {
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalTime localTime = time.toLocalTime();
+        return LocalDateTime.of(localDate, localTime);
+    }
+
+    public static Date convertLocalDateToDate(LocalDate localDate) {
+        return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+    public static Date convertLocalDateTimeToDate(LocalDate localDate, Time time) {
+        LocalDateTime localDateTime = LocalDateTime.of(localDate, time.toLocalTime());
+        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+    public static Date convertLocalDateTimeToDate(LocalDateTime localDateTime) {
+        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 }

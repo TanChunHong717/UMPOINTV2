@@ -134,6 +134,9 @@
             :time-from="startTime"
             :time-to="endTime"
             :time-step="30"
+            :on-event-click="onEventClick"
+            :editable-events="{ title: false, drag: false, resize: false, delete: false, create: true }"
+            :min-event-width="100"
             @view-change="onViewChange"
             style="height: 580px"
           ></vue-cal>
@@ -153,16 +156,17 @@ import {ElMessage} from "element-plus";
 import 'vue-cal/dist/vuecal.css';
 import VueCal from 'vue-cal';
 import UpdateBookingRule from "@/views/space/booking-rule-add-or-update.vue";
-import {formatDescription, formatDateTime} from "@/utils/custom-utils";
+import {formatDescription, formatDateTime, formatBookingStatus, getMondayAndSunday} from "@/utils/custom-utils";
+import router from "@/router";
 
 const route = useRoute()
 const space = ref();
 const isLoading = ref(true);
 
-const holiday = ref([]);
+const holidays = ref([]);
 const specialHours = ref<any>({});
-let events = ref([]);
-const eventsCloseAfterBookingSet = new Set();
+let events = ref<any>([]);
+const eventsCloseAfterBookingSet: Set<string> = new Set();
 const startTime = ref();
 const endTime = ref();
 const weekendDays = [6, 7];
@@ -172,35 +176,23 @@ const state = reactive({ ...useView(view), ...toRefs(view) });
 
 const initialize = () => {
   const id = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id;
-  //Disable for development getHoliday(new Date().getFullYear());
-  getInfo(BigInt(id));
+   getInfo(BigInt(id));
 }
 
 const getInfo = (id: bigint) => {
   baseService.get("/space/space/" + id).then((res) => {
     space.value = res.data;
     isLoading.value = false;
+    //getHoliday(new Date().getFullYear());
     initializeTimeTable();
   });
 };
 
 const getHoliday = (year: number) => {
-  baseService.get("https://calendarific.com/api/v2/holidays?&api_key=bjgsLdWRYGYUsxteQAwtxx7uxf9AqKOz&country=MY&year=" + year).then((res) => {
-    holiday.value = res.response.holiday;
+  baseService.get("https://calendarific.com/api/v2/holidays?&api_key=bjgsLdWRYGYUsxteQAwtxx7uxf9AqKOz&country=MY&year=" + year).then((res: any) => {
+    holidays.value = res.response.holidays;
+    initializeTimeTable();
   });
-}
-
-const getMondayAndSunday = (currentDate: Date): { monday: Date; sunday: Date } => {
-  const currentDay = currentDate.getDay();
-  const dayDifferenceFromMonday = currentDay === 0 ? 6 : currentDay - 1;
-
-  const monday = new Date(currentDate);
-  monday.setDate(currentDate.getDate() - dayDifferenceFromMonday);
-
-  const sunday = new Date(monday);
-  sunday.setDate(monday.getDate() + 6);
-
-  return { startDate: monday, endDate: sunday };
 }
 
 const initializeTimeTable = () => {
@@ -221,11 +213,12 @@ const onViewChange = (object: any) => {
 };
 
 const generateWeekendAndHoliday = (startDate: Date, endDate: Date) => {
-  const holidayObject: Record<number, { label: string }> = {};
+  const holidayObject: Record<number, any> = {};
   const holidayClass = (space.value.spcBookingRuleDTO.holidayAvailable == 1)? 'close': 'info';
 
-  holiday.value.forEach((holiday) => {
+  holidays.value.forEach((holiday: any) => {
     const holidayDate = new Date(holiday.date.iso);
+
     if (holidayDate >= startDate && holidayDate <= endDate) {
       const dayOfWeek = (holidayDate.getDay() + 6) % 7 + 1;
       holidayObject[dayOfWeek] = { from:0, to:24*60, label: holiday.name, class: holidayClass };
@@ -254,7 +247,7 @@ const getBooking = async (startDate: Date, endDate: Date) => {
     events.value = [];
     eventsCloseAfterBookingSet.clear();
 
-    res.data.list.forEach((booking) => {
+    res.data.list.forEach((booking: any) => {
       let currentDay = new Date(booking.startDay);
       const endDay = new Date(booking.endDay);
 
@@ -265,8 +258,13 @@ const getBooking = async (startDate: Date, endDate: Date) => {
         const event = {
           start: startDateTime,
           end: endDateTime,
-          title: `Booking ID: ${booking.id}`,
-          class: 'booking',
+          title: booking.event,
+          class: 'booking_' + formatBookingStatus(booking.status),
+          content: formatBookingStatus(booking.status),
+          deletable: false,
+          resizable: false,
+          draggable: false,
+          bookingId: booking.id,
         };
         events.value.push(event);
         currentDay.setDate(currentDay.getDate() + 1);
@@ -276,12 +274,15 @@ const getBooking = async (startDate: Date, endDate: Date) => {
         endDay.setDate(endDay.getDate() + 1)
         const closeStartDay = new Date(endDay);
         const closeEndDay = new Date(endDay);
-        closeEndDay.setDate(closeEndDay.getDate() + space.spcBookingRuleDTO.closeDaysAfterBooking + 1);
+        closeEndDay.setDate(closeEndDay.getDate() + space.value.spcBookingRuleDTO.closeDaysAfterBooking + 1);
         const fullDayEvent = {
           start: `${closeStartDay.toISOString().split('T')[0]} 00:00`,
           end: `${closeEndDay.toISOString().split('T')[0]} 23:59`,
           title: `Space Close After Booking`,
           class: 'close',
+          deletable: false,
+          resizable: false,
+          draggable: false,
         };
         eventsCloseAfterBookingSet.add(JSON.stringify(fullDayEvent));
       }
@@ -292,6 +293,11 @@ const getBooking = async (startDate: Date, endDate: Date) => {
         .map(eventString => JSON.parse(eventString))
         .forEach(event => events.value.push(event))
   });
+}
+
+const onEventClick = (event: any, e: any) => {
+  if (event.class == 'booking')
+    router.push({path: '/booking/spc-booking', query: {id: event.bookingId}});
 }
 
 const bookingRuleUpdateRef = ref();
@@ -376,9 +382,33 @@ h1 {
   font-weight: bold;
   margin: 4px 0 8px;
 }
-.vuecal__event.booking {
-  background-color: rgba(253, 156, 66, 0.9);
-  border: 1px solid rgb(233, 136, 46);
+.vuecal__event.booking_Pending {
+  background-color: rgba(255, 193, 7, 0.9);  /* Amber */
+  border: 1px solid rgb(255, 179, 0);
+  color: #fff;
+}
+
+.vuecal__event.booking_Approve {
+  background-color: rgba(40, 167, 69, 0.9);  /* Green */
+  border: 1px solid rgb(33, 136, 56);
+  color: #fff;
+}
+
+.vuecal__event.booking_Reject {
+  background-color: rgba(220, 53, 69, 0.9);  /* Red */
+  border: 1px solid rgb(200, 35, 51);
+  color: #fff;
+}
+
+.vuecal__event.booking_Complete {
+  background-color: rgba(0, 123, 255, 0.9);  /* Blue */
+  border: 1px solid rgb(0, 104, 217);
+  color: #fff;
+}
+
+.vuecal__event.booking_Cancel {
+  background-color: rgba(108, 117, 125, 0.9);  /* Gray */
+  border: 1px solid rgb(88, 97, 104);
   color: #fff;
 }
 .vuecal__event.close {

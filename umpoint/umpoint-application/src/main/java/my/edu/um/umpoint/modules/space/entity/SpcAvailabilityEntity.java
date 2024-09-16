@@ -4,8 +4,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import java.math.BigDecimal;
-
 /**
  * Space Availability
  *
@@ -15,7 +13,6 @@ import java.math.BigDecimal;
 @Data
 @TableName("spc_availability")
 public class SpcAvailabilityEntity {
-
     /**
      * ID
      */
@@ -28,7 +25,7 @@ public class SpcAvailabilityEntity {
     /**
      * Year
      */
-	private BigDecimal year;
+	private Integer year;
     /**
      * Availability of space, consist of 366*24 bit, 1 represent available in specific hour in one year
      */

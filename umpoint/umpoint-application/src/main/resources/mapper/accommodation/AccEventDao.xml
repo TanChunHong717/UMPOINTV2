@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="my.edu.um.umpoint.modules.accommodation.dao.AccEventDao">
+
+    <resultMap type="my.edu.um.umpoint.modules.accommodation.entity.AccEventEntity" id="accEventMap">
+        <result property="id" column="id"/>
+        <result property="accommodationId" column="accommodation_id"/>
+        <result property="bookingId" column="booking_id"/>
+        <result property="closureId" column="closure_id"/>
+        <result property="type" column="type"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+    </resultMap>
+
+
+</mapper>

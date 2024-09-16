@@ -16,6 +16,11 @@ public interface Constant {
     String ORDER = "order";
     String TOKEN_HEADER = "token";
 
+    String START_TIME = "startTime";
+    String END_TIME = "endTime";
+    String SPACE_ID = "spaceId";
+    String ACCOMMODATION_ID = "accommodationId";
+
     String CLOUD_STORAGE_CONFIG_KEY = "CLOUD_STORAGE_CONFIG_KEY";
 
     enum ScheduleStatus {

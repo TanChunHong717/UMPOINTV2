@@ -7,8 +7,6 @@ import lombok.Data;
 import java.io.Serial;
 import java.io.Serializable;
 
-import java.math.BigDecimal;
-
 /**
  * Space Availability
  *
@@ -28,7 +26,7 @@ public class SpcAvailabilityDTO implements Serializable {
 	private Long spaceId;
 
 	@SchemaProperty(name = "Year")
-	private BigDecimal year;
+	private Integer year;
 
 	@SchemaProperty(name = "Availability of space, consist of 366*24 bit, 1 represent available in specific hour in one year")
 	private byte[] availability;

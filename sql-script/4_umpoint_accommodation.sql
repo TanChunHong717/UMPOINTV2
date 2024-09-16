@@ -26,56 +26,99 @@ CREATE TABLE acc_booking_rule (
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Accommodation Booking Rule';
 
+INSERT INTO acc_booking_rule VALUE (0,1,1,1,1,1,60,0,5,1);
+
 CREATE TABLE acc_accommodation (
-   id bigint NOT NULL COMMENT 'ID',
-   status tinyint COMMENT 'Status 0:Suspend 1:Normal',
-   name varchar(50) NOT NULL COMMENT 'Name',
-   cat_id bigint NOT NULL COMMENT 'Category ID',
-   dept_id bigint NOT NULL COMMENT 'Department ID',
-   address varchar(250) NOT NULL COMMENT 'Address',
-   description varchar(2500) COMMENT 'Description',
-   facilities varchar(250) COMMENT 'Facilities',
-   capacity decimal(5,0) COMMENT 'Max capacity',
-   manager bigint NULL COMMENT 'Manager ID',
-   day_price decimal(10, 2) NULL COMMENT 'Price for book a day',
-   week_price decimal(10, 2) NULL COMMENT 'Price for book a week',
-   booking_rule_id bigint NULL COMMENT 'Booking Rule ID',
-   creator bigint NOT NULL COMMENT 'Creator',
-   create_date datetime NOT NULL COMMENT 'Create date',
-   updater bigint NOT NULL COMMENT 'Updater',
-   update_date datetime NOT NULL COMMENT 'Update date',
-   PRIMARY KEY (id),
-   FOREIGN KEY (cat_id) REFERENCES acc_category(id),
-   FOREIGN KEY (dept_id) REFERENCES sys_dept(id),
-   FOREIGN KEY (manager) REFERENCES sys_user(id),
-   FOREIGN KEY (booking_rule_id) REFERENCES acc_booking_rule(id),
-   FOREIGN KEY (creator) REFERENCES sys_user(id),
-   FOREIGN KEY (updater) REFERENCES sys_user(id)
+    id bigint NOT NULL COMMENT 'ID',
+    status tinyint COMMENT 'Status 0:Suspend 1:Normal',
+    name varchar(50) NOT NULL COMMENT 'Name',
+    cat_id bigint NOT NULL COMMENT 'Category ID',
+    dept_id bigint NOT NULL COMMENT 'Department ID',
+    address varchar(250) NOT NULL COMMENT 'Address',
+    description varchar(2500) COMMENT 'Description',
+    facilities varchar(250) COMMENT 'Facilities',
+    capacity decimal(5,0) COMMENT 'Max capacity',
+    manager bigint NULL COMMENT 'Manager ID',
+    day_price decimal(10, 2) NULL COMMENT 'Price for book a day',
+    week_price decimal(10, 2) NULL COMMENT 'Price for book a week',
+    booking_rule_id bigint NULL COMMENT 'Booking Rule ID',
+    creator bigint NOT NULL COMMENT 'Creator',
+    create_date datetime NOT NULL COMMENT 'Create date',
+    updater bigint NOT NULL COMMENT 'Updater',
+    update_date datetime NOT NULL COMMENT 'Update date',
+    PRIMARY KEY (id),
+    FOREIGN KEY (cat_id) REFERENCES acc_category(id),
+    FOREIGN KEY (dept_id) REFERENCES sys_dept(id),
+    FOREIGN KEY (manager) REFERENCES sys_user(id),
+    FOREIGN KEY (booking_rule_id) REFERENCES acc_booking_rule(id),
+    FOREIGN KEY (creator) REFERENCES sys_user(id),
+    FOREIGN KEY (updater) REFERENCES sys_user(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Accommodation';
 
 CREATE TABLE acc_accommodation_tag (
-   accommodation_id bigint NOT NULL COMMENT 'Accommodation ID',
-   tag_id bigint NOT NULL COMMENT 'Tag ID',
-   PRIMARY KEY (accommodation_id, tag_id),
-   FOREIGN KEY (accommodation_id) REFERENCES acc_accommodation(id),
-   FOREIGN KEY (tag_id) REFERENCES acc_tag(id) ON DELETE CASCADE
+    accommodation_id bigint NOT NULL COMMENT 'Accommodation ID',
+    tag_id bigint NOT NULL COMMENT 'Tag ID',
+    PRIMARY KEY (accommodation_id, tag_id),
+    FOREIGN KEY (accommodation_id) REFERENCES acc_accommodation(id),
+    FOREIGN KEY (tag_id) REFERENCES acc_tag(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Accommodation tag relationship';
 
 CREATE TABLE acc_image (
-   id bigint NOT NULL COMMENT 'ID',
-   accommodation_id bigint NOT NULL COMMENT 'Accommodation ID',
-   image_url varchar(250) NOT NULL COMMENT 'Image url',
-   PRIMARY KEY (id),
-   FOREIGN KEY (accommodation_id) REFERENCES acc_accommodation(id)
+    id bigint NOT NULL COMMENT 'ID',
+    accommodation_id bigint NOT NULL COMMENT 'Accommodation ID',
+    image_url varchar(250) NOT NULL COMMENT 'Image url',
+    PRIMARY KEY (id),
+    FOREIGN KEY (accommodation_id) REFERENCES acc_accommodation(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Accommodation Image';
 
-CREATE TABLE acc_availability (
-  id bigint NOT NULL COMMENT 'ID',
-  accommodation_id bigint NOT NULL COMMENT 'Accommodation ID',
-  year decimal(4,0) NOT NULL COMMENT 'Year',
-  availability BLOB NOT NULL COMMENT 'Availability of accommodation, consist of 366*24 bit, 1 represent available in specific day in one year',
-  PRIMARY KEY (id),
-  FOREIGN KEY (accommodation_id) REFERENCES acc_accommodation(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Accommodation Availability';
+CREATE TABLE acc_booking (
+    id bigint NOT NULL COMMENT 'ID',
+    status tinyint NOT NULL COMMENT 'Status: 0:Pending, 1:Reject, 2:Approve(Pending Payment), 3:Approve(Payment Complete), 4:Cancel',
+    accommodation_id bigint NOT NULL COMMENT 'Accommodation ID',
+    admin_id bigint NULL COMMENT 'Admin that approve/reject, user will contact this admin rather manager if umpoint.booking.accommodation.find-approve-admin-first=true',
+    user_id bigint NOT NULL COMMENT 'User ID',
+    worker_id bigint NULL COMMENT 'Worker responsible if booking is not in working day',
+    event varchar(250) NOT NULL COMMENT 'Description of the event or purpose for the booking',
+    payment_amount decimal(10,2) NOT NULL COMMENT 'Amount need to be pay',
+    start_day date NOT NULL COMMENT 'Start day of booking',
+    end_day date NOT NULL COMMENT 'End day of booking',
+    create_date datetime NOT NULL COMMENT 'Create date',
+    update_date datetime NOT NULL COMMENT 'Update date',
+    PRIMARY KEY (id),
+    FOREIGN KEY (accommodation_id) REFERENCES acc_accommodation(id),
+    FOREIGN KEY (admin_id) REFERENCES sys_user(id),
+    FOREIGN KEY (user_id) REFERENCES cli_user(id),
+    FOREIGN KEY (worker_id) REFERENCES sys_user(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Accommodation Booking';
 
-INSERT INTO acc_booking_rule VALUE (0,1,1,1,1,1,60,0,5,1);
+CREATE TABLE acc_closure (
+    id bigint NOT NULL COMMENT 'ID',
+    accommodation_id bigint NOT NULL COMMENT 'Accommodation ID',
+    start_day date NOT NULL COMMENT 'Start day of booking',
+    end_day date NOT NULL COMMENT 'End day of booking',
+    PRIMARY KEY (id),
+    FOREIGN KEY (accommodation_id) REFERENCES acc_accommodation(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Accommodation Closure Period';
+
+CREATE TABLE acc_event (
+    id bigint NOT NULL COMMENT 'ID',
+    accommodation_id bigint NOT NULL COMMENT 'Accommodation ID',
+    booking_id bigint NULL COMMENT 'Booking ID',
+    closure_id bigint NULL COMMENT 'Closure ID',
+    type tinyint NOT NULL COMMENT 'Type: 0:Booking, 1:Close after booking, 2:Closure period',
+    start_time DATETIME NOT NULL COMMENT 'Event start time',
+    end_time DATETIME NOT NULL COMMENT 'Event end time',
+    PRIMARY KEY (id),
+    FOREIGN KEY (accommodation_id) REFERENCES acc_accommodation(id),
+    FOREIGN KEY (booking_id) REFERENCES acc_booking(id),
+    FOREIGN KEY (closure_id) REFERENCES acc_closure(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Accommodation Occupied Event';
+
+CREATE TABLE acc_availability (
+    id bigint NOT NULL COMMENT 'ID',
+    accommodation_id bigint NOT NULL COMMENT 'Accommodation ID',
+    year decimal(4,0) NOT NULL COMMENT 'Year',
+    availability BLOB NOT NULL COMMENT 'Availability of accommodation, consist of 366*24 bit, 1 represent available in specific day in one year',
+    PRIMARY KEY (id),
+    FOREIGN KEY (accommodation_id) REFERENCES acc_accommodation(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Accommodation Availability';

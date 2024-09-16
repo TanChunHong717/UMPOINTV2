@@ -17,15 +17,13 @@ import cn.hutool.core.util.StrUtil;
 import my.edu.um.umpoint.modules.accommodation.service.AccAccommodationTagService;
 import my.edu.um.umpoint.modules.accommodation.service.AccBookingRuleService;
 import my.edu.um.umpoint.modules.accommodation.service.AccImageService;
+import my.edu.um.umpoint.modules.security.user.SecurityUser;
 import my.edu.um.umpoint.modules.space.dto.SpcBookingRuleDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Accommodation
@@ -78,7 +76,8 @@ public class AccAccommodationServiceImpl extends CrudServiceImpl<AccAccommodatio
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(AccAccommodationDTO dto) {
-        updateBookingRule(dto);
+        if (Objects.requireNonNull(SecurityUser.getSubject()).isPermitted("accommodation:booking-rule:update"))
+            updateBookingRule(dto);
         super.update(dto);
         updateAccommodationImage(dto);
         updateAccommodationTag(dto);

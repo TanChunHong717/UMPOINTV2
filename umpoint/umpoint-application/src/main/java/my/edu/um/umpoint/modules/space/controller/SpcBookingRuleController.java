@@ -2,15 +2,12 @@ package my.edu.um.umpoint.modules.space.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import my.edu.um.umpoint.common.annotation.LogOperation;
 import my.edu.um.umpoint.common.utils.Result;
-import my.edu.um.umpoint.common.validator.AssertUtils;
 import my.edu.um.umpoint.common.validator.ValidatorUtils;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import my.edu.um.umpoint.modules.space.dto.SpcBookingRuleDTO;
 import my.edu.um.umpoint.modules.space.service.SpcBookingRuleService;
-import my.edu.um.umpoint.modules.space.service.SpcSpaceService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,10 +26,9 @@ public class SpcBookingRuleController {
     @Autowired
     private SpcBookingRuleService spcBookingRuleService;
 
-    @Autowired
-    private SpcSpaceService spcSpaceService;
-
     @GetMapping("default")
+    @Operation(summary = "Get Default Booking Rule")
+    @RequiresPermissions("space:default-booking-rule:info")
     public Result<SpcBookingRuleDTO> getDefaultBookingRule() {
         return new Result<SpcBookingRuleDTO>().ok(spcBookingRuleService.get(0L));
     }
@@ -40,7 +36,7 @@ public class SpcBookingRuleController {
     @PutMapping("default")
     @Operation(summary = "Update Default Booking Rule")
     @LogOperation("Update")
-    @RequiresPermissions("space:booking-rule:update")
+    @RequiresPermissions("space:default-booking-rule:update")
     public Result updateDefaultBookingRule(@RequestBody SpcBookingRuleDTO spcBookingRuleDTO) {
         ValidatorUtils.validateEntity(spcBookingRuleDTO, UpdateGroup.class);
 

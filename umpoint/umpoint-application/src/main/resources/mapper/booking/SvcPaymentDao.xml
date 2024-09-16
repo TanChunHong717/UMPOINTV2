@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="my.edu.um.umpoint.modules.booking.dao.SvcPaymentDao">
+<mapper namespace="my.edu.um.umpoint.modules.payment.dao.SvcPaymentDao">
 
-    <resultMap type="my.edu.um.umpoint.modules.booking.entity.SvcPaymentEntity" id="svcPaymentMap">
+    <resultMap type="my.edu.um.umpoint.modules.payment.entity.SvcPaymentEntity" id="svcPaymentMap">
         <id property="id" column="id"/>
         <result property="status" column="status"/>
         <result property="bookingId" column="booking_id"/>
@@ -12,7 +12,7 @@
         <result property="date" column="date"/>
     </resultMap>
 
-    <resultMap type="my.edu.um.umpoint.modules.booking.entity.SvcPaymentEntity" id="svcPaymentSelectMap">
+    <resultMap type="my.edu.um.umpoint.modules.payment.entity.SvcPaymentEntity" id="svcPaymentSelectMap">
         <id property="id" column="id"/>
         <result property="status" column="status"/>
         <result property="bookingId" column="booking_id"/>

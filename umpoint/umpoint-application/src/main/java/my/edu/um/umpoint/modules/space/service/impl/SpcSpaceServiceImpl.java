@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import my.edu.um.umpoint.common.annotation.DataFilter;
 import my.edu.um.umpoint.common.constant.Constant;
+import my.edu.um.umpoint.common.exception.RenException;
 import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
+import my.edu.um.umpoint.modules.security.user.SecurityUser;
 import my.edu.um.umpoint.modules.space.dao.SpcSpaceDao;
 import my.edu.um.umpoint.modules.space.dto.SpcBookingRuleDTO;
 import my.edu.um.umpoint.modules.space.dto.SpcSpaceDTO;
@@ -17,14 +19,13 @@ import my.edu.um.umpoint.modules.space.service.SpcImageService;
 import my.edu.um.umpoint.modules.space.service.SpcSpaceService;
 import cn.hutool.core.util.StrUtil;
 import my.edu.um.umpoint.modules.space.service.SpcSpaceTagService;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Space
@@ -77,7 +78,8 @@ public class SpcSpaceServiceImpl extends CrudServiceImpl<SpcSpaceDao, SpcSpaceEn
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(SpcSpaceDTO dto) {
-        updateBookingRule(dto);
+        if (Objects.requireNonNull(SecurityUser.getSubject()).isPermitted("space:booking-rule:update"))
+            updateBookingRule(dto);
         super.update(dto);
         updateSpaceImage(dto);
         updateSpaceTag(dto);

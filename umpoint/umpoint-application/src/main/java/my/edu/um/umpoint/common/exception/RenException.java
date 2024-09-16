@@ -1,9 +1,16 @@
 package my.edu.um.umpoint.common.exception;
 
+import lombok.Getter;
+import lombok.Setter;
 import my.edu.um.umpoint.common.utils.MessageUtils;
 
+import java.io.Serial;
+
+@Setter
+@Getter
 public class RenException extends RuntimeException {
-	private static final long serialVersionUID = 1L;
+	@Serial
+	private static final long serialVersionUID = 7375107047117423124L;
 
     private int code;
 	private String msg;
@@ -40,22 +47,6 @@ public class RenException extends RuntimeException {
 		super(msg, e);
 		this.code = ErrorCode.INTERNAL_SERVER_ERROR;
 		this.msg = msg;
-	}
-
-	public String getMsg() {
-		return msg;
-	}
-
-	public void setMsg(String msg) {
-		this.msg = msg;
-	}
-
-	public int getCode() {
-		return code;
-	}
-
-	public void setCode(int code) {
-		this.code = code;
 	}
 
 }

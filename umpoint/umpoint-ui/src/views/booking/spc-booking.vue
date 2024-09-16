@@ -64,8 +64,8 @@
       <el-table-column prop="paymentAmount" label="Amount(RM)" header-align="center" align="center" sortable="custom" width="135"></el-table-column>
       <el-table-column label="Booking Period" header-align="center" align="center" width="200">
         <template v-slot="scope">
-          {{scope.row.startDay}} to {{scope.row.endDay}}<br>
-          {{scope.row.startTime}} to {{scope.row.endTime}}
+          {{scope.row.startDay.split(' ')[0]}} to {{scope.row.endDay.split(' ')[0]}}<br>
+          {{scope.row.startTime.substring(0, 5)}} to {{scope.row.endTime.substring(0, 5)}}
         </template>
       </el-table-column>
       <el-table-column prop="createDate" label="Create date" header-align="center" align="center" sortable="custom" width="150"></el-table-column>
@@ -83,19 +83,23 @@
 <script lang="ts" setup>
 import useView from "@/hooks/useView";
 import { reactive, ref, toRefs } from "vue";
-import AddOrUpdate from "./spcbooking-add-or-update.vue";
 import {ElMessage, ElMessageBox} from "element-plus";
 import baseService from "@/service/baseService";
+import {useRoute} from "vue-router";
 
+const route = useRoute();
+console.log(route);
+console.log(route.query);
 const view = reactive({
   getDataListURL: "/booking/space/page",
   getDataListIsPage: true,
   exportURL: "/booking/space/export",
   dataForm: {
-    id: null,
+    id: route.query.id? route.query.id: null,
     status: null
   }
 });
+console.log(view.dataForm);
 
 const state = reactive({ ...useView(view), ...toRefs(view) });
 

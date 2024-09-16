@@ -1,9 +1,13 @@
 package my.edu.um.umpoint.modules.service.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import my.edu.um.umpoint.common.annotation.LogOperation;
 import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.page.PageData;
-import my.edu.um.umpoint.common.utils.ExcelUtils;
 import my.edu.um.umpoint.common.utils.Result;
 import my.edu.um.umpoint.common.validator.AssertUtils;
 import my.edu.um.umpoint.common.validator.ValidatorUtils;
@@ -11,22 +15,14 @@ import my.edu.um.umpoint.common.validator.group.AddGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import my.edu.um.umpoint.modules.service.dto.SvcTagDTO;
-import my.edu.um.umpoint.modules.service.excel.SvcTagExcel;
 import my.edu.um.umpoint.modules.service.service.SvcTagService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 /**
  * Service Tag
@@ -120,15 +116,4 @@ public class SvcTagController {
 
         return new Result();
     }
-
-    @GetMapping("export")
-    @Operation(summary = "Export")
-    @LogOperation("Export")
-    @RequiresPermissions("service:tag:export")
-    public void export(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletResponse response) throws Exception {
-        List<SvcTagDTO> list = svcTagService.list(params);
-
-        ExcelUtils.exportExcelToTarget(response, null, "Service Tag", list, SvcTagExcel.class);
-    }
-
 }

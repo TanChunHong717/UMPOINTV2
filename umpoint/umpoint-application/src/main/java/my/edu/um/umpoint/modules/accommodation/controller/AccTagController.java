@@ -1,9 +1,13 @@
 package my.edu.um.umpoint.modules.accommodation.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import my.edu.um.umpoint.common.annotation.LogOperation;
 import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.page.PageData;
-import my.edu.um.umpoint.common.utils.ExcelUtils;
 import my.edu.um.umpoint.common.utils.Result;
 import my.edu.um.umpoint.common.validator.AssertUtils;
 import my.edu.um.umpoint.common.validator.ValidatorUtils;
@@ -11,17 +15,10 @@ import my.edu.um.umpoint.common.validator.group.AddGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import my.edu.um.umpoint.modules.accommodation.dto.AccTagDTO;
-import my.edu.um.umpoint.modules.accommodation.excel.AccTagExcel;
 import my.edu.um.umpoint.modules.accommodation.service.AccTagService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.HashMap;
 import java.util.List;
@@ -119,15 +116,4 @@ public class AccTagController {
 
         return new Result();
     }
-
-    @GetMapping("export")
-    @Operation(summary = "Export")
-    @LogOperation("Export")
-    @RequiresPermissions("accommodation:tag:export")
-    public void export(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletResponse response) throws Exception {
-        List<AccTagDTO> list = accTagService.list(params);
-
-        ExcelUtils.exportExcelToTarget(response, null, "Accommodation Tag", list, AccTagExcel.class);
-    }
-
 }

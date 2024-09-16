@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="my.edu.um.umpoint.modules.space.dao.SpcClosureDao">
+
+    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcClosureEntity" id="spcClosureMap">
+        <result property="id" column="id"/>
+        <result property="spaceId" column="space_id"/>
+        <result property="startDay" column="start_day"/>
+        <result property="endDay" column="end_day"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="recurMonday" column="recur_monday"/>
+        <result property="recurTuesday" column="recur_tuesday"/>
+        <result property="recurWednesday" column="recur_wednesday"/>
+        <result property="recurThursday" column="recur_thursday"/>
+        <result property="recurFriday" column="recur_friday"/>
+        <result property="recurSaturday" column="recur_saturday"/>
+        <result property="recurSunday" column="recur_sunday"/>
+    </resultMap>
+
+
+</mapper>

@@ -25,7 +25,7 @@ public class AccAvailabilityEntity {
 	/**
 	* Year
 	*/
-	private Long year;
+	private Integer year;
 	/**
 	* Availability of accommodation, consist of 366*24 bit, 1 represent available in specific day in one year
 	*/
