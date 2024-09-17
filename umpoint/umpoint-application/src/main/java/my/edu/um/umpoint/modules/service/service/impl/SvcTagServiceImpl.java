@@ -26,6 +26,7 @@ public class SvcTagServiceImpl extends CrudServiceImpl<SvcTagDao, SvcTagEntity, 
 
     @Override
     public QueryWrapper<SvcTagEntity> getWrapper(Map<String, Object> params){
+        paramsToLike(params, "name");
         String name = (String)params.get("name");
 
         QueryWrapper<SvcTagEntity> wrapper = new QueryWrapper<>();

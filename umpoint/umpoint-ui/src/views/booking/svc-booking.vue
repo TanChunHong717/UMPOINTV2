@@ -40,7 +40,7 @@
               <el-table-column prop="date" label="Payment date" header-align="center" align="center" sortable="custom"></el-table-column>
               <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="150">
                 <template v-slot="scope">
-                  <el-button v-if="state.hasPermission('booking:payment:update')" type="primary" link @click="refundHandle(scope.row.id)">Refund</el-button>
+                  <el-button v-if="state.hasPermission('payment:service:update')" type="primary" link @click="refundHandle(scope.row.id)">Refund</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -64,8 +64,8 @@
       <el-table-column prop="createDate" label="Create date" header-align="center" align="center" sortable="custom" width="150"></el-table-column>
       <el-table-column label="Actions" fixed="right" header-align="center" align="left" width="85">
         <template v-slot="scope">
-          <el-button v-if="state.hasPermission('booking:service:update')" type="primary" link @click="approveOrRejectHandle(scope.row.id, true)">Approve</el-button>
-          <el-button style="margin-left: 0" v-if="state.hasPermission('booking:service:update')" type="primary" link @click="approveOrRejectHandle(scope.row.id, false)">Reject</el-button>
+          <el-button v-if="state.hasPermission('service:booking:update')" type="primary" link @click="approveOrRejectHandle(scope.row.id, true)">Approve</el-button>
+          <el-button style="margin-left: 0" v-if="state.hasPermission('service:booking:update')" type="primary" link @click="approveOrRejectHandle(scope.row.id, false)">Reject</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -81,10 +81,10 @@ import baseService from "@/service/baseService";
 
 const view = reactive({
   deleteIsBatch: true,
-  getDataListURL: "/booking/service/page",
+  getDataListURL: "/service/booking/page",
   getDataListIsPage: true,
-  exportURL: "/booking/service/export",
-  deleteURL: "/booking/service",
+  exportURL: "/service/booking/export",
+  deleteURL: "/service/booking",
   dataForm: {
     id: null,
     status: null
@@ -101,7 +101,7 @@ const approveOrRejectHandle = (id: number, isApprove: boolean) => {
   })
     .then(() => {
       baseService
-        .put("/booking/service/" + (isApprove? "approve": "reject") + "/" + id)
+        .put("service/booking/" + (isApprove? "approve": "reject") + "/" + id)
         .then((res) => {
           state.getDataList();
           ElMessage.success({
@@ -121,7 +121,7 @@ const refundHandle = (id: number) => {
   })
     .then(() => {
       baseService
-        .put("/booking/payment/service/refund/" + id)
+        .put("/payment/service/refund/" + id)
         .then((res) => {
           state.getDataList();
           ElMessage.success({

@@ -48,7 +48,7 @@ const init = (id?: number) => {
 
 // Retrieve information
 const getInfo = (id: number) => {
-  baseService.get("/booking/payment-method/" + id).then((res) => {
+  baseService.get("/payment/method/" + id).then((res) => {
     Object.assign(dataForm, res.data);
   });
 };
@@ -59,7 +59,7 @@ const dataFormSubmitHandle = () => {
     if (!valid) {
       return false;
     }
-    (!dataForm.id ? baseService.post : baseService.put)("/booking/payment-method", dataForm).then((res) => {
+    (!dataForm.id ? baseService.post : baseService.put)("/payment/method", dataForm).then((res) => {
       ElMessage.success({
         message: 'Success',
         duration: 500,

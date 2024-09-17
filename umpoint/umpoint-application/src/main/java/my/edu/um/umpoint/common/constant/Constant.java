@@ -18,8 +18,19 @@ public interface Constant {
 
     String START_TIME = "startTime";
     String END_TIME = "endTime";
+
+    String ID = "id";
     String SPACE_ID = "spaceId";
+    String SERVICE_ID = "serviceId";
     String ACCOMMODATION_ID = "accommodationId";
+    String DEPT_ID = "deptId";
+    String CAT_ID = "catId";
+    String TAG_ID = "tagId";
+
+    String NAME = "name";
+    String STATUS = "status";
+    String EVENT = "event";
+    String APPROVAL_REQUIRED = "approvalRequire";
 
     String CLOUD_STORAGE_CONFIG_KEY = "CLOUD_STORAGE_CONFIG_KEY";
 

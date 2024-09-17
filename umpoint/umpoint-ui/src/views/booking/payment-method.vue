@@ -1,9 +1,8 @@
 <template>
   <div class="mod-booking__paymentmethod">
     <el-form :inline="true" :model="state.dataForm" @keyup.enter="state.getDataList()">
-      <!-- Modify id to field you want -->
       <el-form-item>
-        <el-input v-model="state.dataForm.id" placeholder="ID" clearable></el-input>
+        <el-input v-model="state.dataForm.name" placeholder="ID" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="state.getDataList()">Search</el-button>
@@ -20,8 +19,8 @@
       <el-table-column prop="method" label="Method" header-align="center" align="center" sortable="custom"></el-table-column>
       <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="150">
         <template v-slot="scope">
-          <el-button v-if="state.hasPermission('booking:payment-method:update')" type="primary" link @click="addOrUpdateHandle(scope.row.id)">Update</el-button>
-          <el-button v-if="state.hasPermission('booking:payment-method:delete')" type="primary" link @click="state.deleteHandle(scope.row.id)">Delete</el-button>
+          <el-button v-if="state.hasPermission('payment:method:update')" type="primary" link @click="addOrUpdateHandle(scope.row.id)">Update</el-button>
+          <el-button v-if="state.hasPermission('payment:method:delete')" type="primary" link @click="state.deleteHandle(scope.row.id)">Delete</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -38,10 +37,12 @@ import AddOrUpdate from "./payment-method-add-or-update.vue";
 
 const view = reactive({
   deleteIsBatch: true,
-  getDataListURL: "/booking/payment-method/page",
+  getDataListURL: "/payment/method/page",
   getDataListIsPage: true,
-  exportURL: "/booking/payment-method/export",
-  deleteURL: "/booking/payment-method"
+  deleteURL: "/payment/method",
+  dataForm: {
+    name: ''
+  }
 });
 
 const state = reactive({ ...useView(view), ...toRefs(view) });

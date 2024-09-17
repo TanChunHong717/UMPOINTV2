@@ -45,7 +45,7 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
 
     @Override
     public PageData<SpcBookingDTO> page(Map<String, Object> params) {
-        paramsToLike(params, "space");
+        paramsToLike(params, "event");
 
         IPage<SpcBookingEntity> page = getPage(params, "create_date", false);
         List<SpcBookingEntity> list = baseDao.getList(params);

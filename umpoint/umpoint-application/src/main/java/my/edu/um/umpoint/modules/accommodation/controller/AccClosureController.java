@@ -68,11 +68,11 @@ public class AccClosureController {
         return new Result();
     }
 
-    @DeleteMapping
+    @DeleteMapping("{id}")
     @Operation(summary = "Delete")
     @LogOperation("Delete")
     @RequiresPermissions("accommodation:closure:delete")
-    public Result delete(@RequestBody Long id){
+    public Result delete(@PathVariable("id")  Long id){
         AssertUtils.isNull(id);
 
         accClosureService.delete(id);
@@ -82,9 +82,9 @@ public class AccClosureController {
 
     private static void validateEventTime(AccClosureDTO dto) {
         LocalDate startDate = DateUtils.convertDateToLocalDate(dto.getStartDay());
-        LocalDate endDate = DateUtils.convertDateToLocalDate(dto.getStartDay());
+        LocalDate endDate = DateUtils.convertDateToLocalDate(dto.getEndDay());
 
-        if (!startDate.isBefore(endDate) || !startDate.isBefore(LocalDate.now())){
+        if (!startDate.isBefore(endDate) || startDate.isBefore(LocalDate.now())){
             throw new RenException("Invalid start time or end time");
         }
     }

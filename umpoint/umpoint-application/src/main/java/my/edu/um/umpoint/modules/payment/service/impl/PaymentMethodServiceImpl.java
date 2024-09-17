@@ -22,10 +22,11 @@ public class PaymentMethodServiceImpl extends CrudServiceImpl<PaymentMethodDao, 
 
     @Override
     public QueryWrapper<PaymentMethodEntity> getWrapper(Map<String, Object> params){
-        String id = (String)params.get("id");
+        paramsToLike(params, "method");
+        String method = (String)params.get("method");
 
         QueryWrapper<PaymentMethodEntity> wrapper = new QueryWrapper<>();
-        wrapper.eq(StrUtil.isNotBlank(id), "id", id);
+        wrapper.like(StrUtil.isNotBlank(method), "method", method);
 
         return wrapper;
     }

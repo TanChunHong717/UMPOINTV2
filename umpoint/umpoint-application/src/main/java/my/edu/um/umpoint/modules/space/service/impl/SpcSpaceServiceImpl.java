@@ -47,6 +47,7 @@ public class SpcSpaceServiceImpl extends CrudServiceImpl<SpcSpaceDao, SpcSpaceEn
 
     @Override
     public QueryWrapper<SpcSpaceEntity> getWrapper(Map<String, Object> params){
+        paramsToLike(params, "name");
         String name = (String)params.get("name");
 
         QueryWrapper<SpcSpaceEntity> wrapper = new QueryWrapper<>();

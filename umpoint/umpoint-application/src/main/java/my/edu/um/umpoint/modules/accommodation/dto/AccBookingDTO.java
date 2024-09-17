@@ -1,5 +1,6 @@
 package my.edu.um.umpoint.modules.accommodation.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import lombok.Data;
@@ -49,9 +50,11 @@ public class AccBookingDTO implements Serializable {
 	private String event;
 
 	@SchemaProperty(name = "Start day of booking")
+	@JsonFormat(pattern="yyyy-MM-dd")
 	private Date startDay;
 
 	@SchemaProperty(name = "End day of booking")
+	@JsonFormat(pattern="yyyy-MM-dd")
 	private Date endDay;
 
 	@SchemaProperty(name = "Create date")

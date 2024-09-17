@@ -45,6 +45,7 @@ public class AccAccommodationServiceImpl extends CrudServiceImpl<AccAccommodatio
 
     @Override
     public QueryWrapper<AccAccommodationEntity> getWrapper(Map<String, Object> params){
+        paramsToLike(params, "name");
         String name = (String)params.get("name");
 
         QueryWrapper<AccAccommodationEntity> wrapper = new QueryWrapper<>();

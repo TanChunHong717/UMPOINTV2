@@ -1,6 +1,5 @@
 package my.edu.um.umpoint.modules.space.service.impl;
 
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import my.edu.um.umpoint.common.constant.BookingConstant;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
@@ -18,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -35,12 +35,12 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
 
     @Override
     public QueryWrapper<SpcEventEntity> getWrapper(Map<String, Object> params){
-        String spaceId = (String)params.get("spaceId");
-        Object startTime = params.get("startTime");
-        Object endTime = params.get("endTime");
+        Long spaceId = Long.parseLong((String)params.get("spaceId"));
+        Date startTime =  DateUtils.parse((String) params.get("startTime"), DateUtils.DATE_TIME_PATTERN);
+        Date endTime = DateUtils.parse((String) params.get("endTime"), DateUtils.DATE_TIME_PATTERN);
 
         QueryWrapper<SpcEventEntity> wrapper = new QueryWrapper<>();
-        wrapper.eq(StrUtil.isNotBlank(spaceId), "space_id", spaceId);
+        wrapper.eq("space_id", spaceId);
         wrapper.between("start_time", startTime, endTime);
         wrapper.between("end_time", startTime, endTime);
 
@@ -52,20 +52,20 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
     public void addEvent(SpcBookingDTO bookingDTO) {
         List<SpcEventEntity> eventEntityList = new ArrayList<>();
 
-        LocalDate startDay = DateUtils.convertDateToLocalDate(bookingDTO.getStartDay());
+        LocalDate currentDay = DateUtils.convertDateToLocalDate(bookingDTO.getStartDay());
         LocalDate endDay = DateUtils.convertDateToLocalDate(bookingDTO.getEndDay());
-        while (startDay.isBefore(endDay) || startDay.isEqual(endDay)) {
+        while (currentDay.isBefore(endDay) || currentDay.isEqual(endDay)) {
             SpcEventEntity eventEntity = new SpcEventEntity();
 
             eventEntity.setSpaceId(bookingDTO.getSpaceId());
             eventEntity.setBookingId(bookingDTO.getId());
             eventEntity.setType(BookingConstant.EventStatus.BOOKING.getValue());
 
-            eventEntity.setStartTime(DateUtils.convertLocalDateTimeToDate(startDay, bookingDTO.getStartTime()));
-            eventEntity.setEndTime(DateUtils.convertLocalDateTimeToDate(endDay, bookingDTO.getEndTime()));
+            eventEntity.setStartTime(DateUtils.convertLocalDateTimeToDate(currentDay, bookingDTO.getStartTime()));
+            eventEntity.setEndTime(DateUtils.convertLocalDateTimeToDate(currentDay, bookingDTO.getEndTime()));
 
             eventEntityList.add(eventEntity);
-            startDay = startDay.plusDays(1);
+            currentDay = currentDay.plusDays(1);
         }
 
         SpcSpaceDTO spaceDTO = spcSpaceService.get(bookingDTO.getSpaceId());
@@ -97,21 +97,22 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
     public void addEvent(SpcClosureDTO closureDTO) {
         List<SpcEventEntity> eventEntityList = new ArrayList<>();
 
-        LocalDate startDay = DateUtils.convertDateToLocalDate(closureDTO.getStartDay());
+        LocalDate currentDay = DateUtils.convertDateToLocalDate(closureDTO.getStartDay());
         LocalDate endDay = DateUtils.convertDateToLocalDate(closureDTO.getEndDay());
-        while (startDay.isBefore(endDay) || startDay.isEqual(endDay)) {
-            if (needToAddEvent(closureDTO, startDay)) {
+        while (currentDay.isBefore(endDay) || currentDay.isEqual(endDay)) {
+            if (needToAddEvent(closureDTO, currentDay)) {
                 SpcEventEntity eventEntity = new SpcEventEntity();
 
                 eventEntity.setSpaceId(closureDTO.getSpaceId());
+                eventEntity.setClosureId(closureDTO.getId());
                 eventEntity.setType(BookingConstant.EventStatus.CLOSURE.getValue());
 
-                eventEntity.setStartTime(DateUtils.convertLocalDateTimeToDate(startDay, closureDTO.getStartTime()));
-                eventEntity.setEndTime(DateUtils.convertLocalDateTimeToDate(endDay, closureDTO.getEndTime()));
+                eventEntity.setStartTime(DateUtils.convertLocalDateTimeToDate(currentDay, closureDTO.getStartTime()));
+                eventEntity.setEndTime(DateUtils.convertLocalDateTimeToDate(currentDay, closureDTO.getEndTime()));
 
                 eventEntityList.add(eventEntity);
             }
-            startDay = startDay.plusDays(1);
+            currentDay = currentDay.plusDays(1);
         }
 
         insertBatch(eventEntityList);

@@ -67,10 +67,10 @@ public class AccClosureServiceImpl extends CrudServiceImpl<AccClosureDao, AccClo
 
     @Transactional(rollbackFor = Exception.class)
     public void delete(Long id) {
+        accEventService.deleteByClosureId(id);
+
         Long[] ids = {id};
         super.delete(ids);
-
-        accEventService.deleteByClosureId(id);
     }
 
     private void rejectOverlapBooking(Long closureId) {

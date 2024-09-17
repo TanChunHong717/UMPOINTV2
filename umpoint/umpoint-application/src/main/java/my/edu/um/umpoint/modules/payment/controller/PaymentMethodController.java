@@ -41,9 +41,10 @@ public class PaymentMethodController {
         @Parameter(name = Constant.PAGE, description = "Current page number, starting from 1", in = ParameterIn.QUERY, required = true, ref="int") ,
         @Parameter(name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY,required = true, ref="int") ,
         @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, ref="String") ,
-        @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String")
+        @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String") ,
+        @Parameter(name = "method", description = "Payment method", in = ParameterIn.QUERY, ref="String")
     })
-    @RequiresPermissions("payment:method-method:page")
+    @RequiresPermissions("payment:method:page")
     public Result<PageData<PaymentMethodDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
         PageData<PaymentMethodDTO> page = paymentMethodService.page(params);
 
@@ -52,7 +53,7 @@ public class PaymentMethodController {
 
     @GetMapping("{id}")
     @Operation(summary = "Information")
-    @RequiresPermissions("payment:method-method:info")
+    @RequiresPermissions("payment:method:info")
     public Result<PaymentMethodDTO> get(@PathVariable("id") Long id){
         PaymentMethodDTO data = paymentMethodService.get(id);
 
@@ -62,7 +63,7 @@ public class PaymentMethodController {
     @PostMapping
     @Operation(summary = "Save")
     @LogOperation("Save")
-    @RequiresPermissions("payment:method-method:save")
+    @RequiresPermissions("payment:method:save")
     public Result save(@RequestBody PaymentMethodDTO dto){
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
 
@@ -74,7 +75,7 @@ public class PaymentMethodController {
     @PutMapping
     @Operation(summary = "Update")
     @LogOperation("Update")
-    @RequiresPermissions("payment:method-method:update")
+    @RequiresPermissions("payment:method:update")
     public Result update(@RequestBody PaymentMethodDTO dto){
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
 
@@ -86,7 +87,7 @@ public class PaymentMethodController {
     @DeleteMapping
     @Operation(summary = "Delete")
     @LogOperation("Delete")
-    @RequiresPermissions("payment:method-method:delete")
+    @RequiresPermissions("payment:method:delete")
     public Result delete(@RequestBody Long[] ids){
         AssertUtils.isArrayEmpty(ids, "id");
 

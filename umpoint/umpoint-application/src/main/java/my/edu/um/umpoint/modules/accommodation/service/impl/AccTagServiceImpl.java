@@ -26,6 +26,7 @@ public class AccTagServiceImpl extends CrudServiceImpl<AccTagDao, AccTagEntity, 
 
     @Override
     public QueryWrapper<AccTagEntity> getWrapper(Map<String, Object> params){
+        paramsToLike(params, "name");
         String name = (String)params.get("name");
 
         QueryWrapper<AccTagEntity> wrapper = new QueryWrapper<>();

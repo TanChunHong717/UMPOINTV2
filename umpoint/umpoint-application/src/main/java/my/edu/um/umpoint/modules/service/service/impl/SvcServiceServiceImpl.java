@@ -47,6 +47,7 @@ public class SvcServiceServiceImpl extends CrudServiceImpl<SvcServiceDao, SvcSer
 
     @Override
     public QueryWrapper<SvcServiceEntity> getWrapper(Map<String, Object> params){
+        paramsToLike(params, "name");
         String name = (String)params.get("name");
 
         QueryWrapper<SvcServiceEntity> wrapper = new QueryWrapper<>();

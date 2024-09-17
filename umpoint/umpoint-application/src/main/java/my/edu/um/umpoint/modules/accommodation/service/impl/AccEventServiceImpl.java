@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -31,12 +32,12 @@ public class AccEventServiceImpl extends CrudServiceImpl<AccEventDao, AccEventEn
 
     @Override
     public QueryWrapper<AccEventEntity> getWrapper(Map<String, Object> params){
-        String accommodationId = (String)params.get("accommodationId");
-        Object startTime = params.get("startTime");
-        Object endTime = params.get("endTime");
+        Long accommodationId = Long.parseLong((String)params.get("accommodationId"));
+        Date startTime =  DateUtils.parse((String) params.get("startTime"), DateUtils.DATE_PATTERN);
+        Date endTime = DateUtils.parse((String) params.get("endTime"), DateUtils.DATE_PATTERN);
 
         QueryWrapper<AccEventEntity> wrapper = new QueryWrapper<>();
-        wrapper.eq(StrUtil.isNotBlank(accommodationId), "space_id", accommodationId);
+        wrapper.eq("space_id", accommodationId);
         wrapper.between("start_time", startTime, endTime);
         wrapper.between("end_time", startTime, endTime);
 
@@ -83,6 +84,7 @@ public class AccEventServiceImpl extends CrudServiceImpl<AccEventDao, AccEventEn
         AccEventEntity eventEntity = new AccEventEntity();
 
         eventEntity.setAccommodationId(closureDTO.getAccommodationId());
+        eventEntity.setClosureId(closureDTO.getId());
         eventEntity.setType(BookingConstant.EventStatus.CLOSURE.getValue());
 
         eventEntity.setStartTime(closureDTO.getStartDay());

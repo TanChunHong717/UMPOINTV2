@@ -28,6 +28,7 @@ public class AccCategoryServiceImpl extends CrudServiceImpl<AccCategoryDao, AccC
 
     @Override
     public QueryWrapper<AccCategoryEntity> getWrapper(Map<String, Object> params){
+        paramsToLike(params, "name");
         String name = (String)params.get("name");
 
         QueryWrapper<AccCategoryEntity> wrapper = new QueryWrapper<>();

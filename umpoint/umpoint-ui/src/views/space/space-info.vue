@@ -136,7 +136,9 @@
             :time-step="30"
             :on-event-click="onEventClick"
             :editable-events="{ title: false, drag: false, resize: false, delete: false, create: true }"
+            :drag-to-create-event="true"
             :min-event-width="100"
+            @event-drag-create="onClosureCreate"
             @view-change="onViewChange"
             style="height: 580px"
           ></vue-cal>
@@ -146,9 +148,10 @@
   </div>
   <!-- Popup, Add / Edit -->
   <update-booking-rule ref="bookingRuleUpdateRef" @refreshData="initialize">Confirm</update-booking-rule>
+  <update-closure ref="closureUpdateRef" @refreshData="updateTimetable" @cancel="cancelClosureCreate">Confirm</update-closure>
 </template>
 <script lang="ts" setup>
-import {onMounted, ref, reactive, toRefs, onActivated} from 'vue';
+import {onActivated, onMounted, reactive, ref, toRefs} from 'vue';
 import baseService from "@/service/baseService";
 import {useRoute} from "vue-router";
 import useView from "@/hooks/useView";
@@ -156,8 +159,10 @@ import {ElMessage} from "element-plus";
 import 'vue-cal/dist/vuecal.css';
 import VueCal from 'vue-cal';
 import UpdateBookingRule from "@/views/space/booking-rule-add-or-update.vue";
-import {formatDescription, formatDateTime, formatBookingStatus, getMondayAndSunday} from "@/utils/custom-utils";
+import {formatDescription, getMondayAndSunday} from "@/utils/custom-utils";
 import router from "@/router";
+import UpdateClosure from "@/views/space/closure-add-or-update.vue";
+import {formatDateToDateTimeStr} from "@/utils/date";
 
 const route = useRoute()
 const space = ref();
@@ -209,7 +214,7 @@ const onViewChange = (object: any) => {
     return;
 
   specialHours.value = generateWeekendAndHoliday(object.startDate, object.endDate);
-  getBooking(object.startDate, object.endDate);
+  getEvent(object.startDate, object.endDate);
 };
 
 const generateWeekendAndHoliday = (startDate: Date, endDate: Date) => {
@@ -236,56 +241,35 @@ const generateWeekendAndHoliday = (startDate: Date, endDate: Date) => {
   return holidayObject;
 }
 
-const getBooking = async (startDate: Date, endDate: Date) => {
-  baseService.get("/booking/space/page",
+const getEvent = async (startDate: Date, endDate: Date) => {
+  baseService.get("/space/event",
     {
       spaceId: space.value.id,
-      startDate: startDate,
-      endDate: endDate
+      startTime: formatDateToDateTimeStr(startDate),
+      endTime: formatDateToDateTimeStr(endDate)
     }
   ).then((res) => {
     events.value = [];
     eventsCloseAfterBookingSet.clear();
 
-    res.data.list.forEach((booking: any) => {
-      let currentDay = new Date(booking.startDay);
-      const endDay = new Date(booking.endDay);
-
-      while (currentDay <= endDay) {
-        const startDateTime = formatDateTime(currentDay, booking.startTime);
-        const endDateTime = formatDateTime(currentDay, booking.endTime);
-
-        const event = {
-          start: startDateTime,
-          end: endDateTime,
-          title: booking.event,
-          class: 'booking_' + formatBookingStatus(booking.status),
-          content: formatBookingStatus(booking.status),
-          deletable: false,
-          resizable: false,
-          draggable: false,
-          bookingId: booking.id,
-        };
+    res.data.forEach((eventDTO: any) => {
+      const event = {
+        start: new Date(eventDTO.startTime),
+        end: new Date(eventDTO.endTime),
+        title: (eventDTO.type == '0')?
+                  "Booking:":
+                  ((eventDTO.type == '1')? "Close after booking": "Closure"),
+        class: (eventDTO.type == '0')?
+                  "booking":
+                  ((eventDTO.type == '1')? "close": "closure"),
+        type: eventDTO.type,
+        bookingId: eventDTO.bookingId,
+        closureId: eventDTO.closureId,
+      }
+      if (eventDTO.type == '1')
+        eventsCloseAfterBookingSet.add(JSON.stringify(event));
+      else
         events.value.push(event);
-        currentDay.setDate(currentDay.getDate() + 1);
-      }
-
-      if (space.value.spcBookingRuleDTO.closeDaysAfterBooking > 0) {
-        endDay.setDate(endDay.getDate() + 1)
-        const closeStartDay = new Date(endDay);
-        const closeEndDay = new Date(endDay);
-        closeEndDay.setDate(closeEndDay.getDate() + space.value.spcBookingRuleDTO.closeDaysAfterBooking + 1);
-        const fullDayEvent = {
-          start: `${closeStartDay.toISOString().split('T')[0]} 00:00`,
-          end: `${closeEndDay.toISOString().split('T')[0]} 23:59`,
-          title: `Space Close After Booking`,
-          class: 'close',
-          deletable: false,
-          resizable: false,
-          draggable: false,
-        };
-        eventsCloseAfterBookingSet.add(JSON.stringify(fullDayEvent));
-      }
     })
 
     if (eventsCloseAfterBookingSet.size > 0)
@@ -295,15 +279,33 @@ const getBooking = async (startDate: Date, endDate: Date) => {
   });
 }
 
-const onEventClick = (event: any, e: any) => {
-  if (event.class == 'booking')
+const onEventClick = (event: any) => {
+  if (event.type == '0')
     router.push({path: '/booking/spc-booking', query: {id: event.bookingId}});
+  else if (event.type == '2') {
+    onClosureUpdate(event);
+  }
 }
 
 const bookingRuleUpdateRef = ref();
 const bookingRuleUpdateHandle = () => {
   bookingRuleUpdateRef.value.init(space.value);
 };
+
+const closureUpdateRef = ref();
+const onClosureCreate = (event: any) => {
+  closureUpdateRef.value.init(null, event, space.value.id);
+}
+const onClosureUpdate = (event: any) => {
+  closureUpdateRef.value.init(event.closureId, event, space.value.id);
+}
+const cancelClosureCreate = (e: any) => {
+  if (!e.id)
+    events.value = events.value.filter((event: any) => event._eid != e._eid);
+}
+const updateTimetable = (event: any) => {
+  onViewChange(getMondayAndSunday(new Date(event.start)));
+}
 
 const deleteHandle = () => {
   baseService.delete("/space/space", [space.value.id]).then((res) => {
@@ -382,36 +384,17 @@ h1 {
   font-weight: bold;
   margin: 4px 0 8px;
 }
-.vuecal__event.booking_Pending {
-  background-color: rgba(255, 193, 7, 0.9);  /* Amber */
-  border: 1px solid rgb(255, 179, 0);
-  color: #fff;
-}
-
-.vuecal__event.booking_Approve {
-  background-color: rgba(40, 167, 69, 0.9);  /* Green */
-  border: 1px solid rgb(33, 136, 56);
-  color: #fff;
-}
-
-.vuecal__event.booking_Reject {
-  background-color: rgba(220, 53, 69, 0.9);  /* Red */
-  border: 1px solid rgb(200, 35, 51);
-  color: #fff;
-}
-
-.vuecal__event.booking_Complete {
+.vuecal__event.booking {
   background-color: rgba(0, 123, 255, 0.9);  /* Blue */
   border: 1px solid rgb(0, 104, 217);
   color: #fff;
 }
-
-.vuecal__event.booking_Cancel {
+.vuecal__event.close {
   background-color: rgba(108, 117, 125, 0.9);  /* Gray */
   border: 1px solid rgb(88, 97, 104);
   color: #fff;
 }
-.vuecal__event.close {
+.vuecal__event.closure {
   background-color: rgba(255, 102, 102, 0.9);
   border: 1px solid rgb(235, 82, 82);
   color: #fff;

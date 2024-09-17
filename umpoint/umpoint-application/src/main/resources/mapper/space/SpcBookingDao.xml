@@ -91,26 +91,20 @@
             <if test="status != null">
                 AND sb.status = #{status}
             </if>
-            <if test="space != null and space.trim() != ''">
-                AND space LIKE #{space}
-            </if>
-            <if test="startDate != null and endDate != null">
-                AND (sb.start_day &lt;= #{endDate} AND sb.end_day &gt;= #{startDate})
-            </if>
-            <if test="spaceId != null">
-                AND sb.space_id = #{spaceId}
+            <if test="event != null and event.trim() != ''">
+                AND event LIKE #{event}
             </if>
         </where>
         <if test="orderField != null and orderField.trim() != ''">
             ORDER BY
             <if test="orderField == 'id'">
-                id
+                sb.id
             </if>
             <if test="orderField == 'space'">
-                space
+                sb.space
             </if>
             <if test="orderField == 'create_date'">
-                create_date
+                sb.create_date
             </if>
             <if test="order != 'desc'">
                 ASC

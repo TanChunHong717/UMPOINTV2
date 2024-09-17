@@ -15,14 +15,14 @@
 
     <select id="getOverlapEvent" resultType="Long">
         SELECT DISTINCT e2.booking_id
-        FROM spc_upcoming_event e1
-        JOIN spc_upcoming_event e2
+        FROM spc_event e1
+        JOIN spc_event e2
             ON e1.id != e2.id
             AND e1.space_id = e2.space_id
             AND (
                 (e1.start_time &lt; e2.end_time AND e1.end_time &gt; e2.start_time)
             )
-        WHERE e1.closure_id = #{closureId} AND e2.status = 0;
+        WHERE e1.closure_id = #{closureId} AND e2.type = 0;
     </select>
 
 </mapper>

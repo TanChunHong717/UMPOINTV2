@@ -67,10 +67,10 @@ public class SpcClosureServiceImpl extends CrudServiceImpl<SpcClosureDao, SpcClo
 
     @Transactional(rollbackFor = Exception.class)
     public void delete(Long id) {
+        spcEventService.deleteByClosureId(id);
+
         Long[] ids = {id};
         super.delete(ids);
-
-        spcEventService.deleteByClosureId(id);
     }
 
     private void rejectOverlapBooking(Long closureId) {

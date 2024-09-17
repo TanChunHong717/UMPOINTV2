@@ -44,7 +44,7 @@ public class AccBookingServiceImpl extends CrudServiceImpl<AccBookingDao, AccBoo
 
     @Override
     public PageData<AccBookingDTO> page(Map<String, Object> params) {
-        paramsToLike(params, "accommodation");
+        paramsToLike(params, "event");
 
         IPage<AccBookingEntity> page = getPage(params, "create_date", false);
         List<AccBookingEntity> list = baseDao.getList(params);

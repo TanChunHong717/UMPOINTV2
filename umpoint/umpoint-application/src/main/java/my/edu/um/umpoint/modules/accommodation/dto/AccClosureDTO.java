@@ -1,5 +1,6 @@
 package my.edu.um.umpoint.modules.accommodation.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import jakarta.validation.constraints.NotNull;
@@ -36,9 +37,11 @@ public class AccClosureDTO implements Serializable {
 
 	@SchemaProperty(name = "Start day of booking")
 	@NotNull(groups = {DefaultGroup.class})
+	@JsonFormat(pattern="yyyy-MM-dd")
 	private Date startDay;
 
 	@SchemaProperty(name = "End day of booking")
 	@NotNull(groups = {DefaultGroup.class})
+	@JsonFormat(pattern="yyyy-MM-dd")
 	private Date endDay;
 }

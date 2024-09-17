@@ -90,20 +90,23 @@
             <if test="status != null">
                 AND ab.status = #{status}
             </if>
-            <if test="accommodation != null and accommodation.trim() != ''">
-                AND accommodation LIKE #{accommodation}
+            <if test="event != null and event.trim() != ''">
+                AND ab.event LIKE #{event}
             </if>
         </where>
         <if test="orderField != null and orderField.trim() != ''">
             ORDER BY
             <if test="orderField == 'id'">
-                id
+                ab.id
             </if>
             <if test="orderField == 'accommodation'">
                 accommodation
             </if>
             <if test="orderField == 'create_date'">
-                create_date
+                ab.create_date
+            </if>
+            <if test="orderField == 'payment_amount'">
+                ab.payment_amount
             </if>
             <if test="order != 'desc'">
                 ASC

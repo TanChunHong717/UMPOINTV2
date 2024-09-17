@@ -26,6 +26,7 @@ public class SpcCategoryServiceImpl extends CrudServiceImpl<SpcCategoryDao, SpcC
 
     @Override
     public QueryWrapper<SpcCategoryEntity> getWrapper(Map<String, Object> params){
+        paramsToLike(params, "name");
         String name = (String)params.get("name");
 
         QueryWrapper<SpcCategoryEntity> wrapper = new QueryWrapper<>();

@@ -26,6 +26,7 @@ public class SpcTagServiceImpl extends CrudServiceImpl<SpcTagDao, SpcTagEntity, 
 
     @Override
     public QueryWrapper<SpcTagEntity> getWrapper(Map<String, Object> params){
+        paramsToLike(params, "name");
         String name = (String)params.get("name");
 
         QueryWrapper<SpcTagEntity> wrapper = new QueryWrapper<>();

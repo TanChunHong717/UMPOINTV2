@@ -49,7 +49,6 @@ public class SpcClosureController {
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
         validateEventTime(dto);
 
-
         spcClosureService.save(dto);
 
         return new Result();
@@ -68,11 +67,11 @@ public class SpcClosureController {
         return new Result();
     }
 
-    @DeleteMapping
+    @DeleteMapping("{id}")
     @Operation(summary = "Delete")
     @LogOperation("Delete")
     @RequiresPermissions("space:closure:delete")
-    public Result delete(@RequestBody Long id){
+    public Result delete(@PathVariable("id")  Long id){
         AssertUtils.isNull(id);
 
         spcClosureService.delete(id);
@@ -81,10 +80,10 @@ public class SpcClosureController {
     }
 
     private static void validateEventTime(SpcClosureDTO dto) {
-        LocalDateTime startTime = DateUtils.convertDateTimeToLocalDateTime(dto.getStartDay(), dto.getEndTime());
+        LocalDateTime startTime = DateUtils.convertDateTimeToLocalDateTime(dto.getStartDay(), dto.getStartTime());
         LocalDateTime endTime = DateUtils.convertDateTimeToLocalDateTime(dto.getStartDay(), dto.getEndTime());
 
-        if (!startTime.isBefore(endTime) || !startTime.isBefore(LocalDateTime.now())){
+        if (!startTime.isBefore(endTime) || startTime.isBefore(LocalDateTime.now())){
             throw new RenException("Invalid start time or end time");
         }
     }

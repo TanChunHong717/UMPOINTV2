@@ -26,6 +26,7 @@ public class SvcCategoryServiceImpl extends CrudServiceImpl<SvcCategoryDao, SvcC
 
     @Override
     public QueryWrapper<SvcCategoryEntity> getWrapper(Map<String, Object> params){
+        paramsToLike(params, "name");
         String name = (String)params.get("name");
 
         QueryWrapper<SvcCategoryEntity> wrapper = new QueryWrapper<>();

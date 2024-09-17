@@ -18,15 +18,16 @@
         </el-select>
       </el-form-item>
       <el-form-item>
+        <el-input v-model="state.dataForm.event" placeholder="Event" clearable></el-input>
+      </el-form-item>
+      <el-form-item>
         <el-button @click="state.getDataList()">Search</el-button>
       </el-form-item>
-
     </el-form>
     <el-table v-loading="state.dataListLoading" :data="state.dataList" border @sort-change="state.dataListSortChangeHandle" style="width: 100%">
       <el-table-column type="expand">
         <template #default="props">
           <div class="expand-row" v-if="props.row.accPaymentDTOList && props.row.accPaymentDTOList.length > 0">
-            <div class="event-description">Event: {{props.row.event }}</div>
             <el-table :data="props.row.accPaymentDTOList">
               <el-table-column prop="id" label="ID" header-align="center" align="center" sortable="custom"></el-table-column>
               <el-table-column prop="status" label="Status" header-align="center" align="center">
@@ -42,7 +43,7 @@
               <el-table-column prop="date" label="Payment date" header-align="center" align="center" sortable="custom"></el-table-column>
               <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="150">
                 <template v-slot="scope">
-                  <el-button v-if="state.hasPermission('booking:payment:update')" type="primary" link @click="refundHandle(scope.row.id)">Refund</el-button>
+                  <el-button v-if="state.hasPermission('payment:accommodation:update')" type="primary" link @click="refundHandle(scope.row.id)">Refund</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -51,6 +52,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="id" label="ID" header-align="center" align="center" sortable="custom"></el-table-column>
+      <el-table-column prop="event" label="Event" header-align="center" align="center" width="200"></el-table-column>
       <el-table-column label="Status" header-align="center" align="center" width="100">
         <template v-slot="scope">
           <el-tag v-if="scope.row.status == 0" type="danger">Pending</el-tag>
@@ -71,8 +73,8 @@
       <el-table-column prop="createDate" label="Create date" header-align="center" align="center" sortable="custom" width="150"></el-table-column>
       <el-table-column label="Actions" fixed="right" header-align="center" align="left" width="85">
         <template v-slot="scope">
-          <el-button v-if="state.hasPermission('booking:accommodation:update')" type="primary" link @click="approveOrRejectHandle(scope.row.id, true)">Approve</el-button>
-          <el-button style="margin-left: 0" v-if="state.hasPermission('booking:accommodation:update')" type="primary" link @click="approveOrRejectHandle(scope.row.id, false)">Reject</el-button>
+          <el-button v-if="state.hasPermission('accommodation:booking:update')" type="primary" link @click="approveOrRejectHandle(scope.row.id, true)">Approve</el-button>
+          <el-button style="margin-left: 0" v-if="state.hasPermission('accommodation:booking:update')" type="primary" link @click="approveOrRejectHandle(scope.row.id, false)">Reject</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -85,14 +87,17 @@ import useView from "@/hooks/useView";
 import { reactive, toRefs } from "vue";
 import {ElMessage, ElMessageBox} from "element-plus";
 import baseService from "@/service/baseService";
+import {useRoute} from "vue-router";
 
+const route = useRoute();
 const view = reactive({
-  getDataListURL: "/booking/accommodation/page",
+  getDataListURL: "/accommodation/booking/page",
   getDataListIsPage: true,
-  exportURL: "/booking/accommodation/export",
+  exportURL: "/accommodation/booking/export",
   dataForm: {
-    id: null,
-    status: null
+    id: route.query.id? route.query.id: null,
+    status: null,
+    event: ''
   }
 });
 
@@ -106,7 +111,7 @@ const approveOrRejectHandle = (id: number, isApprove: boolean) => {
   })
     .then(() => {
       baseService
-        .put("/booking/accommodation/" + (isApprove? "approve": "reject") + "/" + id)
+        .put("accommodation/booking/" + (isApprove? "approve": "reject") + "/" + id)
         .then((res) => {
           state.getDataList();
           ElMessage.success({
@@ -126,7 +131,7 @@ const refundHandle = (id: number) => {
   })
     .then(() => {
       baseService
-        .put("/booking/payment/accommodation/refund/" + id)
+        .put("/payment/accommodation/refund/" + id)
         .then((res) => {
           state.getDataList();
           ElMessage.success({
