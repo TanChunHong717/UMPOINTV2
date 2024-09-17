@@ -4,6 +4,8 @@ import my.edu.um.umpoint.common.dao.BaseDao;
 import my.edu.um.umpoint.modules.accommodation.entity.AccEventEntity;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * Accommodation Occupied Event
  *
@@ -12,5 +14,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface AccEventDao extends BaseDao<AccEventEntity> {
-	
+    List<Long> getOverlapEvent(Long closureId);
 }

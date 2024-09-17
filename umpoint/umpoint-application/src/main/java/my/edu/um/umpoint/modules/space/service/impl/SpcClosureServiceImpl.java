@@ -3,8 +3,10 @@ package my.edu.um.umpoint.modules.space.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
 import my.edu.um.umpoint.modules.space.dao.SpcClosureDao;
+import my.edu.um.umpoint.modules.space.dao.SpcEventDao;
 import my.edu.um.umpoint.modules.space.dto.SpcClosureDTO;
 import my.edu.um.umpoint.modules.space.entity.SpcClosureEntity;
+import my.edu.um.umpoint.modules.space.service.SpcBookingService;
 import my.edu.um.umpoint.modules.space.service.SpcClosureService;
 import cn.hutool.core.util.StrUtil;
 import my.edu.um.umpoint.modules.space.service.SpcEventService;
@@ -26,6 +28,12 @@ public class SpcClosureServiceImpl extends CrudServiceImpl<SpcClosureDao, SpcClo
     @Autowired
     private SpcEventService spcEventService;
 
+    @Autowired
+    private SpcBookingService spcBookingService;
+
+    @Autowired
+    private SpcEventDao spcEventDao;
+
     @Override
     public QueryWrapper<SpcClosureEntity> getWrapper(Map<String, Object> params){
         String id = (String)params.get("id");
@@ -42,6 +50,8 @@ public class SpcClosureServiceImpl extends CrudServiceImpl<SpcClosureDao, SpcClo
         super.save(dto);
 
         spcEventService.addEvent(dto);
+
+        rejectOverlapBooking(dto.getId());
     }
 
     @Override
@@ -51,6 +61,8 @@ public class SpcClosureServiceImpl extends CrudServiceImpl<SpcClosureDao, SpcClo
 
         spcEventService.deleteByClosureId(dto.getId());
         spcEventService.addEvent(dto);
+
+        rejectOverlapBooking(dto.getId());
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -59,5 +71,9 @@ public class SpcClosureServiceImpl extends CrudServiceImpl<SpcClosureDao, SpcClo
         super.delete(ids);
 
         spcEventService.deleteByClosureId(id);
+    }
+
+    private void rejectOverlapBooking(Long closureId) {
+        spcEventDao.getOverlapEvent(closureId).forEach(spcBookingService::reject);
     }
 }

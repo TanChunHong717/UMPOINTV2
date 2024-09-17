@@ -4,6 +4,8 @@ import my.edu.um.umpoint.common.dao.BaseDao;
 import my.edu.um.umpoint.modules.space.entity.SpcEventEntity;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * Space Occupied Event
  *
@@ -12,5 +14,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface SpcEventDao extends BaseDao<SpcEventEntity> {
-	
+	List<Long> getOverlapEvent(Long closureId);
 }

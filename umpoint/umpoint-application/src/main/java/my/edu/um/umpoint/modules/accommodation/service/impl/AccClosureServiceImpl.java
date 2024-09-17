@@ -3,8 +3,10 @@ package my.edu.um.umpoint.modules.accommodation.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
 import my.edu.um.umpoint.modules.accommodation.dao.AccClosureDao;
+import my.edu.um.umpoint.modules.accommodation.dao.AccEventDao;
 import my.edu.um.umpoint.modules.accommodation.dto.AccClosureDTO;
 import my.edu.um.umpoint.modules.accommodation.entity.AccClosureEntity;
+import my.edu.um.umpoint.modules.accommodation.service.AccBookingService;
 import my.edu.um.umpoint.modules.accommodation.service.AccClosureService;
 import cn.hutool.core.util.StrUtil;
 import my.edu.um.umpoint.modules.accommodation.service.AccEventService;
@@ -26,6 +28,12 @@ public class AccClosureServiceImpl extends CrudServiceImpl<AccClosureDao, AccClo
     @Autowired
     private AccEventService accEventService;
 
+    @Autowired
+    private AccBookingService accBookingService;
+
+    @Autowired
+    private AccEventDao accEventDao;
+
     @Override
     public QueryWrapper<AccClosureEntity> getWrapper(Map<String, Object> params){
         String id = (String)params.get("id");
@@ -42,6 +50,8 @@ public class AccClosureServiceImpl extends CrudServiceImpl<AccClosureDao, AccClo
         super.save(dto);
 
         accEventService.addEvent(dto);
+
+        rejectOverlapBooking(dto.getId());
     }
 
     @Override
@@ -51,6 +61,8 @@ public class AccClosureServiceImpl extends CrudServiceImpl<AccClosureDao, AccClo
 
         accEventService.deleteByClosureId(dto.getId());
         accEventService.addEvent(dto);
+
+        rejectOverlapBooking(dto.getId());
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -59,5 +71,9 @@ public class AccClosureServiceImpl extends CrudServiceImpl<AccClosureDao, AccClo
         super.delete(ids);
 
         accEventService.deleteByClosureId(id);
+    }
+
+    private void rejectOverlapBooking(Long closureId) {
+        accEventDao.getOverlapEvent(closureId).forEach(accBookingService::reject);
     }
 }
