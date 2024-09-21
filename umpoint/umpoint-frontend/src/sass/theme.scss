@@ -1,0 +1,25 @@
+// Main UM Theme colour: #192f59
+@forward "element-plus/theme-chalk/src/common/var.scss" with (
+    $colors: (
+        "primary": (
+            // Supplemental colour for buttons
+            "base": #19853a,
+        ),
+        "success": (
+            "base": #78d738,
+        ),
+        "warning": (
+            "base": #f29d19,
+        ),
+        "danger": (
+            "base": #dd3e22,
+        ),
+        "error": (
+            "base": #dd3e22,
+        ),
+        "info": (
+            // near UM Theme colour
+            "base": #2a3f92,
+        ),
+    )
+);
