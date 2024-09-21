@@ -40,7 +40,7 @@
             <if test="orderField == 'name'">
                 name
             </if>
-            <if test="orderField == 'space_count'">
+            <if test="orderField == 'accommodation_count'">
                 accommodation_count
             </if>
             <if test="order != 'desc'">

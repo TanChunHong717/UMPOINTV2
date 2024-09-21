@@ -53,7 +53,7 @@
         SELECT
             ab.id,
             ab.status,
-            ab.space_id,
+            ab.accommodation_id,
             ab.admin_id,
             ab.user_id,
             ab.worker_id,
@@ -76,7 +76,7 @@
             p.date,
             pm.method
         FROM acc_booking ab
-        LEFT JOIN acc_accommodation a ON ab.space_id = a.id
+        LEFT JOIN acc_accommodation a ON ab.accommodation_id = a.id
         LEFT JOIN sys_user ad ON ab.admin_id = ad.id
         LEFT JOIN cli_user c ON ab.user_id = c.id
         LEFT JOIN sys_user w ON ab.worker_id = w.id
@@ -120,7 +120,7 @@
         SELECT
             ab.id,
             ab.status,
-            ab.space_id,
+            ab.accommodation_id,
             ab.admin_id,
             ab.user_id,
             ab.worker_id,
@@ -143,7 +143,7 @@
             p.date,
             pm.method
         FROM acc_booking ab
-        LEFT JOIN acc_accommodation a ON ab.space_id = a.id
+        LEFT JOIN acc_accommodation a ON ab.accommodation_id = a.id
         LEFT JOIN sys_user ad ON ab.admin_id = ad.id
         LEFT JOIN cli_user c ON ab.user_id = c.id
         LEFT JOIN sys_user w ON ab.worker_id = w.id

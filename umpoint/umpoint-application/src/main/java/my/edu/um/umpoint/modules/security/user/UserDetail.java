@@ -12,17 +12,25 @@ public class UserDetail implements Serializable {
     @Serial
     private static final long serialVersionUID = 8470528520565069794L;
 
+    //General
     private Long id;
     private String username;
+    private String password;
+    private String mobile;
+    private String email;
+
+    //Admin
     private String realName;
     private String headUrl;
     private Integer gender;
-    private String email;
-    private String mobile;
     private Long deptId;
-    private String password;
     private Integer status;
     private Integer superAdmin;
-
     private List<Long> deptIdList;
+
+    //Client
+    private String type;
+    private Integer spacePermission;
+    private Integer servicePermission;
+    private Integer accommodationPermission;
 }

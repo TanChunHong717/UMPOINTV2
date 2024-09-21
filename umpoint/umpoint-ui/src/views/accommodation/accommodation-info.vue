@@ -110,7 +110,7 @@
               </el-col>
             </el-row>
             <el-row style="margin-bottom: 14px">
-              The accommodation will be open for booking {{ accommodation.accBookingRuleDTO.openDaysPriorBooking }} day(s) prior the event and will be closed {{  accommodation.accBookingRuleDTO.closeDaysAfterBooking }} day(s) before space booking date.
+              The accommodation will be open for booking {{ accommodation.accBookingRuleDTO.openDaysPriorBooking }} day(s) prior the event and will be closed {{  accommodation.accBookingRuleDTO.closeDaysAfterBooking }} day(s) before accommodation booking date.
             </el-row>
             <el-row style="margin-bottom: 14px">
               <el-col :span="12">Maximum reservation days: {{ accommodation.accBookingRuleDTO.maxReservationDays }}</el-col>
@@ -149,6 +149,8 @@ import {useRoute} from "vue-router";
 import useView from "@/hooks/useView";
 import router from "@/router";
 import {ElMessage} from "element-plus";
+import 'vue-cal/dist/vuecal.css';
+import VueCal from 'vue-cal';
 import UpdateBookingRule from "@/views/accommodation/booking-rule-add-or-update.vue";
 import UpdateClosure from "@/views/accommodation/closure-add-or-update.vue";
 import {formatDescription, getMondayAndSunday} from "@/utils/custom-utils";
@@ -202,7 +204,9 @@ const onViewChange = (object: any) => {
 
 const generateWeekendAndHoliday = (startDate: Date, endDate: Date) => {
   const holidayObject: Record<number, any> = {};
-  const holidayClass = (space.value.spcBookingRuleDTO.holidayAvailable == 1)? 'close': 'info';
+  const holidayClass = (
+    accommodation.value.accBookingRuleDTO &&
+    accommodation.value.accBookingRuleDTO.holidayAvailable == 1)? 'close': 'info';
 
   holidays.value.forEach((holiday: any) => {
     const holidayDate = new Date(holiday.date.iso);
@@ -213,7 +217,7 @@ const generateWeekendAndHoliday = (startDate: Date, endDate: Date) => {
     }
   });
 
-  if (space.value.spcBookingRuleDTO.holidayAvailable == 1) {
+  if (accommodation.value.accBookingRuleDTO && accommodation.value.accBookingRuleDTO.holidayAvailable == 1) {
     weekendDays.forEach((day) => {
       if (!holidayObject[day]) {
         holidayObject[day] = { from:0, to:24*60, label: "Weekend", class: 'close' };
@@ -225,9 +229,9 @@ const generateWeekendAndHoliday = (startDate: Date, endDate: Date) => {
 }
 
 const getEvent = async (startDate: Date, endDate: Date) => {
-  baseService.get("/space/event",
+  baseService.get("/accommodation/event",
     {
-      spaceId: space.value.id,
+      accommodationId: accommodation.value.id,
       startTime: formatDateToDateTimeStr(startDate),
       endTime: formatDateToDateTimeStr(endDate)
     }

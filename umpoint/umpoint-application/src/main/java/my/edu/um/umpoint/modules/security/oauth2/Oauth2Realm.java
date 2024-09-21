@@ -41,6 +41,7 @@ public class Oauth2Realm extends AuthorizingRealm {
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
+        //Todo modify to allow log in with cli token
         String accessToken = (String) token.getPrincipal();
 
         SysUserTokenEntity tokenEntity = shiroService.getByToken(accessToken);

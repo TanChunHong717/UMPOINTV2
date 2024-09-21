@@ -52,8 +52,8 @@
         </template>
       </el-table-column>
       <el-table-column prop="id" label="ID" header-align="center" align="center" sortable="custom"></el-table-column>
-      <el-table-column prop="event" label="Event" header-align="center" align="center" width="200"></el-table-column>
-      <el-table-column label="Status" header-align="center" align="center" width="100">
+      <el-table-column prop="event" label="Event" header-align="center" align="center" width="180"></el-table-column>
+      <el-table-column label="Status" header-align="center" align="center" width="80">
         <template v-slot="scope">
           <el-tag v-if="scope.row.status == 0" type="danger">Pending</el-tag>
           <el-tag v-if="scope.row.status == 1" type="info">Reject</el-tag>
@@ -62,9 +62,9 @@
           <el-tag v-if="scope.row.status == 3" type="warning">Cancel</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="space" label="Space" header-align="center" align="center" sortable="custom" width="175"></el-table-column>
+      <el-table-column prop="space" label="Space" header-align="center" align="center" sortable="custom" width="120"></el-table-column>
       <el-table-column prop="username" label="User" header-align="center" align="center"></el-table-column>
-      <el-table-column prop="paymentAmount" label="Amount(RM)" header-align="center" align="center" sortable="custom" width="135"></el-table-column>
+      <el-table-column prop="paymentAmount" label="Amount(RM)" header-align="center" align="center" sortable="custom" width="150"></el-table-column>
       <el-table-column label="Booking Period" header-align="center" align="center" width="200">
         <template v-slot="scope">
           {{scope.row.startDay.split(' ')[0]}} to {{scope.row.endDay.split(' ')[0]}}<br>
