@@ -16,7 +16,7 @@
 
         <el-table>
             <el-table-column type="index" label="#" />
-            <el-table-column prop="invoiceno" label="Invoice No." width="180" />
+            <el-table-column prop="invoiceno" label="Invoice No." width="120" />
             <el-table-column prop="name" label="Facilty/Event" />
 
             <template
@@ -38,17 +38,17 @@
                 <el-table-column
                     prop="bookingDate"
                     label="Booking Date"
-                    width="180"
+                    width="150"
                 />
                 <el-table-column
                     prop="eventDate"
                     label="Event Date"
-                    width="180"
+                    width="150"
                 />
                 <el-table-column
                     prop="action"
                     label="Action"
-                    width="300"
+                    width="100"
                 />
             </template>
 
