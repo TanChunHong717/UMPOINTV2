@@ -135,6 +135,8 @@ WHERE start_time > NOW();
 
 TRUNCATE TABLE spc_upcoming_event;
 
+DELIMITER |
+
 CREATE TRIGGER trg_spc_event_insert
     AFTER INSERT ON spc_event
     FOR EACH ROW
@@ -145,6 +147,8 @@ BEGIN
 END IF;
 END;
 
+|
+
 CREATE TRIGGER trg_spc_event_delete
     AFTER DELETE ON spc_event
     FOR EACH ROW
@@ -152,7 +156,11 @@ BEGIN
     DELETE FROM spc_upcoming_event WHERE id = OLD.id;
 END;
 
+|
+
 SET GLOBAL event_scheduler = ON;
+
+|
 
 CREATE EVENT delete_past_upcoming_events
 ON SCHEDULE EVERY 1 DAY
@@ -161,3 +169,5 @@ BEGIN
     DELETE FROM spc_upcoming_event
     WHERE end_time < NOW();
 END;
+
+|
