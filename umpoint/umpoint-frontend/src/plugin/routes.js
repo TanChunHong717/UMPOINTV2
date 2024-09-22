@@ -55,6 +55,14 @@ export default [
             title: "Chat History",
         },
     },
+    {
+        path: "/test2",
+        name: "test",
+        component: () => import("@/views/test.vue"),
+        meta: {
+            title: "Chat History",
+        },
+    },
 
     // catch all at end of page
     {

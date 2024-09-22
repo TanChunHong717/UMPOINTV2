@@ -1,13 +1,20 @@
-import axios from 'axios';
-
-const api = axios.create({
-    baseURL: import.meta.env.BOOKING_API_URL,
-    timeout: 1000,
-    headers: {'X-Custom-Header': 'foobar'}
-})
+import api from '@/utils/api';
 
 function getFacilityInformation(facilityID) {
-    return {id:facilityID, name:'Chancellor Room', faculty:'Faculty of Engineering'};
+    return {
+        id: facilityID,
+        name: "Chancellor Room",
+        faculty: "Faculty of Engineering",
+        spcBookingRuleDTO: {
+            startTime: "08:00",
+            endTime: "18:00",
+            holidayAvailable: 1,
+            open_days_prior_booking: 60,
+            close_days_after_booking: 5,
+            max_reservation_days: 30,
+            min_booking_hours: 1
+        }
+    };
 
     // return api.get(`/facility/${facilityID}`);
 }
@@ -15,8 +22,8 @@ function getFacilityInformation(facilityID) {
 function getFacilityAvailability(facilityID, date) {
     return api.get(`/facility/${facilityID}/availability`, {
         data: {
-            date: date
-        }
+            date: date,
+        },
     });
 }
 
@@ -26,9 +33,4 @@ function validateBooking(data) {
     });
 }
 
-export {
-    getFacilityInformation,
-    getFacilityAvailability,
-    validateBooking,
-    
-};
+export { getFacilityInformation, getFacilityAvailability, validateBooking };

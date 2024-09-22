@@ -29,6 +29,7 @@
         <KeepAlive>
             <component
                 :is="formsPage[currentStep]"
+                :facilityInfo="facilityInfo"
                 :eventInfo="eventInfoDisplay"
                 :pricingDetails="pricingDetails"
                 @nextStep="nextStep"
@@ -109,6 +110,7 @@ const eventInfoDisplay = computed(() => {
     };
 });
 
+// form stepping
 function previousStep() {
     currentStep.value--;
 }
