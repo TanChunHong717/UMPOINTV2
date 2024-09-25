@@ -2,73 +2,133 @@
 import { VueCalEvent } from "@/types/interface";
 import {
     ref,
+    Ref,
+    computed,
+    shallowRef,
+    ShallowRef,
     onActivated,
     onMounted,
-    shallowRef,
-    computed,
-    ShallowRef,
 } from "vue";
 import "vue-cal/dist/vuecal.css";
 import VueCal from "vue-cal";
+import { ElMessage } from "element-plus";
 import {
     formatDateToTimezoneDateStr,
-    addDays,
     formatDateToTimezoneTimeStr,
+    addDays,
 } from "@/utils/date.js";
 import baseService from "@/utils/api.js";
 
 // form data
-const formData: any = defineModel("formData");
+const formData: Ref<{
+    eventName: string | null;
+    numberOfParticipants: number;
+    additionalTechnicians: number;
+    startDate: Date | null;
+    endDate: Date | null;
+    isTimeSet: [boolean, boolean];
+}> = defineModel("formData");
 const emit = defineEmits(["validateForm"]);
-// to store current event
+// store curent event for calendar
 const currentEvent = computed<VueCalEvent>({
     get() {
         if (
-            !(
-                formData.value.date &&
-                formData.value.startTime &&
-                formData.value.endTime
-            )
+            formData.value.isTimeSet.every((bool) => bool) &&
+            formData.value.startDate &&
+            formData.value.endDate
         )
-            return null;
-
-        // reconstruct date object from form
-        let startDateObj = new Date(formData.value.date[0]);
-        let endDateObj = new Date(formData.value.date[1]);
-        startDateObj.setHours(
-            Number(formData.value.startTime.split(":")[0]),
-            Number(formData.value.startTime.split(":")[1]),
-            0
-        );
-        endDateObj.setHours(
-            Number(formData.value.endTime.split(":")[0]),
-            Number(formData.value.endTime.split(":")[1]),
-            0
-        );
-
-        return {
-            start: startDateObj,
-            end: endDateObj,
-            class: "selecting",
-        };
+            return {
+                start: formData.value.startDate,
+                end: formData.value.endDate,
+                class: "selecting",
+            };
+        else return null;
     },
     set(eventDTO) {
-        // save data to formData
-        // set date without time
-        let startDate = formatDateToTimezoneDateStr(eventDTO.start);
-        let endDate = formatDateToTimezoneDateStr(eventDTO.end);
-        formData.value.date = [startDate, endDate];
+        if (!eventDTO || !eventDTO.start || !eventDTO.end) return;
 
-        // set time without seconds
-        let startTime = formatDateToTimezoneTimeStr(eventDTO.start).slice(
-            0,
-            -3
-        );
-        let endTime = formatDateToTimezoneTimeStr(eventDTO.end).slice(0, -3);
-        formData.value.startTime = startTime;
-        formData.value.endTime = endTime;
+        formData.value.isTimeSet = [true, true];
+        // two Date object given
+        formData.value.startDate = eventDTO.start;
+        formData.value.endDate = eventDTO.end;
     },
 });
+
+/* COMPUTED FOR INPUT ELEMENTS */
+// prepare computed for input element
+function sameDay(d1: Date, d2: Date) {
+    return (
+        d1.getFullYear() === d2.getFullYear() &&
+        d1.getMonth() === d2.getMonth() &&
+        d1.getDate() === d2.getDate()
+    );
+}
+const dateInput = computed({
+    get() {
+        return formData.value.startDate && formData.value.endDate
+            ? [formData.value.startDate, formData.value.endDate]
+            : [];
+    },
+    set(value: Date[]) {
+        formData.value.startDate = value[0];
+        formData.value.endDate = value[1];
+    },
+});
+const startTimeInput = computed({
+    get() {
+        return formData.value.startDate && formData.value.isTimeSet[0]
+            ? formatDateToTimezoneTimeStr(formData.value.startDate).slice(0, -3)
+            : null;
+    },
+    set(value: string) {
+        let time = value.split(":");
+        try {
+            formData.value.startDate.setHours(
+                Number(time[0]),
+                Number(time[1]),
+                0
+            );
+            formData.value.isTimeSet[0] = true;
+        } catch (e) {
+            console.error(e);
+        }
+    },
+});
+const startTimeMaxTime = () => {
+    // only limit for same day booking
+    if (!formData.value.startDate || !formData.value.endDate) return "";
+    if (!sameDay(formData.value.startDate, formData.value.endDate)) return "";
+    // only give max time if end time is chosen
+    if (!formData.value.isTimeSet[1]) return "";
+
+    return formatDateToTimezoneTimeStr(formData.value.endDate).slice(0, -3);
+};
+const endTimeInput = computed({
+    get() {
+        return formData.value.endDate && formData.value.isTimeSet[1]
+            ? formatDateToTimezoneTimeStr(formData.value.endDate).slice(0, -3)
+            : null;
+    },
+    set(value: string) {
+        let time = value.split(":");
+        try {
+            formData.value.endDate.setHours(Number(time[0]), Number(time[1]));
+            formData.value.isTimeSet[1] = true;
+        } catch (e) {
+            console.error(e);
+        }
+    },
+});
+const endTimeMinTime = () => {
+    // only limit for same day booking
+    if (!formData.value.startDate || !formData.value.endDate) return "";
+    if (!sameDay(formData.value.startDate, formData.value.endDate)) return "";
+    // only give min time if start time is chosen
+    if (!formData.value.isTimeSet[0]) return "";
+
+    return formatDateToTimezoneTimeStr(formData.value.startDate).slice(0, -3);
+};
+/* END COMPUTED FOR INPUT ELEMENTS */
 
 // ensure using UTC+8 date (might show wrong time if not using),
 const today = new Date(
@@ -90,16 +150,18 @@ const startTime = ref();
 const endTime = ref();
 const weekendDays = [6, 7];
 
+const updateDisplayEvents = ref(0);
 const displayedEvents = computed<VueCalEvent[]>(() => {
+    updateDisplayEvents.value;
     if (!currentEvent.value) return bookedEvents.value;
     return bookedEvents.value.concat([currentEvent.value]);
 });
 
+/* INITIALISE VUE-CAL */
 const initialize = () => {
     //getHoliday(today.getFullYear());
     initializeTimeTable();
 };
-
 const getHoliday = (year: number) => {
     baseService
         .get(
@@ -111,7 +173,6 @@ const getHoliday = (year: number) => {
             initializeTimeTable();
         });
 };
-
 const initializeTimeTable = () => {
     const startTimeArray = space.value.spcBookingRuleDTO.startTime.split(
         ":"
@@ -126,20 +187,16 @@ const initializeTimeTable = () => {
 
     onViewChange(getMondayAndSunday(today));
 };
-
 const getMondayAndSunday = (currentDate: Date) => {
     const currentDay = currentDate.getDay();
     const dayDifferenceFromMonday = currentDay === 0 ? 6 : currentDay - 1;
-
     const monday = new Date(currentDate);
     monday.setDate(currentDate.getDate() - dayDifferenceFromMonday);
-
     const sunday = new Date(monday);
     sunday.setDate(monday.getDate() + 6);
 
     return { startDate: monday, endDate: sunday };
 };
-
 const onViewChange = (object: any) => {
     if (object.view == "month") return;
 
@@ -150,7 +207,6 @@ const onViewChange = (object: any) => {
 
     updateEvents(object.startDate, object.endDate);
 };
-
 const generateWeekendAndHoliday = (startDate: Date, endDate: Date) => {
     const holidayObject: Record<number, any> = {};
     const holidayClass =
@@ -207,8 +263,8 @@ const updateEvents = async (startDate: Date, endDate: Date) => {
             // TODO: Remove fake data
             res.data = [
                 {
-                    startTime: new Date(2024, 8, 23, 9, 0),
-                    endTime: new Date(2024, 8, 25, 9, 0),
+                    startTime: new Date(2024, 8, 29, 9, 0),
+                    endTime: new Date(2024, 8, 30, 9, 0),
                     title: "Upcoming event",
                     type: 0,
                     bookingId: 1,
@@ -237,28 +293,154 @@ const updateEvents = async (startDate: Date, endDate: Date) => {
         });
 };
 
-const onEventDragCreate = (event: VueCalEvent) => {
-    // only allow one event to be booked
-    currentEvent.value = event;
+const onCalendarDragCreate = (event: VueCalEvent) => {
+    validateBeforeSetNewEvent(event);
 };
-const onEventChange = ({
+const onCalendarEventChange = ({
     event,
 }: {
     event: VueCalEvent;
     originalEvent: VueCalEvent;
 }) => {
-    // only allow one event to be booked
-    currentEvent.value = event;
+    validateBeforeSetNewEvent(event);
 };
+/* END INITIALISE VUE-CAL */
 
+/** VALIDATORS **/
 const notAllowedDates = (date: Date) => {
     return date <= minDate.value || date > maxDate.value;
 };
+const validateDate = (formData, callback: Function) => {
+    if (!formData.startDate || !formData.endDate) {
+        callback(new Error("Please select the date"));
+        return;
+    }
+    if (formData.startDate > formData.endDate) {
+        callback(new Error("End date must be after start date"));
+        return;
+    }
+    if (formData.startDate < today) {
+        callback(new Error("Start date must be after today"));
+        return;
+    }
+    if (formData.isTimeSet.every((bool) => bool)) {
+        try {
+            validateBookingTimeRange(formData.startDate, formData.endDate);
+            callback();
+        } catch (e) {
+            callback(e);
+            return;
+        }
+    }
+};
+const validateTime = (formData, callback: Function) => {
+    if (!formData.isTimeSet.every((bool: boolean) => bool)) {
+        callback(new Error("Please select time range"));
+        return;
+    }
+    if (
+        sameDay(formData.startDate, formData.endDate) &&
+        formData.startDate > formData.endDate
+    ) {
+        callback(new Error("End time must be after start time"));
+        return;
+    }
+    callback();
+};
+const validateBookingTimeRange = (startDate: Date, endDate: Date) => {
+    if (!startDate) startDate = formData.value.startDate;
+    if (!endDate) endDate = formData.value.endDate;
+
+    if (!startDate || !endDate) {
+        throw new Error("Please select a date range");
+    }
+
+    // check if booking on holiday
+    for (let holiday of holidays.value) {
+        if (
+            startDate <= new Date(holiday.date.iso) &&
+            endDate >= new Date(holiday.date.iso)
+        ) {
+            throw new Error("Booking on holiday is not allowed");
+        }
+    }
+    // check if booking on weekend
+    if (!space.value.spcBookingRuleDTO.allowWeekend) {
+        if (
+            startDate.getDay() == 0 ||
+            startDate.getDay() == 6 ||
+            endDate.getDay() == 0 ||
+            endDate.getDay() == 6
+        ) {
+            throw new Error("Booking on weekend is not allowed");
+        }
+    }
+    // check if booking overlapped
+    for (let bookedEvent of bookedEvents.value) {
+        if (
+            (startDate >= bookedEvent.start && startDate < bookedEvent.end) ||
+            (endDate > bookedEvent.start && endDate <= bookedEvent.end) ||
+            (startDate <= bookedEvent.start && endDate >= bookedEvent.end)
+        ) {
+            throw new Error("Booking overlapped");
+        }
+    }
+    return true;
+};
+function validateBeforeSetNewEvent(event: VueCalEvent) {
+    try {
+        validateBookingTimeRange(event.start, event.end);
+        // only allow one event to be booked
+        currentEvent.value = event;
+        return true;
+    } catch (e) {
+        // trigger display event list update
+        updateDisplayEvents.value++;
+        return false;
+    }
+}
+defineExpose({
+    validateDate,
+    validateTime,
+});
+/** END VALIDATORS **/
 
 const setTomorrow = () => {
-    formData.value.date = [addDays(today, 1), addDays(today, 1)];
-    // trigger validation to clear error on this input
-    emit("validateForm", "bookingDate");
+    let originalStartDate = formData.value.startDate;
+    let originalEndDate = formData.value.endDate;
+    let originalTimeSet = formData.value.isTimeSet;
+
+    let newStartDate = addDays(today, 1);
+    let newEndDate = addDays(today, 1);
+
+    // preserve time if already set
+    if (formData.value.startDate && originalTimeSet[0]) {
+        newStartDate.setHours(
+            originalStartDate.getHours(),
+            originalStartDate.getMinutes()
+        );
+    }
+    if (formData.value.endDate && originalTimeSet[1]) {
+        newEndDate.setHours(
+            originalEndDate.getHours(),
+            originalEndDate.getMinutes()
+        );
+    }
+
+    if (validateBeforeSetNewEvent({ start: newStartDate, end: newEndDate })) {
+        formData.value.startDate = newStartDate;
+        formData.value.endDate = newEndDate;
+        formData.value.isTimeSet = originalTimeSet;
+
+        // trigger validation to clear error on this input
+        emit("validateForm", "bookingDate");
+    } else {
+        // pop notification
+        ElMessage({
+            message: "Booking overlapped",
+            type: "warning",
+        });
+    }
 };
 
 // refresh
@@ -287,7 +469,7 @@ onActivated(() => {
                     </el-button>
                 </template>
                 <el-date-picker
-                    v-model="formData.date"
+                    v-model="dateInput"
                     type="daterange"
                     placeholder="Select date"
                     range-separator="→"
@@ -304,31 +486,21 @@ onActivated(() => {
                 class="time-select-col"
             >
                 <el-time-select
-                    v-model="formData.startTime"
+                    v-model="startTimeInput"
                     placeholder="Start time"
-                    start="08:30"
+                    start="08:00"
                     step="00:30"
-                    end="18:30"
-                    :max-time="
-                        formData.endTime &&
-                        formData.date[0] === formData.date[1]
-                            ? formData.endTime
-                            : ''
-                    "
+                    end="18:00"
+                    :max-time="startTimeMaxTime()"
                 ></el-time-select
                 >&nbsp;&nbsp; → &nbsp;&nbsp;
                 <el-time-select
-                    v-model="formData.endTime"
+                    v-model="endTimeInput"
                     placeholder="End time"
-                    start="08:30"
+                    start="08:00"
                     step="00:30"
-                    end="18:30"
-                    :min-time="
-                        formData.startTime &&
-                        formData.date[0] === formData.date[1]
-                            ? formData.startTime
-                            : ''
-                    "
+                    end="18:00"
+                    :min-time="endTimeMinTime()"
                 ></el-time-select>
             </el-form-item>
         </el-col>
@@ -354,13 +526,18 @@ onActivated(() => {
         }"
         :drag-to-create-event="true"
         :min-event-width="100"
-        @event-drag-create="onEventDragCreate"
-        @event-drop="onEventChange"
-        @event-duration-change="onEventChange"
+        @event-drag-create="onCalendarDragCreate"
+        @event-drop="onCalendarEventChange"
+        @event-duration-change="onCalendarEventChange"
         @view-change="onViewChange"
         style="height: 580px"
     ></vue-cal>
-    <small><em>* Please use the date picker for multi-day booking.</em></small>
+    <small>
+        <ul>
+            <li>All date and time are in Malaysian Standard Time (UTC +8).</li>
+            <li>Please use the date picker for multi-day booking.</li>
+        </ul>
+    </small>
 </template>
 
 <style scoped>
@@ -397,13 +574,19 @@ onActivated(() => {
     border-radius: var(--el-border-radius-base);
     box-shadow: 0 0 0 1px var(--el-border-color) inset;
 
+    .vuecal__menu {
+        background-color: #00000000;
+    }
+
     .vuecal__view-btn {
+        color: var(--el-table-header-text-color);
         font-size: var(--el-font-size-base);
-        font-weight: 500;
+        font-weight: 400;
         height: 40px;
 
         &.vuecal__view-btn--active {
             color: var(--el-color-primary);
+            font-weight: 700;
         }
     }
 
@@ -424,8 +607,8 @@ onActivated(() => {
         }
 
         &.booking {
-            background-color: #192f59; /* Blue */
-            border: 1px solid var(--el-color-info);
+            background-color: var(--el-color-info); /* Blue */
+            border: 1px solid #192f59;
             color: #fff;
         }
         &.close {

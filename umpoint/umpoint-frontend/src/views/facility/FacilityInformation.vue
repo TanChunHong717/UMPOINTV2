@@ -141,7 +141,7 @@
             </el-card>
         </el-row>
         <el-row>
-            <el-card>
+            <el-card shadow="never">
                 <template #header>
                     <div class="card-header">
                         <span class="el-descriptions__title">Map</span>

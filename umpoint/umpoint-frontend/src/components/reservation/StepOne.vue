@@ -13,9 +13,9 @@ const formData = reactive({
     eventName: null,
     numberOfParticipants: 1,
     additionalTechnicians: 0,
-    date: null, // [start, end], merged to one for built-in validation
-    startTime: null,
-    endTime: null,
+    startDate: null,
+    endDate: null,
+    isTimeSet: [false, false], // [start, end] time is set
     termsAndConditions: false,
 });
 
@@ -35,6 +35,7 @@ const maxDate = ref(addDays(today, 30));
 
 // form validation
 const formNode = useTemplateRef("formNode");
+const calendarNode = useTemplateRef("calendarNode");
 const rulesMessage = reactive({
     eventName: [
         {
@@ -69,20 +70,7 @@ const rulesMessage = reactive({
         {
             required: true,
             validator: (rule, value, callback) => {
-                if (!formData.date) {
-                    callback(new Error("Please select a date range"));
-                    return;
-                }
-                let [startDate, endDate] = formData.date;
-                let allow =
-                    startDate <= endDate &&
-                    startDate >= minDate.value &&
-                    endDate <= maxDate.value;
-                if (allow) {
-                    callback();
-                } else {
-                    callback(new Error("Please select a valid date range"));
-                }
+                calendarNode.value.validateDate(formData, callback);
             },
             trigger: "blur",
         },
@@ -91,17 +79,7 @@ const rulesMessage = reactive({
         {
             required: true,
             validator: (rule, value, callback) => {
-                let { startTime, endTime } = formData;
-                if (!startTime || !endTime) {
-                    callback(new Error("Please select a time range"));
-                    return;
-                }
-                let allow = startTime <= endTime;
-                if (allow) {
-                    callback();
-                } else {
-                    callback(new Error("Please select a valid time range"));
-                }
+                calendarNode.value.validateTime(formData, callback);
             },
             trigger: "blur",
         },
@@ -269,6 +247,7 @@ async function returnFormInfo(formEl) {
         </el-alert>
 
         <booking-calendar
+            ref="calendarNode"
             :facilityInfo="props.facilityInfo"
             v-model:formData="formData"
             v-model:minDate="minDate"
