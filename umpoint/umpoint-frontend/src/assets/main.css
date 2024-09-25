@@ -11,7 +11,11 @@ body {
     padding: 0;
     font-weight: 450;
 }
-h2, h3, h4, h5, h6 {
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-weight: 750;
 }
 
@@ -36,7 +40,6 @@ div.grid {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 
-
 /* use for list with icon on left */
 .info-item {
     position: relative;
@@ -54,7 +57,6 @@ div.grid {
 }
 
 /* larger divider */
-
 .el-divider {
     margin-block: 2.5em 1.2em;
 
@@ -66,5 +68,14 @@ div.grid {
             padding: 0;
             line-height: 1;
         }
+    }
+}
+
+/* tab selection more pop */
+.el-tabs__item {
+    color: var(--el-table-header-text-color) !important;
+    font-weight: 400 !important;
+    &.is-active {
+        font-weight: 700 !important;
     }
 }
