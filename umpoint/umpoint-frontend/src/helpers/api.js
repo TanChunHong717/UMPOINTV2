@@ -1,4 +1,4 @@
-import api from '@/utils/api';
+import api from "@/utils/api";
 
 function getFacilityInformation(facilityID) {
     return {
@@ -12,8 +12,8 @@ function getFacilityInformation(facilityID) {
             open_days_prior_booking: 60,
             close_days_after_booking: 5,
             max_reservation_days: 30,
-            min_booking_hours: 1
-        }
+            min_booking_hours: 1,
+        },
     };
 
     // return api.get(`/facility/${facilityID}`);
@@ -33,4 +33,20 @@ function validateBooking(data) {
     });
 }
 
-export { getFacilityInformation, getFacilityAvailability, validateBooking };
+function getCurrentUserBookings() {
+    return [
+        {}
+    ];
+    return api.get(`/user/bookings`, {
+        data: {
+            userID: id,
+        },
+    });
+}
+
+export {
+    getFacilityInformation,
+    getFacilityAvailability,
+    validateBooking,
+    getCurrentUserBookings,
+};
