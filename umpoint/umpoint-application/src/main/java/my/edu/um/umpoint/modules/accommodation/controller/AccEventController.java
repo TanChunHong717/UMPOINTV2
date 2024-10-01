@@ -26,7 +26,7 @@ import java.util.Map;
  * @since 1.0.0 2024-09-16
  */
 @RestController
-@RequestMapping("booking/event")
+@RequestMapping("accommodation/event")
 @Tag(name="Accommodation Occupied Event")
 public class AccEventController {
     @Autowired

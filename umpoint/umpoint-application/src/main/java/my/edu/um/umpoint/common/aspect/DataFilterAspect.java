@@ -70,14 +70,11 @@ public class DataFilterAspect {
         List<Long> deptIdList = user.getDeptIdList();
         if (CollUtil.isNotEmpty(deptIdList)) {
             sqlFilter.append(tableAlias).append(dataFilter.deptId());
-
             sqlFilter.append(" in(").append(StringUtils.join(deptIdList, ",")).append(")");
-        }
-
-        if (CollUtil.isNotEmpty(deptIdList)) {
             sqlFilter.append(" or ");
         }
-        sqlFilter.append(tableAlias).append(dataFilter.userId()).append("=").append(user.getId());
+        if (!StringUtils.isNullOrEmpty(user.getType()))
+            sqlFilter.append(tableAlias).append(dataFilter.userId()).append("=").append(user.getId());
 
         sqlFilter.append(")");
 

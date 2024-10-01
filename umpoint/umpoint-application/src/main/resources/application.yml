@@ -83,3 +83,32 @@ umpoint:
       find-approve-admin-first: true
     accommodation:
       find-approve-admin-first: true
+  user:
+    permission:
+      space:
+        - space:space:page
+        - space:space:info
+        - space:booking:page
+        - space:booking:save
+        - space:booking:update
+        - space:booking:cancel
+        - space:category:list
+        - space:tag:list
+      service:
+        - service:service:page
+        - service:service:info
+        - service:booking:page
+        - service:booking:save
+        - service:booking:update
+        - service:booking:cancel
+        - service:category:list
+        - service:tag:list
+      accommodation:
+        - accommodation:accommodation:page
+        - accommodation:accommodation:info
+        - accommodation:booking:page
+        - accommodation:booking:save
+        - accommodation:booking:update
+        - accommodation:booking:cancel
+        - accommodation:category:list
+        - accommodation:tag:list

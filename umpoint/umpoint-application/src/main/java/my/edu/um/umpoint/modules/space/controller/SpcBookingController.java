@@ -71,6 +71,8 @@ public class SpcBookingController {
     @RequiresPermissions("space:booking:save")
     public Result save(@RequestBody SpcBookingDTO dto){
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
+        //Todo Validate booking rule
+        //Todo Validate event is overlap
 
         spcBookingService.save(dto);
 

@@ -37,7 +37,7 @@ public class AccEventServiceImpl extends CrudServiceImpl<AccEventDao, AccEventEn
         Date endTime = DateUtils.parse((String) params.get("endTime"), DateUtils.DATE_PATTERN);
 
         QueryWrapper<AccEventEntity> wrapper = new QueryWrapper<>();
-        wrapper.eq("space_id", accommodationId);
+        wrapper.eq("accommodation_id", accommodationId);
         wrapper.between("start_time", startTime, endTime);
         wrapper.between("end_time", startTime, endTime);
 
