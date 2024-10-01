@@ -6,6 +6,10 @@ import my.edu.um.umpoint.common.utils.IpUtils;
 import my.edu.um.umpoint.common.utils.Result;
 import my.edu.um.umpoint.common.validator.AssertUtils;
 import my.edu.um.umpoint.common.validator.ValidatorUtils;
+import my.edu.um.umpoint.modules.client.dto.CliUserDTO;
+import my.edu.um.umpoint.modules.client.service.CliTokenService;
+import my.edu.um.umpoint.modules.client.service.CliUserService;
+import my.edu.um.umpoint.modules.client.service.impl.CliUserServiceImpl;
 import my.edu.um.umpoint.modules.log.entity.SysLogLoginEntity;
 import my.edu.um.umpoint.modules.log.enums.LoginOperationEnum;
 import my.edu.um.umpoint.modules.log.enums.LoginStatusEnum;
@@ -43,6 +47,8 @@ public class LoginController {
     private final SysUserTokenService sysUserTokenService;
     private final CaptchaService captchaService;
     private final SysLogLoginService sysLogLoginService;
+    private final CliTokenService cliTokenService;
+    private final CliUserService cliUserService;
 
     @GetMapping("captcha")
     @Operation(summary = "captcha")
@@ -53,7 +59,7 @@ public class LoginController {
     }
 
     @PostMapping("login")
-    @Operation(summary = "登录")
+    @Operation(summary = "Login")
     public Result login(HttpServletRequest request, @RequestBody LoginDTO login) {
         ValidatorUtils.validateEntity(login);
 
@@ -121,6 +127,33 @@ public class LoginController {
         log.setCreatorName(user.getUsername());
         log.setCreateDate(new Date());
         sysLogLoginService.save(log);
+
+        return new Result();
+    }
+
+    @PostMapping("cli/login")
+    @Operation(summary = "Login")
+    public Result clientLogin(@RequestBody LoginDTO login) {
+        ValidatorUtils.validateEntity(login);
+
+        boolean flag = captchaService.validate(login.getUuid(), login.getCaptcha());
+        if (!flag) {
+            return new Result().error(ErrorCode.CAPTCHA_ERROR);
+        }
+
+        CliUserDTO user = cliUserService.getByUsername(login.getUsername());
+        if (user == null)
+            throw new RenException(ErrorCode.ACCOUNT_PASSWORD_ERROR, "User not found");
+
+        return cliTokenService.createToken(user.getId());
+    }
+
+    @PostMapping("cli/logout")
+    @Operation(summary = "logout")
+    public Result clientLogout() {
+        UserDetail user = SecurityUser.getUser();
+
+        cliTokenService.logout(user.getId());
 
         return new Result();
     }

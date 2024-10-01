@@ -3,11 +3,13 @@ package my.edu.um.umpoint.common.utils;
 import my.edu.um.umpoint.common.exception.ErrorCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @Schema(title = "Response")
 public class Result<T> implements Serializable {
-    private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 3904908602296209331L;
 
     @Schema(title = "Code：0 represent success, other failed")
     private int code = 0;

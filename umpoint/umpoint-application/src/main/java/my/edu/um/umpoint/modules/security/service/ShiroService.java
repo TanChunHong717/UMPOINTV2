@@ -1,5 +1,7 @@
 package my.edu.um.umpoint.modules.security.service;
 
+import my.edu.um.umpoint.modules.client.entity.CliTokenEntity;
+import my.edu.um.umpoint.modules.client.entity.CliUserEntity;
 import my.edu.um.umpoint.modules.security.user.UserDetail;
 import my.edu.um.umpoint.modules.sys.entity.SysUserEntity;
 import my.edu.um.umpoint.modules.security.entity.SysUserTokenEntity;
@@ -16,4 +18,9 @@ public interface ShiroService {
     SysUserEntity getUser(Long userId);
 
     List<Long> getDataScopeList(Long userId);
+
+    CliTokenEntity getCliByToken(String accessToken);
+
+    CliUserEntity getCliUser(Long userId);
+
 }

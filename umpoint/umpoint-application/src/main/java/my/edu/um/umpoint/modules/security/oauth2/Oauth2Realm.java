@@ -3,6 +3,8 @@ package my.edu.um.umpoint.modules.security.oauth2;
 import my.edu.um.umpoint.common.exception.ErrorCode;
 import my.edu.um.umpoint.common.utils.ConvertUtils;
 import my.edu.um.umpoint.common.utils.MessageUtils;
+import my.edu.um.umpoint.modules.client.entity.CliTokenEntity;
+import my.edu.um.umpoint.modules.client.entity.CliUserEntity;
 import my.edu.um.umpoint.modules.security.entity.SysUserTokenEntity;
 import my.edu.um.umpoint.modules.security.service.ShiroService;
 import my.edu.um.umpoint.modules.security.user.UserDetail;
@@ -14,6 +16,7 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Set;
@@ -45,21 +48,31 @@ public class Oauth2Realm extends AuthorizingRealm {
         String accessToken = (String) token.getPrincipal();
 
         SysUserTokenEntity tokenEntity = shiroService.getByToken(accessToken);
-        if (tokenEntity == null || tokenEntity.getExpireDate().getTime() < System.currentTimeMillis()) {
+        CliTokenEntity cliTokenEntity = shiroService.getCliByToken(accessToken);
+        if (
+            (tokenEntity == null && cliTokenEntity == null) ||
+            (tokenEntity != null && tokenEntity.getExpireDate().getTime() < System.currentTimeMillis()) ||
+            (cliTokenEntity != null && cliTokenEntity.getExpireDate().getTime() < System.currentTimeMillis())
+        ) {
             throw new IncorrectCredentialsException(MessageUtils.getMessage(ErrorCode.TOKEN_INVALID));
         }
 
-        SysUserEntity userEntity = shiroService.getUser(tokenEntity.getUserId());
-        UserDetail userDetail = ConvertUtils.sourceToTarget(userEntity, UserDetail.class);
-        List<Long> deptIdList = shiroService.getDataScopeList(userDetail.getId());
-        userDetail.setDeptIdList(deptIdList);
+        UserDetail userDetail;
+        if (tokenEntity != null) {
+            SysUserEntity userEntity = shiroService.getUser(tokenEntity.getUserId());
+            userDetail = ConvertUtils.sourceToTarget(userEntity, UserDetail.class);
+            List<Long> deptIdList = shiroService.getDataScopeList(userDetail.getId());
+            userDetail.setDeptIdList(deptIdList);
 
-        if (userDetail.getStatus() == 0) {
-            throw new LockedAccountException(MessageUtils.getMessage(ErrorCode.ACCOUNT_LOCK));
+            if (userDetail.getStatus() == 0) {
+                throw new LockedAccountException(MessageUtils.getMessage(ErrorCode.ACCOUNT_LOCK));
+            }
+        } else {
+            CliUserEntity userEntity = shiroService.getCliUser(cliTokenEntity.getUserId());
+            userDetail = ConvertUtils.sourceToTarget(userEntity, UserDetail.class);
         }
 
-        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(userDetail, accessToken, getName());
-        return info;
+        return new SimpleAuthenticationInfo(userDetail, accessToken, getName());
     }
 
 }

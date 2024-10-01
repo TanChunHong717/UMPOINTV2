@@ -1,11 +1,13 @@
 package my.edu.um.umpoint.modules.sys.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.exception.ErrorCode;
 import my.edu.um.umpoint.common.exception.RenException;
 import my.edu.um.umpoint.common.service.impl.BaseServiceImpl;
 import my.edu.um.umpoint.common.utils.ConvertUtils;
 import my.edu.um.umpoint.common.utils.TreeUtils;
+import my.edu.um.umpoint.modules.security.config.CliPermissionConfig;
 import my.edu.um.umpoint.modules.security.user.UserDetail;
 import my.edu.um.umpoint.modules.sys.dao.SysMenuDao;
 import my.edu.um.umpoint.modules.sys.dto.SysMenuDTO;
@@ -23,6 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntity> implements SysMenuService {
     private final SysRoleMenuService sysRoleMenuService;
+    private final CliPermissionConfig cliPermissionConfig;
 
     @Override
     public SysMenuDTO get(Long id) {
