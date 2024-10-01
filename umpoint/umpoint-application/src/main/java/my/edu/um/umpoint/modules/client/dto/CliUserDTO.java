@@ -49,16 +49,17 @@ public class CliUserDTO implements Serializable {
 	private String email;
 
 	@SchemaProperty(name = "Type")
+	@NotEmpty(groups = DefaultGroup.class)
 	private String type;
 
 	@SchemaProperty(name = "Have permission to book space")
 	private Integer spacePermission;
 
 	@SchemaProperty(name = "Have permission to book service")
-	private String servicePermission;
+	private Integer servicePermission;
 
 	@SchemaProperty(name = "Have permission to book accommodation")
-	private String accommodationPermission;
+	private Integer accommodationPermission;
 
 	@SchemaProperty(name = "Create date")
 	private Date createDate;

@@ -45,7 +45,8 @@ public class CliUserController {
         @Parameter(name = Constant.PAGE, description = "Current page number, starting from 1", in = ParameterIn.QUERY, required = true, ref="int") ,
         @Parameter(name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY,required = true, ref="int") ,
         @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, ref="String") ,
-        @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String")
+        @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String"),
+        @Parameter(name = "Username", description = "Client username", in = ParameterIn.QUERY, ref="String")
     })
     @RequiresPermissions("client:user:page")
     public Result<PageData<CliUserDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
@@ -68,6 +69,17 @@ public class CliUserController {
     @LogOperation("Save")
     public Result save(@RequestBody CliUserDTO dto){
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
+        if (dto.getType().equals("Staff")) {
+            dto.setSpacePermission(1);
+            dto.setServicePermission(1);
+            dto.setAccommodationPermission(1);
+        } else if (dto.getType().equals("Student")) {
+            dto.setSpacePermission(1);
+            dto.setAccommodationPermission(1);
+        } else {
+            dto.setSpacePermission(1);
+            dto.setServicePermission(1);
+        }
 
         cliUserService.save(dto);
 
