@@ -36,7 +36,7 @@ public class DataFilterAspect {
         Object params = point.getArgs()[0];
         if (params != null && params instanceof Map) {
             UserDetail user = SecurityUser.getUser();
-            if (user.getSuperAdmin() == SuperAdminEnum.YES.value()) {
+            if (user.getSuperAdmin() == null || user.getSuperAdmin() == SuperAdminEnum.YES.value()) {
                 return;
             }
 
