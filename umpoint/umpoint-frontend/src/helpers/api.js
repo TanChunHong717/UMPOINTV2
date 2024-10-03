@@ -18,21 +18,40 @@ function getFacilityInformation(facilityID) {
             "catId": "1841705487032270849",
             "deptId": "1841705636508876802",
             "address": "1234",
-            "description": "<p>sadadasadsdasdas</p>",
+            "description": `Before completing your booking on UMPoint, please contact
+the staff in charge regarding your event: 
+
+WAN NUR ANI BINTI WAN HAR (Assistant Registrar) 
+Email : wannurani_@um.edu.my
+Tel: +603-79673056 or 
+
+Mr. Zaid bin Idris (Assistant Engineer) 
+Email: yed@um.edu.my 
+Tel: +603-79673056 
+
+Staf teknikal membantu dalam urusan berikut: Membuka/menutup
+pintu ruang/suis elektrik (lampu/aircond) Peralatan
+ICT/elektrik/mekanikal/perabot tersedia untuk digunakan
+Menyelesaikan aduan berkaitan kerja teknikal dalam tempoh
+ruang digunakan Technical staff assist in the following:
+Opening / closing the door / electric switch door (lamp /
+aircond) ICT / electrical / mechanical / furniture equipment
+is available for use Solve technical work complaints within
+the space used`,
             "facilities": "rewerwe",
             "capacity": 30,
             "manager": null,
-            "hourPrice": null,
-            "fourHoursPrice": null,
-            "dayPrice": null,
+            "hourPrice": 200,
+            "fourHoursPrice": 700,
+            "dayPrice": 1000,
             "bookingRuleId": null,
             "creator": "1067246875800000001",
             "createDate": "2024-10-03 13:04:16",
             "updater": "1067246875800000001",
             "updateDate": "2024-10-03 13:04:16",
-            "category": "football",
+            "category": "Auditorium",
             "deptName": "Faculty of Engineering",
-            "managerName": null,
+            "managerName": "admin",
             "creatorName": "admin",
             "updaterName": "admin",
             "spcImageDTOList": [],

@@ -2,48 +2,60 @@
     <BaseLayout :loading="loading">
         <template #title>Facility Information</template>
 
-        <h2>Dewan Tunku Chancellor</h2>
+        <h2>{{ facilityInfo.name }}</h2>
         <el-carousel arrow="always" trigger="click" :autoplay="false">
             <el-carousel-item v-for="item in 5" :key="item">
                 <img :src="getImgUrl(item - 1)" />
             </el-carousel-item>
         </el-carousel>
 
-        <br>
+        <br />
 
         <el-row :gutter="8">
             <el-col :xs="24" :sm="16">
                 <el-card class="info" shadow="hover">
                     <template #header>
                         <div class="card-header">
-                            <span class="el-descriptions__title">Facilities</span>
+                            <span class="el-descriptions__title"
+                                >Facilities</span
+                            >
                         </div>
                     </template>
                     <el-text>
                         <el-icon aria-label="Location">
-                            <svg-icon type="mdi" :path="mdiMapMarkerOutline"></svg-icon>
+                            <svg-icon
+                                type="mdi"
+                                :path="mdiMapMarkerOutline"
+                            ></svg-icon>
                         </el-icon>
-                        Faculty of Law
+                        {{ facilityInfo.deptName }}
                     </el-text>
                     <el-text>
                         <el-icon aria-label="Category">
-                            <svg-icon type="mdi" :path="mdiOfficeBuildingOutline"></svg-icon>
+                            <svg-icon
+                                type="mdi"
+                                :path="mdiOfficeBuildingOutline"
+                            ></svg-icon>
                         </el-icon>
-                        Auditorium
+                        {{ facilityInfo.category }}
                     </el-text>
                     <el-text>
                         <el-icon aria-label="Maximum capacity">
-                            <svg-icon type="mdi" :path="mdiAccountGroup"></svg-icon>
+                            <svg-icon
+                                type="mdi"
+                                :path="mdiAccountGroup"
+                            ></svg-icon>
                         </el-icon>
-                        150 persons
+                        {{ facilityInfo.capacity }} persons
                     </el-text>
                     <el-text>
                         <el-icon aria-label="Facilities">
-                            <svg-icon type="mdi" :path="mdiToolboxOutline"></svg-icon>
+                            <svg-icon
+                                type="mdi"
+                                :path="mdiToolboxOutline"
+                            ></svg-icon>
                         </el-icon>
-                        Kerusi, Meja, Lcd Projector & Skrin, Sound System, Micro Wave Oven, Peti Sejuk, Penapis Air
-                        Coway,
-                        Penapis Udara Coway, Wifi Tidak Disedikan (perlu Buat Permohonan)
+                        {{ facilityInfo.facilities }}
                     </el-text>
                 </el-card>
             </el-col>
@@ -58,14 +70,36 @@
                         </div>
                     </template>
                     <el-descriptions border size="small" :column="1">
-                        <el-descriptions-item label="Per hour">
-                            <el-text size="large" tag="b">RM 200</el-text>
+                        <el-descriptions-item
+                            label="Per hour"
+                            v-if="facilityInfo.hourPrice"
+                        >
+                            <el-text size="large" tag="b"
+                                >RM
+                                {{
+                                    Math.round(facilityInfo.hourPrice)
+                                }}</el-text
+                            >
                         </el-descriptions-item>
-                        <el-descriptions-item label="Per 4 hour">
-                            <el-text size="large" tag="b">RM 700</el-text>
+                        <el-descriptions-item
+                            label="Per 4 hour"
+                            v-if="facilityInfo.fourHoursPrice"
+                        >
+                            <el-text size="large" tag="b"
+                                >RM
+                                {{
+                                    Math.round(facilityInfo.fourHoursPrice)
+                                }}</el-text
+                            >
                         </el-descriptions-item>
-                        <el-descriptions-item label="Per day">
-                            <el-text size="large" tag="b">RM 1000</el-text>
+                        <el-descriptions-item
+                            label="Per day"
+                            v-if="facilityInfo.dayPrice"
+                        >
+                            <el-text size="large" tag="b"
+                                >RM
+                                {{ Math.round(facilityInfo.dayPrice) }}</el-text
+                            >
                         </el-descriptions-item>
                     </el-descriptions>
                 </el-card>
@@ -75,10 +109,16 @@
             <el-card class="info" shadow="hover">
                 <template #header>
                     <div class="card-header card-header-action-call">
-                        <span>Person In Charge @ <strong>Faculty of Law</strong></span>
+                        <span
+                            >Person In Charge @
+                            <strong>{{ facilityInfo.deptName }}</strong></span
+                        >
                         <el-button type="primary" plain>
                             <template #icon>
-                                <svg-icon type="mdi" :path="mdiMessageTextOutline"></svg-icon>
+                                <svg-icon
+                                    type="mdi"
+                                    :path="mdiMessageTextOutline"
+                                ></svg-icon>
                             </template>
                             Chat
                         </el-button>
@@ -86,15 +126,22 @@
                 </template>
                 <el-text type="danger">
                     <el-icon aria-label="Warning">
-                        <svg-icon type="mdi" :path="mdiExclamationThick" color="red"></svg-icon>
+                        <svg-icon
+                            type="mdi"
+                            :path="mdiExclamationThick"
+                            color="red"
+                        ></svg-icon>
                     </el-icon>
                     This facility requires prior contact before booking
                 </el-text>
                 <el-text>
                     <el-icon aria-label="Contact person">
-                        <svg-icon type="mdi" :path="mdiCardAccountDetailsOutline"></svg-icon>
+                        <svg-icon
+                            type="mdi"
+                            :path="mdiCardAccountDetailsOutline"
+                        ></svg-icon>
                     </el-icon>
-                    Pn. Noraisa bin Mohammad
+                    {{ facilityInfo.managerName }}
                 </el-text>
                 <el-text>
                     <el-icon aria-label="Phone number">
@@ -104,7 +151,10 @@
                 </el-text>
                 <el-text>
                     <el-icon aria-label="Email">
-                        <svg-icon type="mdi" :path="mdiEmailArrowRightOutline"></svg-icon>
+                        <svg-icon
+                            type="mdi"
+                            :path="mdiEmailArrowRightOutline"
+                        ></svg-icon>
                     </el-icon>
                     sample@test.um.com.my
                 </el-text>
@@ -117,26 +167,10 @@
                         <span class="el-descriptions__title">Details</span>
                     </div>
                 </template>
-                <el-text style="white-space: pre-wrap;">Before completing your booking on UMPoint, please contact the
-                    staff in
-                    charge regarding your event:
-                    WAN NUR ANI BINTI WAN HAR (Assistant Registrar)
-                    Email : wannurani_@um.edu.my
-                    Tel: +603-79673056
-                    or
-                    Mr. Zaid bin Idris (Assistant Engineer)
-                    Email: yed@um.edu.my
-                    Tel: +603-79673056
-
-                    Staf teknikal membantu dalam urusan berikut:
-                    Membuka/menutup pintu ruang/suis elektrik (lampu/aircond)
-                    Peralatan ICT/elektrik/mekanikal/perabot tersedia untuk digunakan
-                    Menyelesaikan aduan berkaitan kerja teknikal dalam tempoh ruang digunakan
-
-                    Technical staff assist in the following:
-                    Opening / closing the door / electric switch door (lamp / aircond)
-                    ICT / electrical / mechanical / furniture equipment is available for use
-                    Solve technical work complaints within the space used
+                <el-text
+                    style="white-space: pre-wrap"
+                    v-html="facilityInfo.description"
+                >
                 </el-text>
             </el-card>
         </el-row>
@@ -145,6 +179,16 @@
                 <template #header>
                     <div class="card-header">
                         <span class="el-descriptions__title">Map</span>
+                    </div>
+                </template>
+                Map here
+            </el-card>
+        </el-row>
+        <el-row>
+            <el-card shadow="never">
+                <template #header>
+                    <div class="card-header">
+                        <span class="el-descriptions__title">Schedule</span>
                     </div>
                 </template>
                 Map here
@@ -164,35 +208,40 @@ import {
     mdiEmailArrowRightOutline,
     mdiPhone,
     mdiMessageTextOutline,
-} from '@mdi/js';
-import { reactive, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
-import { getFacilityInformation } from '@/helpers/api.js'
+} from "@mdi/js";
+import { ref, watch } from "vue";
+import { useRoute } from "vue-router";
+import { getFacilityInformation } from "@/helpers/api.js";
 
-const route = useRoute()
+const route = useRoute();
 
-const loading = ref(false)
-const post = reactive({})
-const error = ref(null)
+const loading = ref(false);
+const facilityInfo = ref({});
 
 // watch the params of the route to fetch the data on change
-watch(() => route.params.id, fetchData, { immediate: false })
+watch(() => route.params.id, fetchData, { immediate: false });
 
 async function fetchData(id) {
-    error.value = post.value = null
-    loading.value = true
-    
+    loading.value = true;
+
     try {
-        post.value = await getFacilityInformation(id)
+        let response = await getFacilityInformation(id);
+        if (response.data.code !== 0) {
+            throw new Error(response.data.message);
+        }
+        facilityInfo.value = response.data.data;
+        console.log(facilityInfo.value);
     } catch (err) {
-        error.value = err.toString()
+        console.log(err);
     } finally {
-        loading.value = false
+        loading.value = false;
     }
 }
+// first time init
+fetchData(route.params.id);
 
-// build booking form url
-const bookingUrl = `/facility/${route.params.id}/reserve`
+// build booking form page url
+const bookingUrl = `/facility/${route.params.id}/reserve`;
 
 /** temp fetch image url */
 const baseUrl =
@@ -200,7 +249,6 @@ const baseUrl =
 const getImgUrl = (i) => {
     return `${baseUrl}abstract0${i + 1}.jpg`;
 };
-
 </script>
 
 <style scoped>
@@ -216,7 +264,7 @@ const getImgUrl = (i) => {
     margin-block-end: 0.75em;
     line-height: 1.4;
 
-    >.el-text {
+    > .el-text {
         display: inline;
     }
 
@@ -229,11 +277,11 @@ const getImgUrl = (i) => {
     display: flex;
     align-items: center;
 
-    >span {
+    > span {
         flex: 1;
     }
 
-    >button {
+    > button {
         text-align: right;
     }
 }
