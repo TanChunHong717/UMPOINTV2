@@ -4,7 +4,7 @@ import { isNullOrUndefined } from "./utils";
 const fix = "v1@";
 
 /**
- * 存储介质适配器
+ * Storage option
  * @param isSessionStorage
  * @returns
  */
@@ -13,7 +13,7 @@ const cacheAdapter = (isSessionStorage?: boolean) => {
 };
 
 /**
- * 取缓存值
+ * Get Cache value
  * @param {*} key
  * @param {*} options
  */
@@ -39,7 +39,7 @@ export const getCache = (key: string, options?: any, defaultValue?: unknown): an
 };
 
 /**
- * 设置缓存值
+ * Set cache value
  * @param {*} key
  * @param {*} value
  */
@@ -56,7 +56,7 @@ export const setCache = (
 };
 
 /**
- * 清除缓存
+ * Clear cache
  * @param key
  * @param isSessionStorage
  */
@@ -66,5 +66,5 @@ export const removeCache = (key: string, isSessionStorage?: boolean): void => {
 };
 
 export const getToken = (): string => {
-    return getCache(CacheToken, { isSessionStorage: true }, {})["token"];
+    return getCache(CacheToken, { isSessionStorage: false }, {})["token"];
 };

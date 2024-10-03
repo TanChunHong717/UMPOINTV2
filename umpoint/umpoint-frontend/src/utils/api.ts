@@ -1,12 +1,11 @@
-import app from "@/constants/app";
+import constants from "@/constants/app";
 import axios from "axios";
 import { getToken } from "./cache";
 import qs from "qs";
 
-
 const api = axios.create({
-    baseURL: app.api,
-    timeout: app.requestTimeout
+    baseURL: constants.apiUrl,
+    timeout: constants.requestTimeout
 });
 
 api.interceptors.request.use(
