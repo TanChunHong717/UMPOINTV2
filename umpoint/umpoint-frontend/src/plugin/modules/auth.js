@@ -100,9 +100,9 @@ const auth = {
             }
             commit("setUserId", userInfo.data.id);
             commit("setPermissions", {
-                space: userInfo.data.spacePermission,
-                service: userInfo.data.servicePermission,
-                accommodation: userInfo.data.accommodationPermission,
+                space: !!userInfo.data.spacePermission,
+                service: !!userInfo.data.servicePermission,
+                accommodation: !!userInfo.data.accommodationPermission,
             });
         },
         async logout({ commit }) {
