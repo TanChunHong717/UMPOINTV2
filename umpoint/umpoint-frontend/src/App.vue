@@ -2,23 +2,19 @@
     <Topbar></Topbar>
     <UmHeader></UmHeader>
     <div id="content-view" class="container-fluid">
-        <RouterView ></RouterView>
+        <RouterView></RouterView>
     </div>
     <UmFooter></UmFooter>
 </template>
 
-<script>
-import Topbar from './components/base/Topbar.vue'
-import UmHeader from './components/base/Header.vue'
-import UmFooter from './components/base/Footer.vue'
+<script setup>
+import Topbar from "./components/base/Topbar.vue";
+import UmHeader from "./components/base/Header.vue";
+import UmFooter from "./components/base/Footer.vue";
+import { useStore } from "vuex";
 
-export default {
-    components: {
-        Topbar,
-        UmHeader,
-        UmFooter
-    }
-}
+const store = useStore();
+store.dispatch("auth/loginRememberMe");
 </script>
 
 <style>

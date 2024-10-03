@@ -2,11 +2,13 @@
     <div id="header">
         <div id="header-wrap" class="container">
             <div id="logo">
-                <img
-                    src="@/assets/umlogo.png"
-                    alt="Universiti Malaya"
-                    style="height: 100px"
-                />
+                <router-link to="/">
+                    <img
+                        src="@/assets/umlogo.png"
+                        alt="Universiti Malaya"
+                        style="height: 100px"
+                    />
+                </router-link>
             </div>
             <div>
                 <el-dropdown placement="bottom-end">
