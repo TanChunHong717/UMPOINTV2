@@ -3,6 +3,7 @@ package my.edu.um.umpoint.modules.client.controller;
 import my.edu.um.umpoint.common.annotation.LogOperation;
 import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.page.PageData;
+import my.edu.um.umpoint.common.utils.ConvertUtils;
 import my.edu.um.umpoint.common.utils.ExcelUtils;
 import my.edu.um.umpoint.common.utils.Result;
 import my.edu.um.umpoint.common.validator.AssertUtils;
@@ -16,7 +17,10 @@ import my.edu.um.umpoint.modules.client.service.CliUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import my.edu.um.umpoint.modules.security.user.SecurityUser;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -36,6 +40,7 @@ import java.util.Map;
 @RequestMapping("client/user")
 @Tag(name="Client management")
 public class CliUserController {
+    private static final Logger log = LoggerFactory.getLogger(CliUserController.class);
     @Autowired
     private CliUserService cliUserService;
 
@@ -61,6 +66,13 @@ public class CliUserController {
     public Result<CliUserDTO> get(@PathVariable("id") Long id){
         CliUserDTO data = cliUserService.get(id);
 
+        return new Result<CliUserDTO>().ok(data);
+    }
+
+    @GetMapping("info")
+    @Operation(summary = "login user info")
+    public Result<CliUserDTO> info() {
+        CliUserDTO data = ConvertUtils.sourceToTarget(SecurityUser.getUser(), CliUserDTO.class);
         return new Result<CliUserDTO>().ok(data);
     }
 
