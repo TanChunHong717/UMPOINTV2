@@ -53,7 +53,6 @@ public class SpcSpaceController {
         @Parameter(name = Constant.CAT_ID, description = "Category ID", in = ParameterIn.QUERY, ref="int") ,
         @Parameter(name = Constant.TAG_ID, description = "Tag ID", in = ParameterIn.QUERY, ref="int")
     })
-    @RequiresPermissions("space:space:page")
     public Result<PageData<SpcSpaceDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
         PageData<SpcSpaceDTO> page = spcSpaceService.page(params);
 
@@ -62,7 +61,6 @@ public class SpcSpaceController {
 
     @GetMapping("{id}")
     @Operation(summary = "Information")
-    @RequiresPermissions("space:space:info")
     public Result<SpcSpaceDTO> get(@PathVariable("id") Long id){
         SpcSpaceDTO data = spcSpaceService.get(id);
 
