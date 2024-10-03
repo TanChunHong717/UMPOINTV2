@@ -10,7 +10,7 @@
                     />
                 </router-link>
             </div>
-            <div>
+            <div v-if="isLoggedIn">
                 <el-dropdown placement="bottom-end">
                     <el-button type="primary" plain class="account">
                         <svg-icon type="mdi" :path="mdiAccount" />
@@ -40,14 +40,19 @@
                                 </router-link>
                             </el-dropdown-item>
                             <el-dropdown-item divided>
-                                <router-link to="/logout">
+                                <a href="#" @click.prevent="logoutUser">
                                     <svg-icon type="mdi" :path="mdiLogout" />
                                     Logout
-                                </router-link>
+                                </a>
                             </el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
                 </el-dropdown>
+            </div>
+            <div v-else>
+                <!-- <router-link to="/login"> -->
+                    <el-button type="primary" @click.prevent="loginUser">Login</el-button>
+                <!-- </router-link> -->
             </div>
         </div>
     </div>
@@ -61,6 +66,30 @@ import {
     mdiLogout,
     mdiMenuDown,
 } from "@mdi/js";
+import { useStore } from "vuex";
+import { ref, watch } from "vue";
+
+const store = useStore();
+
+const isLoggedIn = ref(store.getters["auth/isLoggedIn"]);
+
+watch(
+    () => store.getters["auth/isLoggedIn"],
+    (value) => {
+        isLoggedIn.value = value;
+    }
+);
+
+const loginUser = () => {
+    store.dispatch("auth/login", {
+        username: "test",
+        password: "",
+    });
+};
+
+const logoutUser = () => {
+    store.dispatch("auth/logout");
+};
 </script>
 
 <style>

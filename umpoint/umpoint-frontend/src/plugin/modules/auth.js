@@ -3,7 +3,7 @@ import {
     logout as logoutApi,
     getUserInformation,
 } from "@/helpers/credentials.js";
-import { setCache, getCache } from "@/utils/cache";
+import { setCache, getCache, removeCache } from "@/utils/cache";
 import { CacheToken } from "@/constants/app";
 
 const auth = {
@@ -37,17 +37,13 @@ const auth = {
     },
     actions: {
         async loginRememberMe({ commit, dispatch }) {
-            //     dispatch("login", {
-            //         username: "test",
-            //         password: "1234",
-            //     });
             let tokenInfo = getCache(
                 CacheToken,
                 { isSessionStorage: false },
-                {}
+                null
             );
 
-            if (!tokenInfo.token) {
+            if (!tokenInfo || !tokenInfo.token) {
                 return;
             }
             if (new Date(tokenInfo.expiry) < Date.now()) {
@@ -111,11 +107,11 @@ const auth = {
         },
         async logout({ commit }) {
             logoutApi();
+            commit("setToken", null);
             commit("setUserId", null);
             commit("setUsername", null);
             commit("setPermissions", {});
-            commit("setToken", null);
-            setCache(CacheToken, null, false);
+            removeCache(CacheToken, false);
         },
     },
 };
