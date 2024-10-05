@@ -36,8 +36,8 @@ public class SpcEventController {
     @Operation(summary = "List")
     @Parameters({
         @Parameter(name = Constant.SPACE_ID, description = "Space ID", in = ParameterIn.QUERY, required = true),
-        @Parameter(name = Constant.START_TIME, description = "Start Date Time", in = ParameterIn.QUERY, required = true),
-        @Parameter(name = Constant.END_TIME, description = "End Date Time", in = ParameterIn.QUERY,required = true),
+        @Parameter(name = Constant.START_TIME, description = "Start Date Time", in = ParameterIn.QUERY),
+        @Parameter(name = Constant.END_TIME, description = "End Date Time", in = ParameterIn.QUERY),
     })
     @RequiresPermissions("space:space:info")
     public Result<List<SpcEventDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
