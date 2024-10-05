@@ -41,8 +41,10 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
 
         QueryWrapper<SpcEventEntity> wrapper = new QueryWrapper<>();
         wrapper.eq("space_id", spaceId);
-        wrapper.between("start_time", startTime, endTime);
-        wrapper.between("end_time", startTime, endTime);
+        if (startTime != null && endTime != null) {
+            wrapper.between("start_time", startTime, endTime);
+            wrapper.between("end_time", startTime, endTime);
+        }
 
         return wrapper;
     }
