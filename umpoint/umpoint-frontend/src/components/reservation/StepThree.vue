@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import EventInfo from "./EventInfo.vue";
 
-const props = defineProps(["eventInfo", "pricingDetails"]);
+const props = defineProps(["formData", "pricingDetails"]);
 const emit = defineEmits(["previousStep", "submitForm"]);
 defineOptions({
     inheritAttrs: false,
@@ -28,7 +28,7 @@ async function submitForm() {
 </script>
 
 <template>
-    <EventInfo :event-info="props.eventInfo" />
+    <EventInfo :formData="props.formData" />
 
     <div>
         <el-divider content-position="left">

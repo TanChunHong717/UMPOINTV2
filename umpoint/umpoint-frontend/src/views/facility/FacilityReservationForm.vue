@@ -30,7 +30,7 @@
             <component
                 :is="formsPage[currentStep]"
                 :facilityInfo="facilityInfo"
-                :eventInfo="eventInfoDisplay"
+                :formData="formData"
                 :pricingDetails="pricingDetails"
                 @nextStep="nextStep"
                 @previousStep="previousStep"
@@ -96,18 +96,6 @@ const pricingDetails = computed(() => {
             total: (1 + form.additionalTechnicians) * 50,
         },
     ];
-});
-
-const eventInfoDisplay = computed(() => {
-    if (!form || !form.eventName || !form.date) return null;
-    return {
-        eventName: form.eventName ?? "No event name",
-        numberOfParticipants: form.numberOfParticipants,
-        totalTechnicians: 1 + form.additionalTechnicians,
-        datetimeStr: `${form.date[0].toISOString().split("T")[0]} to ${
-            form.date[1].toISOString().split("T")[0]
-        }, ${form.startTime} - ${form.endTime}`,
-    };
 });
 
 // form stepping

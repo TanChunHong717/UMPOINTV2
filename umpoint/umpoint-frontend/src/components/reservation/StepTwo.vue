@@ -4,7 +4,7 @@ import { reactive, useTemplateRef } from "vue";
 import { ElMessageBox } from "element-plus";
 import EventInfo from "./EventInfo.vue";
 
-const props = defineProps(["eventInfo"]);
+const props = defineProps(["formData"]);
 const emit = defineEmits(["nextStep", "previousStep"]);
 defineOptions({
     inheritAttrs: false,
@@ -45,7 +45,7 @@ async function returnFormInfo(formEl) {
 </script>
 
 <template>
-    <EventInfo :event-info="props.eventInfo" />
+    <EventInfo :formData="props.formData" />
 
     <el-form ref="formNode" label-position="top" :model="formData">
         <el-divider content-position="left">

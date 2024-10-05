@@ -3,7 +3,7 @@
         <div class="grid max-2-col">
             <el-text class="info-item">
                 <svg-icon class="info-icon" type="mdi" :path="mdiPound" />
-                {{ props.eventInfo.eventName }}
+                {{ eventInfoDisplay.eventName }}
             </el-text>
             <el-text class="info-item">
                 <svg-icon
@@ -11,7 +11,7 @@
                     type="mdi"
                     :path="mdiCalendarClock"
                 />
-                {{ props.eventInfo.datetimeStr }}
+                {{ eventInfoDisplay.datetimeStr }}
             </el-text>
             <el-text class="info-item">
                 <svg-icon
@@ -19,7 +19,7 @@
                     type="mdi"
                     :path="mdiAccountGroup"
                 />
-                {{ props.eventInfo.numberOfParticipants }} person(s)
+                {{ eventInfoDisplay.numberOfParticipants }} person(s)
             </el-text>
             <el-text class="info-item">
                 <svg-icon
@@ -27,7 +27,7 @@
                     type="mdi"
                     :path="mdiAccountHardHat"
                 />
-                {{ props.eventInfo.totalTechnicians }} technician(s)
+                {{ eventInfoDisplay.totalTechnicians }} technician(s)
             </el-text>
         </div>
     </el-card>
@@ -41,8 +41,22 @@ import {
     mdiAccountHardHat,
 } from "@mdi/js";
 import { defineProps } from "vue";
+import { formatDateToTimezoneDateTimeStr } from "@/utils/date";
 
-const props = defineProps(["eventInfo"]);
+const props = defineProps(["formData"]);
+const eventInfoDisplay = computed(() => {
+    if (!props.formData.value || !props.formData.value.eventName) return null;
+    return {
+        eventName: props.formData.value.eventName ?? "No event name",
+        numberOfParticipants: props.formData.value.numberOfParticipants,
+        totalTechnicians: 1 + props.formData.value.additionalTechnicians,
+        datetimeStr: `${formatDateToTimezoneDateTimeStr(
+            props.formData.value.startDate
+        )} to ${formatDateToTimezoneDateTimeStr(
+            props.formData.value.startDate
+        )}`,
+    };
+});
 </script>
 
 <style scoped>
