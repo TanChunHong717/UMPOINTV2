@@ -10,6 +10,7 @@
         end-placeholder="End date"
         :shortcuts="shortcuts"
         size="small"
+        @change="getData"
       />
     </el-col>
   </el-row>
@@ -293,21 +294,22 @@ const radioChange = (val: number) => {
 }
 
 const getData = () => {
-  baseService.get("/dashboard/data", {start:dateRange.value[0], end:dateRange.value[1]}).then((res) => {
-    data.value = res.data;
-    dataList.value = data.value.spaceList;
-    dataListLoading.value = false;
-  }).catch((error) => {
-    console.error('Error fetching dashboard data');
-  });
+  // baseService.get("/dashboard/data", {start:dateRange.value[0], end:dateRange.value[1]}).then((res) => {
+  //   data.value = res.data;
+  //   dataList.value = data.value.spaceList;
+  //   dataListLoading.value = false;
+  // }).catch((error) => {
+  //   console.error('Error fetching dashboard data');
+  // });
+
+  // Remove code below in production
+  dataList.value = data.value.spaceList;
+  dataListLoading.value = false;
 }
 
 onMounted(() => {
   dateRange.value = lastMonth();
-  // getData();
-  // To remove code below in production
-  dataList.value = data.value.spaceList;
-  dataListLoading.value = false;
+  getData();
 })
 </script>
 <style>
