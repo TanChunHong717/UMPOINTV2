@@ -3,7 +3,7 @@
         <template #title>Facility Reservation</template>
         <template #subtitle>
             {{ facilityInfo.name }} @
-            {{ facilityInfo.faculty }}
+            {{ facilityInfo.deptName }}
         </template>
 
         <el-steps class="form-steps" :active="currentStep" align-center>
@@ -46,7 +46,7 @@ import {
     mdiFilePlus,
     mdiFormatListChecks,
 } from "@mdi/js";
-import { ref, reactive, computed, watch } from "vue";
+import { ref, reactive, computed, watch, shallowRef } from "vue";
 import { useRoute } from "vue-router";
 import { getFacilityInformation } from "@/helpers/api.js";
 import StepOne from "@/components/reservation/StepOne.vue";
@@ -59,23 +59,19 @@ const currentStep = ref(0);
 const route = useRoute();
 
 // first init
-let facilityInfo;
-let form;
-setupFacilityInfo(route.params.id);
+const facilityInfo = shallowRef({});
+const form = reactive({});
 
 // change when route facility id change
-watch(
-    () => route.params.id,
-    (newVal) => {
-        setupFacilityInfo(newVal);
-    }
-);
+watch(() => route.params.id, getFacilityInfo, { immediate: true });
 
-function setupFacilityInfo(facilityId) {
-    facilityInfo = getFacilityInformation(facilityId);
-    form = reactive({
-        facilityId: facilityId,
-    });
+async function getFacilityInfo(facilityId) {
+    let response = await getFacilityInformation(facilityId);
+    if (response.data.code !== 0) {
+        throw new Error(response.data.message);
+    }
+    facilityInfo.value = response.data.data;
+    form.facilityId = facilityId;
     // reset form to step 0
     currentStep.value = 0;
 }

@@ -210,16 +210,18 @@ import {
     mdiMessageTextOutline,
 } from "@mdi/js";
 import { ref, watch } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { getFacilityInformation } from "@/helpers/api.js";
 
+const router = useRouter();
 const route = useRoute();
 
 const loading = ref(false);
 const facilityInfo = ref({});
 
 // watch the params of the route to fetch the data on change
-watch(() => route.params.id, fetchData, { immediate: false });
+// must run once
+watch(() => route.params.id, fetchData, { immediate: true });
 
 async function fetchData(id) {
     loading.value = true;
@@ -230,15 +232,13 @@ async function fetchData(id) {
             throw new Error(response.data.message);
         }
         facilityInfo.value = response.data.data;
-        console.log(facilityInfo.value);
     } catch (err) {
-        console.log(err);
+        console.error(err);
+        router.push({ name: "NotFound" });
     } finally {
         loading.value = false;
     }
 }
-// first time init
-fetchData(route.params.id);
 
 // build booking form page url
 const bookingUrl = `/facility/${route.params.id}/reserve`;

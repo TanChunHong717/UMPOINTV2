@@ -16,9 +16,11 @@ import {
     formatDateToTimezoneDateStr,
     formatDateToTimezoneTimeStr,
     addDays,
-} from "@/utils/date.js";
+} from "@/utils/date";
 import baseService from "@/utils/api.js";
+import { getFacilityBookings } from "@/helpers/api.js";
 
+const loadingCalendar = ref(true);
 // form data
 const formData: Ref<{
     eventName: string | null;
@@ -70,10 +72,52 @@ const dateInput = computed({
             : [];
     },
     set(value: Date[]) {
-        formData.value.startDate = value[0];
-        formData.value.endDate = value[1];
+        let originalStartDate = formData.value.startDate;
+        let originalEndDate = formData.value.endDate;
+        let originalTimeSet = formData.value.isTimeSet;
+        console.log(originalStartDate, originalEndDate, originalTimeSet);
+
+        let newStartDate = value[0];
+        let newEndDate = value[1];
+
+        // preserve time if already set
+        if (formData.value.startDate && originalTimeSet[0]) {
+            newStartDate.setHours(
+                originalStartDate.getHours(),
+                originalStartDate.getMinutes()
+            );
+        }
+        if (formData.value.endDate && originalTimeSet[1]) {
+            newEndDate.setHours(
+                originalEndDate.getHours(),
+                originalEndDate.getMinutes()
+            );
+        }
+
+        let canSetDate = true;
+        // if all time is set
+        if (originalTimeSet.every((bool) => bool)) {
+            // validate event overlap
+            canSetDate = validateBeforeSetNewEvent({
+                start: newStartDate,
+                end: newEndDate,
+            });
+            // maintain the original is time set (validateBeforeSetNewEvent will change it)
+            formData.value.isTimeSet = originalTimeSet;
+        }
+        // else just set date without validate
+
+        if (canSetDate) {
+            formData.value.startDate = newStartDate;
+            formData.value.endDate = newEndDate;
+            // trigger validation to clear error on input
+            emit("validateForm", "bookingDate");
+        }
     },
 });
+const setTomorrow = () => {
+    dateInput.value = [addDays(today, 3), addDays(today, 3)];
+};
 const startTimeInput = computed({
     get() {
         return formData.value.startDate && formData.value.isTimeSet[0]
@@ -90,7 +134,10 @@ const startTimeInput = computed({
             );
             formData.value.isTimeSet[0] = true;
         } catch (e) {
-            console.error(e);
+            ElMessage({
+                message: "Please select start date first",
+                type: "error",
+            });
         }
     },
 });
@@ -115,7 +162,10 @@ const endTimeInput = computed({
             formData.value.endDate.setHours(Number(time[0]), Number(time[1]));
             formData.value.isTimeSet[1] = true;
         } catch (e) {
-            console.error(e);
+            ElMessage({
+                message: "Please select end date first",
+                type: "error",
+            });
         }
     },
 });
@@ -174,12 +224,12 @@ const getHoliday = (year: number) => {
         });
 };
 const initializeTimeTable = () => {
-    const startTimeArray = space.value.spcBookingRuleDTO.startTime.split(
+    const startTimeArray = space.value.spcBookingRuleDTO?.startTime.split(
         ":"
     ) ?? ["08", "00"];
     startTime.value =
         Number(startTimeArray[0]) * 60 + Number(startTimeArray[1]);
-    const endTimeArray = space.value.spcBookingRuleDTO.endTime.split(":") ?? [
+    const endTimeArray = space.value.spcBookingRuleDTO?.endTime.split(":") ?? [
         "18",
         "00",
     ];
@@ -209,8 +259,9 @@ const onViewChange = (object: any) => {
 };
 const generateWeekendAndHoliday = (startDate: Date, endDate: Date) => {
     const holidayObject: Record<number, any> = {};
-    const holidayClass =
-        space.value.spcBookingRuleDTO.holidayAvailable == 1 ? "close" : "info";
+    const isHolidayAvailable =
+        space.value.spcBookingRuleDTO?.holidayAvailable === 1;
+    const holidayClass = isHolidayAvailable ? "close" : "info";
 
     holidays.value.forEach((holiday: any) => {
         const holidayDate = new Date(holiday.date.iso);
@@ -226,7 +277,7 @@ const generateWeekendAndHoliday = (startDate: Date, endDate: Date) => {
         }
     });
 
-    if (space.value.spcBookingRuleDTO.holidayAvailable == 1) {
+    if (isHolidayAvailable) {
         weekendDays.forEach((day) => {
             if (!holidayObject[day]) {
                 holidayObject[day] = {
@@ -243,54 +294,29 @@ const generateWeekendAndHoliday = (startDate: Date, endDate: Date) => {
 };
 
 const updateEvents = async (startDate: Date, endDate: Date) => {
-    baseService
-        .get("/space/event", {
-            params: {
-                spaceId: space.value.id,
-                startTime: formatDateToTimezoneTimeStr(
-                    startDate,
-                    "Asia/Kuala_Lumpur"
-                ),
-                endTime: formatDateToTimezoneTimeStr(
-                    endDate,
-                    "Asia/Kuala_Lumpur"
-                ),
-            },
-        })
-        .then((res) => {
-            // if (!res.data || typeof res.data !== "object") return;
+    const facilityEvents = await getFacilityBookings(space.value.spcId);
+    facilityEvents.data.forEach((res) => {
+        // if (!res.data || typeof res.data !== "object") return;
 
-            // TODO: Remove fake data
-            res.data = [
-                {
-                    startTime: new Date(2024, 8, 29, 9, 0),
-                    endTime: new Date(2024, 8, 30, 9, 0),
-                    title: "Upcoming event",
-                    type: 0,
-                    bookingId: 1,
-                    closureId: 2,
-                },
-            ];
+        bookedEvents.value = res.data.map((eventDTO: any) => {
+            return {
+                start: new Date(eventDTO.startTime),
+                end: new Date(eventDTO.endTime),
+                title: eventDTO.title,
+                class:
+                    eventDTO.type == "0"
+                        ? "booking"
+                        : eventDTO.type == "1"
+                        ? "close"
+                        : "closure",
+                type: eventDTO.type,
 
-            bookedEvents.value = res.data.map((eventDTO: any) => {
-                return {
-                    start: new Date(eventDTO.startTime),
-                    end: new Date(eventDTO.endTime),
-                    title: eventDTO.title,
-                    class:
-                        eventDTO.type == "0"
-                            ? "booking"
-                            : eventDTO.type == "1"
-                            ? "close"
-                            : "closure",
-                    type: eventDTO.type,
-
-                    // default events that came from system are non-editable
-                    resizable: false,
-                    draggable: false,
-                };
-            });
+                // default events that came from system are non-editable
+                resizable: false,
+                draggable: false,
+            };
         });
+    });
 };
 
 const onCalendarDragCreate = (event: VueCalEvent) => {
@@ -365,7 +391,7 @@ const validateBookingTimeRange = (startDate: Date, endDate: Date) => {
         }
     }
     // check if booking on weekend
-    if (!space.value.spcBookingRuleDTO.allowWeekend) {
+    if (!space.value.spcBookingRuleDTO?.allowWeekend) {
         if (
             startDate.getDay() == 0 ||
             startDate.getDay() == 6 ||
@@ -394,6 +420,11 @@ function validateBeforeSetNewEvent(event: VueCalEvent) {
         currentEvent.value = event;
         return true;
     } catch (e) {
+        // pop notification
+        ElMessage({
+            message: e.message,
+            type: "error",
+        });
         // trigger display event list update
         updateDisplayEvents.value++;
         return false;
@@ -404,44 +435,6 @@ defineExpose({
     validateTime,
 });
 /** END VALIDATORS **/
-
-const setTomorrow = () => {
-    let originalStartDate = formData.value.startDate;
-    let originalEndDate = formData.value.endDate;
-    let originalTimeSet = formData.value.isTimeSet;
-
-    let newStartDate = addDays(today, 1);
-    let newEndDate = addDays(today, 1);
-
-    // preserve time if already set
-    if (formData.value.startDate && originalTimeSet[0]) {
-        newStartDate.setHours(
-            originalStartDate.getHours(),
-            originalStartDate.getMinutes()
-        );
-    }
-    if (formData.value.endDate && originalTimeSet[1]) {
-        newEndDate.setHours(
-            originalEndDate.getHours(),
-            originalEndDate.getMinutes()
-        );
-    }
-
-    if (validateBeforeSetNewEvent({ start: newStartDate, end: newEndDate })) {
-        formData.value.startDate = newStartDate;
-        formData.value.endDate = newEndDate;
-        formData.value.isTimeSet = originalTimeSet;
-
-        // trigger validation to clear error on this input
-        emit("validateForm", "bookingDate");
-    } else {
-        // pop notification
-        ElMessage({
-            message: "Booking overlapped",
-            type: "warning",
-        });
-    }
-};
 
 // refresh
 onMounted(() => {
@@ -492,6 +485,7 @@ onActivated(() => {
                     step="00:30"
                     end="18:00"
                     :max-time="startTimeMaxTime()"
+                    :editable="!!formData.startDate"
                 ></el-time-select
                 >&nbsp;&nbsp; → &nbsp;&nbsp;
                 <el-time-select
@@ -501,6 +495,7 @@ onActivated(() => {
                     step="00:30"
                     end="18:00"
                     :min-time="endTimeMinTime()"
+                    :editable="!!formData.endDate"
                 ></el-time-select>
             </el-form-item>
         </el-col>
@@ -508,6 +503,7 @@ onActivated(() => {
 
     <vue-cal
         small
+        :loading="loadingCalendar"
         :disable-views="['years', 'year', 'day']"
         :min-date="minDate"
         :max-date="maxDate"
