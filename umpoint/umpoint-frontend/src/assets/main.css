@@ -1,0 +1,81 @@
+* {
+    font-family: Mulish, system-ui, sans-serif;
+}
+html {
+    /* css override */
+    --el-bg-color: #f5f5f5;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-weight: 450;
+}
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 750;
+}
+
+/* fix footer at bottom of page when page content not enough */
+html,
+body {
+    height: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+}
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 100%;
+}
+
+/* basic grid with auto wrapping, may need to overide columns */
+div.grid {
+    display: grid;
+    column-gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+/* use for list with icon on left */
+.info-item {
+    position: relative;
+    display: block;
+    padding-left: 2.5em !important;
+    line-height: 1.5 !important;
+
+    .info-icon {
+        position: absolute;
+        height: 1.25em;
+        vertical-align: bottom;
+        left: 0;
+        top: -1px;
+    }
+}
+
+/* larger divider */
+.el-divider {
+    margin-block: 2.5em 1.2em;
+
+    > .el-divider__text {
+        left: 0;
+        padding-inline: 0 8px;
+        > h2 {
+            margin: 0;
+            padding: 0;
+            line-height: 1;
+        }
+    }
+}
+
+/* tab selection more pop */
+.el-tabs__item {
+    color: var(--el-table-header-text-color) !important;
+    font-weight: 400 !important;
+    &.is-active {
+        font-weight: 700 !important;
+    }
+}

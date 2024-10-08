@@ -121,6 +121,8 @@ WHERE start_time > NOW();
 
 TRUNCATE TABLE acc_upcoming_event;
 
+DELIMITER |
+
 CREATE TRIGGER trg_acc_event_insert
     AFTER INSERT ON acc_event
     FOR EACH ROW
@@ -131,6 +133,8 @@ BEGIN
     END IF;
 END;
 
+|
+
 CREATE TRIGGER trg_acc_event_delete
     AFTER DELETE ON acc_event
     FOR EACH ROW
@@ -138,7 +142,11 @@ BEGIN
     DELETE FROM acc_upcoming_event WHERE id = OLD.id;
 END;
 
+|
+
 SET GLOBAL event_scheduler = ON;
+
+|
 
 CREATE EVENT delete_past_acc_upcoming_events
 ON SCHEDULE EVERY 1 DAY
@@ -147,3 +155,5 @@ BEGIN
     DELETE FROM acc_upcoming_event
     WHERE end_time < NOW();
 END;
+
+|

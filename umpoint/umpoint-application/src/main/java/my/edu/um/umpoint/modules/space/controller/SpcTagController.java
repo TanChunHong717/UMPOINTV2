@@ -46,7 +46,6 @@ public class SpcTagController {
         @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String") ,
         @Parameter(name = Constant.NAME, description = "Tag name", in = ParameterIn.QUERY, ref="String")
     })
-    @RequiresPermissions("space:tag:page")
     public Result<PageData<SpcTagDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
         PageData<SpcTagDTO> page = spcTagService.page(params);
 
@@ -55,7 +54,6 @@ public class SpcTagController {
 
     @GetMapping("list")
     @Operation(summary = "list")
-    @RequiresPermissions("space:tag:list")
     public Result<List<SpcTagDTO>> list(){
         List<SpcTagDTO> page = spcTagService.list(new HashMap<>());
 
@@ -64,7 +62,6 @@ public class SpcTagController {
 
     @GetMapping("list/filter")
     @Operation(summary = "list")
-    @RequiresPermissions("space:tag:list")
     public Result<List<SpcTagDTO>> filterList(){
         HashMap<String, Object> params = new HashMap<>();
         params.put("filter", true);
