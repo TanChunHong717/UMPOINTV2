@@ -9,12 +9,22 @@
             </div>
         </div>
 
-        <el-card v-for="facility in facilities" :key="facility.id">
+        <el-card>
             <div slot="header" class="clearfix">
-                <span>{{ facility.name }}</span>
+                <h4>Test facility</h4>
             </div>
             <div>
-                <p>{{ facility.description }}</p>
+                <p>Auditorium - 2</p>
+            </div>
+            <RouterLink :to="`/facility/2`">Visit test location</RouterLink>
+        </el-card>
+
+        <el-card v-for="facility in facilities" :key="facility.id">
+            <div slot="header" class="clearfix">
+                <h4>{{ facility.name }}</h4>
+            </div>
+            <div>
+                <p>{{ facility.category }} - {{  facility.deptName }}</p>
             </div>
             <RouterLink :to="`/facility/${facility.id}`">Visit location</RouterLink>
         </el-card>
