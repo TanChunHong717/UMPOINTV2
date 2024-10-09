@@ -162,9 +162,9 @@ const dataFormSubmitHandle = () => {
       accBookingRuleDTO: {
         id: dataForm.bookingRuleId,
         approvalRequired: dataForm.approvalRequired,
-        openForStaff: dataForm.openForStaff,
-        openForStudent: dataForm.openForStudent,
-        openForPublic: dataForm.openForPublic,
+        openForStaff: dataForm.openForStaff ?? 0,
+        openForStudent: dataForm.openForStudent ?? 0,
+        openForPublic: dataForm.openForPublic ?? 0,
         openDaysPriorBooking: dataForm.openDaysPriorBooking,
         closeDaysAfterBooking: dataForm.closeDaysAfterBooking,
         maxReservationDays: dataForm.maxReservationDays,
