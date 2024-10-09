@@ -270,9 +270,9 @@ const getEvent = async (startDate: Date, endDate: Date) => {
 }
 
 const onEventClick = (event: any) => {
-  if (event.type == '0')
+  if (event.type == '0' && state.hasPermission("accommodation:booking:info"))
     router.push({path: '/booking/acc-booking', query: {id: event.bookingId}});
-  else if (event.type == '2') {
+  else if (event.type == '2' && state.hasPermission("accommodation:closure:info")) {
     onClosureUpdate(event);
   }
 }
@@ -284,7 +284,8 @@ const bookingRuleUpdateHandle = () => {
 
 const closureUpdateRef = ref();
 const onClosureCreate = (event: any) => {
-  closureUpdateRef.value.init(null, event, accommodation.value.id);
+  if (state.hasPermission("accommodation:closure:create"))
+    closureUpdateRef.value.init(null, event, accommodation.value.id);
 }
 const onClosureUpdate = (event: any) => {
   closureUpdateRef.value.init(event.closureId, event, accommodation.value.id);

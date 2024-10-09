@@ -47,9 +47,15 @@
       </el-row>
       <el-row justify="end">
         <el-col span="14">
-          <el-button type="danger" @click="deleteHandle()" v-if="dataForm.id">Delete</el-button>
+          <el-button type="danger" @click="deleteHandle()" v-if="dataForm.id != '' && state.hasPermission('space:closure:delete')">Delete</el-button>
           <el-button @click="cancelHandle()">Cancel</el-button>
-          <el-button type="primary" @click="dataFormSubmitHandle()">Confirm</el-button>
+          <el-button
+            type="primary"
+            @click="dataFormSubmitHandle()"
+            v-if="
+            (state.hasPermission('space:closure:save') && dataForm.id == '') ||
+            (state.hasPermission('space:closure:update') && dataForm.id != '')"
+          >Confirm</el-button>
         </el-col>
       </el-row>
     </template>
@@ -57,12 +63,16 @@
 </template>
 
 <script lang="ts" setup>
-import {reactive, ref} from "vue";
+import {reactive, ref, toRefs} from "vue";
 import baseService from "@/service/baseService";
 import {ElMessage} from "element-plus";
 import {formatDateToDateStr, formatDateToTimeStr} from "@/utils/date";
+import useView from "@/hooks/useView";
 
 const emit = defineEmits(["refreshData", "cancel"]);
+
+const view = reactive({});
+const state = reactive({ ...useView(view), ...toRefs(view) });
 
 let event: any;
 let spaceId: any;

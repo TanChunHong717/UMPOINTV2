@@ -280,9 +280,9 @@ const getEvent = async (startDate: Date, endDate: Date) => {
 }
 
 const onEventClick = (event: any) => {
-  if (event.type == '0')
+  if (event.type == '0' && state.hasPermission("space:booking:info"))
     router.push({path: '/booking/spc-booking', query: {id: event.bookingId}});
-  else if (event.type == '2') {
+  else if (event.type == '2' && state.hasPermission("space:closure:info")) {
     onClosureUpdate(event);
   }
 }
