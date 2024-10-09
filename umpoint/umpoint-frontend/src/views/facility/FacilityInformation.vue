@@ -3,6 +3,13 @@
         <template #title>Facility Information</template>
 
         <h2>{{ facilityInfo.name }}</h2>
+        <div class="tags">
+            <el-tag type="info">{{ facilityInfo.category }}</el-tag>
+            <el-tag type="info" v-for="tag in facilityInfo.spcTagDTOList">
+                {{ tag.tagName }}
+            </el-tag>
+        </div>
+
         <el-carousel arrow="always" trigger="click" :autoplay="false">
             <el-carousel-item v-for="item in 5" :key="item">
                 <img :src="getImgUrl(item - 1)" />
@@ -174,7 +181,7 @@
                 </el-text>
             </el-card>
         </el-row>
-        <el-row>
+        <!-- <el-row>
             <el-card shadow="never">
                 <template #header>
                     <div class="card-header">
@@ -183,7 +190,7 @@
                 </template>
                 Map here
             </el-card>
-        </el-row>
+        </el-row> -->
         <el-row>
             <el-card shadow="never">
                 <template #header>
@@ -252,6 +259,20 @@ const getImgUrl = (i) => {
 </script>
 
 <style scoped>
+h2 {
+    margin-block-start: 1em;
+    margin-block-end: 0.5em;
+}
+
+div.tags {
+    margin-block-start: 0.5em;
+    margin-block-end: 1em;
+
+    .el-tag {
+        margin-inline-end: 0.5em;
+    }
+}
+
 .el-card {
     width: 100%;
     height: calc(100% - 12px);
