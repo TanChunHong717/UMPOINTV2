@@ -218,11 +218,11 @@ const dataFormSubmitHandle = () => {
         openForStaff: dataForm.openForStaff,
         openForStudent: dataForm.openForStudent,
         openForPublic: dataForm.openForPublic,
-        weekendAvailable: dataForm.weekendAvailable,
+        holidayAvailable: dataForm.holidayAvailable,
         startTime: dateToTimeString(dataForm.startTime),
         endTime: dateToTimeString(dataForm.endTime),
-        closeDaysBeforeEvent: dataForm.closeDaysBeforeEvent,
-        closeDaysAfterEvent: dataForm.closeDaysAfterEvent,
+        openDaysPriorBooking: dataForm.openDaysPriorBooking,
+        closeDaysAfterBooking: dataForm.closeDaysAfterBooking,
         maxReservationDays: dataForm.maxReservationDays,
         minBookingHours: dataForm.minBookingHours
       }

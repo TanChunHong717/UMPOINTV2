@@ -49,7 +49,7 @@
         <el-input-number v-model="dataForm.maxReservationDays" controls-position="right" :min="1"/>
       </el-form-item>
       <el-form-item label="Min booking hours" prop="minBookingHours">
-        <el-input-number v-model="dataForm.minBookingDays" controls-position="right" :min="1"/>
+        <el-input-number v-model="dataForm.minBookingHours" controls-position="right" :min="1"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -85,7 +85,7 @@ const dataForm = reactive({
   openDaysPriorBooking: null,
   closeDaysAfterBooking: null,
   maxReservationDays: null,
-  minBookingDays: null,
+  minBookingHours: null,
 });
 
 const rules = ref({
@@ -165,8 +165,8 @@ const dataFormSubmitHandle = () => {
         openForStaff: dataForm.openForStaff,
         openForStudent: dataForm.openForStudent,
         openForPublic: dataForm.openForPublic,
-        closeDaysBeforeEvent: dataForm.closeDaysBeforeEvent,
-        closeDaysAfterEvent: dataForm.closeDaysAfterEvent,
+        openDaysPriorBooking: dataForm.openDaysPriorBooking,
+        closeDaysAfterBooking: dataForm.closeDaysAfterBooking,
         maxReservationDays: dataForm.maxReservationDays,
         minBookingHours: dataForm.minBookingHours
       }
