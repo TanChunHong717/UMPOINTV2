@@ -39,7 +39,7 @@ public class AccEventController {
         @Parameter(name = Constant.START_TIME, description = "Start Date Time", in = ParameterIn.QUERY, required = true),
         @Parameter(name = Constant.END_TIME, description = "End Date Time", in = ParameterIn.QUERY,required = true),
     })
-    @RequiresPermissions("accommodation:accommodation:info")
+    @RequiresPermissions("accommodation:event:info")
     public Result<List<AccEventDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
         List<AccEventDTO> list = accEventService.list(params);
 

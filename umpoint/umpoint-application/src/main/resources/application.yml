@@ -86,6 +86,7 @@ umpoint:
   user:
     permission:
       space:
+        - space:event:info
         - space:booking:page
         - space:booking:save
         - space:booking:update
@@ -96,6 +97,7 @@ umpoint:
         - service:booking:update
         - service:booking:cancel
       accommodation:
+        - accommodation:event:info
         - accommodation:booking:page
         - accommodation:booking:save
         - accommodation:booking:update
