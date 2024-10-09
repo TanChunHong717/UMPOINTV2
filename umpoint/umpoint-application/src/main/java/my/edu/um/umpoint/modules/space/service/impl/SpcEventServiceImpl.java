@@ -34,16 +34,26 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
     private SpcSpaceService spcSpaceService;
 
     @Override
-    public QueryWrapper<SpcEventEntity> getWrapper(Map<String, Object> params){
-        Long spaceId = Long.parseLong((String)params.get("spaceId"));
-        Date startTime =  DateUtils.parse((String) params.get("startTime"), DateUtils.DATE_TIME_PATTERN);
-        Date endTime = DateUtils.parse((String) params.get("endTime"), DateUtils.DATE_TIME_PATTERN);
+    public QueryWrapper<SpcEventEntity> getWrapper(Map<String, Object> params) {
+        Long spaceId = Long.parseLong((String) params.get("spaceId"));
+        Date startTime = null,
+                endTime = null;
+        if (params.get("startTime") != null) {
+            startTime = DateUtils.parse((String) params.get("startTime"), DateUtils.DATE_TIME_PATTERN);
+        }
+        if (params.get("endTime") != null) {
+            endTime = DateUtils.parse((String) params.get("endTime"), DateUtils.DATE_TIME_PATTERN);
+        }
 
         QueryWrapper<SpcEventEntity> wrapper = new QueryWrapper<>();
         wrapper.eq("space_id", spaceId);
-        if (startTime != null && endTime != null) {
-            wrapper.between("start_time", startTime, endTime);
-            wrapper.between("end_time", startTime, endTime);
+        if (startTime != null) {
+            wrapper.ge("start_time", startTime);
+            wrapper.ge("end_time", startTime);
+        }
+        if (endTime != null) {
+            wrapper.le("start_time", endTime);
+            wrapper.le("end_time", endTime);
         }
 
         return wrapper;
@@ -78,13 +88,13 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
                     endDay.plusDays(1 + bookingRuleDTO.getCloseDaysAfterBooking()),
                     LocalTime.MAX
             );
-            
+
             SpcEventEntity eventEntity = new SpcEventEntity();
 
             eventEntity.setSpaceId(bookingDTO.getSpaceId());
             eventEntity.setBookingId(bookingDTO.getId());
             eventEntity.setType(BookingConstant.EventStatus.CLOSE_AFTER_BOOKING.getValue());
-            
+
             eventEntity.setStartTime(DateUtils.convertLocalDateTimeToDate(startTime));
             eventEntity.setEndTime(DateUtils.convertLocalDateTimeToDate(endTime));
 
