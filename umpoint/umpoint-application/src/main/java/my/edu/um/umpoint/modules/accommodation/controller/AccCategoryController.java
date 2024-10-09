@@ -64,7 +64,6 @@ public class AccCategoryController {
 
     @GetMapping("list/filter")
     @Operation(summary = "filter list")
-    @RequiresPermissions("accommodation:category:list")
     public Result<List<AccCategoryDTO>> filterList(){
         HashMap<String, Object> params = new HashMap<>();
         params.put("filter", true);
