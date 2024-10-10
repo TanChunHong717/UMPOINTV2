@@ -34,15 +34,21 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="Start time" prop="startTime">
-        <el-time-picker
+        <el-time-select
           v-model="dataForm.startTime"
           placeholder="Start time"
+          start="00:00"
+          end="23:59"
+          step="00:30"
         />
       </el-form-item>
       <el-form-item label="End time" prop="endTime">
-        <el-time-picker
+        <el-time-select
           v-model="dataForm.endTime"
           placeholder="End time"
+          :start="dataForm.startTime"
+          end="23:59"
+          step="00:30"
         />
       </el-form-item>
       <el-form-item label="Price for an hour" prop="hourPrice">
@@ -157,29 +163,12 @@ const getUserList = async () => {
   });
 };
 
-const timeStringToDate = (timeString:any):any => {
-  if (!timeString)
-    return null;
-
-  const [hours, minutes, seconds] = timeString.split(':').map(Number);
-  if (
-    isNaN(hours) || hours < 0 || hours > 23 ||
-    isNaN(minutes) || minutes < 0 || minutes > 59 ||
-    isNaN(seconds) || seconds < 0 || seconds > 59
-  )
-    return null;
-
-  const date = new Date();
-  date.setHours(hours, minutes, seconds, 0); // Set hours, minutes, and seconds
-  return date;
+const removeSecond = (timeString: any): any => {
+  return timeString.substring(0, timeString.lastIndexOf(":"));
 }
 
-const dateToTimeString = (date:any):any => {
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  const seconds = String(date.getSeconds()).padStart(2, '0');
-
-  return `${hours}:${minutes}:${seconds}`;
+const addSecond = (timeString: any): any => {
+  return timeString + ':00';
 }
 
 const init = (space?: any) => {
@@ -195,8 +184,8 @@ const init = (space?: any) => {
   Object.assign(dataForm, space, space.spcBookingRuleDTO);
   dataForm.id = space.id;
   dataForm.bookingRuleId = space.bookingRuleId;
-  dataForm.startTime = timeStringToDate(dataForm.startTime);
-  dataForm.endTime = timeStringToDate(dataForm.endTime);
+  dataForm.startTime = removeSecond(dataForm.startTime);
+  dataForm.endTime = removeSecond(dataForm.endTime);
 };
 
 // Form submission
@@ -219,8 +208,8 @@ const dataFormSubmitHandle = () => {
         openForStudent: dataForm.openForStudent,
         openForPublic: dataForm.openForPublic,
         holidayAvailable: dataForm.holidayAvailable,
-        startTime: dateToTimeString(dataForm.startTime),
-        endTime: dateToTimeString(dataForm.endTime),
+        startTime: addSecond(dataForm.startTime),
+        endTime: addSecond(dataForm.endTime),
         openDaysPriorBooking: dataForm.openDaysPriorBooking,
         closeDaysAfterBooking: dataForm.closeDaysAfterBooking,
         maxReservationDays: dataForm.maxReservationDays,

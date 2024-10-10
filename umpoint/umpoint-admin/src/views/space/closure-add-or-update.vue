@@ -1,7 +1,7 @@
 <template>
   <el-dialog v-model="visible" :title="!dataForm.id ? 'Add' : 'Update'" :close-on-click-modal="false" :close-on-press-escape="false">
     <el-form :model="dataForm" ref="dataFormRef" @keyup.enter="dataFormSubmitHandle()" label-width="120px">
-      <el-form-item label="Date Range" prop="startDay">
+      <el-form-item label="Date Range">
         <el-date-picker
           v-model="dateRange"
           type="daterange"
@@ -11,15 +11,22 @@
           end-placeholder="End date"
         />
       </el-form-item>
-      <el-form-item label="Time Range" prop="startTime">
-        <el-time-picker
-          v-model="timeRange"
-          is-range
-          :disabled-minutes="disabledMinutes"
-          :disabled-seconds="disabledSeconds"
-          range-separator="To"
-          start-placeholder="Start time"
-          end-placeholder="End time"
+      <el-form-item label="Start Time">
+        <el-time-select
+          v-model="dataForm.startTime"
+          placeholder="Start time"
+          start="00:00"
+          end="23:59"
+          step="00:30"
+        />
+      </el-form-item>
+      <el-form-item label="End Time">
+        <el-time-select
+          v-model="dataForm.endTime"
+          placeholder="End time"
+          :start="dataForm.startTime"
+          end="23:59"
+          step="00:30"
         />
       </el-form-item>
       <el-form-item label="Recurring" prop="recur">
@@ -78,7 +85,6 @@ let event: any;
 let spaceId: any;
 const visible = ref(false);
 const dateRange = ref<[Date, Date]>([new Date(), new Date()]);
-const timeRange = ref<[Date, Date]>([new Date(), new Date()]);
 const checkAll = ref(true);
 const week = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 const checkedDays = ref(week);
@@ -114,20 +120,6 @@ const handleCheckedDaysChange = (value: string[]) => {
   }
 }
 
-const makeRange = (start: number, end: number) => {
-  const result: number[] = []
-  for (let i = start; i <= end; i++) {
-    result.push(i)
-  }
-  return result
-}
-const disabledMinutes = (hour: number) => {
-  return makeRange(1,29).concat(makeRange(31,59));
-}
-const disabledSeconds = (hour: number, minute: number) => {
-  return makeRange(1,29).concat(makeRange(31,59));
-}
-
 const init = (id: number, e: any, sid: number) => {
   visible.value = true;
   dataForm.id = "";
@@ -142,22 +134,27 @@ const init = (id: number, e: any, sid: number) => {
 };
 
 const setDateAndTimeFromEvent = () => {
+  const now = new Date();
   const startDate = new Date(event.start);
   const endDate = new Date(event.end);
-  dateRange.value = [startDate, endDate];
+  if (startDate.getTime() < now.getTime()) {
+    cancelHandle();
+    ElMessage.warning({
+      message: 'Closure event can not be create in past',
+      duration: 3000
+    });
+  }
 
-  const roundedStartDate = roundToNearestHalfHour(new Date(startDate));
-  const roundedEndDate = roundToNearestHalfHour(new Date(endDate));
-  timeRange.value = [roundedStartDate, roundedEndDate];
+  dateRange.value = [startDate, endDate];
+  dataForm.startTime = roundToNearestHalfHour(new Date(startDate));
+  dataForm.endTime = roundToNearestHalfHour(new Date(endDate));
 }
 
-const roundToNearestHalfHour = (date: Date): Date => {
+const roundToNearestHalfHour = (date: Date): string => {
   const minutes = date.getMinutes();
   const roundedMinutes = Math.round(minutes / 30) * 30;
   date.setMinutes(roundedMinutes);
-  date.setSeconds(0);
-  date.setMilliseconds(0);
-  return date;
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
 
 const getInfo = (id: number) => {
@@ -172,22 +169,12 @@ const setDateAndTimeFromDTO = (dto: any) => {
   const endDay = new Date(dto.endDay);
   dateRange.value = [startDay, endDay];
 
-  const startParsedTime = parseTimeString(dto.startTime);
-  startDay.setHours(startParsedTime.hours);
-  startDay.setMinutes(startParsedTime.minutes);
-  startDay.setSeconds(startParsedTime.seconds)
-
-  const endParsedTime = parseTimeString(dto.endTime);
-  endDay.setHours(endParsedTime.hours);
-  endDay.setMinutes(endParsedTime.minutes);
-  endDay.setSeconds(endParsedTime.seconds)
-
-  timeRange.value = [startDay, endDay];
+  dataForm.startTime = removeSecond(dto.startTime);
+  dataForm.endTime = removeSecond(dto.endTime);
 }
 
-const parseTimeString = (timeString: string) => {
-  const [hours, minutes, seconds] = timeString.split(':').map(Number);
-  return { hours, minutes, seconds };
+const removeSecond = (timeString: any): any => {
+  return timeString.substring(0, timeString.lastIndexOf(":"));
 }
 
 const dataFormSubmitHandle = () => {
@@ -213,11 +200,8 @@ const updateDataForm = () => {
     dataForm.endDay = formatDateToDateStr(endDate);
   }
 
-  if (timeRange.value.length === 2) {
-    const [startDateTime, endDateTime] = timeRange.value;
-    dataForm.startTime = formatDateToTimeStr(startDateTime);
-    dataForm.endTime = formatDateToTimeStr(endDateTime);
-  }
+  dataForm.startTime = dataForm.startTime + ":00";
+  dataForm.endTime = dataForm.endTime + ":00";
 
   week.forEach(day => {
     dataForm[`recur${day}`] = checkedDays.value.includes(day) ? 1 : 0;
