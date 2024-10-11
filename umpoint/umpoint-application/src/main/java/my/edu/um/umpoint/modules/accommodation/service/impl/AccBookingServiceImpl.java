@@ -105,5 +105,6 @@ public class AccBookingServiceImpl extends CrudServiceImpl<AccBookingDao, AccBoo
 
         baseDao.update(entity, new QueryWrapper<AccBookingEntity>().eq("id",id));
         accEventService.deleteByBookingId(id);
+        accBookingTechnicianService.deleteByBookingId(id);
     }
 }

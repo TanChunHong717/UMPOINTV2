@@ -4,6 +4,7 @@
       <el-form-item label="Manager" prop="manager">
         <el-select
           v-model="dataForm.manager"
+          filterable
           placeholder="Select manager"
         >
           <el-option

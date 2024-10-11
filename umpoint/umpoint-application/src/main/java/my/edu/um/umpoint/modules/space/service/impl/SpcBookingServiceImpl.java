@@ -107,5 +107,6 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
 
         baseDao.update(entity, new QueryWrapper<SpcBookingEntity>().eq("id", id));
         spcEventService.deleteByBookingId(id);
+        spcBookingTechnicianService.deleteByBookingId(id);
     }
 }

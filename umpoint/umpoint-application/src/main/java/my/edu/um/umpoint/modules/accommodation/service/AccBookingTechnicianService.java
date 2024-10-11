@@ -5,4 +5,5 @@ import my.edu.um.umpoint.modules.accommodation.dto.AccBookingTechnicianDTO;
 import my.edu.um.umpoint.modules.accommodation.entity.AccBookingTechnicianEntity;
 
 public interface AccBookingTechnicianService extends CrudService<AccBookingTechnicianEntity, AccBookingTechnicianDTO> {
+    void deleteByBookingId(Long bookingId);
 }

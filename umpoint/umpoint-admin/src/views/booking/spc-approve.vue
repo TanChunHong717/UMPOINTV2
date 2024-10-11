@@ -4,9 +4,10 @@
       <el-form-item label="Technician" prop="technician">
         <el-select
           v-model="dataForm.technician"
-          :placeholder="'Select ' + maxTechnicianNumber + ' technician' + ((maxTechnicianNumber > 1)?'s':'')"
+          filterable
           multiple
           :multiple-limit="maxTechnicianNumber"
+          :placeholder="'Select ' + maxTechnicianNumber + ' technician' + ((maxTechnicianNumber > 1)?'s':'')"
         >
           <el-option
             v-for="user in userList"

@@ -24,4 +24,11 @@ public class SpcBookingTechnicianServiceImpl  extends CrudServiceImpl<SpcBooking
         return wrapper;
     }
 
+    @Override
+    public void deleteByBookingId(Long bookingId) {
+        QueryWrapper<SpcBookingTechnicianEntity> wrapper = new QueryWrapper<>();
+        wrapper.eq("booking_id", bookingId);
+
+        baseDao.delete(wrapper);
+    }
 }
