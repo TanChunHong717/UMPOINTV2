@@ -43,10 +43,6 @@ public class SpcBookingEntity {
 	*/
 	private Long userId;
 	/**
-	* Worker responsible if booking is not in working day
-	*/
-	private Long workerId;
-	/**
 	* Amount need to be pay
 	*/
 	private BigDecimal paymentAmount;
@@ -70,6 +66,10 @@ public class SpcBookingEntity {
 	* End time of booking in a day
 	*/
 	private Time endTime;
+	/**
+	 * Number of technician
+	 */
+	private Integer technicianNumber;
 	/**
 	* Create date
 	*/
@@ -96,10 +96,10 @@ public class SpcBookingEntity {
 	@TableField(exist = false)
 	private String username;
 	/**
-	 * Name of worker that being assigned to this booking
+	 * Technician entity list
 	 */
 	@TableField(exist = false)
-	private String worker;
+	private List<SpcBookingTechnicianEntity> spcBookingTechnicianEntityList;
 	/**
 	 * Payment entity list
 	 */

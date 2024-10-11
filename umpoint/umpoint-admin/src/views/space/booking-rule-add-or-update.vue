@@ -63,14 +63,17 @@
       <el-form-item label="Open days prior booking" prop="closeDaysBeforeBooking">
         <el-input-number v-model="dataForm.openDaysPriorBooking" controls-position="right" :min="0"/>
       </el-form-item>
-      <el-form-item label="Close days after booking" prop="closeDaysAfterBooking">
-        <el-input-number v-model="dataForm.closeDaysAfterBooking" controls-position="right" :min="0"/>
+      <el-form-item label="Close days before booking" prop="closeDaysBeforeBooking">
+        <el-input-number v-model="dataForm.closeDaysBeforeBooking" controls-position="right" :min="0"/>
       </el-form-item>
       <el-form-item label="Max reservation days" prop="maxReservationDays">
         <el-input-number v-model="dataForm.maxReservationDays" controls-position="right" :min="1"/>
       </el-form-item>
       <el-form-item label="Min booking hours" prop="minBookingHours">
         <el-input-number v-model="dataForm.minBookingHours" controls-position="right" :min="1"/>
+      </el-form-item>
+      <el-form-item label="Max technician number" prop="maxTechnicianNumber">
+        <el-input-number v-model="dataForm.maxTechnicianNumber" controls-position="right" :min="1"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -107,9 +110,10 @@ const dataForm = reactive({
   fourHoursPrice: null,
   dayPrice: null,
   openDaysPriorBooking: null,
-  closeDaysAfterBooking: null,
+  closeDaysBeforeBooking: null,
   maxReservationDays: null,
-  minBookingHours: null
+  minBookingHours: null,
+  maxTechnicianNumber: null
 });
 
 const rules = ref({
@@ -134,13 +138,16 @@ const rules = ref({
   openDaysPriorBooking: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
-  closeDaysAfterBooking: [
+  closeDaysBeforeBooking: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
   maxReservationDays: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
   minBookingHours: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ],
+  maxTechnicianNumber: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ]
 });
@@ -211,9 +218,10 @@ const dataFormSubmitHandle = () => {
         startTime: addSecond(dataForm.startTime),
         endTime: addSecond(dataForm.endTime),
         openDaysPriorBooking: dataForm.openDaysPriorBooking,
-        closeDaysAfterBooking: dataForm.closeDaysAfterBooking,
+        closeDaysBeforeBooking: dataForm.closeDaysBeforeBooking,
         maxReservationDays: dataForm.maxReservationDays,
-        minBookingHours: dataForm.minBookingHours
+        minBookingHours: dataForm.minBookingHours,
+        maxTechnicianNumber: dataForm.maxTechnicianNumber
       }
     };
     baseService.put("/space/space", space).then((res) => {

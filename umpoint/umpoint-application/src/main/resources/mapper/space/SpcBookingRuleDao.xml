@@ -13,9 +13,10 @@
         <result property="startTime" column="start_time"/>
         <result property="endTime" column="end_time"/>
         <result property="openDaysPriorBooking" column="open_days_prior_booking"/>
-        <result property="closeDaysAfterBooking" column="close_days_after_booking"/>
+        <result property="closeDaysBeforeBooking" column="close_days_before_booking"/>
         <result property="maxReservationDays" column="max_reservation_days"/>
         <result property="minBookingHours" column="min_booking_hours"/>
+        <result property="maxTechnicianNumber" column="max_technician_number"/>
     </resultMap>
 
 

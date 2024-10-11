@@ -20,13 +20,14 @@ CREATE TABLE acc_booking_rule (
     holiday_available tinyint NOT NULL COMMENT 'Availability in public holiday, 1: Available, 0: Close',
     approval_required tinyint NOT NULL COMMENT '0:Automatic approve 1:Require admin approve',
     open_days_prior_booking decimal(5,0) NOT NULL COMMENT 'Days open prior booking',
-    close_days_after_booking decimal(5,0) NOT NULL COMMENT 'Days close after booking',
+    close_days_before_booking decimal(5,0) NOT NULL COMMENT 'Days close before booking',
     max_reservation_days decimal(5, 0) NOT NULL COMMENT 'Maximum reservation days',
     min_booking_days decimal(5, 0) NOT NULL COMMENT 'Minimum booking days',
+    max_technician_number decimal(5, 0) NOT NULL DEFAULT 1 COMMENT 'Maximum number of technician',
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Accommodation Booking Rule';
 
-INSERT INTO acc_booking_rule VALUE (0,1,1,1,1,1,60,0,5,1);
+INSERT INTO acc_booking_rule VALUE (0,1,1,1,1,1,60,0,5,1,1);
 
 CREATE TABLE acc_accommodation (
     id bigint NOT NULL COMMENT 'ID',
@@ -77,19 +78,27 @@ CREATE TABLE acc_booking (
     accommodation_id bigint NOT NULL COMMENT 'Accommodation ID',
     admin_id bigint NULL COMMENT 'Admin that approve/reject, user will contact this admin rather manager if umpoint.booking.accommodation.find-approve-admin-first=true',
     user_id bigint NOT NULL COMMENT 'User ID',
-    worker_id bigint NULL COMMENT 'Worker responsible if booking is not in working day',
     event varchar(250) NOT NULL COMMENT 'Description of the event or purpose for the booking',
     payment_amount decimal(10,2) NOT NULL COMMENT 'Amount need to be pay',
     start_day date NOT NULL COMMENT 'Start day of booking',
     end_day date NOT NULL COMMENT 'End day of booking',
+    technician_number decimal(5,0) NOT NULL COMMENT 'Number of technician',
     create_date datetime NOT NULL COMMENT 'Create date',
     update_date datetime NOT NULL COMMENT 'Update date',
     PRIMARY KEY (id),
     FOREIGN KEY (accommodation_id) REFERENCES acc_accommodation(id),
     FOREIGN KEY (admin_id) REFERENCES sys_user(id),
-    FOREIGN KEY (user_id) REFERENCES cli_user(id),
-    FOREIGN KEY (worker_id) REFERENCES sys_user(id)
+    FOREIGN KEY (user_id) REFERENCES cli_user(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Accommodation Booking';
+
+CREATE TABLE acc_booking_technician (
+    id bigint NOT NULL COMMENT 'ID',
+    booking_id bigint NOT NULL COMMENT 'Booking ID',
+    technician_id bigint NOT NULL COMMENT 'Technician ID',
+    PRIMARY KEY (id),
+    FOREIGN KEY (booking_id) REFERENCES acc_booking(id),
+    FOREIGN KEY (technician_id) REFERENCES sys_user(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Accommodation Booking Technician';
 
 CREATE TABLE acc_closure (
     id bigint NOT NULL COMMENT 'ID',

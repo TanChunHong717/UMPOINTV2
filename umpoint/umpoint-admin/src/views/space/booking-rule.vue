@@ -42,7 +42,7 @@
                 </el-col>
               </el-row>
               <el-row style="margin-bottom: 14px">
-                The space will be open for booking {{ scope.row.spcBookingRuleDTO.openDaysPriorBooking }} day(s) prior the event and will be closed {{  scope.row.spcBookingRuleDTO.closeDaysAfterBooking }} day(s) before space booking date.
+                The space will be open for booking {{ scope.row.spcBookingRuleDTO.openDaysPriorBooking }} day(s) prior the event and will be closed {{  scope.row.spcBookingRuleDTO.closeDaysBeforeBooking }} day(s) before space booking date.
               </el-row>
               <el-row class="content-row">
                 <el-col :span="12">Start Time: {{ scope.row.spcBookingRuleDTO.startTime }}</el-col>
@@ -50,7 +50,10 @@
               </el-row>
               <el-row style="margin-bottom: 14px">
                 <el-col :span="12">Maximum reservation days: {{ scope.row.spcBookingRuleDTO.maxReservationDays }}</el-col>
-                <el-col :span="12">Minimum booking days: {{ scope.row.spcBookingRuleDTO.minBookingDays }}</el-col>
+                <el-col :span="12">Minimum booking hours: {{ scope.row.spcBookingRuleDTO.minBookingHours }}</el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="24">Maximum technician number: {{ scope.row.spcBookingRuleDTO.maxTechnicianNumber }}</el-col>
               </el-row>
             </div>
             <div v-else>

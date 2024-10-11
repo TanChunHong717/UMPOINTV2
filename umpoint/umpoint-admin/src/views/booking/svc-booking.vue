@@ -40,7 +40,7 @@
               <el-table-column prop="date" label="Payment date" header-align="center" align="center" sortable="custom"></el-table-column>
               <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="150">
                 <template v-slot="scope">
-                  <el-button v-if="state.hasPermission('payment:service:update')" type="primary" link @click="refundHandle(scope.row.id)">Refund</el-button>
+                  <el-button v-if="state.hasPermission('payment:service:refund')" type="primary" link @click="refundHandle(scope.row.id)">Refund</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -61,11 +61,11 @@
       <el-table-column prop="service" label="Service" header-align="center" align="center" sortable="custom" width="175"></el-table-column>
       <el-table-column prop="username" label="User" header-align="center" align="center"></el-table-column>
       <el-table-column prop="paymentAmount" label="Amount(RM)" header-align="center" align="center" sortable="custom" width="135"></el-table-column>
-      <el-table-column prop="createDate" label="Create date" header-align="center" align="center" sortable="custom" width="150"></el-table-column>
+      <el-table-column prop="createDate" label="Create date" header-align="center" align="center" sortable="custom" width="120"></el-table-column>
       <el-table-column label="Actions" fixed="right" header-align="center" align="left" width="85">
         <template v-slot="scope">
-          <el-button v-if="state.hasPermission('service:booking:update')" type="primary" link @click="approveOrRejectHandle(scope.row.id, true)">Approve</el-button>
-          <el-button style="margin-left: 0" v-if="state.hasPermission('service:booking:update')" type="primary" link @click="approveOrRejectHandle(scope.row.id, false)">Reject</el-button>
+          <el-button v-if="state.hasPermission('service:booking:approve')" type="primary" link @click="approveOrRejectHandle(scope.row.id, true)">Approve</el-button>
+          <el-button style="margin-left: 0" v-if="state.hasPermission('service:booking:reject')" type="primary" link @click="approveOrRejectHandle(scope.row.id, false)">Reject</el-button>
         </template>
       </el-table-column>
     </el-table>

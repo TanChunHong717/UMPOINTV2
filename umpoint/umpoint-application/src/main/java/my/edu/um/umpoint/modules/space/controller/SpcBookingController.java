@@ -95,8 +95,8 @@ public class SpcBookingController {
     @Operation(summary = "Approve")
     @LogOperation("Approve")
     @RequiresPermissions("space:booking:approve")
-    public Result approve(@PathVariable("id") Long id){
-        spcBookingService.approve(id);
+    public Result approve(@PathVariable("id") Long id, @RequestBody List<Long> technicianIdList){
+        spcBookingService.approve(id, technicianIdList);
 
         return new Result();
     }

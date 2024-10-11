@@ -60,10 +60,9 @@ public class AccEventServiceImpl extends CrudServiceImpl<AccEventDao, AccEventEn
 
         AccAccommodationDTO accommodationDTO = accAccommodationService.get(bookingDTO.getAccommodationId());
         AccBookingRuleDTO bookingRuleDTO = accommodationDTO.getAccBookingRuleDTO();
-        if (bookingRuleDTO.getCloseDaysAfterBooking() > 0) {
-            LocalDate startDate = DateUtils.convertDateToLocalDate(bookingDTO.getStartDay()).plusDays(1);
-            LocalDate endDate = DateUtils.convertDateToLocalDate(bookingDTO.getEndDay());
-            endDate = endDate.plusDays(1 + bookingRuleDTO.getCloseDaysAfterBooking());
+        if (bookingRuleDTO.getCloseDaysBeforeBooking() > 0) {
+            LocalDate startDate = DateUtils.convertDateToLocalDate(bookingDTO.getStartDay()).minusDays(bookingRuleDTO.getCloseDaysBeforeBooking() + 1);
+            LocalDate endDate = DateUtils.convertDateToLocalDate(bookingDTO.getStartDay()).minusDays(1);
 
             AccEventEntity closeEventEntity = new AccEventEntity();
 

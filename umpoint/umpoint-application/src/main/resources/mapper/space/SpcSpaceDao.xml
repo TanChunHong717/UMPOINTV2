@@ -58,9 +58,10 @@
             <result property="startTime" column="start_time"/>
             <result property="endTime" column="end_time"/>
             <result property="openDaysPriorBooking" column="open_days_prior_booking"/>
-            <result property="closeDaysAfterBooking" column="close_days_after_booking"/>
+            <result property="closeDaysBeforeBooking" column="close_days_before_booking"/>
             <result property="maxReservationDays" column="max_reservation_days"/>
             <result property="minBookingHours" column="min_booking_hours"/>
+            <result property="maxTechnicianNumber" column="max_technician_number"/>
         </association>
         <collection property="spcImageEntityList" ofType="my.edu.um.umpoint.modules.space.entity.SpcImageEntity">
             <id property="id" column="image_id"/>
@@ -106,9 +107,10 @@
             b.start_time,
             b.end_time,
             b.open_days_prior_booking,
-            b.close_days_after_booking,
+            b.close_days_before_booking,
             b.max_reservation_days,
             b.min_booking_hours,
+            b.max_technician_number,
             i.id AS image_id,
             i.space_id AS image_space_id,
             i.image_url,
@@ -197,9 +199,10 @@
             b.start_time,
             b.end_time,
             b.open_days_prior_booking,
-            b.close_days_after_booking,
+            b.close_days_before_booking,
             b.max_reservation_days,
             b.min_booking_hours,
+            b.max_technician_number,
             i.id AS image_id,
             i.space_id AS image_space_id,
             i.image_url,

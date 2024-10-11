@@ -9,12 +9,11 @@
         <result property="accommodationId" column="accommodation_id"/>
         <result property="adminId" column="admin_id"/>
         <result property="userId" column="user_id"/>
-        <result property="workerId" column="worker_id"/>
-        <result property="paymentId" column="payment_id"/>
         <result property="paymentAmount" column="payment_amount"/>
         <result property="event" column="event"/>
         <result property="startDay" column="start_day"/>
         <result property="endDay" column="end_day"/>
+        <result property="technicianNumber" column="technician_number"/>
         <result property="createDate" column="create_date"/>
         <result property="updateDate" column="update_date"/>
     </resultMap>
@@ -25,19 +24,22 @@
         <result property="accommodationId" column="accommodation_id"/>
         <result property="adminId" column="admin_id"/>
         <result property="userId" column="user_id"/>
-        <result property="workerId" column="worker_id"/>
-        <result property="paymentId" column="payment_id"/>
         <result property="paymentAmount" column="payment_amount"/>
         <result property="event" column="event"/>
         <result property="startDay" column="start_day"/>
         <result property="endDay" column="end_day"/>
+        <result property="technicianNumber" column="technician_number"/>
         <result property="createDate" column="create_date"/>
         <result property="updateDate" column="update_date"/>
         <result property="accommodation" column="accommodation"/>
         <result property="admin" column="admin"/>
         <result property="username" column="username"/>
-        <result property="worker" column="worker"/>
-        <result property="paymentStatus" column="payment_status"/>
+        <collection property="accBookingTechnicianEntityList" javaType="java.util.List" ofType="my.edu.um.umpoint.modules.accommodation.entity.AccBookingTechnicianEntity">
+            <id property="id" column="payment_id"/>
+            <result property="bookingId" column="technician_booking_id"/>
+            <result property="technicianId" column="technician_id"/>
+            <result property="technicianName" column="technician_name"/>
+        </collection>
         <collection property="accPaymentEntityList" javaType="java.util.List"  ofType="my.edu.um.umpoint.modules.payment.entity.AccPaymentEntity">
             <id property="id" column="payment_id"/>
             <result property="status" column="payment_status"/>
@@ -56,18 +58,19 @@
             ab.accommodation_id,
             ab.admin_id,
             ab.user_id,
-            ab.worker_id,
-            ab.payment_id,
             ab.payment_amount,
             ab.event,
             ab.start_day,
             ab.end_day,
+            ab.technician_number,
             ab.create_date,
             ab.update_date,
             a.name AS accommodation,
             ad.username AS admin,
             c.username AS username,
-            w.username AS worker,
+            abt.booking_id AS technician_booking_id,
+            abt.technician_id,
+            t.username AS technician_name,
             p.id AS payment_id,
             p.status AS payment_status,
             p.booking_id,
@@ -79,8 +82,8 @@
         LEFT JOIN acc_accommodation a ON ab.accommodation_id = a.id
         LEFT JOIN sys_user ad ON ab.admin_id = ad.id
         LEFT JOIN cli_user c ON ab.user_id = c.id
-        LEFT JOIN sys_user w ON ab.worker_id = w.id
-        LEFT JOIN payment p ON ab.payment_id = p.id
+        LEFT JOIN acc_booking_technician abt ON ab.id = abt.booking_id
+        LEFT JOIN sys_user t ON abt.technician_id = t.id
         LEFT JOIN acc_payment p ON ab.id = p.booking_id
         LEFT JOIN payment_method pm ON p.method_id = pm.id
         <where>
@@ -123,18 +126,19 @@
             ab.accommodation_id,
             ab.admin_id,
             ab.user_id,
-            ab.worker_id,
-            ab.payment_id,
             ab.payment_amount,
             ab.event,
             ab.start_day,
             ab.end_day,
+            ab.technician_number,
             ab.create_date,
             ab.update_date,
             a.name AS accommodation,
             ad.username AS admin,
             c.username AS username,
-            w.username AS worker,
+            abt.booking_id AS technician_booking_id,
+            abt.technician_id,
+            t.username AS technician_name,
             p.id AS payment_id,
             p.status AS payment_status,
             p.booking_id,
@@ -146,8 +150,8 @@
         LEFT JOIN acc_accommodation a ON ab.accommodation_id = a.id
         LEFT JOIN sys_user ad ON ab.admin_id = ad.id
         LEFT JOIN cli_user c ON ab.user_id = c.id
-        LEFT JOIN sys_user w ON ab.worker_id = w.id
-        LEFT JOIN payment p ON ab.payment_id = p.id
+        LEFT JOIN acc_booking_technician abt ON ab.id = abt.booking_id
+        LEFT JOIN sys_user t ON abt.technician_id = t.id
         LEFT JOIN acc_payment p ON ab.id = p.booking_id
         LEFT JOIN payment_method pm ON p.method_id = pm.id
         WHERE ab.id = #{id}

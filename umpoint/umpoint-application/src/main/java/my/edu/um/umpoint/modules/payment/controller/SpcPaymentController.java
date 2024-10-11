@@ -90,7 +90,7 @@ public class SpcPaymentController {
     @PutMapping("refund/{id}")
     @Operation(summary = "Update")
     @LogOperation("Update")
-    @RequiresPermissions("payment:space:update")
+    @RequiresPermissions("payment:space:refund")
     public Result refund(@PathVariable("id") Long id){
         spcPaymentService.refund(id);
 
