@@ -33,7 +33,7 @@
         <el-input-number v-model="dataForm.minBookingDays" controls-position="right" :min="1"/>
       </el-form-item>
       <el-form-item label="Max technician number" prop="maxTechnicianNumber">
-        <el-input-number v-model="dataForm.maxTechnicianNumber" controls-position="right" :min="1"/>
+        <el-input-number v-model="dataForm.maxTechnicianNumber" controls-position="right" :min="0"/>
       </el-form-item>
     </el-form>
     <template #footer>

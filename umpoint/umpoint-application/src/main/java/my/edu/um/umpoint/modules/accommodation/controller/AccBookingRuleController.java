@@ -37,7 +37,7 @@ public class AccBookingRuleController {
         return new Result<AccBookingRuleDTO>().ok(accBookingRuleService.get(0L));
     }
 
-    @PostMapping("default")
+    @PutMapping("default")
     @Operation(summary = "Update Default Booking Rule")
     @LogOperation("Update")
     @RequiresPermissions("accommodation:booking-rule:update")
