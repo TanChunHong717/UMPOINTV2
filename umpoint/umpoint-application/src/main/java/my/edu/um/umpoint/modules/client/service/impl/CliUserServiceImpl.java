@@ -24,9 +24,11 @@ public class CliUserServiceImpl extends CrudServiceImpl<CliUserDao, CliUserEntit
     @Override
     public QueryWrapper<CliUserEntity> getWrapper(Map<String, Object> params){
         String username = (String)params.get("username");
+        String type = (String)params.get("type");
 
         QueryWrapper<CliUserEntity> wrapper = new QueryWrapper<>();
-        wrapper.eq(StrUtil.isNotBlank(username), "username", username);
+        wrapper.like(StrUtil.isNotBlank(username), "username", username);
+        wrapper.eq(StrUtil.isNotBlank(type), "type", type);
 
         return wrapper;
     }
