@@ -25,7 +25,7 @@ CREATE TABLE spc_booking_rule (
     close_days_before_booking decimal(5,0) NOT NULL COMMENT 'Days close before booking date',
     max_reservation_days decimal(5, 0) NOT NULL COMMENT 'Maximum reservation days',
     min_booking_hours decimal(5, 0) NOT NULL COMMENT 'Minimum booking hours per day',
-    max_technician_number decimal(5, 0) NOT NULL DEFAULT 1 COMMENT 'Maximum number of technician'
+    max_technician_number decimal(5, 0) NOT NULL DEFAULT 1 COMMENT 'Maximum number of technician',
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space Booking Rule';
 
