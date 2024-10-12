@@ -111,7 +111,7 @@
               </el-col>
             </el-row>
             <el-row style="margin-bottom: 14px">
-              The accommodation will be open for booking {{ space.spcBookingRuleDTO.openDaysPriorBooking }} day(s) prior the event and will be closed {{  space.spcBookingRuleDTO.closeDaysAfterBooking }} day(s) before space booking date.
+              The accommodation will be open for booking {{ space.spcBookingRuleDTO.openDaysPriorBooking }} day(s) prior the event and will be closed {{  space.spcBookingRuleDTO.closeDaysBeforeBooking }} day(s) before space booking date.
             </el-row>
             <el-row style="margin-bottom: 14px">
               <el-col :span="12">Start Time: {{ space.spcBookingRuleDTO.startTime }}</el-col>

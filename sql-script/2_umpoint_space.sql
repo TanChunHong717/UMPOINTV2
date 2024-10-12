@@ -22,13 +22,14 @@ CREATE TABLE spc_booking_rule (
     start_time time NOT NULL COMMENT 'Start time in a day when booking is allow',
     end_time time NOT NULL COMMENT 'End time in a day when booking is allow',
     open_days_prior_booking decimal(5,0) NOT NULL COMMENT 'Days open prior booking',
-    close_days_after_booking decimal(5,0) NOT NULL COMMENT 'Days close after booking',
+    close_days_before_booking decimal(5,0) NOT NULL COMMENT 'Days close before booking date',
     max_reservation_days decimal(5, 0) NOT NULL COMMENT 'Maximum reservation days',
     min_booking_hours decimal(5, 0) NOT NULL COMMENT 'Minimum booking hours per day',
+    max_technician_number decimal(5, 0) NOT NULL DEFAULT 1 COMMENT 'Maximum number of technician'
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space Booking Rule';
 
-INSERT INTO spc_booking_rule VALUE (0,1,1,1,1,1,('00:00:00'),('23:59:59'),60,0,5,1);
+INSERT INTO spc_booking_rule VALUE (0,1,1,1,1,1,('00:00:00'),('23:59:59'),60,0,5,1,1);
 
 CREATE TABLE spc_space (
     id bigint NOT NULL COMMENT 'ID',
@@ -80,21 +81,29 @@ CREATE TABLE spc_booking (
     space_id bigint NOT NULL COMMENT 'Space ID',
     admin_id bigint NULL COMMENT 'Admin that approve/reject, user will contact this admin rather manager if umpoint.booking.space.find-approve-admin-first=true',
     user_id bigint NOT NULL COMMENT 'User ID',
-    worker_id bigint NULL COMMENT 'Worker responsible if booking is not in working day',
     event varchar(250) NOT NULL COMMENT 'Description of the event or purpose for the booking',
     payment_amount decimal(10,2) NOT NULL COMMENT 'Amount need to be pay',
     start_day date NOT NULL COMMENT 'Start day of booking',
     end_day date NOT NULL COMMENT 'End day of booking',
     start_time time NOT NULL COMMENT 'Start time of booking in a day',
     end_time time NOT NULL COMMENT 'End time of booking in a day',
+    technician_number decimal(5,0) NOT NULL DEFAULT 1 COMMENT 'Number of technician',
     create_date datetime NOT NULL COMMENT 'Create date',
     update_date datetime NOT NULL COMMENT 'Update date',
     PRIMARY KEY (id),
     FOREIGN KEY (space_id) REFERENCES spc_space(id),
     FOREIGN KEY (admin_id) REFERENCES sys_user(id),
-    FOREIGN KEY (user_id) REFERENCES cli_user(id),
-    FOREIGN KEY (worker_id) REFERENCES sys_user(id)
+    FOREIGN KEY (user_id) REFERENCES cli_user(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space Booking';
+
+CREATE TABLE spc_booking_technician (
+    id bigint NOT NULL COMMENT 'ID',
+    booking_id bigint NOT NULL COMMENT 'Booking ID',
+    technician_id bigint NOT NULL COMMENT 'Technician ID',
+    PRIMARY KEY (id),
+    FOREIGN KEY (booking_id) REFERENCES spc_booking(id),
+    FOREIGN KEY (technician_id) REFERENCES sys_user(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space Booking Technician';
 
 CREATE TABLE spc_closure (
     id bigint NOT NULL COMMENT 'ID',

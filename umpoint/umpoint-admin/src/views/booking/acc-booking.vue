@@ -41,9 +41,9 @@
               <el-table-column prop="method" label="Payment Method" header-align="center" align="center"></el-table-column>
               <el-table-column prop="amount" label="Amount(RM)" header-align="center" align="center" sortable="custom"></el-table-column>
               <el-table-column prop="date" label="Payment date" header-align="center" align="center" sortable="custom"></el-table-column>
-              <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="150">
+              <el-table-column label="Actions" fixed="right" header-align="center" align="center">
                 <template v-slot="scope">
-                  <el-button v-if="state.hasPermission('payment:accommodation:update')" type="primary" link @click="refundHandle(scope.row.id)">Refund</el-button>
+                  <el-button v-if="state.hasPermission('payment:accommodation:refund')" type="primary" link @click="refundHandle(scope.row.id)">Refund</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -52,8 +52,8 @@
         </template>
       </el-table-column>
       <el-table-column prop="id" label="ID" header-align="center" align="center" sortable="custom"></el-table-column>
-      <el-table-column prop="event" label="Event" header-align="center" align="center" width="200"></el-table-column>
-      <el-table-column label="Status" header-align="center" align="center" width="100">
+      <el-table-column prop="event" label="Event" header-align="center" align="center"></el-table-column>
+      <el-table-column label="Status" header-align="center" align="center">
         <template v-slot="scope">
           <el-tag v-if="scope.row.status == 0" type="danger">Pending</el-tag>
           <el-tag v-if="scope.row.status == 1" type="info">Reject</el-tag>
@@ -62,32 +62,35 @@
           <el-tag v-if="scope.row.status == 4" type="warning">Cancel</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="accommodation" label="Accommodation" header-align="center" align="center" sortable="custom" width="175"></el-table-column>
+      <el-table-column prop="accommodation" label="Accommodation" header-align="center" align="center" sortable="custom"></el-table-column>
       <el-table-column prop="username" label="User" header-align="center" align="center"></el-table-column>
-      <el-table-column prop="paymentAmount" label="Amount(RM)" header-align="center" align="center" sortable="custom" width="135"></el-table-column>
-      <el-table-column label="Booking Period" header-align="center" align="center" width="200">
+      <el-table-column prop="paymentAmount" label="Amount(RM)" header-align="center" align="center" sortable="custom"></el-table-column>
+      <el-table-column label="Booking Period" header-align="center" align="center">
         <template v-slot="scope">
           {{scope.row.startDay}} to {{scope.row.endDay}}
         </template>
       </el-table-column>
-      <el-table-column prop="createDate" label="Create date" header-align="center" align="center" sortable="custom" width="150"></el-table-column>
-      <el-table-column label="Actions" fixed="right" header-align="center" align="left" width="85">
+      <el-table-column prop="technicianNumber" label="Technician require" header-align="center" align="center"></el-table-column>
+      <el-table-column prop="createDate" label="Create date" header-align="center" align="center" sortable="custom"></el-table-column>
+      <el-table-column label="Actions" fixed="right" header-align="center" align="left">
         <template v-slot="scope">
-          <el-button v-if="state.hasPermission('accommodation:booking:update')" type="primary" link @click="approveOrRejectHandle(scope.row.id, true)">Approve</el-button>
-          <el-button style="margin-left: 0" v-if="state.hasPermission('accommodation:booking:update')" type="primary" link @click="approveOrRejectHandle(scope.row.id, false)">Reject</el-button>
+          <el-button v-if="state.hasPermission('accommodation:booking:approve') && scope.row.status == 0" type="primary" link @click="approveHandle(scope.row.id, scope.row.technicianNumber)">Approve</el-button>
+          <el-button style="margin-left: 0" v-if="state.hasPermission('accommodation:booking:reject') && scope.row.status == 0" type="primary" link @click="rejectHandle(scope.row.id)">Reject</el-button>
         </template>
       </el-table-column>
     </el-table>
     <el-pagination :current-page="state.page" :page-sizes="[10, 20, 50, 100]" :page-size="state.limit" :total="state.total" layout="total, sizes, prev, pager, next, jumper" @size-change="state.pageSizeChangeHandle" @current-change="state.pageCurrentChangeHandle"> </el-pagination>
   </div>
+  <acc-approve ref="accApproveRef" @refreshDataList="state.getDataList">Confirm</acc-approve>
 </template>
 
 <script lang="ts" setup>
 import useView from "@/hooks/useView";
-import { reactive, toRefs } from "vue";
+import {reactive, ref, toRefs} from "vue";
 import {ElMessage, ElMessageBox} from "element-plus";
 import baseService from "@/service/baseService";
 import {useRoute} from "vue-router";
+import AccApprove from "@/views/booking/acc-approve.vue";
 
 const route = useRoute();
 const view = reactive({
@@ -103,15 +106,20 @@ const view = reactive({
 
 const state = reactive({ ...useView(view), ...toRefs(view) });
 
-const approveOrRejectHandle = (id: number, isApprove: boolean) => {
-  ElMessageBox.confirm("Confirm to " + (isApprove? "approve": "reject") + " this booking?", "Warning", {
+const accApproveRef = ref();
+const approveHandle = (id: number, maxTechnician: number) => {
+  accApproveRef.value.init(id, maxTechnician);
+}
+
+const rejectHandle = (id: number) => {
+  ElMessageBox.confirm("Confirm to reject this booking?", "Warning", {
     confirmButtonText: "Confirm",
     cancelButtonText: "Cancel",
     type: "warning"
   })
     .then(() => {
       baseService
-        .put("accommodation/booking/" + (isApprove? "approve": "reject") + "/" + id)
+        .put("accommodation/booking/reject/" + id)
         .then((res) => {
           state.getDataList();
           ElMessage.success({

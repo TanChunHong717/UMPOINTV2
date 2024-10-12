@@ -43,9 +43,9 @@ public class AccBookingRuleEntity {
 	 */
 	private Integer openDaysPriorBooking;
 	/**
-	 * Days close after booking
+	 * Days close before booking
 	 */
-	private Integer closeDaysAfterBooking;
+	private Integer closeDaysBeforeBooking;
 	/**
 	* Maximum reservation days
 	*/
@@ -54,4 +54,8 @@ public class AccBookingRuleEntity {
 	* Minimum booking days
 	*/
 	private Integer minBookingDays;
+	/**
+	 * Maximum number of technician
+	 */
+	private Integer maxTechnicianNumber;
 }

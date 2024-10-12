@@ -90,7 +90,7 @@ public class SvcPaymentController {
     @PutMapping("refund/{id}")
     @Operation(summary = "Update")
     @LogOperation("Update")
-    @RequiresPermissions("payment:service:update")
+    @RequiresPermissions("payment:service:refund")
     public Result refund(@PathVariable("id") Long id){
         svcPaymentService.refund(id);
 

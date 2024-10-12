@@ -53,9 +53,9 @@ public class SpcBookingRuleEntity {
      */
 	private Integer openDaysPriorBooking;
 	/**
-	 * Days close after booking
+	 * Days close before booking
 	 */
-	private Integer closeDaysAfterBooking;
+	private Integer closeDaysBeforeBooking;
     /**
      * Maximum reservation days
      */
@@ -64,4 +64,8 @@ public class SpcBookingRuleEntity {
      * Minimum booking hours per day
      */
 	private Integer minBookingHours;
+	/**
+	 * Maximum number of technician
+	 */
+	private Integer maxTechnicianNumber;
 }

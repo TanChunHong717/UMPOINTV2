@@ -4,6 +4,8 @@ import my.edu.um.umpoint.common.service.CrudService;
 import my.edu.um.umpoint.modules.accommodation.dto.AccBookingDTO;
 import my.edu.um.umpoint.modules.accommodation.entity.AccBookingEntity;
 
+import java.util.List;
+
 /**
  * Accommodation Booking
  *
@@ -11,7 +13,7 @@ import my.edu.um.umpoint.modules.accommodation.entity.AccBookingEntity;
  * @since 1.0.0 2024-09-08
  */
 public interface AccBookingService extends CrudService<AccBookingEntity, AccBookingDTO> {
-    void approve(Long id);
+    void approve(Long id, List<Long> technicianIdList);
     void reject(Long id);
     void cancel(Long id);
 }

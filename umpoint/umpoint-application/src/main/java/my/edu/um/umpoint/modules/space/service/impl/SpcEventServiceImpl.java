@@ -64,7 +64,8 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
     public void addEvent(SpcBookingDTO bookingDTO) {
         List<SpcEventEntity> eventEntityList = new ArrayList<>();
 
-        LocalDate currentDay = DateUtils.convertDateToLocalDate(bookingDTO.getStartDay());
+        LocalDate startDay = DateUtils.convertDateToLocalDate(bookingDTO.getStartDay());
+        LocalDate currentDay = startDay;
         LocalDate endDay = DateUtils.convertDateToLocalDate(bookingDTO.getEndDay());
         while (currentDay.isBefore(endDay) || currentDay.isEqual(endDay)) {
             SpcEventEntity eventEntity = new SpcEventEntity();
@@ -82,10 +83,10 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
 
         SpcSpaceDTO spaceDTO = spcSpaceService.get(bookingDTO.getSpaceId());
         SpcBookingRuleDTO bookingRuleDTO = spaceDTO.getSpcBookingRuleDTO();
-        if (bookingRuleDTO.getCloseDaysAfterBooking() > 0) {
-            LocalDateTime startTime = LocalDateTime.of(endDay.plusDays(1), LocalTime.MIN);
+        if (bookingRuleDTO.getCloseDaysBeforeBooking() > 0) {
+            LocalDateTime startTime = LocalDateTime.of(startDay.minusDays(bookingRuleDTO.getCloseDaysBeforeBooking() + 1), LocalTime.MIN);
             LocalDateTime endTime = LocalDateTime.of(
-                    endDay.plusDays(1 + bookingRuleDTO.getCloseDaysAfterBooking()),
+                    startDay.minusDays(1),
                     LocalTime.MAX
             );
 

@@ -1,10 +1,10 @@
 <template>
   <el-dialog v-model="visible" :title="!dataForm.id ? 'Add' : 'Update'" :close-on-click-modal="false" :close-on-press-escape="false">
     <el-form :model="dataForm" :rules="rules" ref="dataFormRef" @keyup.enter="dataFormSubmitHandle()" label-width="120px">
-          <el-form-item label="Method" prop="method">
+      <el-form-item label="Method" prop="method">
         <el-input v-model="dataForm.method" placeholder="Method"></el-input>
       </el-form-item>
-      </el-form>
+    </el-form>
     <template #footer>
       <el-button @click="visible = false">Cancel</el-button>
       <el-button type="primary" @click="dataFormSubmitHandle()">Confirm</el-button>

@@ -41,9 +41,6 @@ public class SpcBookingDTO implements Serializable {
 	@SchemaProperty(name = "User ID")
 	private Long userId;
 
-	@SchemaProperty(name = "Worker responsible if booking is not in working day")
-	private Long workerId;
-
 	@SchemaProperty(name = "Amount need to be pay")
 	private BigDecimal paymentAmount;
 
@@ -64,6 +61,9 @@ public class SpcBookingDTO implements Serializable {
 	@SchemaProperty(name = "End time of booking in a day")
 	private Time endTime;
 
+	@SchemaProperty(name = "Number of technician")
+	private Integer technicianNumber;
+
 	@SchemaProperty(name = "Create date")
 	private Date createDate;
 
@@ -79,11 +79,8 @@ public class SpcBookingDTO implements Serializable {
 	@SchemaProperty(name = "Name of user who make booking")
 	private String username;
 
-	@SchemaProperty(name = "Name of worker that being assigned to this booking")
-	private String worker;
-
-	@SchemaProperty(name = "Payment status")
-	private String paymentStatus;
+	@SchemaProperty(name = "Technician dto list")
+	private List<SpcBookingTechnicianDTO> spcBookingTechnicianDTOList;
 
 	@SchemaProperty(name = "Payment dto list")
 	private List<SpcPaymentDTO> spcPaymentDTOList;

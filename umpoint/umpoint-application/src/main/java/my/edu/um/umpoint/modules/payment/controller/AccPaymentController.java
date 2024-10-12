@@ -90,7 +90,7 @@ public class AccPaymentController {
     @PutMapping("refund/{id}")
     @Operation(summary = "Update")
     @LogOperation("Update")
-    @RequiresPermissions("payment:accommodation:update")
+    @RequiresPermissions("payment:accommodation:refund")
     public Result refund(@PathVariable("id") Long id){
         accPaymentService.refund(id);
 

@@ -6,6 +6,8 @@ import my.edu.um.umpoint.common.constant.BookingConstant;
 import my.edu.um.umpoint.common.exception.RenException;
 import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
+import my.edu.um.umpoint.modules.space.entity.SpcBookingTechnicianEntity;
+import my.edu.um.umpoint.modules.space.service.SpcBookingTechnicianService;
 import my.edu.um.umpoint.modules.space.service.SpcEventService;
 import my.edu.um.umpoint.modules.space.dao.SpcBookingDao;
 import my.edu.um.umpoint.modules.space.dto.SpcBookingDTO;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Space Booking
@@ -29,6 +32,9 @@ import java.util.Map;
  */
 @Service
 public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBookingEntity, SpcBookingDTO> implements SpcBookingService {
+
+    @Autowired
+    private SpcBookingTechnicianService spcBookingTechnicianService;
 
     @Autowired
     private SpcEventService spcEventService;
@@ -61,13 +67,24 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
     }
 
     @Override
-    public void approve(Long id) {
+    @Transactional(rollbackFor = Exception.class)
+    public void approve(Long id, List<Long> technicianIdList) {
         UserDetail user = SecurityUser.getUser();
         SpcBookingEntity entity = new SpcBookingEntity();
         entity.setAdminId(user.getId());
         entity.setStatus(BookingConstant.BookingStatus.APPROVED.getValue());
 
-        baseDao.updateById(entity);
+        baseDao.update(entity, new QueryWrapper<SpcBookingEntity>().eq("id", id));
+
+        List<SpcBookingTechnicianEntity> technicianEntityList = technicianIdList
+                .stream()
+                .map(technicianId -> {
+                    SpcBookingTechnicianEntity technicianEntity = new SpcBookingTechnicianEntity();
+                    technicianEntity.setBookingId(id);
+                    technicianEntity.setTechnicianId(technicianId);
+                    return technicianEntity;
+                }).toList();
+        spcBookingTechnicianService.insertBatch(technicianEntityList);
     }
 
     @Override
@@ -90,5 +107,6 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
 
         baseDao.update(entity, new QueryWrapper<SpcBookingEntity>().eq("id", id));
         spcEventService.deleteByBookingId(id);
+        spcBookingTechnicianService.deleteByBookingId(id);
     }
 }

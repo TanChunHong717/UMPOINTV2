@@ -42,10 +42,6 @@ public class AccBookingEntity {
 	*/
 	private Long userId;
 	/**
-	* Worker responsible if booking is not in working day
-	*/
-	private Long workerId;
-	/**
 	* Amount need to be pay
 	*/
 	private BigDecimal paymentAmount;
@@ -61,6 +57,10 @@ public class AccBookingEntity {
 	* End day of booking
 	*/
 	private Date endDay;
+	/**
+	 * Number of technician
+	 */
+	private Integer technicianNumber;
 	/**
 	* Create date
 	*/
@@ -87,10 +87,10 @@ public class AccBookingEntity {
 	@TableField(exist = false)
 	private String username;
 	/**
-	 * Name of worker that being assigned to this booking
+	 * Technician entity list
 	 */
 	@TableField(exist = false)
-	private String worker;
+	private List<AccBookingTechnicianEntity> accBookingTechnicianEntityList;
 	/**
 	 * Payment entity list
 	 */

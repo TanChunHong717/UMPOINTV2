@@ -4,6 +4,7 @@
       <el-form-item label="Manager" prop="manager">
         <el-select
           v-model="dataForm.manager"
+          filterable
           placeholder="Select manager"
         >
           <el-option
@@ -34,15 +35,21 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="Start time" prop="startTime">
-        <el-time-picker
+        <el-time-select
           v-model="dataForm.startTime"
           placeholder="Start time"
+          start="00:00"
+          end="23:59"
+          step="00:30"
         />
       </el-form-item>
       <el-form-item label="End time" prop="endTime">
-        <el-time-picker
+        <el-time-select
           v-model="dataForm.endTime"
           placeholder="End time"
+          :start="dataForm.startTime"
+          end="23:59"
+          step="00:30"
         />
       </el-form-item>
       <el-form-item label="Price for an hour" prop="hourPrice">
@@ -57,14 +64,17 @@
       <el-form-item label="Open days prior booking" prop="closeDaysBeforeBooking">
         <el-input-number v-model="dataForm.openDaysPriorBooking" controls-position="right" :min="0"/>
       </el-form-item>
-      <el-form-item label="Close days after booking" prop="closeDaysAfterBooking">
-        <el-input-number v-model="dataForm.closeDaysAfterBooking" controls-position="right" :min="0"/>
+      <el-form-item label="Close days before booking" prop="closeDaysBeforeBooking">
+        <el-input-number v-model="dataForm.closeDaysBeforeBooking" controls-position="right" :min="0"/>
       </el-form-item>
       <el-form-item label="Max reservation days" prop="maxReservationDays">
         <el-input-number v-model="dataForm.maxReservationDays" controls-position="right" :min="1"/>
       </el-form-item>
       <el-form-item label="Min booking hours" prop="minBookingHours">
         <el-input-number v-model="dataForm.minBookingHours" controls-position="right" :min="1"/>
+      </el-form-item>
+      <el-form-item label="Max technician number" prop="maxTechnicianNumber">
+        <el-input-number v-model="dataForm.maxTechnicianNumber" controls-position="right" :min="1"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -101,9 +111,10 @@ const dataForm = reactive({
   fourHoursPrice: null,
   dayPrice: null,
   openDaysPriorBooking: null,
-  closeDaysAfterBooking: null,
+  closeDaysBeforeBooking: null,
   maxReservationDays: null,
-  minBookingHours: null
+  minBookingHours: null,
+  maxTechnicianNumber: null
 });
 
 const rules = ref({
@@ -128,13 +139,16 @@ const rules = ref({
   openDaysPriorBooking: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
-  closeDaysAfterBooking: [
+  closeDaysBeforeBooking: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
   maxReservationDays: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
   minBookingHours: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ],
+  maxTechnicianNumber: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ]
 });
@@ -157,29 +171,12 @@ const getUserList = async () => {
   });
 };
 
-const timeStringToDate = (timeString:any):any => {
-  if (!timeString)
-    return null;
-
-  const [hours, minutes, seconds] = timeString.split(':').map(Number);
-  if (
-    isNaN(hours) || hours < 0 || hours > 23 ||
-    isNaN(minutes) || minutes < 0 || minutes > 59 ||
-    isNaN(seconds) || seconds < 0 || seconds > 59
-  )
-    return null;
-
-  const date = new Date();
-  date.setHours(hours, minutes, seconds, 0); // Set hours, minutes, and seconds
-  return date;
+const removeSecond = (timeString: any): any => {
+  return timeString.substring(0, timeString.lastIndexOf(":"));
 }
 
-const dateToTimeString = (date:any):any => {
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  const seconds = String(date.getSeconds()).padStart(2, '0');
-
-  return `${hours}:${minutes}:${seconds}`;
+const addSecond = (timeString: any): any => {
+  return timeString + ':00';
 }
 
 const init = (space?: any) => {
@@ -195,8 +192,8 @@ const init = (space?: any) => {
   Object.assign(dataForm, space, space.spcBookingRuleDTO);
   dataForm.id = space.id;
   dataForm.bookingRuleId = space.bookingRuleId;
-  dataForm.startTime = timeStringToDate(dataForm.startTime);
-  dataForm.endTime = timeStringToDate(dataForm.endTime);
+  dataForm.startTime = removeSecond(dataForm.startTime);
+  dataForm.endTime = removeSecond(dataForm.endTime);
 };
 
 // Form submission
@@ -219,12 +216,13 @@ const dataFormSubmitHandle = () => {
         openForStudent: dataForm.openForStudent ?? 0,
         openForPublic: dataForm.openForPublic ?? 0,
         holidayAvailable: dataForm.holidayAvailable,
-        startTime: dateToTimeString(dataForm.startTime),
-        endTime: dateToTimeString(dataForm.endTime),
+        startTime: addSecond(dataForm.startTime),
+        endTime: addSecond(dataForm.endTime),
         openDaysPriorBooking: dataForm.openDaysPriorBooking,
-        closeDaysAfterBooking: dataForm.closeDaysAfterBooking,
+        closeDaysBeforeBooking: dataForm.closeDaysBeforeBooking,
         maxReservationDays: dataForm.maxReservationDays,
-        minBookingHours: dataForm.minBookingHours
+        minBookingHours: dataForm.minBookingHours,
+        maxTechnicianNumber: dataForm.maxTechnicianNumber
       }
     };
     baseService.put("/space/space", space).then((res) => {

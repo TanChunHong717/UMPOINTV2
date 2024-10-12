@@ -4,6 +4,8 @@ import my.edu.um.umpoint.common.service.CrudService;
 import my.edu.um.umpoint.modules.space.dto.SpcBookingDTO;
 import my.edu.um.umpoint.modules.space.entity.SpcBookingEntity;
 
+import java.util.List;
+
 /**
  * Space Booking
  *
@@ -11,7 +13,7 @@ import my.edu.um.umpoint.modules.space.entity.SpcBookingEntity;
  * @since 1.0.0 2024-09-08
  */
 public interface SpcBookingService extends CrudService<SpcBookingEntity, SpcBookingDTO> {
-    void approve(Long id);
+    void approve(Long id, List<Long> technicianIdList);
     void reject(Long id);
     void cancel(Long id);
 }

@@ -110,7 +110,7 @@
               </el-col>
             </el-row>
             <el-row style="margin-bottom: 14px">
-              The accommodation will be open for booking {{ accommodation.accBookingRuleDTO.openDaysPriorBooking }} day(s) prior the event and will be closed {{  accommodation.accBookingRuleDTO.closeDaysAfterBooking }} day(s) before accommodation booking date.
+              The accommodation will be open for booking {{ accommodation.accBookingRuleDTO.openDaysPriorBooking }} day(s) prior the event and will be closed {{  accommodation.accBookingRuleDTO.closeDaysBeforeBooking }} day(s) before accommodation booking date.
             </el-row>
             <el-row style="margin-bottom: 14px">
               <el-col :span="12">Maximum reservation days: {{ accommodation.accBookingRuleDTO.maxReservationDays }}</el-col>

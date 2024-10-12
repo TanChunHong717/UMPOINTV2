@@ -8,8 +8,10 @@ import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
 import my.edu.um.umpoint.modules.accommodation.dao.AccBookingDao;
 import my.edu.um.umpoint.modules.accommodation.dto.AccBookingDTO;
 import my.edu.um.umpoint.modules.accommodation.entity.AccBookingEntity;
+import my.edu.um.umpoint.modules.accommodation.entity.AccBookingTechnicianEntity;
 import my.edu.um.umpoint.modules.accommodation.service.AccBookingService;
 import cn.hutool.core.util.StrUtil;
+import my.edu.um.umpoint.modules.accommodation.service.AccBookingTechnicianService;
 import my.edu.um.umpoint.modules.accommodation.service.AccEventService;
 import my.edu.um.umpoint.modules.security.user.SecurityUser;
 import my.edu.um.umpoint.modules.security.user.UserDetail;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Accommodation Booking
@@ -28,6 +31,9 @@ import java.util.Map;
  */
 @Service
 public class AccBookingServiceImpl extends CrudServiceImpl<AccBookingDao, AccBookingEntity, AccBookingDTO> implements AccBookingService {
+
+    @Autowired
+    private AccBookingTechnicianService accBookingTechnicianService;
 
     @Autowired
     private AccEventService accEventService;
@@ -60,13 +66,23 @@ public class AccBookingServiceImpl extends CrudServiceImpl<AccBookingDao, AccBoo
     }
 
     @Override
-    public void approve(Long id) {
+    public void approve(Long id, List<Long> technicianIdList) {
         UserDetail user = SecurityUser.getUser();
         AccBookingEntity entity = new AccBookingEntity();
         entity.setAdminId(user.getId());
         entity.setStatus(BookingConstant.BookingStatus.APPROVED.getValue());
 
         baseDao.update(entity, new QueryWrapper<AccBookingEntity>().eq("id",id));
+
+        List<AccBookingTechnicianEntity> technicianEntityList = technicianIdList
+                .stream()
+                .map(technicianId -> {
+                    AccBookingTechnicianEntity technicianEntity = new AccBookingTechnicianEntity();
+                    technicianEntity.setBookingId(id);
+                    technicianEntity.setTechnicianId(technicianId);
+                    return technicianEntity;
+                }).toList();
+        accBookingTechnicianService.insertBatch(technicianEntityList);
     }
 
     @Override
@@ -89,5 +105,6 @@ public class AccBookingServiceImpl extends CrudServiceImpl<AccBookingDao, AccBoo
 
         baseDao.update(entity, new QueryWrapper<AccBookingEntity>().eq("id",id));
         accEventService.deleteByBookingId(id);
+        accBookingTechnicianService.deleteByBookingId(id);
     }
 }
