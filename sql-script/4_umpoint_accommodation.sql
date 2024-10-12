@@ -23,11 +23,11 @@ CREATE TABLE acc_booking_rule (
     close_days_before_booking decimal(5,0) NOT NULL COMMENT 'Days close before booking',
     max_reservation_days decimal(5, 0) NOT NULL COMMENT 'Maximum reservation days',
     min_booking_days decimal(5, 0) NOT NULL COMMENT 'Minimum booking days',
-    max_technician_number decimal(5, 0) NOT NULL DEFAULT 1 COMMENT 'Maximum number of technician',
+    max_technician_number decimal(5, 0) NOT NULL COMMENT 'Maximum number of technician',
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Accommodation Booking Rule';
 
-INSERT INTO acc_booking_rule VALUE (0,1,1,1,1,1,60,0,5,1,1);
+INSERT INTO acc_booking_rule VALUE (0,1,1,1,1,1,60,0,5,1,0);
 
 CREATE TABLE acc_accommodation (
     id bigint NOT NULL COMMENT 'ID',
