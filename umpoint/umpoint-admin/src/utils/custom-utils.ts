@@ -1,9 +1,14 @@
 export const formatDescription = (description: string) => {
   if (description.startsWith('"'))
     description = description.substring(1);
+  if (description.startsWith('\\"'))
+    description = description.substring(2);
   if (description.endsWith('"'))
     description = description.substring(0, description.length-1);
-  description = description.replace("\\n", "");
+  if (description.endsWith('\\"'))
+    description = description.substring(0, description.length-2);
+  description = description.replaceAll("\\n", "");
+  description = description.replaceAll("null", "");
   return description;
 }
 

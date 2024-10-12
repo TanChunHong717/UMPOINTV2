@@ -66,7 +66,7 @@
   </el-form>
 </template>
 <script lang="ts" setup>
-import {onActivated, onMounted, onUpdated, reactive, ref} from "vue";
+import {onMounted, onUpdated, reactive, ref} from "vue";
 import baseService from "@/service/baseService";
 import { ElMessage } from "element-plus";
 import {IObject} from "@/types/interface";
@@ -75,6 +75,7 @@ import emits from "@/utils/emits";
 import {EMitt} from "@/constants/enum";
 import {useRoute} from "vue-router";
 import Editor from "@tinymce/tinymce-vue";
+import {formatDescription} from "@/utils/custom-utils";
 
 const route = useRoute();
 const categoryList = ref<{id: number; name: string}[]>([]);
@@ -169,18 +170,6 @@ const getInfo = (id: bigint) => {
     dataForm.description = formatDescription(dataForm.description);
   });
 };
-
-const formatDescription = (description: any) => {
-  if (!description || typeof description !== 'string')
-    return "";
-  if (description.startsWith('"'))
-    description = description.substring(1);
-  if (description.endsWith('"'))
-    description = description.substring(0, description.length-1);
-  description = description.replace("\\n", "");
-  description = description.replace("null", "");
-  return description;
-}
 
 const init = (id?: bigint) => {
   dataForm.id = "";
