@@ -108,7 +108,26 @@ const state = reactive({ ...useView(view), ...toRefs(view) });
 
 const accApproveRef = ref();
 const approveHandle = (id: number, maxTechnician: number) => {
-  accApproveRef.value.init(id, maxTechnician);
+  if (maxTechnician > 0)
+    accApproveRef.value.init(id, maxTechnician);
+  else
+    ElMessageBox.confirm("Confirm to approve this booking?", "Warning", {
+      confirmButtonText: "Confirm",
+      cancelButtonText: "Cancel",
+      type: "warning"
+    })
+      .then(() => {
+        baseService
+          .put("/accommodation/booking/approve/" + id)
+          .then((res) => {
+            state.getDataList();
+            ElMessage.success({
+              message: "Success",
+              duration: 500,
+            });
+          });
+      })
+      .catch(() => {});
 }
 
 const rejectHandle = (id: number) => {
@@ -119,7 +138,7 @@ const rejectHandle = (id: number) => {
   })
     .then(() => {
       baseService
-        .put("accommodation/booking/reject/" + id)
+        .put("/accommodation/booking/reject/" + id)
         .then((res) => {
           state.getDataList();
           ElMessage.success({

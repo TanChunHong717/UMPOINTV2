@@ -89,13 +89,11 @@ public class SpcSpaceServiceImpl extends CrudServiceImpl<SpcSpaceDao, SpcSpaceEn
     private void updateBookingRule(SpcSpaceDTO dto) {
         SpcBookingRuleDTO spcBookingRuleDTO = dto.getSpcBookingRuleDTO();
         if (spcBookingRuleDTO != null) {
-            if (dto.getBookingRuleId() == null) {
-                //Have no booking rule yet
-                //Create new booking rule
+            if (spcBookingRuleDTO.getId() == null)
                 spcBookingRuleService.save(spcBookingRuleDTO);
-                dto.setBookingRuleId(spcBookingRuleDTO.getId());
-            } else
+            else
                 spcBookingRuleService.update(spcBookingRuleDTO);
+            dto.setBookingRuleId(spcBookingRuleDTO.getId());
         }
     }
 

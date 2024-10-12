@@ -109,7 +109,26 @@ const state = reactive({ ...useView(view), ...toRefs(view) });
 
 const spcApproveRef = ref();
 const approveHandle = (id: number, maxTechnician: number) => {
-  spcApproveRef.value.init(id, maxTechnician);
+  if (maxTechnician > 0)
+    spcApproveRef.value.init(id, maxTechnician);
+  else
+    ElMessageBox.confirm("Confirm to approve this booking?", "Warning", {
+      confirmButtonText: "Confirm",
+      cancelButtonText: "Cancel",
+      type: "warning"
+    })
+      .then(() => {
+        baseService
+          .put("/space/booking/approve/" + id)
+          .then((res) => {
+            state.getDataList();
+            ElMessage.success({
+              message: "Success",
+              duration: 500,
+            });
+          });
+      })
+      .catch(() => {});
 }
 
 const rejectHandle = (id: number) => {
