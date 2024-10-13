@@ -75,6 +75,7 @@ const dataFormRef = ref();
 const userList = ref<{id: number; username: string}[]>([]);
 const defaultBookingRule = ref();
 
+const accommodationId = ref(null);
 const dataForm = reactive({
   id: null,
   bookingRuleId: null,
@@ -152,7 +153,7 @@ const init = (accommodation?: any) => {
     dataFormRef.value.resetFields();
 
   Object.assign(dataForm, accommodation, accommodation.accBookingRuleDTO);
-  dataForm.id = accommodation.id;
+  accommodationId.value = accommodation.id;
 };
 
 // Form submission
@@ -162,7 +163,7 @@ const dataFormSubmitHandle = () => {
       return false;
     }
     const accommodation = {
-      id: dataForm.id,
+      id: accommodationId.value,
       bookingRuleId: dataForm.bookingRuleId,
       manager: dataForm.manager,
       dayPrice: dataForm.dayPrice,
@@ -176,7 +177,7 @@ const dataFormSubmitHandle = () => {
         openDaysPriorBooking: dataForm.openDaysPriorBooking,
         closeDaysBeforeBooking: dataForm.closeDaysBeforeBooking,
         maxReservationDays: dataForm.maxReservationDays,
-        minBookingHours: dataForm.minBookingHours,
+        minBookingDays: dataForm.minBookingDays,
         maxTechnicianNumber: dataForm.maxTechnicianNumber
       }
     };

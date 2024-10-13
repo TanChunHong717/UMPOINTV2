@@ -21,7 +21,7 @@ public interface BookingConstant {
     @Getter
     enum EventStatus {
         BOOKING(0),
-        CLOSE_AFTER_BOOKING(1),
+        CLOSE_BEFORE_BOOKING(1),
         CLOSURE(2);
 
         private final int value;

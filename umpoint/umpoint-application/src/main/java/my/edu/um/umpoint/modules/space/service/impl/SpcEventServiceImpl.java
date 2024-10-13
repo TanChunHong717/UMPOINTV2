@@ -84,7 +84,7 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
 
             eventEntity.setSpaceId(bookingDTO.getSpaceId());
             eventEntity.setBookingId(bookingDTO.getId());
-            eventEntity.setType(BookingConstant.EventStatus.CLOSE_AFTER_BOOKING.getValue());
+            eventEntity.setType(BookingConstant.EventStatus.CLOSE_BEFORE_BOOKING.getValue());
             
             eventEntity.setStartTime(DateUtils.convertLocalDateTimeToDate(startTime));
             eventEntity.setEndTime(DateUtils.convertLocalDateTimeToDate(endTime));
