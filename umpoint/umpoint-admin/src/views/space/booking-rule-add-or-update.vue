@@ -96,6 +96,7 @@ const dataFormRef = ref();
 const userList = ref<{id: number; username: string}[]>([]);
 const defaultBookingRule = ref();
 
+const spaceId = ref(null);
 const dataForm = reactive({
   id: null,
   bookingRuleId: null,
@@ -172,11 +173,15 @@ const getUserList = async () => {
 };
 
 const removeSecond = (timeString: any): any => {
-  return timeString.substring(0, timeString.lastIndexOf(":"));
+  if (timeString.split(':').length == 2)
+    return timeString.substring(0, timeString.lastIndexOf(":"));
+  return timeString;
 }
 
 const addSecond = (timeString: any): any => {
-  return timeString + ':00';
+  if (timeString.split(':').length == 2)
+    return timeString + ':00';
+  return timeString;
 }
 
 const init = (space?: any) => {
@@ -190,7 +195,7 @@ const init = (space?: any) => {
     dataFormRef.value.resetFields();
 
   Object.assign(dataForm, space, space.spcBookingRuleDTO);
-  dataForm.id = space.id;
+  spaceId.value = space.id;
   dataForm.bookingRuleId = space.bookingRuleId;
   dataForm.startTime = removeSecond(dataForm.startTime);
   dataForm.endTime = removeSecond(dataForm.endTime);
@@ -203,7 +208,7 @@ const dataFormSubmitHandle = () => {
       return false;
     }
     const space = {
-      id: dataForm.id,
+      id: spaceId.value,
       bookingRuleId: dataForm.bookingRuleId,
       manager: dataForm.manager,
       hourPrice: dataForm.hourPrice,

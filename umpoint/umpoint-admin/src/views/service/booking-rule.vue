@@ -32,21 +32,21 @@
     <el-table v-loading="state.dataListLoading" :data="state.dataList" border @sort-change="state.dataListSortChangeHandle" style="width: 100%">
       <el-table-column prop="name" label="Name" header-align="center" align="center" sortable="custom"></el-table-column>
       <el-table-column label="Booking Rule" header-align="center" align="center">
-        <el-table-column prop="managerName" label="Manager" header-align="center" align="center"></el-table-column>
-        <el-table-column label="Approve Required" header-align="center" align="center">
+        <el-table-column prop="managerName" label="Manager" header-align="center" align="center" width="110"></el-table-column>
+        <el-table-column label="Approve Required" header-align="center" align="center" width="150">
           <template v-slot="scope">
-            <div v-if="scope.row.spcBookingRuleDTO">
-              <el-tag v-if="scope.row.spcBookingRuleDTO.approvalRequired == 1" type="primary">Yes</el-tag>
+            <div v-if="scope.row.svcBookingRuleDTO">
+              <el-tag v-if="scope.row.svcBookingRuleDTO.approvalRequired == 1" type="primary">Yes</el-tag>
               <el-tag v-else type="info">No</el-tag>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="Open To" header-align="center" align="center">
+        <el-table-column label="Open To" header-align="center" align="center" width="275">
           <template v-slot="scope">
-            <div v-if="scope.row.spcBookingRuleDTO">
-              <el-checkbox label="Staff" v-model="scope.row.spcBookingRuleDTO.openForStaff" :true-value="Number(1)" :false-value="Number(0)" disabled/>
-              <el-checkbox label="Student" v-model="scope.row.spcBookingRuleDTO.openForStudent" :true-value="Number(1)" :false-value="Number(0)" disabled/>
-              <el-checkbox label="Public" v-model="scope.row.spcBookingRuleDTO.openForPublic" :true-value="Number(1)" :false-value="Number(0)" disabled/>
+            <div v-if="scope.row.svcBookingRuleDTO">
+              <el-checkbox label="Staff" v-model="scope.row.svcBookingRuleDTO.openForStaff" :true-value="Number(1)" :false-value="Number(0)" disabled/>
+              <el-checkbox label="Student" v-model="scope.row.svcBookingRuleDTO.openForStudent" :true-value="Number(1)" :false-value="Number(0)" disabled/>
+              <el-checkbox label="Public" v-model="scope.row.svcBookingRuleDTO.openForPublic" :true-value="Number(1)" :false-value="Number(0)" disabled/>
             </div>
           </template>
         </el-table-column>

@@ -51,6 +51,7 @@ const dataFormRef = ref();
 const userList = ref<{id: number; username: string}[]>([]);
 const defaultBookingRule = ref();
 
+const serviceId = ref(null);
 const dataForm = reactive({
   id: null,
   bookingRuleId: null,
@@ -103,7 +104,7 @@ const init = (service?: any) => {
     dataFormRef.value.resetFields();
 
   Object.assign(dataForm, service, service.svcBookingRuleDTO);
-  dataForm.id = service.id;
+  serviceId.value = service.id;
 };
 
 // Form submission
@@ -114,7 +115,7 @@ const dataFormSubmitHandle = () => {
     }
     console.log(dataForm);
     const service = {
-      id: dataForm.id,
+      id: serviceId.value,
       bookingRuleId: dataForm.bookingRuleId,
       manager: dataForm.manager,
       price: dataForm.price,

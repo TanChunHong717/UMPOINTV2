@@ -11,7 +11,7 @@ import lombok.Data;
  * @since 1.0.0 2024-08-11
  */
 @Data
-@TableName("spc_booking_rule")
+@TableName("svc_booking_rule")
 public class SvcBookingRuleEntity {
     /**
      * ID

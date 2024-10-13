@@ -103,7 +103,7 @@ export default {
           type: "success",
           duration: 1000
         });
-        this.uploadFileList.push({id:undefined, url:`https://mallstore.blob.core.windows.net/${this.containerName}/${this.newFileName}`});
+        this.uploadFileList.push({id:undefined, imageUrl:`https://mallstore.blob.core.windows.net/${this.containerName}/${this.newFileName}`});
         this.$emit('upload', this.uploadFileList);
       }).catch(error => {
       });

@@ -46,20 +46,4 @@ public class SvcBookingRuleDTO implements Serializable {
 	@SchemaProperty(name = "0:Automatic approve 1: Require admin approve")
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer openForPublic;
-
-	@SchemaProperty(name = "Days close for booking before event")
-	@NotNull(groups = {DefaultGroup.class})
-	private Integer closeDaysBeforeEvent;
-
-	@SchemaProperty(name = "Days close for booking after event")
-	@NotNull(groups = {DefaultGroup.class})
-	private Integer closeDaysAfterEvent;
-
-	@SchemaProperty(name = "Maximum reservation days")
-	@NotNull(groups = {DefaultGroup.class})
-	private Integer maxReservationDays;
-
-	@SchemaProperty(name = "Minimum booking hours per day")
-	@NotNull(groups = {DefaultGroup.class})
-	private Integer minBookingHours;
 }

@@ -1,6 +1,5 @@
 package my.edu.um.umpoint.modules.accommodation.service.impl;
 
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import my.edu.um.umpoint.common.constant.BookingConstant;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
@@ -68,7 +67,7 @@ public class AccEventServiceImpl extends CrudServiceImpl<AccEventDao, AccEventEn
 
             closeEventEntity.setAccommodationId(bookingDTO.getAccommodationId());
             closeEventEntity.setBookingId(bookingDTO.getId());
-            closeEventEntity.setType(BookingConstant.EventStatus.CLOSE_AFTER_BOOKING.getValue());
+            closeEventEntity.setType(BookingConstant.EventStatus.CLOSE_BEFORE_BOOKING.getValue());
 
             closeEventEntity.setStartTime(DateUtils.convertLocalDateToDate(startDate));
             closeEventEntity.setEndTime(DateUtils.convertLocalDateToDate(endDate));

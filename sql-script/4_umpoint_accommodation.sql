@@ -32,7 +32,7 @@ INSERT INTO acc_booking_rule VALUE (0,1,1,1,1,1,60,0,5,1,0);
 CREATE TABLE acc_accommodation (
     id bigint NOT NULL COMMENT 'ID',
     status tinyint COMMENT 'Status 0:Suspend 1:Normal',
-    name varchar(50) NOT NULL COMMENT 'Name',
+    name varchar(250) NOT NULL COMMENT 'Name',
     cat_id bigint NOT NULL COMMENT 'Category ID',
     dept_id bigint NOT NULL COMMENT 'Department ID',
     address varchar(250) NOT NULL COMMENT 'Address',

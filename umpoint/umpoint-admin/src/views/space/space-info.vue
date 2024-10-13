@@ -62,7 +62,7 @@
           </el-row>
           <div v-if="space.description?.trim().length > 0">
             <h2>Description</h2>
-            <div v-html="formatDescription(space.description)"></div>
+            <div v-html="space.description"></div>
           </div>
         </el-tab-pane>
         <el-tab-pane label="Booking Rule">
@@ -188,6 +188,7 @@ const getInfo = (id: bigint) => {
   baseService.get("/space/space/" + id).then((res) => {
     space.value = res.data;
     isLoading.value = false;
+    space.value.description = formatDescription(space.value.description)
     //getHoliday(new Date().getFullYear());
     initializeTimeTable();
   });
@@ -201,12 +202,14 @@ const getHoliday = (year: number) => {
 }
 
 const initializeTimeTable = () => {
-  const startTimeArray = space.value.spcBookingRuleDTO.startTime.split(':')
-  endTime.value = Number(startTimeArray[0]) * 60 + Number(startTimeArray[1])
-  const endTimeArray = space.value.spcBookingRuleDTO.endTime.split(':')
-  endTime.value = Number(endTimeArray[0]) * 60 + Number(endTimeArray[1])
+  if (space.value.spcBookingRuleDTO) {
+    const startTimeArray = space.value.spcBookingRuleDTO.startTime.split(':')
+    startTime.value = Number(startTimeArray[0]) * 60 + Number(startTimeArray[1])
+    const endTimeArray = space.value.spcBookingRuleDTO.endTime.split(':')
+    endTime.value = Number(endTimeArray[0]) * 60 + Number(endTimeArray[1])
 
-  onViewChange(getMondayAndSunday(new Date()));
+    onViewChange(getMondayAndSunday(new Date()));
+  }
 }
 
 const onViewChange = (object: any) => {
@@ -257,7 +260,7 @@ const getEvent = async (startDate: Date, endDate: Date) => {
         start: new Date(eventDTO.startTime),
         end: new Date(eventDTO.endTime),
         title: (eventDTO.type == '0')?
-                  "Booking:":
+                  "Booking":
                   ((eventDTO.type == '1')? "Close after booking": "Closure"),
         class: (eventDTO.type == '0')?
                   "booking":
