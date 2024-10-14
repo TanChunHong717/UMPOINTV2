@@ -64,8 +64,7 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
     public void addEvent(SpcBookingDTO bookingDTO) {
         List<SpcEventEntity> eventEntityList = new ArrayList<>();
 
-        LocalDate startDay = DateUtils.convertDateToLocalDate(bookingDTO.getStartDay());
-        LocalDate currentDay = startDay;
+        LocalDate currentDay = DateUtils.convertDateToLocalDate(bookingDTO.getStartDay());
         LocalDate endDay = DateUtils.convertDateToLocalDate(bookingDTO.getEndDay());
         while (currentDay.isBefore(endDay) || currentDay.isEqual(endDay)) {
             SpcEventEntity eventEntity = new SpcEventEntity();
@@ -79,27 +78,6 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
 
             eventEntityList.add(eventEntity);
             currentDay = currentDay.plusDays(1);
-        }
-
-        SpcSpaceDTO spaceDTO = spcSpaceService.get(bookingDTO.getSpaceId());
-        SpcBookingRuleDTO bookingRuleDTO = spaceDTO.getSpcBookingRuleDTO();
-        if (bookingRuleDTO.getCloseDaysBeforeBooking() > 0) {
-            LocalDateTime startTime = LocalDateTime.of(startDay.minusDays(bookingRuleDTO.getCloseDaysBeforeBooking() + 1), LocalTime.MIN);
-            LocalDateTime endTime = LocalDateTime.of(
-                    startDay.minusDays(1),
-                    LocalTime.MAX
-            );
-
-            SpcEventEntity eventEntity = new SpcEventEntity();
-
-            eventEntity.setSpaceId(bookingDTO.getSpaceId());
-            eventEntity.setBookingId(bookingDTO.getId());
-            eventEntity.setType(BookingConstant.EventStatus.CLOSE_BEFORE_BOOKING.getValue());
-            
-            eventEntity.setStartTime(DateUtils.convertLocalDateTimeToDate(startTime));
-            eventEntity.setEndTime(DateUtils.convertLocalDateTimeToDate(endTime));
-
-            eventEntityList.add(eventEntity);
         }
 
         insertBatch(eventEntityList);

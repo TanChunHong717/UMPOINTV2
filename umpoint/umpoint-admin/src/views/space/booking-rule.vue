@@ -42,7 +42,7 @@
                 </el-col>
               </el-row>
               <el-row style="margin-bottom: 14px">
-                The space will be open for booking {{ scope.row.spcBookingRuleDTO.openDaysPriorBooking }} day(s) prior the event and will be closed {{  scope.row.spcBookingRuleDTO.closeDaysBeforeBooking }} day(s) before space booking date.
+                The space will be open for booking {{ scope.row.spcBookingRuleDTO.maxBookingAdvanceDay }} day(s) prior the event and will be closed {{  scope.row.spcBookingRuleDTO.minBookingAdvanceDay }} day(s) before space booking date.
               </el-row>
               <el-row class="content-row">
                 <el-col :span="12">Start Time: {{ scope.row.spcBookingRuleDTO.startTime }}</el-col>

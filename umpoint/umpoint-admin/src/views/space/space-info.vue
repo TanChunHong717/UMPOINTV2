@@ -111,7 +111,7 @@
               </el-col>
             </el-row>
             <el-row style="margin-bottom: 14px">
-              The accommodation will be open for booking {{ space.spcBookingRuleDTO.openDaysPriorBooking }} day(s) prior the event and will be closed {{  space.spcBookingRuleDTO.closeDaysBeforeBooking }} day(s) before space booking date.
+              The accommodation will be open for booking {{ space.spcBookingRuleDTO.maxBookingAdvanceDay }} day(s) prior the event and will be closed {{  space.spcBookingRuleDTO.minBookingAdvanceDay }} day(s) before space booking date.
             </el-row>
             <el-row style="margin-bottom: 14px">
               <el-col :span="12">Start Time: {{ space.spcBookingRuleDTO.startTime }}</el-col>
@@ -119,7 +119,7 @@
             </el-row>
             <el-row style="margin-bottom: 14px">
               <el-col :span="12">Maximum reservation days: {{ space.spcBookingRuleDTO.maxReservationDays }}</el-col>
-              <el-col :span="12">Minimum booking days: {{ space.spcBookingRuleDTO.minBookingDays }}</el-col>
+              <el-col :span="12">Minimum booking hours: {{ space.spcBookingRuleDTO.minBookingHours }}</el-col>
             </el-row>
           </div>
           <div v-else>
@@ -171,7 +171,6 @@ const isLoading = ref(true);
 const holidays = ref([]);
 const specialHours = ref<any>({});
 let events = ref<any>([]);
-const eventsCloseAfterBookingSet: Set<string> = new Set();
 const startTime = ref();
 const endTime = ref();
 const weekendDays = [6, 7];
@@ -253,39 +252,26 @@ const getEvent = async (startDate: Date, endDate: Date) => {
     }
   ).then((res) => {
     events.value = [];
-    eventsCloseAfterBookingSet.clear();
 
     res.data.forEach((eventDTO: any) => {
       const event = {
         start: new Date(eventDTO.startTime),
         end: new Date(eventDTO.endTime),
-        title: (eventDTO.type == '0')?
-                  "Booking":
-                  ((eventDTO.type == '1')? "Close after booking": "Closure"),
-        class: (eventDTO.type == '0')?
-                  "booking":
-                  ((eventDTO.type == '1')? "close": "closure"),
+        title: (eventDTO.type == '0')? "Booking": "Closure",
+        class: (eventDTO.type == '0')? "booking": "closure",
         type: eventDTO.type,
         bookingId: eventDTO.bookingId,
         closureId: eventDTO.closureId,
       }
-      if (eventDTO.type == '1')
-        eventsCloseAfterBookingSet.add(JSON.stringify(event));
-      else
-        events.value.push(event);
+      events.value.push(event);
     })
-
-    if (eventsCloseAfterBookingSet.size > 0)
-      Array.from(eventsCloseAfterBookingSet)
-        .map(eventString => JSON.parse(eventString))
-        .forEach(event => events.value.push(event))
   });
 }
 
 const onEventClick = (event: any) => {
   if (event.type == '0' && state.hasPermission("space:booking:info"))
     router.push({path: '/booking/spc-booking', query: {id: event.bookingId}});
-  else if (event.type == '2' && state.hasPermission("space:closure:info")) {
+  else if (event.type == '1' && state.hasPermission("space:closure:info")) {
     onClosureUpdate(event);
   }
 }
@@ -390,11 +376,6 @@ h1 {
 .vuecal__event.booking {
   background-color: rgba(0, 123, 255, 0.9);  /* Blue */
   border: 1px solid rgb(0, 104, 217);
-  color: #fff;
-}
-.vuecal__event.close {
-  background-color: rgba(108, 117, 125, 0.9);  /* Gray */
-  border: 1px solid rgb(88, 97, 104);
   color: #fff;
 }
 .vuecal__event.closure {

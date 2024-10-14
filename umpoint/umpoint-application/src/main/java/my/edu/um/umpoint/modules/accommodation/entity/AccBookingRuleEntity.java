@@ -39,13 +39,13 @@ public class AccBookingRuleEntity {
 	 */
 	private Integer holidayAvailable;
 	/**
-	 * Days open prior booking
+	 * Max booking advance day
 	 */
-	private Integer openDaysPriorBooking;
+	private Integer maxBookingAdvanceDay;
 	/**
-	 * Days close before booking
+	 * Min booking advance day
 	 */
-	private Integer closeDaysBeforeBooking;
+	private Integer minBookingAdvanceDay;
 	/**
 	* Maximum reservation days
 	*/

@@ -12,8 +12,8 @@
         <result property="holidayAvailable" column="holiday_available"/>
         <result property="startTime" column="start_time"/>
         <result property="endTime" column="end_time"/>
-        <result property="openDaysPriorBooking" column="open_days_prior_booking"/>
-        <result property="closeDaysBeforeBooking" column="close_days_before_booking"/>
+        <result property="maxBookingAdvanceDay" column="max_booking_advance_day"/>
+        <result property="minBookingAdvanceDay" column="min_booking_advance_day"/>
         <result property="maxReservationDays" column="max_reservation_days"/>
         <result property="minBookingHours" column="min_booking_hours"/>
         <result property="maxTechnicianNumber" column="max_technician_number"/>

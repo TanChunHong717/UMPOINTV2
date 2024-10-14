@@ -40,11 +40,11 @@
       <el-form-item label="Price for a week" prop="weekPrice">
         <el-input-number v-model="dataForm.weekPrice" controls-position="right" :precision="2" :step="0.5" :min="0"/>
       </el-form-item>
-      <el-form-item label="Open days prior booking" prop="closeDaysBeforeBooking">
-        <el-input-number v-model="dataForm.openDaysPriorBooking" controls-position="right" :min="0"/>
+      <el-form-item label="Max booking advance day" prop="minBookingAdvanceDay">
+        <el-input-number v-model="dataForm.maxBookingAdvanceDay" controls-position="right" :min="0"/>
       </el-form-item>
-      <el-form-item label="Close days before booking" prop="closeDaysBeforeBooking">
-        <el-input-number v-model="dataForm.closeDaysBeforeBooking" controls-position="right" :min="0"/>
+      <el-form-item label="Min booking advance day" prop="minBookingAdvanceDay">
+        <el-input-number v-model="dataForm.minBookingAdvanceDay" controls-position="right" :min="0"/>
       </el-form-item>
       <el-form-item label="Max reservation days" prop="maxReservationDays">
         <el-input-number v-model="dataForm.maxReservationDays" controls-position="right" :min="1"/>
@@ -87,8 +87,8 @@ const dataForm = reactive({
   holidayAvailable: null,
   dayPrice: null,
   weekPrice: null,
-  openDaysPriorBooking: null,
-  closeDaysBeforeBooking: null,
+  maxBookingAdvanceDay: null,
+  minBookingAdvanceDay: null,
   maxReservationDays: null,
   minBookingDays: null,
   maxTechnicianNumber: null
@@ -107,10 +107,10 @@ const rules = ref({
   dayPrice: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
-  openDaysPriorBooking: [
+  maxBookingAdvanceDay: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
-  closeDaysBeforeBooking: [
+  minBookingAdvanceDay: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
   maxReservationDays: [
@@ -174,8 +174,8 @@ const dataFormSubmitHandle = () => {
         openForStaff: dataForm.openForStaff ?? 0,
         openForStudent: dataForm.openForStudent ?? 0,
         openForPublic: dataForm.openForPublic ?? 0,
-        openDaysPriorBooking: dataForm.openDaysPriorBooking,
-        closeDaysBeforeBooking: dataForm.closeDaysBeforeBooking,
+        maxBookingAdvanceDay: dataForm.maxBookingAdvanceDay,
+        minBookingAdvanceDay: dataForm.minBookingAdvanceDay,
         maxReservationDays: dataForm.maxReservationDays,
         minBookingDays: dataForm.minBookingDays,
         maxTechnicianNumber: dataForm.maxTechnicianNumber

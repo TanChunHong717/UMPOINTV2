@@ -33,7 +33,7 @@ public class SpcEventEntity {
 	*/
 	private Long closureId;
 	/**
-	* Type: 0:Booking, 1:Close after booking, 2:Closure period
+	* Type: 0:Booking, 1:Closure period
 	*/
 	private Integer type;
 	/**

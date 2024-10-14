@@ -33,7 +33,7 @@ public class AccEventDTO implements Serializable {
 	@SchemaProperty(name = "Closure ID")
 	private Long closureId;
 
-	@SchemaProperty(name = "Type: 0:Booking, 1:Close after booking, 2:Closure period")
+	@SchemaProperty(name = "Type: 0:Booking, 1:Closure period")
 	private Integer type;
 
 	@SchemaProperty(name = "Event start time")
