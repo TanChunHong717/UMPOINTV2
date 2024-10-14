@@ -111,7 +111,7 @@
               </el-col>
             </el-row>
             <el-row style="margin-bottom: 14px">
-              The accommodation will be open for booking {{ space.spcBookingRuleDTO.openDaysPriorBooking }} day(s) prior the event and will be closed {{  space.spcBookingRuleDTO.closeDaysBeforeBooking }} day(s) before space booking date.
+              The accommodation will be open for booking {{ space.spcBookingRuleDTO.maxBookingAdvanceDay }} day(s) prior the event and will be closed {{  space.spcBookingRuleDTO.minBookingAdvanceDay }} day(s) before space booking date.
             </el-row>
             <el-row style="margin-bottom: 14px">
               <el-col :span="12">Start Time: {{ space.spcBookingRuleDTO.startTime }}</el-col>
@@ -119,7 +119,7 @@
             </el-row>
             <el-row style="margin-bottom: 14px">
               <el-col :span="12">Maximum reservation days: {{ space.spcBookingRuleDTO.maxReservationDays }}</el-col>
-              <el-col :span="12">Minimum booking days: {{ space.spcBookingRuleDTO.minBookingDays }}</el-col>
+              <el-col :span="12">Minimum booking hours: {{ space.spcBookingRuleDTO.minBookingHours }}</el-col>
             </el-row>
           </div>
           <div v-else>

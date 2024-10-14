@@ -20,11 +20,11 @@
           <el-radio :value="Number(0)">No</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="Open days prior booking" prop="closeDaysBeforeBooking">
-        <el-input-number v-model="dataForm.openDaysPriorBooking" controls-position="right" :min="0"/>
+      <el-form-item label="Max booking advance day" prop="minBookingAdvanceDay">
+        <el-input-number v-model="dataForm.maxBookingAdvanceDay" controls-position="right" :min="0"/>
       </el-form-item>
-      <el-form-item label="Close days before booking" prop="closeDaysBeforeBooking">
-        <el-input-number v-model="dataForm.closeDaysBeforeBooking" controls-position="right" :min="0"/>
+      <el-form-item label="Min booking advance day" prop="minBookingAdvanceDay">
+        <el-input-number v-model="dataForm.minBookingAdvanceDay" controls-position="right" :min="0"/>
       </el-form-item>
       <el-form-item label="Max reservation days" prop="maxReservationDays">
         <el-input-number v-model="dataForm.maxReservationDays" controls-position="right" :min="1"/>
@@ -59,8 +59,8 @@ const dataForm = reactive({
   openForStudent: null,
   openForPublic: null,
   holidayAvailable: null,
-  openDaysPriorBooking: null,
-  closeDaysBeforeBooking: null,
+  maxBookingAdvanceDay: null,
+  minBookingAdvanceDay: null,
   maxReservationDays: null,
   minBookingDays: null,
   maxTechnicianNumber: null
@@ -73,10 +73,10 @@ const rules = ref({
   holidayAvailable: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
-  openDaysPriorBooking: [
+  maxBookingAdvanceDay: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
-  closeDaysBeforeBooking: [
+  minBookingAdvanceDay: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
   maxReservationDays: [

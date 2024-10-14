@@ -10,8 +10,8 @@
         <result property="openForStudent" column="open_for_student"/>
         <result property="openForPublic" column="open_for_public"/>
         <result property="holidayAvailable" column="holiday_available"/>
-        <result property="openDaysPriorBooking" column="open_days_prior_booking"/>
-        <result property="closeDaysBeforeBooking" column="close_days_before_booking"/>
+        <result property="maxBookingAdvanceDay" column="max_booking_advance_day"/>
+        <result property="minBookingAdvanceDay" column="min_booking_advance_day"/>
         <result property="maxReservationDays" column="max_reservation_days"/>
         <result property="minBookingDays" column="min_booking_days"/>
         <result property="maxTechnicianNumber" column="max_technician_number"/>
