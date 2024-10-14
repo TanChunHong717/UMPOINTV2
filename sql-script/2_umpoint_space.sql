@@ -128,7 +128,7 @@ CREATE TABLE spc_event (
     space_id bigint NOT NULL COMMENT 'Space ID',
     booking_id bigint NULL COMMENT 'Booking ID',
     closure_id bigint NULL COMMENT 'Closure ID',
-    type tinyint NOT NULL COMMENT 'Type: 0:Booking, 1:Close after booking, 2:Closure period',
+    type tinyint NOT NULL COMMENT 'Type: 0:Booking, 1:Closure period',
     start_time DATETIME NOT NULL COMMENT 'Event start time',
     end_time DATETIME NOT NULL COMMENT 'Event end time',
     PRIMARY KEY (id),

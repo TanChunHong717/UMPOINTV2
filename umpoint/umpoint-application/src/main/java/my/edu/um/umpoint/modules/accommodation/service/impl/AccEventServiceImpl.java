@@ -56,24 +56,6 @@ public class AccEventServiceImpl extends CrudServiceImpl<AccEventDao, AccEventEn
         eventEntity.setEndTime(bookingDTO.getEndDay());
 
         insert(eventEntity);
-
-        AccAccommodationDTO accommodationDTO = accAccommodationService.get(bookingDTO.getAccommodationId());
-        AccBookingRuleDTO bookingRuleDTO = accommodationDTO.getAccBookingRuleDTO();
-        if (bookingRuleDTO.getCloseDaysBeforeBooking() > 0) {
-            LocalDate startDate = DateUtils.convertDateToLocalDate(bookingDTO.getStartDay()).minusDays(bookingRuleDTO.getCloseDaysBeforeBooking() + 1);
-            LocalDate endDate = DateUtils.convertDateToLocalDate(bookingDTO.getStartDay()).minusDays(1);
-
-            AccEventEntity closeEventEntity = new AccEventEntity();
-
-            closeEventEntity.setAccommodationId(bookingDTO.getAccommodationId());
-            closeEventEntity.setBookingId(bookingDTO.getId());
-            closeEventEntity.setType(BookingConstant.EventStatus.CLOSE_BEFORE_BOOKING.getValue());
-
-            closeEventEntity.setStartTime(DateUtils.convertLocalDateToDate(startDate));
-            closeEventEntity.setEndTime(DateUtils.convertLocalDateToDate(endDate));
-
-            insert(closeEventEntity);
-        }
     }
 
     @Override

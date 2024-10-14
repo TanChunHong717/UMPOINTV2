@@ -163,7 +163,6 @@ const isLoading = ref(true);
 const holidays = ref([]);
 const specialHours = ref<any>({});
 let events = ref<any>([]);
-const eventsCloseAfterBookingSet: Set<string> = new Set();
 const weekendDays = [6, 7];
 
 const view = reactive({});
@@ -237,18 +236,13 @@ const getEvent = async (startDate: Date, endDate: Date) => {
     }
   ).then((res) => {
     events.value = [];
-    eventsCloseAfterBookingSet.clear();
 
     res.data.forEach((eventDTO: any) => {
       const event = {
         start: new Date(eventDTO.startTime),
         end: new Date(eventDTO.endTime),
-        title: (eventDTO.type == '0')?
-          "Booking:":
-          ((eventDTO.type == '1')? "Close after booking": "Closure"),
-        class: (eventDTO.type == '0')?
-          "booking":
-          ((eventDTO.type == '1')? "close": "closure"),
+        title: (eventDTO.type == '0')? "Booking:": "Closure",
+        class: (eventDTO.type == '0')? "booking": "closure",
         type: eventDTO.type,
         bookingId: eventDTO.bookingId,
         closureId: eventDTO.closureId,
@@ -256,23 +250,15 @@ const getEvent = async (startDate: Date, endDate: Date) => {
       event.start.setHours(0,0,0);
       event.end.setHours(23, 59, 59);
 
-      if (eventDTO.type == '1')
-        eventsCloseAfterBookingSet.add(JSON.stringify(event));
-      else
-        events.value.push(event);
+      events.value.push(event);
     })
-
-    if (eventsCloseAfterBookingSet.size > 0)
-      Array.from(eventsCloseAfterBookingSet)
-        .map(eventString => JSON.parse(eventString))
-        .forEach(event => events.value.push(event))
   });
 }
 
 const onEventClick = (event: any) => {
   if (event.type == '0' && state.hasPermission("accommodation:booking:info"))
     router.push({path: '/booking/acc-booking', query: {id: event.bookingId}});
-  else if (event.type == '2' && state.hasPermission("accommodation:closure:info")) {
+  else if (event.type == '1' && state.hasPermission("accommodation:closure:info")) {
     onClosureUpdate(event);
   }
 }
