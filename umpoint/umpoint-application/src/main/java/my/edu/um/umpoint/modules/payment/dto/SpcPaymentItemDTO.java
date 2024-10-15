@@ -1,13 +1,10 @@
 package my.edu.um.umpoint.modules.payment.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
-
 import java.math.BigDecimal;
 
 /**
@@ -20,22 +17,20 @@ import java.math.BigDecimal;
 @Schema(name = "Space Payment Itemized")
 public class SpcPaymentItemDTO implements Serializable {
 	@Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2354434705777956413L;
 
-	@SchemaProperty(name = "ID")
+	@Schema(title = "ID")
 	private Long id;
 
-	@SchemaProperty(name = "Payment ID")
+	@Schema(title = "Payment ID")
 	private Long paymentId;
 
-	@SchemaProperty(name = "Payment Item Name")
+	@Schema(title = "Payment Item Name")
 	private String itemName;
 
-	@SchemaProperty(name = "Payment Item Count")
+	@Schema(title = "Payment Item Count")
 	private Integer itemAmount;
 
-	@SchemaProperty(name = "Price per item (total = amount * price)")
+	@Schema(title = "Price per item (total = amount * price)")
 	private BigDecimal itemPrice;
-
-
 }

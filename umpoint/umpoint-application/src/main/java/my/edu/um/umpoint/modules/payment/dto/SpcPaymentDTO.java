@@ -1,7 +1,6 @@
 package my.edu.um.umpoint.modules.payment.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import lombok.Data;
 
 import java.io.Serial;
@@ -46,6 +45,6 @@ public class SpcPaymentDTO implements Serializable {
 	@Schema(title = "Payment Method name")
 	private String method;
 
-	@SchemaProperty(name = "Payment item dto list")
+	@Schema(title = "Payment item dto list")
 	private List<SpcPaymentItemDTO> spcPaymentItemDTOList;
 }

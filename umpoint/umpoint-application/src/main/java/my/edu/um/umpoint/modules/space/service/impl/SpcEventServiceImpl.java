@@ -29,9 +29,6 @@ import java.util.Map;
 @Service
 public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEntity, SpcEventDTO> implements SpcEventService{
 
-    @Autowired
-    private SpcSpaceService spcSpaceService;
-
     @Override
     public QueryWrapper<SpcEventEntity> getWrapper(Map<String, Object> params){
         Long spaceId = Long.parseLong((String) params.get("spaceId"));

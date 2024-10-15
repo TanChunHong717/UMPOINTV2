@@ -1,14 +1,10 @@
 package my.edu.um.umpoint.modules.space.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 
 import java.io.Serial;
 import java.io.Serializable;
-
 
 /**
  * Space tag relationship

@@ -2,7 +2,6 @@ package my.edu.um.umpoint.modules.space.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import lombok.Data;
 import my.edu.um.umpoint.modules.payment.dto.SpcPaymentDTO;
 

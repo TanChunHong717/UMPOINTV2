@@ -1,7 +1,6 @@
 package my.edu.um.umpoint.modules.payment.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import lombok.Data;
 
 import java.io.Serial;
