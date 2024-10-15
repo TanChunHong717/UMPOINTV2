@@ -55,6 +55,9 @@
       <el-form-item label="Max technician number" prop="maxTechnicianNumber">
         <el-input-number v-model="dataForm.maxTechnicianNumber" controls-position="right" :min="0"/>
       </el-form-item>
+      <el-form-item label="Price per technician" prop="weekPrice">
+        <el-input-number v-model="dataForm.technicianPrice" controls-position="right" :precision="2" :step="0.5" :min="0"/>
+      </el-form-item>
     </el-form>
     <template #footer>
       <el-button @click="visible = false">Cancel</el-button>
@@ -91,7 +94,8 @@ const dataForm = reactive({
   minBookingAdvanceDay: null,
   maxReservationDays: null,
   minBookingDays: null,
-  maxTechnicianNumber: null
+  maxTechnicianNumber: null,
+  technicianPrice: null
 });
 
 const rules = ref({
@@ -120,6 +124,9 @@ const rules = ref({
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
   maxTechnicianNumber: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ],
+  technicianPrice: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ]
 });
@@ -178,7 +185,8 @@ const dataFormSubmitHandle = () => {
         minBookingAdvanceDay: dataForm.minBookingAdvanceDay,
         maxReservationDays: dataForm.maxReservationDays,
         minBookingDays: dataForm.minBookingDays,
-        maxTechnicianNumber: dataForm.maxTechnicianNumber
+        maxTechnicianNumber: dataForm.maxTechnicianNumber,
+        technicianPrice: dataForm.technicianPrice
       }
     };
     baseService.put("/accommodation/accommodation", accommodation).then((res) => {

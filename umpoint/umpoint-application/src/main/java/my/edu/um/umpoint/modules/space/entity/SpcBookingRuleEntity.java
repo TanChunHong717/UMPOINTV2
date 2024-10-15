@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.sql.Time;
 
 /**
@@ -68,4 +69,8 @@ public class SpcBookingRuleEntity {
 	 * Maximum number of technician
 	 */
 	private Integer maxTechnicianNumber;
+	/**
+	 * Price per technician
+	 */
+	private BigDecimal technicianPrice;
 }
