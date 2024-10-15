@@ -64,7 +64,6 @@ public class SvcCategoryController {
 
     @GetMapping("list/filter")
     @Operation(summary = "filter list")
-    @RequiresPermissions("service:category:list")
     public Result<List<SvcCategoryDTO>> filterList(){
         HashMap<String, Object> params = new HashMap<>();
         params.put("filter", true);

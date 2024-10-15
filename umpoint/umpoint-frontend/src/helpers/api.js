@@ -66,13 +66,17 @@ the space used`,
                         },
                     ],
                     spcBookingRuleDTO: {
+                        approvalRequired: 1,
+                        openForStaff: 1,
+                        openForStudent: 0,
+                        openForPublic: 0,
+                        holidayAvailable: 1,
                         startTime: "08:00",
                         endTime: "18:00",
-                        holidayAvailable: 1,
-                        open_days_prior_booking: 60,
-                        close_days_after_booking: 5,
-                        max_reservation_days: 30,
-                        min_booking_hours: 1,
+                        openDaysPriorBooking: 60,
+                        closeDaysAfterBooking: 5,
+                        maxReservationDays: 3,
+                        minBookingHours: 1,
                     },
                 },
             },
@@ -109,7 +113,7 @@ function getFacilityBookings(facilityID, startTime, endTime) {
     );
 
     return api.get(`/space/event`, {
-        data: params,
+        params,
     });
 }
 
@@ -121,9 +125,14 @@ function getCurrentUserBookings() {
     });
 }
 
+function createBooking(formData) {
+    return api.post(`/space/booking`, formData);
+}
+
 export {
     getFacilities,
     getFacilityInformation,
     getFacilityBookings,
     getCurrentUserBookings,
+    createBooking,
 };

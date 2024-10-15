@@ -29,10 +29,6 @@ today.setHours(0, 0, 0, 0);
  * STEP 1: EVENT INFORMATION
  * */
 
-// facility information
-const minDate = ref(today);
-const maxDate = ref(addDays(today, 30));
-
 // form validation
 const formNode = useTemplateRef("formNode");
 const calendarNode = useTemplateRef("calendarNode");
@@ -172,6 +168,7 @@ async function returnFormInfo(formEl) {
                             v-model="formData.numberOfParticipants"
                             required
                             style="width: 100%"
+                            :max="facilityInfo.capacity"
                         ></el-input-number>
                     </el-form-item>
                     <el-form-item label="Technician">
@@ -232,17 +229,27 @@ async function returnFormInfo(formEl) {
 
         <el-alert type="info" show-icon :closable="false">
             <ul>
-                <li>
+                <li v-if="!!props.facilityInfo.bookingRule?.approvalRequired">
                     This reservation request will be sent for approval from the
                     space administrator.
                 </li>
                 <li>
-                    The space will be open for booking 30 day(s) prior the event
-                    and will be closed 3 day(s) before the selected booking
-                    date.
+                    The space will be available for booking from
+                    <b>{{ props.facilityInfo.bookingRule?.closeDaysAfterBooking }}</b>
+                    day(s) after today, up to
+                    <b>{{ props.facilityInfo.bookingRule?.openDaysPriorBooking }}</b>
+                    day(s) in advance.
                 </li>
-                <li>Maximum reservation days is 30 day(s) per reservation.</li>
-                <li>Minimum hour for booking is 1 hour(s) per date.</li>
+                <li>
+                    Minimum duration for booking is
+                    <b>{{ props.facilityInfo.bookingRule?.minBookingHours }}</b>
+                    hour(s) per day.
+                </li>
+                <li>
+                    Maximum reservation days is
+                    <b>{{ props.facilityInfo.bookingRule?.maxReservationDays }}</b>
+                    day(s) per reservation.
+                </li>
             </ul>
         </el-alert>
 
@@ -250,8 +257,6 @@ async function returnFormInfo(formEl) {
             ref="calendarNode"
             :facilityInfo="props.facilityInfo"
             v-model:formData="formData"
-            v-model:minDate="minDate"
-            v-model:maxDate="maxDate"
             @validate-form="validateForm"
         ></booking-calendar>
 

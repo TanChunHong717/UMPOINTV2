@@ -4,7 +4,7 @@ import { reactive, useTemplateRef } from "vue";
 import { ElMessageBox } from "element-plus";
 import EventInfo from "./EventInfo.vue";
 
-const props = defineProps(["formData"]);
+const props = defineProps(["formData", "facilityInfo"]);
 const emit = defineEmits(["nextStep", "previousStep"]);
 defineOptions({
     inheritAttrs: false,
@@ -45,7 +45,7 @@ async function returnFormInfo(formEl) {
 </script>
 
 <template>
-    <EventInfo :formData="props.formData" />
+    <EventInfo :formData="props.formData" v-if="props.formData"/>
 
     <el-form ref="formNode" label-position="top" :model="formData">
         <el-divider content-position="left">
@@ -59,9 +59,7 @@ async function returnFormInfo(formEl) {
                     type="mdi"
                     :path="mdiToolboxOutline"
                 />
-                Kerusi, Meja, Lcd Projector & Skrin, Sound System, Micro Wave
-                Oven, Peti Sejuk, Penapis Air Coway, Penapis Udara Coway, Wifi
-                Tidak Disedikan (perlu Buat Permohonan)
+                {{ props.facilityInfo.facilities }}
             </el-text>
             <el-text class="info-item" size="small">
                 <svg-icon

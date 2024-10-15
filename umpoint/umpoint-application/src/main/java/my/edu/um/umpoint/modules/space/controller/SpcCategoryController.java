@@ -64,7 +64,6 @@ public class SpcCategoryController {
 
     @GetMapping("list/filter")
     @Operation(summary = "filter list")
-    @RequiresPermissions("space:category:list")
     public Result<List<SpcCategoryDTO>> filterList(){
         HashMap<String, Object> params = new HashMap<>();
         params.put("filter", true);

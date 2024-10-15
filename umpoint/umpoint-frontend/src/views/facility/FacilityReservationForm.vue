@@ -1,7 +1,7 @@
 <template>
     <BaseLayout>
         <template #title>Facility Reservation</template>
-        <template #subtitle>
+        <template #subtitle v-if="!isLoading">
             {{ facilityInfo.name }} @
             {{ facilityInfo.deptName }}
         </template>
@@ -26,11 +26,12 @@
 
         <br />
 
-        <KeepAlive>
+        <el-skeleton :rows="5" animated v-if="isLoading" text="Loading..." />
+        <KeepAlive v-else>
             <component
                 :is="formsPage[currentStep]"
                 :facilityInfo="facilityInfo"
-                :formData="formData"
+                :formData="form"
                 :pricingDetails="pricingDetails"
                 @nextStep="nextStep"
                 @previousStep="previousStep"
@@ -48,15 +49,22 @@ import {
 } from "@mdi/js";
 import { ref, reactive, computed, watch, shallowRef } from "vue";
 import { useRoute } from "vue-router";
-import { getFacilityInformation } from "@/helpers/api.js";
+import { getFacilityInformation, createBooking } from "@/helpers/api.js";
+import {
+    formatDateToTimezoneDateStr,
+    formatDateToTimezoneTimeStr,
+} from "@/utils/date";
 import StepOne from "@/components/reservation/StepOne.vue";
 import StepTwo from "@/components/reservation/StepTwo.vue";
 import StepThree from "@/components/reservation/StepThree.vue";
+import { ElMessage } from "element-plus";
 
 const formsPage = [StepOne, StepTwo, StepThree];
 
 const currentStep = ref(0);
 const route = useRoute();
+
+const isLoading = ref(true);
 
 // first init
 const facilityInfo = shallowRef({});
@@ -65,15 +73,24 @@ const form = reactive({});
 // change when route facility id change
 watch(() => route.params.id, getFacilityInfo, { immediate: true });
 
+function transformSpaceInfo(data) {
+    // transform data here
+    data.bookingRule = data.spcBookingRuleDTO ?? {};
+    return data;
+}
 async function getFacilityInfo(facilityId) {
+    isLoading.value = true;
+
     let response = await getFacilityInformation(facilityId);
     if (response.data.code !== 0) {
         throw new Error(response.data.message);
     }
-    facilityInfo.value = response.data.data;
+    facilityInfo.value = transformSpaceInfo(response.data.data);
     form.facilityId = facilityId;
     // reset form to step 0
     currentStep.value = 0;
+
+    isLoading.value = false;
 }
 
 const pricingDetails = computed(() => {
@@ -105,9 +122,31 @@ function nextStep(componentForm) {
     // move to next step
     currentStep.value++;
 }
-function submitForm() {
+async function submitForm() {
     // submit form
     console.log("Form submitted", form);
+    let result = await createBooking({
+        spaceId: form.facilityId,
+        event: form.eventName,
+        startDay: formatDateToTimezoneDateStr(form.startDate),
+        endDay: formatDateToTimezoneDateStr(form.endDate),
+        startTime: formatDateToTimezoneTimeStr(form.startDate),
+        endTime: formatDateToTimezoneTimeStr(form.endDate),
+        spcPaymentDTOList: [
+            {
+                amount: 0,
+                method: "",
+            },
+        ],
+    });
+    if (result.status != 200 || result.data.code != 0) {
+        console.error("Error submitting form", result);
+        ElMessage({
+            type: "error",
+            message: "Error submitting form",
+        });
+        return;
+    }
 }
 </script>
 

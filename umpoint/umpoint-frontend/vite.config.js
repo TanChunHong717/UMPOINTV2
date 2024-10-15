@@ -12,7 +12,7 @@ export default defineConfig({
         vue({
             template: {
                 compilerOptions: {
-                    whitespace: "preserve",
+                    // whitespace: "preserve",
                     isCustomElement: (tagName) => {
                         return (
                             tagName === "vue-advanced-chat" ||

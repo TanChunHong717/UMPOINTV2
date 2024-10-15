@@ -16,11 +16,13 @@ import {
     formatDateToTimezoneDateStr,
     formatDateToTimezoneTimeStr,
     addDays,
+    diffDays,
 } from "@/utils/date";
 import baseService from "@/utils/api.js";
 import { getFacilityBookings } from "@/helpers/api.js";
 
-const loadingCalendar = ref(true);
+const isCalendarLoading = ref(true);
+
 // form data
 const formData: Ref<{
     eventName: string | null;
@@ -75,7 +77,6 @@ const dateInput = computed({
         let originalStartDate = formData.value.startDate;
         let originalEndDate = formData.value.endDate;
         let originalTimeSet = formData.value.isTimeSet;
-        console.log(originalStartDate, originalEndDate, originalTimeSet);
 
         let newStartDate = value[0];
         let newEndDate = value[1];
@@ -116,7 +117,7 @@ const dateInput = computed({
     },
 });
 const setTomorrow = () => {
-    dateInput.value = [addDays(today, 3), addDays(today, 3)];
+    dateInput.value = [addDays(today, 1), addDays(today, 1)];
 };
 const startTimeInput = computed({
     get() {
@@ -187,9 +188,10 @@ const today = new Date(
 today.setHours(0, 0, 0, 0); // reset to start of day
 
 // facility information
-const space: any = defineModel("facilityInfo");
-const minDate = defineModel("minDate");
-const maxDate = defineModel("maxDate");
+const facilityInfo: any = defineModel("facilityInfo");
+// default value
+const minDate = ref(null);
+const maxDate = ref(null);
 
 // calendar setup
 // fixed information from system
@@ -200,9 +202,9 @@ const startTime = ref();
 const endTime = ref();
 const weekendDays = [6, 7];
 
-const updateDisplayEvents = ref(0);
+const triggerUpdateDisplayEvents = ref(0);
 const displayedEvents = computed<VueCalEvent[]>(() => {
-    updateDisplayEvents.value;
+    triggerUpdateDisplayEvents.value;
     if (!currentEvent.value) return bookedEvents.value;
     return bookedEvents.value.concat([currentEvent.value]);
 });
@@ -224,18 +226,41 @@ const getHoliday = (year: number) => {
         });
 };
 const initializeTimeTable = () => {
-    const startTimeArray = space.value.spcBookingRuleDTO?.startTime.split(
+    isCalendarLoading.value = true;
+
+    // set allowed start and end date
+    if (facilityInfo.value.bookingRule?.closeDaysAfterBooking) {
+        minDate.value = addDays(
+            today,
+            facilityInfo.value.bookingRule?.closeDaysAfterBooking
+        );
+    } else {
+        minDate.value = today;
+    }
+    if (facilityInfo.value.bookingRule?.openDaysPriorBooking) {
+        maxDate.value = addDays(
+            today,
+            facilityInfo.value.bookingRule?.openDaysPriorBooking
+        );
+    } else {
+        maxDate.value = addDays(today, 30);
+    }
+
+    // set allowed start and end time
+    const startTimeArray = facilityInfo.value.bookingRule?.startTime.split(
         ":"
-    ) ?? ["08", "00"];
+    ) ?? ["07", "00"];
     startTime.value =
         Number(startTimeArray[0]) * 60 + Number(startTimeArray[1]);
-    const endTimeArray = space.value.spcBookingRuleDTO?.endTime.split(":") ?? [
-        "18",
+    const endTimeArray = facilityInfo.value.bookingRule?.endTime.split(":") ?? [
+        "19",
         "00",
     ];
     endTime.value = Number(endTimeArray[0]) * 60 + Number(endTimeArray[1]);
 
     onViewChange(getMondayAndSunday(today));
+
+    isCalendarLoading.value = false;
 };
 const getMondayAndSunday = (currentDate: Date) => {
     const currentDay = currentDate.getDay();
@@ -260,7 +285,7 @@ const onViewChange = (object: any) => {
 const generateWeekendAndHoliday = (startDate: Date, endDate: Date) => {
     const holidayObject: Record<number, any> = {};
     const isHolidayAvailable =
-        space.value.spcBookingRuleDTO?.holidayAvailable === 1;
+        facilityInfo.value.bookingRule?.holidayAvailable === 1;
     const holidayClass = isHolidayAvailable ? "close" : "info";
 
     holidays.value.forEach((holiday: any) => {
@@ -294,28 +319,37 @@ const generateWeekendAndHoliday = (startDate: Date, endDate: Date) => {
 };
 
 const updateEvents = async (startDate: Date, endDate: Date) => {
-    const facilityEvents = await getFacilityBookings(space.value.spcId);
-    facilityEvents.data.forEach((res) => {
-        // if (!res.data || typeof res.data !== "object") return;
+    const facilityEvents = await getFacilityBookings(
+        facilityInfo.value.id,
+        startDate,
+        endDate
+    );
 
-        bookedEvents.value = res.data.map((eventDTO: any) => {
-            return {
-                start: new Date(eventDTO.startTime),
-                end: new Date(eventDTO.endTime),
-                title: eventDTO.title,
-                class:
-                    eventDTO.type == "0"
-                        ? "booking"
-                        : eventDTO.type == "1"
-                        ? "close"
-                        : "closure",
-                type: eventDTO.type,
-
-                // default events that came from system are non-editable
-                resizable: false,
-                draggable: false,
-            };
+    if (!facilityEvents || facilityEvents.data.code !== 0) {
+        ElMessage({
+            message: "Failed to get facility events",
+            type: "error",
         });
+        return;
+    }
+
+    bookedEvents.value = facilityEvents.data.data.map((event: any) => {
+        return {
+            start: new Date(event.startTime),
+            end: new Date(event.endTime),
+            title: event.title,
+            class:
+                event.type == "0"
+                    ? "booking"
+                    : event.type == "1"
+                    ? "close"
+                    : "closure",
+            type: event.type,
+
+            // default events that came from system are non-editable
+            resizable: false,
+            draggable: false,
+        };
     });
 };
 
@@ -334,7 +368,15 @@ const onCalendarEventChange = ({
 
 /** VALIDATORS **/
 const notAllowedDates = (date: Date) => {
-    return date <= minDate.value || date > maxDate.value;
+    let allow = true;
+
+    if (date <= minDate.value) allow = false;
+    if (date > maxDate.value) allow = false;
+    if (!facilityInfo.value.bookingRule?.allowWeekend) {
+        if (date.getDay() == 0 || date.getDay() == 6) allow = false;
+    }
+
+    return !allow;
 };
 const validateDate = (formData, callback: Function) => {
     if (!formData.startDate || !formData.endDate) {
@@ -382,23 +424,40 @@ const validateBookingTimeRange = (startDate: Date, endDate: Date) => {
     }
 
     // check if booking on holiday
-    for (let holiday of holidays.value) {
-        if (
-            startDate <= new Date(holiday.date.iso) &&
-            endDate >= new Date(holiday.date.iso)
-        ) {
-            throw new Error("Booking on holiday is not allowed");
+    if (!facilityInfo.value.bookingRule?.holidayAvailable) {
+        for (let holiday of holidays.value) {
+            if (
+                startDate <= new Date(holiday.date.iso) &&
+                endDate >= new Date(holiday.date.iso)
+            ) {
+                throw new Error("Booking on holiday is not allowed");
+            }
         }
     }
+    // check if booking length is within length limit
+    if (
+        facilityInfo.value.bookingRule?.maxReservationDays &&
+        diffDays(startDate, endDate) >
+            facilityInfo.value.bookingRule?.maxReservationDays
+    ) {
+        throw new Error(`Booking length is more than ${facilityInfo.value.bookingRule?.maxReservationDays} day(s)`);
+    }
+    if (
+        facilityInfo.value.bookingRule?.minBookingHours &&
+        endDate.getTime() - startDate.getTime() <
+            facilityInfo.value.bookingRule?.minBookingHours * 60 * 60 * 1000
+    ) {
+        throw new Error(`Booking length is less than ${facilityInfo.value.bookingRule?.minBookingHours} hour(s)`);
+    }
     // check if booking on weekend
-    if (!space.value.spcBookingRuleDTO?.allowWeekend) {
+    if (!facilityInfo.value.bookingRule?.allowWeekend) {
         if (
             startDate.getDay() == 0 ||
             startDate.getDay() == 6 ||
             endDate.getDay() == 0 ||
             endDate.getDay() == 6
         ) {
-            throw new Error("Booking on weekend is not allowed");
+            throw new Error("Booking on weekend is not allowed for this facility");
         }
     }
     // check if booking overlapped
@@ -426,7 +485,7 @@ function validateBeforeSetNewEvent(event: VueCalEvent) {
             type: "error",
         });
         // trigger display event list update
-        updateDisplayEvents.value++;
+        triggerUpdateDisplayEvents.value++;
         return false;
     }
 }
@@ -503,7 +562,7 @@ onActivated(() => {
 
     <vue-cal
         small
-        :loading="loadingCalendar"
+        v-loading="isCalendarLoading"
         :disable-views="['years', 'year', 'day']"
         :min-date="minDate"
         :max-date="maxDate"
