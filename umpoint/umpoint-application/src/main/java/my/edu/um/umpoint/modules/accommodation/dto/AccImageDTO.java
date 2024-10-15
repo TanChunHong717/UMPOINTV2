@@ -23,19 +23,19 @@ import java.util.Date;
  * @since 1.0.0 2024-08-23
  */
 @Data
-@Schema(name = "Accommodation Image")
+@Schema(title = "Accommodation Image")
 public class AccImageDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = -8677818412532826317L;
 
-	@SchemaProperty(name = "ID")
+	@Schema(title = "ID")
 	private Long id;
 
-	@SchemaProperty(name = "Accommodation ID")
+	@Schema(title = "Accommodation ID")
 	@NotNull(groups = DefaultGroup.class)
 	private Long accommodationId;
 
-	@SchemaProperty(name = "Image url")
+	@Schema(title = "Image url")
 	@NotEmpty(groups = {DefaultGroup.class, InsertGroup.class})
 	private String imageUrl;
 }

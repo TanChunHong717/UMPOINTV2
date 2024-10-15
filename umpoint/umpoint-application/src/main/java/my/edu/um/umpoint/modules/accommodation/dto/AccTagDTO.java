@@ -23,18 +23,18 @@ import java.util.Date;
  * @since 1.0.0 2024-08-23
  */
 @Data
-@Schema(name = "Accommodation Tag")
+@Schema(title = "Accommodation Tag")
 public class AccTagDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = 5995528915989449681L;
 
-	@SchemaProperty(name = "ID")
+	@Schema(title = "ID")
 	private Long id;
 
-	@SchemaProperty(name = "Tag name")
+	@Schema(title = "Tag name")
 	@NotEmpty(groups = {DefaultGroup.class})
 	private String tagName;
 
-	@SchemaProperty(name = "Accommodation count")
+	@Schema(title = "Accommodation count")
 	private Long accommodationCount;
 }

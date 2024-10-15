@@ -17,15 +17,15 @@ import java.io.Serializable;
  * @since 1.0.0 2024-08-03
  */
 @Data
-@Schema(name = "Space tag relationship")
+@Schema(title = "Space tag relationship")
 public class SpcSpaceTagDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = 4886806046843501106L;
 
-	@SchemaProperty(name = "Space ID")
+	@Schema(title = "Space ID")
 	private Long spaceId;
 
-	@SchemaProperty(name = "Tag ID")
+	@Schema(title = "Tag ID")
 	private Long tagId;
 
 }

@@ -18,14 +18,14 @@ import java.util.Date;
  * @since 1.0.0 2024-08-20
  */
 @Data
-@Schema(name = "Service tag relationship")
+@Schema(title = "Service tag relationship")
 public class SvcServiceTagDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = -5947001415023450228L;
 
-	@SchemaProperty(name = "Service ID")
+	@Schema(title = "Service ID")
 	private Long serviceId;
 
-	@SchemaProperty(name = "Tag ID")
+	@Schema(title = "Tag ID")
 	private Long tagId;
 }

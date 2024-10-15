@@ -15,14 +15,14 @@ import java.io.Serializable;
  * @since 1.0.0 2024-09-10
  */
 @Data
-@Schema(name = "Payment Method")
+@Schema(title = "Payment Method")
 public class PaymentMethodDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = 4396241986506494703L;
 
-	@SchemaProperty(name = "ID")
+	@Schema(title = "ID")
 	private Long id;
 
-	@SchemaProperty(name = "Method")
+	@Schema(title = "Method")
 	private String method;
 }

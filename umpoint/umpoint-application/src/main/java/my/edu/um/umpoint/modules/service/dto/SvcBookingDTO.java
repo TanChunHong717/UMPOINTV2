@@ -19,44 +19,44 @@ import java.util.List;
  * @since 1.0.0 2024-09-08
  */
 @Data
-@Schema(name = "Space Booking")
+@Schema(title = "Space Booking")
 public class SvcBookingDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	@SchemaProperty(name = "ID")
+	@Schema(title = "ID")
 	private Long id;
 
-	@SchemaProperty(name = "Status: 0:Pending, 1:Reject, 2:Approve(Pending Payment), 3:Approve(Payment Complete), 4:Cancel")
+	@Schema(title = "Status: 0:Pending, 1:Reject, 2:Approve(Pending Payment), 3:Approve(Payment Complete), 4:Cancel")
 	private Integer status;
 
-	@SchemaProperty(name = "Space ID")
+	@Schema(title = "Space ID")
 	private Long serviceId;
 
-	@SchemaProperty(name = "Admin that approve/reject, user will contact this admin rather manager if umpoint.service.booking.find-approve-admin-first=true")
+	@Schema(title = "Admin that approve/reject, user will contact this admin rather manager if umpoint.service.booking.find-approve-admin-first=true")
 	private Long adminId;
 
-	@SchemaProperty(name = "User ID")
+	@Schema(title = "User ID")
 	private Long userId;
 
-	@SchemaProperty(name = "Amount need to be pay")
+	@Schema(title = "Amount need to be pay")
 	private BigDecimal paymentAmount;
 
-	@SchemaProperty(name = "Create date")
+	@Schema(title = "Create date")
 	private Date createDate;
 
-	@SchemaProperty(name = "Update date")
+	@Schema(title = "Update date")
 	private Date updateDate;
 
-	@SchemaProperty(name = "Name of service that being booked")
+	@Schema(title = "Name of service that being booked")
 	private String service;
 
-	@SchemaProperty(name = "Name of admin who approve/reject booking")
+	@Schema(title = "Name of admin who approve/reject booking")
 	private String admin;
 
-	@SchemaProperty(name = "Name of user who make booking")
+	@Schema(title = "Name of user who make booking")
 	private String username;
 
-	@SchemaProperty(name = "Payment dto list")
+	@Schema(title = "Payment dto list")
 	private List<SvcPaymentDTO> svcPaymentDTOList;
 }

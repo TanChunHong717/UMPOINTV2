@@ -20,20 +20,20 @@ import java.io.Serializable;
  * @since 1.0.0 2024-08-20
  */
 @Data
-@Schema(name = "Service Category")
+@Schema(title = "Service Category")
 public class SvcCategoryDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = 2857536342370451285L;
 
-	@SchemaProperty(name = "ID")
+	@Schema(title = "ID")
 	@Null(groups = {AddGroup.class})
 	@NotNull(groups = {UpdateGroup.class})
 	private Long id;
 
-	@SchemaProperty(name = "Name")
+	@Schema(title = "Name")
 	@NotEmpty(groups = {DefaultGroup.class})
 	private String name;
 
-	@SchemaProperty(name = "Service count")
+	@Schema(title = "Service count")
 	private Long serviceCount;
 }

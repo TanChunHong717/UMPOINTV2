@@ -14,20 +14,20 @@ import java.io.Serializable;
  * @since 1.0.0 2024-10-11
  */
 @Data
-@Schema(name = "Space Booking Technician")
+@Schema(title = "Space Booking Technician")
 public class AccBookingTechnicianDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 7265623310868313849L;
 
-    @SchemaProperty(name = "ID")
+    @Schema(title = "ID")
     private Long id;
 
-    @SchemaProperty(name = "Booking ID")
+    @Schema(title = "Booking ID")
     private Long bookingId;
 
-    @SchemaProperty(name = "Technician ID")
+    @Schema(title = "Technician ID")
     private Long technicianId;
 
-    @SchemaProperty(name = "Technician name")
+    @Schema(title = "Technician name")
     private String technicianName;
 }

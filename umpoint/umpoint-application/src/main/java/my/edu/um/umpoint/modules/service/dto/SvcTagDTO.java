@@ -23,20 +23,20 @@ import java.util.Date;
  * @since 1.0.0 2024-08-20
  */
 @Data
-@Schema(name = "Service Tag")
+@Schema(title = "Service Tag")
 public class SvcTagDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = 3478201506629761368L;
 
-	@SchemaProperty(name = "ID")
+	@Schema(title = "ID")
 	@Null(groups = {AddGroup.class})
 	@NotNull(groups = {UpdateGroup.class, InsertGroup.class})
 	private Long id;
 
-	@SchemaProperty(name = "Tag name")
+	@Schema(title = "Tag name")
 	@NotEmpty(groups = {DefaultGroup.class})
 	private String tagName;
 
-	@SchemaProperty(name = "Service count")
+	@Schema(title = "Service count")
 	private Long serviceCount;
 }

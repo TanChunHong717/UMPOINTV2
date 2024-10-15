@@ -25,90 +25,90 @@ import java.util.List;
  * @since 1.0.0 2024-08-23
  */
 @Data
-@Schema(name = "Accommodation")
+@Schema(title = "Accommodation")
 public class AccAccommodationDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = 3422489955367337478L;
 
-	@SchemaProperty(name = "ID")
+	@Schema(title = "ID")
 	@Null(groups = {AddGroup.class})
 	@NotNull(groups = {UpdateGroup.class})
 	private Long id;
 
-	@SchemaProperty(name = "Status 0:Suspend 1:Normal")
+	@Schema(title = "Status 0:Suspend 1:Normal")
 	@Range(min=0, max=1, groups = DefaultGroup.class)
 	private Integer status;
 
-	@SchemaProperty(name = "Name")
+	@Schema(title = "Name")
 	@NotEmpty(groups = {DefaultGroup.class})
 	private String name;
 
-	@SchemaProperty(name = "Category ID")
+	@Schema(title = "Category ID")
 	@NotNull(groups = {DefaultGroup.class})
 	private Long catId;
 
-	@SchemaProperty(name = "Department ID")
+	@Schema(title = "Department ID")
 	@NotNull(groups = {DefaultGroup.class})
 	private Long deptId;
 
-	@SchemaProperty(name = "Address")
+	@Schema(title = "Address")
 	@NotEmpty(groups = {DefaultGroup.class})
 	private String address;
 
-	@SchemaProperty(name = "Description")
+	@Schema(title = "Description")
 	private String description;
 
-	@SchemaProperty(name = "Facilities")
+	@Schema(title = "Facilities")
 	private String facilities;
 
-	@SchemaProperty(name = "Max capacity")
+	@Schema(title = "Max capacity")
 	private Integer capacity;
 
-	@SchemaProperty(name = "Manager ID")
+	@Schema(title = "Manager ID")
 	private Long manager;
 
-	@SchemaProperty(name = "Price for book a day")
+	@Schema(title = "Price for book a day")
 	private BigDecimal dayPrice;
 
-	@SchemaProperty(name = "Price for book a week")
+	@Schema(title = "Price for book a week")
 	private BigDecimal weekPrice;
 
-	@SchemaProperty(name = "Booking Rule ID")
+	@Schema(title = "Booking Rule ID")
 	private Long bookingRuleId;
 
-	@SchemaProperty(name = "Creator")
+	@Schema(title = "Creator")
 	private Long creator;
 
-	@SchemaProperty(name = "Create date")
+	@Schema(title = "Create date")
 	private Date createDate;
 
-	@SchemaProperty(name = "Updater")
+	@Schema(title = "Updater")
 	private Long updater;
 
-	@SchemaProperty(name = "Update date")
+	@Schema(title = "Update date")
 	private Date updateDate;
 
-	@SchemaProperty(name = "Category Name")
+	@Schema(title = "Category Name")
 	private String category;
 
-	@SchemaProperty(name = "Department Name")
+	@Schema(title = "Department Name")
 	private String deptName;
 
-	@SchemaProperty(name = "Manager Name")
+	@Schema(title = "Manager Name")
 	private String managerName;
 
-	@SchemaProperty(name = "Creator Name")
+	@Schema(title = "Creator Name")
 	private String creatorName;
 
-	@SchemaProperty(name = "Last Updater Name")
+	@Schema(title = "Last Updater Name")
 	private String updaterName;
 
-	@SchemaProperty(name = "Booking Rule DTO")
+	@Schema(title = "Booking Rule DTO")
 	private AccBookingRuleDTO accBookingRuleDTO;
 
-	@SchemaProperty(name = "Image DTO List")
+	@Schema(title = "Image DTO List")
 	private List<AccImageDTO> accImageDTOList;
 
-	@SchemaProperty(name = "Tag DTO List")
+	@Schema(title = "Tag DTO List")
 	private List<AccTagDTO> accTagDTOList;
 }

@@ -21,18 +21,18 @@ import java.io.Serializable;
  * @since 1.0.0 2024-08-20
  */
 @Data
-@Schema(name = "Service Image")
+@Schema(title = "Service Image")
 public class SvcImageDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = -1763475943198748177L;
 
-	@SchemaProperty(name = "ID")
+	@Schema(title = "ID")
 	private Long id;
 
-	@SchemaProperty(name = "Service ID")
+	@Schema(title = "Service ID")
 	private Long serviceId;
 
-	@SchemaProperty(name = "Image url")
+	@Schema(title = "Image url")
 	@NotEmpty(groups = {InsertGroup.class})
 	private String imageUrl;
 }

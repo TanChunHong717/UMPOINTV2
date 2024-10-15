@@ -21,20 +21,20 @@ import java.util.Date;
  * @since 1.0.0 2024-08-23
  */
 @Data
-@Schema(name = "Accommodation Category")
+@Schema(title = "Accommodation Category")
 public class AccCategoryDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = -7860476673705920334L;
 
-	@SchemaProperty(name = "ID")
+	@Schema(title = "ID")
 	@Null(groups = {AddGroup.class})
 	@NotNull(groups = {UpdateGroup.class})
 	private Long id;
 
-	@SchemaProperty(name = "Name")
+	@Schema(title = "Name")
 	@NotNull(groups = {DefaultGroup.class})
 	private String name;
 
-	@SchemaProperty(name = "Accommodation count")
+	@Schema(title = "Accommodation count")
 	private Long accommodationCount;
 }

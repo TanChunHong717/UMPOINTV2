@@ -21,26 +21,26 @@ import java.util.Date;
  * @since 1.0.0 2024-09-16
  */
 @Data
-@Schema(name = "Accommodation Closure Period")
+@Schema(title = "Accommodation Closure Period")
 public class AccClosureDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	@SchemaProperty(name = "ID")
+	@Schema(title = "ID")
 	@Null(groups = {AddGroup.class})
 	@NotNull(groups = {UpdateGroup.class})
 	private Long id;
 
-	@SchemaProperty(name = "Accommodation ID")
+	@Schema(title = "Accommodation ID")
 	@NotNull(groups = {DefaultGroup.class})
 	private Long accommodationId;
 
-	@SchemaProperty(name = "Start day of booking")
+	@Schema(title = "Start day of booking")
 	@NotNull(groups = {DefaultGroup.class})
 	@JsonFormat(pattern="yyyy-MM-dd")
 	private Date startDay;
 
-	@SchemaProperty(name = "End day of booking")
+	@Schema(title = "End day of booking")
 	@NotNull(groups = {DefaultGroup.class})
 	@JsonFormat(pattern="yyyy-MM-dd")
 	private Date endDay;

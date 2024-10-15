@@ -22,63 +22,63 @@ import java.util.Date;
  * @since 1.0.0 2024-09-16
  */
 @Data
-@Schema(name = "Space Closure Period")
+@Schema(title = "Space Closure Period")
 public class SpcClosureDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = 1L;
 
-	@SchemaProperty(name = "ID")
+	@Schema(title = "ID")
 	@Null(groups = {AddGroup.class})
 	@NotNull(groups = {UpdateGroup.class})
 	private Long id;
 
-	@SchemaProperty(name = "Space ID")
+	@Schema(title = "Space ID")
 	@NotNull(groups = {DefaultGroup.class})
 	private Long spaceId;
 
-	@SchemaProperty(name = "Start day of booking")
+	@Schema(title = "Start day of booking")
 	@NotNull(groups = {DefaultGroup.class})
 	@JsonFormat(pattern="yyyy-MM-dd")
 	private Date startDay;
 
-	@SchemaProperty(name = "End day of booking")
+	@Schema(title = "End day of booking")
 	@NotNull(groups = {DefaultGroup.class})
 	@JsonFormat(pattern="yyyy-MM-dd")
 	private Date endDay;
 
-	@SchemaProperty(name = "Start time of booking in a day")
+	@Schema(title = "Start time of booking in a day")
 	@NotNull(groups = {DefaultGroup.class})
 	private Time startTime;
 
-	@SchemaProperty(name = "End time of booking in a day")
+	@Schema(title = "End time of booking in a day")
 	@NotNull(groups = {DefaultGroup.class})
 	private Time endTime;
 
-	@SchemaProperty(name = "Recur on Monday, 0:No, 1:Yes")
+	@Schema(title = "Recur on Monday, 0:No, 1:Yes")
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer recurMonday;
 
-	@SchemaProperty(name = "Recur on Tuesday, 0:No, 1:Yes")
+	@Schema(title = "Recur on Tuesday, 0:No, 1:Yes")
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer recurTuesday;
 
-	@SchemaProperty(name = "Recur on Wednesday, 0:No, 1:Yes")
+	@Schema(title = "Recur on Wednesday, 0:No, 1:Yes")
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer recurWednesday;
 
-	@SchemaProperty(name = "Recur on Thursday, 0:No, 1:Yes")
+	@Schema(title = "Recur on Thursday, 0:No, 1:Yes")
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer recurThursday;
 
-	@SchemaProperty(name = "Recur on Friday, 0:No, 1:Yes")
+	@Schema(title = "Recur on Friday, 0:No, 1:Yes")
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer recurFriday;
 
-	@SchemaProperty(name = "Recur on Saturday, 0:No, 1:Yes")
+	@Schema(title = "Recur on Saturday, 0:No, 1:Yes")
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer recurSaturday;
 
-	@SchemaProperty(name = "Recur on Sunday, 0:No, 1:Yes")
+	@Schema(title = "Recur on Sunday, 0:No, 1:Yes")
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer recurSunday;
 }
