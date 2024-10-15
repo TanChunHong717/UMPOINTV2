@@ -48,11 +48,21 @@ div.grid {
     line-height: 1.5 !important;
 
     .info-icon {
+        display: inline-block;
         position: absolute;
-        height: 1.25em;
-        vertical-align: bottom;
+        height: 1.25em !important;
+        width: 1.25em !important;
+        top: 1px;
         left: 0;
-        top: -1px;
+
+        > svg {
+            display: inline-block;
+            position: absolute;
+            height: 1.25em !important;
+            width: 1.25em !important;
+            top: 1px;
+            left: 0;
+        }
     }
 }
 
