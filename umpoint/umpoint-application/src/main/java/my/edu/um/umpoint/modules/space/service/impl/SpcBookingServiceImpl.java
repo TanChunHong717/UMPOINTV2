@@ -38,7 +38,7 @@ import java.util.Map;
  * @since 1.0.0 2024-09-08
  */
 @Service
-public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBookingEntity, SpcBookingDTO> implements SpcBookingService {
+public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBookingEntity, SpcBookingDTO> implements SpcBookingService{
 
     @Autowired
     private SpcBookingTechnicianService spcBookingTechnicianService;
@@ -56,7 +56,7 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
     private SpcPaymentItemService spcPaymentItemService;
 
     @Override
-    public QueryWrapper<SpcBookingEntity> getWrapper(Map<String, Object> params) {
+    public QueryWrapper<SpcBookingEntity> getWrapper(Map<String, Object> params){
         String id = (String) params.get("id");
 
         QueryWrapper<SpcBookingEntity> wrapper = new QueryWrapper<>();
@@ -66,7 +66,7 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
     }
 
     @Override
-    public PageData<SpcBookingDTO> page(Map<String, Object> params) {
+    public PageData<SpcBookingDTO> page(Map<String, Object> params){
         paramsToLike(params, "event");
 
         IPage<SpcBookingEntity> page = getPage(params, "create_date", false);
@@ -77,7 +77,7 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void save(SpcBookingDTO spcBookingDTO) {
+    public void save(SpcBookingDTO spcBookingDTO){
         UserDetail user = SecurityUser.getUser();
         spcBookingDTO.setUserId(user.getId());
 
@@ -96,12 +96,7 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
 
         // object that need id from booking dto
         // daily event breakdown
-        List<SpcEventEntity> events = BookingUtils.divideBookingToEvents(spcBookingDTO, space.getSpcBookingRuleDTO());
-        for (SpcEventEntity event : events) {
-            event.setBookingId(spcBookingDTO.getId());
-            event.setType(BookingConstant.EventStatus.BOOKING.getValue());
-        }
-        spcEventService.insertBatch(events);
+        spcEventService.addEvent(spcBookingDTO);
 
         // add payment if required
         if (total.compareTo(BigDecimal.ZERO) != 0) {
@@ -121,7 +116,7 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void approve(Long id, List<Long> technicianIdList) {
+    public void approve(Long id, List<Long> technicianIdList){
         UserDetail user = SecurityUser.getUser();
         SpcBookingEntity entity = new SpcBookingEntity();
         entity.setAdminId(user.getId());
@@ -142,7 +137,7 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void reject(Long id) {
+    public void reject(Long id){
         UserDetail user = SecurityUser.getUser();
         SpcBookingEntity entity = new SpcBookingEntity();
         entity.setAdminId(user.getId());
@@ -154,7 +149,7 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void cancel(Long id) {
+    public void cancel(Long id){
         SpcBookingEntity entity = new SpcBookingEntity();
         entity.setStatus(BookingConstant.BookingStatus.CANCELLED.getValue());
 

@@ -130,12 +130,12 @@ public class SpcBookingController {
         LocalDate allowedRangeStartDate =
             LocalDate.now()
                      .atStartOfDay(ZoneId.systemDefault())
-                     .plusDays(spcBookingRule.getMaxBookingAdvanceDay())
+                     .plusDays(spcBookingRule.getMinBookingAdvanceDay())
                      .toLocalDate();
         LocalDate allowedRangeEndDate =
             LocalDate.now()
                      .atStartOfDay(ZoneId.systemDefault())
-                     .plusDays(spcBookingRule.getMinBookingAdvanceDay())
+                     .plusDays(spcBookingRule.getMaxBookingAdvanceDay())
                      .toLocalDate();
         if (endDateTime.isBefore(startDateTime)) {
             return new Result().error(400, "Start date must be earlier than end date");
@@ -171,6 +171,14 @@ public class SpcBookingController {
         }
 
         // prepare to save
+        SpcBookingDTO bookingDto = makeSpcBookingDTO(request, space);
+
+        spcBookingService.save(bookingDto);
+
+        return new Result<SpcBookingDTO>().ok(bookingDto);
+    }
+
+    private static SpcBookingDTO makeSpcBookingDTO(SpcClientBookingDTO request, SpcSpaceDTO space){
         SpcBookingDTO bookingDto = new SpcBookingDTO();
         bookingDto.setSpaceId(space.getId());
         bookingDto.setEvent(request.getEvent());
@@ -183,10 +191,7 @@ public class SpcBookingController {
         } else {
             bookingDto.setTechnicianNumber(0);
         }
-
-        spcBookingService.save(bookingDto);
-
-        return new Result<SpcBookingDTO>().ok(bookingDto);
+        return bookingDto;
     }
 
     @PutMapping

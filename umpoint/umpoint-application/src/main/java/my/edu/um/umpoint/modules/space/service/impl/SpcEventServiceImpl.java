@@ -9,13 +9,12 @@ import my.edu.um.umpoint.modules.space.dto.*;
 import my.edu.um.umpoint.modules.space.entity.SpcEventEntity;
 import my.edu.um.umpoint.modules.space.service.SpcEventService;
 import my.edu.um.umpoint.modules.space.service.SpcSpaceService;
+import my.edu.um.umpoint.modules.utils.BookingUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,16 +27,16 @@ import java.util.Map;
  * @since 1.0.0 2024-09-16
  */
 @Service
-public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEntity, SpcEventDTO> implements SpcEventService {
+public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEntity, SpcEventDTO> implements SpcEventService{
 
     @Autowired
     private SpcSpaceService spcSpaceService;
 
     @Override
-    public QueryWrapper<SpcEventEntity> getWrapper(Map<String, Object> params) {
+    public QueryWrapper<SpcEventEntity> getWrapper(Map<String, Object> params){
         Long spaceId = Long.parseLong((String) params.get("spaceId"));
         Date startTime = null,
-                endTime = null;
+            endTime = null;
         if (params.get("startTime") != null) {
             startTime = DateUtils.parse((String) params.get("startTime"), DateUtils.DATE_TIME_PATTERN);
         }
@@ -61,67 +60,47 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void addEvent(SpcBookingDTO bookingDTO) {
-        List<SpcEventEntity> eventEntityList = new ArrayList<>();
-
-        LocalDate currentDay = DateUtils.convertDateToLocalDate(bookingDTO.getStartDay());
-        LocalDate endDay = DateUtils.convertDateToLocalDate(bookingDTO.getEndDay());
-        while (currentDay.isBefore(endDay) || currentDay.isEqual(endDay)) {
-            SpcEventEntity eventEntity = new SpcEventEntity();
-
-            eventEntity.setSpaceId(bookingDTO.getSpaceId());
-            eventEntity.setBookingId(bookingDTO.getId());
-            eventEntity.setType(BookingConstant.EventStatus.BOOKING.getValue());
-
-            eventEntity.setStartTime(DateUtils.convertLocalDateTimeToDate(currentDay, bookingDTO.getStartTime()));
-            eventEntity.setEndTime(DateUtils.convertLocalDateTimeToDate(currentDay, bookingDTO.getEndTime()));
-
-            eventEntityList.add(eventEntity);
-            currentDay = currentDay.plusDays(1);
-        }
-
-        insertBatch(eventEntityList);
+    public void addEvent(SpcBookingDTO bookingDTO){
+        insertBatch(BookingUtils.divideBookingToEvents(bookingDTO));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void addEvent(SpcClosureDTO closureDTO) {
-        List<SpcEventEntity> eventEntityList = new ArrayList<>();
-
-        LocalDate currentDay = DateUtils.convertDateToLocalDate(closureDTO.getStartDay());
-        LocalDate endDay = DateUtils.convertDateToLocalDate(closureDTO.getEndDay());
-        while (currentDay.isBefore(endDay) || currentDay.isEqual(endDay)) {
-            if (needToAddEvent(closureDTO, currentDay)) {
-                SpcEventEntity eventEntity = new SpcEventEntity();
-
-                eventEntity.setSpaceId(closureDTO.getSpaceId());
-                eventEntity.setClosureId(closureDTO.getId());
-                eventEntity.setType(BookingConstant.EventStatus.CLOSURE.getValue());
-
-                eventEntity.setStartTime(DateUtils.convertLocalDateTimeToDate(currentDay, closureDTO.getStartTime()));
-                eventEntity.setEndTime(DateUtils.convertLocalDateTimeToDate(currentDay, closureDTO.getEndTime()));
-
-                eventEntityList.add(eventEntity);
+    public void addEvent(SpcClosureDTO closureDTO){
+        List<SpcEventEntity> closureEvents = BookingUtils.dividePeriodToEvents(
+            closureDTO.getSpaceId(),
+            closureDTO.getStartDay(),
+            closureDTO.getEndDay(),
+            closureDTO.getStartTime(),
+            closureDTO.getEndTime()
+        );
+        List<SpcEventEntity> closureEventsToInsert = new ArrayList<>();
+        for (SpcEventEntity closureEvent : closureEvents) {
+            if (needToAddEvent(
+                closureDTO,
+                DateUtils.convertDateToLocalDate(closureEvent.getStartTime())
+            )) {
+                closureEvent.setClosureId(closureDTO.getId());
+                closureEvent.setType(BookingConstant.EventStatus.CLOSURE.getValue());
+                closureEventsToInsert.add(closureEvent);
             }
-            currentDay = currentDay.plusDays(1);
         }
-
-        insertBatch(eventEntityList);
+        insertBatch(closureEventsToInsert);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteByClosureId(Long closureId) {
+    public void deleteByClosureId(Long closureId){
         baseDao.delete(new QueryWrapper<SpcEventEntity>().eq("closure_id", closureId));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteByBookingId(Long bookingId) {
+    public void deleteByBookingId(Long bookingId){
         baseDao.delete(new QueryWrapper<SpcEventEntity>().eq("booking_id", bookingId));
     }
 
-    private static Boolean needToAddEvent(SpcClosureDTO dto, LocalDate date) {
+    private static Boolean needToAddEvent(SpcClosureDTO dto, LocalDate date){
         boolean needToAddEvent = false;
         switch (date.getDayOfWeek()) {
             case MONDAY -> needToAddEvent = dto.getRecurMonday() == 1;
