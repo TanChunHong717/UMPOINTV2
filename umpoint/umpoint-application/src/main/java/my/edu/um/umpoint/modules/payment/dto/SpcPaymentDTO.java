@@ -8,6 +8,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Space Payment
@@ -44,4 +45,7 @@ public class SpcPaymentDTO implements Serializable {
 
 	@SchemaProperty(name = "Payment Method name")
 	private String method;
+
+	@SchemaProperty(name = "Payment item dto list")
+	private List<SpcPaymentItemDTO> spcPaymentItemDTOList;
 }

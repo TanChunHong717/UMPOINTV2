@@ -3,10 +3,15 @@ package my.edu.um.umpoint.modules.space.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import my.edu.um.umpoint.common.constant.BookingConstant;
-import my.edu.um.umpoint.common.exception.RenException;
 import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
+import my.edu.um.umpoint.modules.payment.dto.SpcPaymentDTO;
+import my.edu.um.umpoint.modules.payment.dto.SpcPaymentItemDTO;
+import my.edu.um.umpoint.modules.payment.service.SpcPaymentItemService;
+import my.edu.um.umpoint.modules.payment.service.SpcPaymentService;
+import my.edu.um.umpoint.modules.space.dto.SpcSpaceDTO;
 import my.edu.um.umpoint.modules.space.entity.SpcBookingTechnicianEntity;
+import my.edu.um.umpoint.modules.space.entity.SpcEventEntity;
 import my.edu.um.umpoint.modules.space.service.SpcBookingTechnicianService;
 import my.edu.um.umpoint.modules.space.service.SpcEventService;
 import my.edu.um.umpoint.modules.space.dao.SpcBookingDao;
@@ -16,13 +21,15 @@ import my.edu.um.umpoint.modules.space.service.SpcBookingService;
 import cn.hutool.core.util.StrUtil;
 import my.edu.um.umpoint.modules.security.user.SecurityUser;
 import my.edu.um.umpoint.modules.security.user.UserDetail;
+import my.edu.um.umpoint.modules.space.service.SpcSpaceService;
+import my.edu.um.umpoint.modules.utils.BookingUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Space Booking
@@ -39,9 +46,18 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
     @Autowired
     private SpcEventService spcEventService;
 
+    @Autowired
+    private SpcSpaceService spcSpaceService;
+
+    @Autowired
+    private SpcPaymentService spcPaymentService;
+
+    @Autowired
+    private SpcPaymentItemService spcPaymentItemService;
+
     @Override
-    public QueryWrapper<SpcBookingEntity> getWrapper(Map<String, Object> params){
-        String id = (String)params.get("id");
+    public QueryWrapper<SpcBookingEntity> getWrapper(Map<String, Object> params) {
+        String id = (String) params.get("id");
 
         QueryWrapper<SpcBookingEntity> wrapper = new QueryWrapper<>();
         wrapper.eq(StrUtil.isNotBlank(id), "id", id);
@@ -62,8 +78,45 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void save(SpcBookingDTO spcBookingDTO) {
+        UserDetail user = SecurityUser.getUser();
+        spcBookingDTO.setUserId(user.getId());
+
+        // additional business logic
+        // default booking status
+        spcBookingDTO.setStatus(BookingConstant.BookingStatus.PENDING.getValue());
+        // payment calculation
+        SpcSpaceDTO space = spcSpaceService.get(spcBookingDTO.getSpaceId());
+        List<SpcPaymentItemDTO> itemisedPrices = BookingUtils.itemisePrice(spcBookingDTO, space);
+        BigDecimal total = itemisedPrices.stream()
+                                         .map(i -> BigDecimal.valueOf(i.getItemAmount()).multiply(i.getItemPrice()))
+                                         .reduce(BigDecimal.ZERO, BigDecimal::add);
+        spcBookingDTO.setPaymentAmount(total);
+
         super.save(spcBookingDTO);
-        spcEventService.addEvent(spcBookingDTO);
+
+        // object that need id from booking dto
+        // daily event breakdown
+        List<SpcEventEntity> events = BookingUtils.divideBookingToEvents(spcBookingDTO, space.getSpcBookingRuleDTO());
+        for (SpcEventEntity event : events) {
+            event.setBookingId(spcBookingDTO.getId());
+            event.setType(BookingConstant.EventStatus.BOOKING.getValue());
+        }
+        spcEventService.insertBatch(events);
+
+        // add payment if required
+        if (total.compareTo(BigDecimal.ZERO) != 0) {
+            SpcPaymentDTO payment = new SpcPaymentDTO();
+            payment.setBookingId(spcBookingDTO.getId());
+            payment.setStatus(BookingConstant.PaymentStatus.PENDING.getValue());
+            payment.setAmount(total);
+            spcPaymentService.save(payment);
+
+            // payment item breakdown
+            for (SpcPaymentItemDTO item : itemisedPrices) {
+                item.setPaymentId(payment.getId());
+                spcPaymentItemService.save(item);
+            }
+        }
     }
 
     @Override
@@ -77,13 +130,13 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
         baseDao.update(entity, new QueryWrapper<SpcBookingEntity>().eq("id", id));
 
         List<SpcBookingTechnicianEntity> technicianEntityList = technicianIdList
-                .stream()
-                .map(technicianId -> {
-                    SpcBookingTechnicianEntity technicianEntity = new SpcBookingTechnicianEntity();
-                    technicianEntity.setBookingId(id);
-                    technicianEntity.setTechnicianId(technicianId);
-                    return technicianEntity;
-                }).toList();
+            .stream()
+            .map(technicianId -> {
+                SpcBookingTechnicianEntity technicianEntity = new SpcBookingTechnicianEntity();
+                technicianEntity.setBookingId(id);
+                technicianEntity.setTechnicianId(technicianId);
+                return technicianEntity;
+            }).toList();
         spcBookingTechnicianService.insertBatch(technicianEntityList);
     }
 

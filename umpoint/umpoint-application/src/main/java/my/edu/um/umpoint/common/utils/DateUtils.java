@@ -38,6 +38,10 @@ public class DateUtils {
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
+    public static LocalTime convertDateToLocalTime(Date date) {
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+    }
+
     public static LocalDateTime convertDateTimeToLocalDateTime(Date date, Time time) {
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalTime localTime = time.toLocalTime();
@@ -47,6 +51,7 @@ public class DateUtils {
     public static Date convertLocalDateToDate(LocalDate localDate) {
         return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
     }
+
 
     public static Date convertLocalDateTimeToDate(LocalDate localDate, Time time) {
         LocalDateTime localDateTime = LocalDateTime.of(localDate, time.toLocalTime());
