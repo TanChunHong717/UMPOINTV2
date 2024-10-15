@@ -67,25 +67,27 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void addEvent(SpcClosureDTO closureDTO){
-        List<SpcEventEntity> closureEvents = BookingUtils.dividePeriodToEvents(
-            closureDTO.getSpaceId(),
-            closureDTO.getStartDay(),
-            closureDTO.getEndDay(),
-            closureDTO.getStartTime(),
-            closureDTO.getEndTime()
-        );
-        List<SpcEventEntity> closureEventsToInsert = new ArrayList<>();
-        for (SpcEventEntity closureEvent : closureEvents) {
-            if (needToAddEvent(
-                closureDTO,
-                DateUtils.convertDateToLocalDate(closureEvent.getStartTime())
-            )) {
-                closureEvent.setClosureId(closureDTO.getId());
-                closureEvent.setType(BookingConstant.EventStatus.CLOSURE.getValue());
-                closureEventsToInsert.add(closureEvent);
+        List<SpcEventEntity> eventEntityList = new ArrayList<>();
+
+        LocalDate currentDay = DateUtils.convertDateToLocalDate(closureDTO.getStartDay());
+        LocalDate endDay = DateUtils.convertDateToLocalDate(closureDTO.getEndDay());
+        while (currentDay.isBefore(endDay) || currentDay.isEqual(endDay)) {
+            if (needToAddEvent(closureDTO, currentDay)) {
+                SpcEventEntity eventEntity = new SpcEventEntity();
+
+                eventEntity.setSpaceId(closureDTO.getSpaceId());
+                eventEntity.setClosureId(closureDTO.getId());
+                eventEntity.setType(BookingConstant.EventStatus.CLOSURE.getValue());
+
+                eventEntity.setStartTime(DateUtils.convertLocalDateTimeToDate(currentDay, closureDTO.getStartTime()));
+                eventEntity.setEndTime(DateUtils.convertLocalDateTimeToDate(currentDay, closureDTO.getEndTime()));
+
+                eventEntityList.add(eventEntity);
             }
+            currentDay = currentDay.plusDays(1);
         }
-        insertBatch(closureEventsToInsert);
+
+        insertBatch(eventEntityList);
     }
 
     @Override
