@@ -52,10 +52,13 @@ public class DateUtils {
         return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
     }
 
-
     public static Date convertLocalDateTimeToDate(LocalDate localDate, Time time) {
         LocalDateTime localDateTime = LocalDateTime.of(localDate, time.toLocalTime());
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+    public static LocalDateTime convertDateToLocalDateTime(Date date) {
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
     public static Date convertLocalDateTimeToDate(LocalDateTime localDateTime) {

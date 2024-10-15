@@ -17,31 +17,24 @@ import my.edu.um.umpoint.common.validator.group.AddGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import my.edu.um.umpoint.modules.space.dao.SpcEventDao;
-import my.edu.um.umpoint.modules.space.dao.SpcSpaceDao;
 import my.edu.um.umpoint.modules.space.dto.SpcBookingDTO;
 import my.edu.um.umpoint.modules.space.dto.SpcBookingRuleDTO;
 import my.edu.um.umpoint.modules.space.dto.SpcClientBookingDTO;
 import my.edu.um.umpoint.modules.space.dto.SpcSpaceDTO;
-import my.edu.um.umpoint.modules.space.entity.SpcBookingRuleEntity;
 import my.edu.um.umpoint.modules.space.entity.SpcEventEntity;
-import my.edu.um.umpoint.modules.space.entity.SpcSpaceEntity;
 import my.edu.um.umpoint.modules.space.excel.SpcBookingExcel;
 import my.edu.um.umpoint.modules.space.service.SpcBookingService;
 import my.edu.um.umpoint.modules.space.service.SpcSpaceService;
+import my.edu.um.umpoint.modules.utils.BookingUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Space Booking
@@ -52,7 +45,7 @@ import java.util.concurrent.TimeUnit;
 @RestController
 @RequestMapping("space/booking")
 @Tag(name = "Space Booking")
-public class SpcBookingController {
+public class SpcBookingController{
     @Autowired
     private SpcBookingService spcBookingService;
 
@@ -88,7 +81,7 @@ public class SpcBookingController {
         }
     )
     @RequiresPermissions("space:booking:page")
-    public Result<PageData<SpcBookingDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params) {
+    public Result<PageData<SpcBookingDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
         PageData<SpcBookingDTO> page = spcBookingService.page(params);
 
         return new Result<PageData<SpcBookingDTO>>().ok(page);
@@ -97,7 +90,7 @@ public class SpcBookingController {
     @GetMapping("{id}")
     @Operation(summary = "Information")
     @RequiresPermissions("space:booking:info")
-    public Result<SpcBookingDTO> get(@PathVariable("id") Long id) {
+    public Result<SpcBookingDTO> get(@PathVariable("id") Long id){
         SpcBookingDTO data = spcBookingService.get(id);
 
         return new Result<SpcBookingDTO>().ok(data);
@@ -107,7 +100,7 @@ public class SpcBookingController {
     @Operation(summary = "Save")
     @LogOperation("Save")
     @RequiresPermissions("space:booking:save")
-    public Result save(@RequestBody SpcClientBookingDTO request) {
+    public Result save(@RequestBody SpcClientBookingDTO request){
         ValidatorUtils.validateEntity(request, AddGroup.class, DefaultGroup.class);
 
         // Check space exist
@@ -122,10 +115,69 @@ public class SpcBookingController {
         // combine date time to new Java object
         LocalDate startDate = DateUtils.convertDateToLocalDate(request.getStartDay());
         LocalDate endDate = DateUtils.convertDateToLocalDate(request.getEndDay());
-        LocalDateTime startDateTime =
-            DateUtils.convertDateTimeToLocalDateTime(request.getStartDay(), request.getStartTime());
-        LocalDateTime endDateTime = DateUtils.convertDateTimeToLocalDateTime(request.getEndDay(), request.getEndTime());
+        LocalTime startTime = request.getStartTime().toLocalTime();
+        LocalTime endTime = request.getEndTime().toLocalTime();
 
+        try {
+            if (endDate.isBefore(startDate)) {
+                throw new DateTimeException("Start date must be earlier than end date");
+            }
+            if (endTime.isBefore(startTime)) {
+                throw new DateTimeException("Start time must be earlier than end time");
+            }
+
+            validateInAllowedRange(spcBookingRule, startDate, endDate);
+            validateReservationLength(spcBookingRule, startDate, endDate, startTime, endTime);
+
+            validateEventOverlapped(request);
+        } catch (DateTimeException e) {
+            return new Result().error(400, e.getMessage());
+        }
+
+        // prepare to save
+        SpcBookingDTO bookingDto = makeSpcBookingDTO(request, space);
+
+        spcBookingService.save(bookingDto);
+
+        return new Result<SpcBookingDTO>().ok(bookingDto);
+    }
+
+    private void validateEventOverlapped(SpcClientBookingDTO request){
+        DateTimeFormatter sqlDateDormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        for (SpcEventEntity dividedEvent: BookingUtils.dividePeriodToEvents(
+            request.getSpaceId(), request.getStartDay(), request.getEndDay(), request.getStartTime(), request.getEndTime()
+        )) {
+            List<SpcEventEntity> overlappedEvents = spcEventDao.getEventsBetweenTimeSpan(
+                DateUtils.convertDateToLocalDateTime(dividedEvent.getStartTime()).format(sqlDateDormatter),
+                DateUtils.convertDateToLocalDateTime(dividedEvent.getEndTime()).format(sqlDateDormatter)
+            );
+            if (!overlappedEvents.isEmpty()) {
+                throw new DateTimeException("Booking overlapped");
+            }
+        }
+    }
+
+    private static void validateReservationLength(
+        SpcBookingRuleDTO spcBookingRule,
+        LocalDate startDate,
+        LocalDate endDate,
+        LocalTime startTime,
+        LocalTime endTime
+    ) throws DateTimeException{
+        long differenceInDays = ChronoUnit.DAYS.between(startDate, endDate);
+        if (differenceInDays > spcBookingRule.getMaxReservationDays()) {
+            throw new DateTimeException("Selected date range is over the maximum number of reservation days");
+        }
+
+        double differenceInHours = ChronoUnit.MINUTES.between(startTime, endTime) / 60.0; // may have half hour limit
+        if (differenceInHours < spcBookingRule.getMinBookingHours()){
+            throw new DateTimeException("Selected time range does not reach minimum number of hours");
+        }
+    }
+
+    private static void validateInAllowedRange(
+        SpcBookingRuleDTO spcBookingRule, LocalDate startDate, LocalDate endDate
+    ) throws DateTimeException{
         // Date time check
         LocalDate allowedRangeStartDate =
             LocalDate.now()
@@ -137,45 +189,17 @@ public class SpcBookingController {
                      .atStartOfDay(ZoneId.systemDefault())
                      .plusDays(spcBookingRule.getMaxBookingAdvanceDay())
                      .toLocalDate();
-        if (endDateTime.isBefore(startDateTime)) {
-            return new Result().error(400, "Start date must be earlier than end date");
-        }
-
         if (
             startDate.isBefore(allowedRangeStartDate) ||
             startDate.isAfter(allowedRangeEndDate)
         ) {
-            return new Result().error(400, "Invalid start date");
+            throw new DateTimeException("Invalid start date");
         } else if (
             endDate.isBefore(allowedRangeStartDate) ||
             endDate.isAfter(allowedRangeEndDate)
         ) {
-            return new Result().error(400, "Invalid end date");
+            throw new DateTimeException("Invalid end date");
         }
-
-        long differenceInDays = ChronoUnit.DAYS.between(startDate, endDate);
-        if (
-            differenceInDays > spcBookingRule.getMaxReservationDays()
-        ) {
-            return new Result().error(400, "Selected date range is over the maximum number of reservation days");
-        }
-
-        // Validate event overlap
-        DateTimeFormatter sqlDateDormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        List<SpcEventEntity> overlappedEvents = spcEventDao.getEventsBetweenTimeSpan(
-            startDateTime.format(sqlDateDormatter),
-            endDateTime.format(sqlDateDormatter)
-        );
-        if (!overlappedEvents.isEmpty()) {
-            return new Result().error(400, "Booking overlapped");
-        }
-
-        // prepare to save
-        SpcBookingDTO bookingDto = makeSpcBookingDTO(request, space);
-
-        spcBookingService.save(bookingDto);
-
-        return new Result<SpcBookingDTO>().ok(bookingDto);
     }
 
     private static SpcBookingDTO makeSpcBookingDTO(SpcClientBookingDTO request, SpcSpaceDTO space){
@@ -198,7 +222,7 @@ public class SpcBookingController {
     @Operation(summary = "Update")
     @LogOperation("Update")
     @RequiresPermissions("space:booking:update")
-    public Result update(@RequestBody SpcBookingDTO dto) {
+    public Result update(@RequestBody SpcBookingDTO dto){
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
 
         spcBookingService.update(dto);
@@ -210,7 +234,7 @@ public class SpcBookingController {
     @Operation(summary = "Approve")
     @LogOperation("Approve")
     @RequiresPermissions("space:booking:approve")
-    public Result approve(@PathVariable("id") Long id, @RequestBody List<Long> technicianIdList) {
+    public Result approve(@PathVariable("id") Long id, @RequestBody List<Long> technicianIdList){
         spcBookingService.approve(id, technicianIdList);
 
         return new Result();
@@ -220,7 +244,7 @@ public class SpcBookingController {
     @Operation(summary = "Reject")
     @LogOperation("Reject")
     @RequiresPermissions("space:booking:reject")
-    public Result reject(@PathVariable("id") Long id) {
+    public Result reject(@PathVariable("id") Long id){
         spcBookingService.reject(id);
 
         return new Result();
@@ -230,7 +254,7 @@ public class SpcBookingController {
     @Operation(summary = "Cancel")
     @LogOperation("Cancel")
     @RequiresPermissions("space:booking:cancel")
-    public Result cancel(@PathVariable("id") Long id) {
+    public Result cancel(@PathVariable("id") Long id){
         spcBookingService.cancel(id);
 
         return new Result();
@@ -243,7 +267,7 @@ public class SpcBookingController {
     public void export(
         @Parameter(hidden = true) @RequestParam
         Map<String, Object> params, HttpServletResponse response
-    ) throws Exception {
+    ) throws Exception{
         List<SpcBookingDTO> list = spcBookingService.list(params);
 
         ExcelUtils.exportExcelToTarget(response, null, "Space Booking", list, SpcBookingExcel.class);
