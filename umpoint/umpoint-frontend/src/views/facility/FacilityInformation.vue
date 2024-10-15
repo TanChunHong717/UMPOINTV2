@@ -53,7 +53,7 @@
                                 :path="mdiAccountGroup"
                             ></svg-icon>
                         </el-icon>
-                        {{ facilityInfo.capacity }} persons
+                        {{ facilityInfo.capacity }} person(s)
                     </el-text>
                     <el-text>
                         <el-icon aria-label="Facilities">
