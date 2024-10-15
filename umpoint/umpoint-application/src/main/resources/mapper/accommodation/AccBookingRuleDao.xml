@@ -15,6 +15,7 @@
         <result property="maxReservationDays" column="max_reservation_days"/>
         <result property="minBookingDays" column="min_booking_days"/>
         <result property="maxTechnicianNumber" column="max_technician_number"/>
+        <result property="technicianPrice" column="technician_price"/>
     </resultMap>
 
 

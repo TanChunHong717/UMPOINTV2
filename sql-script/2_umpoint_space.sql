@@ -25,11 +25,12 @@ CREATE TABLE spc_booking_rule (
     min_booking_advance_day decimal(5,0) NOT NULL COMMENT 'Min booking advance day',
     max_reservation_days decimal(5, 0) NOT NULL COMMENT 'Maximum reservation days',
     min_booking_hours decimal(5, 0) NOT NULL COMMENT 'Minimum booking hours per day',
-    max_technician_number decimal(5, 0) NOT NULL COMMENT 'Maximum number of technician'
+    max_technician_number decimal(5, 0) NOT NULL COMMENT 'Maximum number of technician',
+    technician_price decimal(10, 2) NOT NULL COMMENT 'Price per technician',
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space Booking Rule';
 
-INSERT INTO spc_booking_rule VALUE (0,1,1,1,1,1,('00:00:00'),('23:59:59'),60,0,5,1,0);
+INSERT INTO spc_booking_rule VALUE (0,1,1,1,1,1,('00:00:00'),('23:59:59'),60,0,5,1,0,0);
 
 CREATE TABLE spc_space (
     id bigint NOT NULL COMMENT 'ID',

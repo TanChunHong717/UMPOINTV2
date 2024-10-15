@@ -59,6 +59,8 @@
             <result property="minBookingAdvanceDay" column="min_booking_advance_day"/>
             <result property="maxReservationDays" column="max_reservation_days"/>
             <result property="minBookingDays" column="min_booking_days"/>
+            <result property="maxTechnicianNumber" column="max_technician_number"/>
+            <result property="technicianPrice" column="technician_price"/>
         </association>
         <collection property="accImageEntityList" ofType="my.edu.um.umpoint.modules.accommodation.entity.AccImageEntity">
             <id property="id" column="image_id"/>
@@ -105,6 +107,7 @@
             b.max_reservation_days,
             b.min_booking_days,
             b.max_technician_number,
+            b.technician_price,
             i.id AS image_id,
             i.accommodation_id AS image_accommodation_id,
             i.image_url,
@@ -194,6 +197,7 @@
             b.max_reservation_days,
             b.min_booking_days,
             b.max_technician_number,
+            b.technician_price,
             i.id AS image_id,
             i.image_url,
             t.id AS tag_id,

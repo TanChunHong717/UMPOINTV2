@@ -80,9 +80,9 @@
           <h1>Price</h1>
           <div v-if="space.dayPrice">
             <el-row v-if="space.hourPrice">
-              <el-col :span="8"><span class="hour_price">RM{{ space.hourPrice }}</span> / Hour</el-col>
-              <el-col :span="8" v-if="space.fourHoursPrice"><span class="four_hour_price">RM{{ space.fourHoursPrice }}</span> / 4 Hours</el-col>
-              <el-col :span="8" v-if="space.dayPrice"><span class="day_price">RM{{ space.dayPrice }}</span> / Day</el-col>
+              <el-col :span="8"><span class="hour_price">RM {{ space.hourPrice }}</span> / Hour</el-col>
+              <el-col :span="8" v-if="space.fourHoursPrice"><span class="four_hour_price">RM {{ space.fourHoursPrice }}</span> / 4 Hours</el-col>
+              <el-col :span="8" v-if="space.dayPrice"><span class="day_price">RM {{ space.dayPrice }}</span> / Day</el-col>
             </el-row>
           </div>
           <div v-else>
@@ -111,7 +111,7 @@
               </el-col>
             </el-row>
             <el-row style="margin-bottom: 14px">
-              The accommodation will be open for booking {{ space.spcBookingRuleDTO.maxBookingAdvanceDay }} day(s) prior the event and will be closed {{  space.spcBookingRuleDTO.minBookingAdvanceDay }} day(s) before space booking date.
+              The space will be open for booking {{ space.spcBookingRuleDTO.maxBookingAdvanceDay }} day(s) prior the event and will be closed {{  space.spcBookingRuleDTO.minBookingAdvanceDay }} day(s) before space booking date.
             </el-row>
             <el-row style="margin-bottom: 14px">
               <el-col :span="12">Start Time: {{ space.spcBookingRuleDTO.startTime }}</el-col>
@@ -120,6 +120,10 @@
             <el-row style="margin-bottom: 14px">
               <el-col :span="12">Maximum reservation days: {{ space.spcBookingRuleDTO.maxReservationDays }}</el-col>
               <el-col :span="12">Minimum booking hours: {{ space.spcBookingRuleDTO.minBookingHours }}</el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">Maximum technician number: {{ space.spcBookingRuleDTO.maxTechnicianNumber }}</el-col>
+              <el-col :span="12">Price per technician: RM {{ space.spcBookingRuleDTO.technicianPrice }}</el-col>
             </el-row>
           </div>
           <div v-else>

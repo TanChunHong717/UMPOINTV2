@@ -13,6 +13,7 @@ import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import java.io.Serial;
 import java.io.Serializable;
 
+import java.math.BigDecimal;
 import java.sql.Time;
 
 /**
@@ -80,4 +81,8 @@ public class SpcBookingRuleDTO implements Serializable {
 	@SchemaProperty(name = "Maximum number of technician")
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer maxTechnicianNumber;
+
+	@SchemaProperty(name = "Price per technician")
+	@NotNull(groups = {DefaultGroup.class})
+	private BigDecimal technicianPrice;
 }

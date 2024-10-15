@@ -53,7 +53,8 @@
                 <el-col :span="12">Minimum booking hours: {{ scope.row.spcBookingRuleDTO.minBookingHours }}</el-col>
               </el-row>
               <el-row>
-                <el-col :span="24">Maximum technician number: {{ scope.row.spcBookingRuleDTO.maxTechnicianNumber }}</el-col>
+                <el-col :span="12">Maximum technician number: {{ scope.row.spcBookingRuleDTO.maxTechnicianNumber }}</el-col>
+                <el-col :span="12">Price per technician: RM {{ scope.row.spcBookingRuleDTO.technicianPrice }}</el-col>
               </el-row>
             </div>
             <div v-else>
