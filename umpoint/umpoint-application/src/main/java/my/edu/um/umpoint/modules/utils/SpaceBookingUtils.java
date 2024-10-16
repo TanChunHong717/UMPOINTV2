@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class BookingUtils{
+public class SpaceBookingUtils{
 
     public static List<EventEntity> dividePeriodToEvents(
         Date startDate, Date endDate, Time startTime, Time endTime

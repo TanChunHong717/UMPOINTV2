@@ -25,7 +25,7 @@ import my.edu.um.umpoint.modules.space.entity.SpcEventEntity;
 import my.edu.um.umpoint.modules.space.excel.SpcBookingExcel;
 import my.edu.um.umpoint.modules.space.service.SpcBookingService;
 import my.edu.um.umpoint.modules.space.service.SpcSpaceService;
-import my.edu.um.umpoint.modules.utils.BookingUtils;
+import my.edu.um.umpoint.modules.utils.SpaceBookingUtils;
 import my.edu.um.umpoint.modules.utils.EventEntity;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,7 +145,7 @@ public class SpcBookingController{
 
     private void validateEventOverlapped(SpcClientBookingDTO request){
         DateTimeFormatter sqlDateDormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        for (EventEntity dividedEvent: BookingUtils.dividePeriodToEvents(
+        for (EventEntity dividedEvent: SpaceBookingUtils.dividePeriodToEvents(
             request.getStartDay(), request.getEndDay(), request.getStartTime(), request.getEndTime()
         )) {
             List<SpcEventEntity> overlappedEvents = spcEventDao.getEventsBetweenTimeSpan(

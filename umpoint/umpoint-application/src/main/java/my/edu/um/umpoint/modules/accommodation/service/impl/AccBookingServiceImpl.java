@@ -23,7 +23,6 @@ import my.edu.um.umpoint.modules.payment.dto.SpcPaymentItemDTO;
 import my.edu.um.umpoint.modules.security.user.SecurityUser;
 import my.edu.um.umpoint.modules.security.user.UserDetail;
 import my.edu.um.umpoint.modules.space.dto.SpcSpaceDTO;
-import my.edu.um.umpoint.modules.utils.BookingUtils;
 import my.edu.um.umpoint.modules.utils.EventEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

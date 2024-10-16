@@ -11,7 +11,6 @@ import my.edu.um.umpoint.modules.payment.service.SpcPaymentItemService;
 import my.edu.um.umpoint.modules.payment.service.SpcPaymentService;
 import my.edu.um.umpoint.modules.space.dto.SpcSpaceDTO;
 import my.edu.um.umpoint.modules.space.entity.SpcBookingTechnicianEntity;
-import my.edu.um.umpoint.modules.space.entity.SpcEventEntity;
 import my.edu.um.umpoint.modules.space.service.SpcBookingTechnicianService;
 import my.edu.um.umpoint.modules.space.service.SpcEventService;
 import my.edu.um.umpoint.modules.space.dao.SpcBookingDao;
@@ -22,7 +21,7 @@ import cn.hutool.core.util.StrUtil;
 import my.edu.um.umpoint.modules.security.user.SecurityUser;
 import my.edu.um.umpoint.modules.security.user.UserDetail;
 import my.edu.um.umpoint.modules.space.service.SpcSpaceService;
-import my.edu.um.umpoint.modules.utils.BookingUtils;
+import my.edu.um.umpoint.modules.utils.SpaceBookingUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,7 +85,7 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
         spcBookingDTO.setStatus(BookingConstant.BookingStatus.PENDING.getValue());
         // payment calculation
         SpcSpaceDTO space = spcSpaceService.get(spcBookingDTO.getSpaceId());
-        List<SpcPaymentItemDTO> itemisedPrices = BookingUtils.itemisePrice(spcBookingDTO, space);
+        List<SpcPaymentItemDTO> itemisedPrices = SpaceBookingUtils.itemisePrice(spcBookingDTO, space);
         BigDecimal total = itemisedPrices.stream()
                                          .map(i -> BigDecimal.valueOf(i.getItemAmount()).multiply(i.getItemPrice()))
                                          .reduce(BigDecimal.ZERO, BigDecimal::add);
