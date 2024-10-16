@@ -15,4 +15,5 @@ import java.util.List;
 @Mapper
 public interface AccEventDao extends BaseDao<AccEventEntity> {
     List<Long> getOverlapEvent(Long closureId);
+    List<AccEventEntity> getEventsBetweenTimeSpan(Long accommodationId, String startDateTime, String endDateTime);
 }

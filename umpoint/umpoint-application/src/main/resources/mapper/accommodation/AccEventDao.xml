@@ -25,4 +25,16 @@
         WHERE e1.closure_id = #{closureId} AND e2.type = 0;
     </select>
 
+
+    <select id="getOverlapEvent" resultMap="accEventMap">
+        SELECT *
+        FROM acc_event e
+        WHERE accommodation_id = #{accommodationId} AND
+        (
+        (e.end_time BETWEEN #{startDateTime} AND #{endDateTime}) OR
+        (e.start_time BETWEEN #{startDateTime} AND #{endDateTime}) OR
+        (e.start_time &lt; #{startDateTime} AND e.end_time &gt; #{endDateTime})
+        );
+    </select>
+
 </mapper>
