@@ -58,12 +58,24 @@ public class SpcSpaceServiceImpl extends CrudServiceImpl<SpcSpaceDao, SpcSpaceEn
 
     @Override
     @DataFilter(tableAlias = "s")
-    public PageData<SpcSpaceDTO> page(Map<String, Object> params) {
+    public PageData<SpcSpaceDTO> spacePage(Map<String, Object> params) {
         paramsToLike(params, "name");
 
         IPage<SpcSpaceEntity> page = getPage(params, Constant.CREATE_DATE, false);
 
-        List<SpcSpaceEntity> list = baseDao.getList(params);
+        List<SpcSpaceEntity> list = baseDao.getSpaceList(params);
+
+        return getPageData(list, page.getTotal(), currentDtoClass());
+    }
+
+    @Override
+    @DataFilter(tableAlias = "s")
+    public PageData<SpcSpaceDTO> bookingRulePage(Map<String, Object> params) {
+        paramsToLike(params, "name");
+
+        IPage<SpcSpaceEntity> page = getPage(params, Constant.CREATE_DATE, false);
+
+        List<SpcSpaceEntity> list = baseDao.getBookingRuleList(params);
 
         return getPageData(list, page.getTotal(), currentDtoClass());
     }

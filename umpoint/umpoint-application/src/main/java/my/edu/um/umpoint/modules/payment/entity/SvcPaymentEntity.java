@@ -8,6 +8,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Service Payment
@@ -53,4 +54,9 @@ public class SvcPaymentEntity {
 	 */
 	@TableField(exist = false)
 	private String method;
+	/**
+	 * Payment item entity list
+	 */
+	@TableField(exist = false)
+	private List<SvcPaymentItemEntity> svcPaymentItemEntityList;
 }

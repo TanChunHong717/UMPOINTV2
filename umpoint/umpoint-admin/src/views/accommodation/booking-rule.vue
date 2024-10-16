@@ -108,10 +108,8 @@ import {ElMessage} from "element-plus";
 
 const view = reactive({
   deleteIsBatch: true,
-  getDataListURL: "/accommodation/accommodation/page",
+  getDataListURL: "/accommodation/booking-rule/page",
   getDataListIsPage: true,
-  exportURL: "/accommodation/accommodation/export",
-  deleteURL: "/accommodation/accommodation",
   dataForm: {
     name: "",
     approvalRequire: null

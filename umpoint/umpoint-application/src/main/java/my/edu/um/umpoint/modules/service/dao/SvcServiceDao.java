@@ -16,7 +16,9 @@ import java.util.Map;
  */
 @Mapper
 public interface SvcServiceDao extends BaseDao<SvcServiceEntity> {
-    List<SvcServiceEntity> getList(Map<String, Object> params);
+    List<SvcServiceEntity> getServiceList(Map<String, Object> params);
+
+    List<SvcServiceEntity> getBookingRuleList(Map<String, Object> params);
 
     @Override
     SvcServiceEntity selectById(Serializable id);

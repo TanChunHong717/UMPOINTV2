@@ -32,7 +32,25 @@
         <template #default="props">
           <div class="expand-row" v-if="props.row.accPaymentDTOList && props.row.accPaymentDTOList.length > 0">
             <el-table :data="props.row.accPaymentDTOList">
-              <el-table-column prop="id" label="ID" header-align="center" align="center" sortable="custom"></el-table-column>
+              <el-table-column type="expand">
+                <template #default="props">
+                  <div class="expand-row" v-if="props.row.accPaymentItemDTOList && props.row.accPaymentItemDTOList.length > 0">
+                    <el-table :data="props.row.accPaymentItemDTOList">
+                      <el-table-column prop="id" label="ID" header-align="center" align="center"></el-table-column>
+                      <el-table-column prop="itemName" label="Name" header-align="center" align="center"></el-table-column>
+                      <el-table-column prop="itemAmount" label="Amount" header-align="center" align="center"></el-table-column>
+                      <el-table-column prop="itemPrice(RM)" label="Price" header-align="center" align="center"></el-table-column>
+                      <el-table-column label="Item Total(RM)" header-align="center" align="center">
+                        <template v-slot="scope">
+                          {{scope.row.itemAmount * scope.row.itemPrice}}
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </div>
+                  <div class="expand-row" v-else>No payment item for this payment.</div>
+                </template>
+              </el-table-column>
+              <el-table-column prop="id" label="ID" header-align="center" align="center"></el-table-column>
               <el-table-column prop="status" label="Status" header-align="center" align="center">
                 <template v-slot="scope">
                   <el-tag v-if="scope.row.status == 0" type="danger">Pending</el-tag>
@@ -42,8 +60,8 @@
                 </template>
               </el-table-column>
               <el-table-column prop="method" label="Payment Method" header-align="center" align="center"></el-table-column>
-              <el-table-column prop="amount" label="Amount(RM)" header-align="center" align="center" sortable="custom"></el-table-column>
-              <el-table-column prop="date" label="Payment date" header-align="center" align="center" sortable="custom"></el-table-column>
+              <el-table-column prop="amount" label="Amount(RM)" header-align="center" align="center"></el-table-column>
+              <el-table-column prop="date" label="Payment date" header-align="center" align="center"></el-table-column>
               <el-table-column label="Actions" fixed="right" header-align="center" align="center">
                 <template v-slot="scope">
                   <el-button v-if="state.hasPermission('payment:accommodation:refund')" type="primary" link @click="refundHandle(scope.row.id)">Refund</el-button>

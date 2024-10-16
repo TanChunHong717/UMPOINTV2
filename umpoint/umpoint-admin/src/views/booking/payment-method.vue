@@ -8,10 +8,10 @@
         <el-button @click="state.getDataList()">Search</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button v-if="state.hasPermission('booking:payment-method:save')" type="primary" @click="addOrUpdateHandle()">Add</el-button>
+        <el-button v-if="state.hasPermission('payment:method:save')" type="primary" @click="addOrUpdateHandle()">Add</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button v-if="state.hasPermission('booking:payment-method:delete')" type="danger" @click="state.deleteHandle()">Delete</el-button>
+        <el-button v-if="state.hasPermission('payment:method:delete')" type="danger" @click="state.deleteHandle()">Delete</el-button>
       </el-form-item>
     </el-form>
     <el-table v-loading="state.dataListLoading" :data="state.dataList" border @selection-change="state.dataListSelectionChangeHandle" @sort-change="state.dataListSortChangeHandle" style="width: 100%">

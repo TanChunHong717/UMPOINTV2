@@ -48,6 +48,13 @@
             <result property="amount" column="amount"/>
             <result property="date" column="date"/>
             <result property="method" column="method"/>
+            <collection property="accPaymentItemEntityList" javaType="java.util.List" ofType="my.edu.um.umpoint.modules.payment.entity.AccPaymentItemEntity">
+                <id property="id" column="payment_item_id"/>
+                <result property="paymentId" column="parent_payment_id"/>
+                <result property="itemName" column="item_name"/>
+                <result property="itemAmount" column="item_amount"/>
+                <result property="itemPrice" column="item_price"/>
+            </collection>
         </collection>
     </resultMap>
     
@@ -77,6 +84,11 @@
             p.method_id,
             p.amount,
             p.date,
+            pi.id AS payment_item_id,
+            pi.payment_id AS parent_payment_id,
+            pi.item_name,
+            pi.item_amount,
+            pi.item_price,
             pm.method
         FROM acc_booking ab
         LEFT JOIN acc_accommodation a ON ab.accommodation_id = a.id
@@ -85,6 +97,7 @@
         LEFT JOIN acc_booking_technician abt ON ab.id = abt.booking_id
         LEFT JOIN sys_user t ON abt.technician_id = t.id
         LEFT JOIN acc_payment p ON ab.id = p.booking_id
+        LEFT JOIN acc_payment_item pi ON p.id = pi.payment_id
         LEFT JOIN payment_method pm ON p.method_id = pm.id
         <where>
             <if test="id != null">
@@ -151,6 +164,10 @@
             p.method_id,
             p.amount,
             p.date,
+            pi.id AS payment_item_id,
+            pi.item_name,
+            pi.item_amount,
+            pi.item_price,
             pm.method
         FROM acc_booking ab
         LEFT JOIN acc_accommodation a ON ab.accommodation_id = a.id
@@ -159,6 +176,7 @@
         LEFT JOIN acc_booking_technician abt ON ab.id = abt.booking_id
         LEFT JOIN sys_user t ON abt.technician_id = t.id
         LEFT JOIN acc_payment p ON ab.id = p.booking_id
+        LEFT JOIN acc_payment_item pi ON p.id = pi.payment_id
         LEFT JOIN payment_method pm ON p.method_id = pm.id
         WHERE ab.id = #{id}
     </select>

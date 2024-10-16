@@ -52,6 +52,13 @@
             <result property="amount" column="amount"/>
             <result property="date" column="date"/>
             <result property="method" column="method"/>
+            <collection property="spcPaymentItemEntityList" javaType="java.util.List" ofType="my.edu.um.umpoint.modules.payment.entity.SpcPaymentItemEntity">
+                <id property="id" column="payment_item_id"/>
+                <result property="paymentId" column="parent_payment_id"/>
+                <result property="itemName" column="item_name"/>
+                <result property="itemAmount" column="item_amount"/>
+                <result property="itemPrice" column="item_price"/>
+            </collection>
         </collection>
     </resultMap>
 
@@ -83,6 +90,11 @@
             p.method_id,
             p.amount,
             p.date,
+            pi.id AS payment_item_id,
+            pi.payment_id AS parent_payment_id,
+            pi.item_name,
+            pi.item_amount,
+            pi.item_price,
             pm.method
         FROM spc_booking sb
         LEFT JOIN spc_space s ON sb.space_id = s.id
@@ -91,6 +103,7 @@
         LEFT JOIN spc_booking_technician sbt ON sb.id = sbt.booking_id
         LEFT JOIN sys_user t ON sbt.technician_id = t.id
         LEFT JOIN spc_payment p ON sb.id = p.booking_id
+        LEFT JOIN spc_payment_item pi ON p.id = pi.payment_id
         LEFT JOIN payment_method pm ON p.method_id = pm.id
         <where>
             <if test="id != null">
@@ -159,6 +172,10 @@
             p.method_id,
             p.amount,
             p.date,
+            pi.id AS payment_item_id,
+            pi.item_name,
+            pi.item_amount,
+            pi.item_price,
             pm.method
         FROM spc_booking sb
         LEFT JOIN spc_space s ON sb.space_id = s.id
@@ -167,6 +184,7 @@
         LEFT JOIN spc_booking_technician sbt ON sb.id = sbt.booking_id
         LEFT JOIN sys_user t ON sbt.technician_id = t.id
         LEFT JOIN spc_payment p ON sb.id = p.booking_id
+        LEFT JOIN spc_payment_item pi ON p.id = pi.payment_id
         LEFT JOIN payment_method pm ON p.method_id = pm.id
         WHERE sb.id = #{id}
     </select>

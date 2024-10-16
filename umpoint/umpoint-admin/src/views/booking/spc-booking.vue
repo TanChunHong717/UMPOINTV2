@@ -32,6 +32,24 @@
         <template #default="props">
           <div class="expand-row" v-if="props.row.spcPaymentDTOList && props.row.spcPaymentDTOList.length > 0">
             <el-table :data="props.row.spcPaymentDTOList">
+              <el-table-column type="expand">
+                <template #default="props">
+                  <div class="expand-row" v-if="props.row.spcPaymentItemDTOList && props.row.spcPaymentItemDTOList.length > 0">
+                    <el-table :data="props.row.spcPaymentItemDTOList">
+                      <el-table-column prop="id" label="ID" header-align="center" align="center"></el-table-column>
+                      <el-table-column prop="itemName" label="Name" header-align="center" align="center"></el-table-column>
+                      <el-table-column prop="itemAmount" label="Amount" header-align="center" align="center"></el-table-column>
+                      <el-table-column prop="itemPrice(RM)" label="Price" header-align="center" align="center"></el-table-column>
+                      <el-table-column label="Item Total(RM)" header-align="center" align="center">
+                        <template v-slot="scope">
+                          {{scope.row.itemAmount * scope.row.itemPrice}}
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </div>
+                  <div class="expand-row" v-else>No payment item for this payment.</div>
+                </template>
+              </el-table-column>
               <el-table-column prop="id" label="ID" header-align="center" align="center" sortable="custom"></el-table-column>
               <el-table-column prop="status" label="Status" header-align="center" align="center">
                 <template v-slot="scope">

@@ -48,14 +48,12 @@ public class SvcServiceController {
         @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, ref="String") ,
         @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String") ,
         @Parameter(name = Constant.NAME, description = "Name", in = ParameterIn.QUERY, ref="String") ,
-        @Parameter(name = Constant.APPROVAL_REQUIRED, description = "Is admin approval required", in = ParameterIn.QUERY, ref="int"),
         @Parameter(name = Constant.DEPT_ID, description = "Department ID", in = ParameterIn.QUERY, ref="int") ,
         @Parameter(name = Constant.CAT_ID, description = "Category ID", in = ParameterIn.QUERY, ref="int") ,
         @Parameter(name = Constant.TAG_ID, description = "Tag ID", in = ParameterIn.QUERY, ref="int")
     })
-    @RequiresPermissions("service:service:page")
     public Result<PageData<SvcServiceDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
-        PageData<SvcServiceDTO> page = svcServiceService.page(params);
+        PageData<SvcServiceDTO> page = svcServiceService.servicePage(params);
 
         return new Result<PageData<SvcServiceDTO>>().ok(page);
     }

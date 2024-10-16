@@ -76,10 +76,8 @@ import {ElMessage} from "element-plus";
 
 const view = reactive({
   deleteIsBatch: true,
-  getDataListURL: "/service/service/page",
+  getDataListURL: "/service/booking-rule/page",
   getDataListIsPage: true,
-  exportURL: "/service/service/export",
-  deleteURL: "/service/service",
   dataForm: {
     name: "",
     approvalRequire: null

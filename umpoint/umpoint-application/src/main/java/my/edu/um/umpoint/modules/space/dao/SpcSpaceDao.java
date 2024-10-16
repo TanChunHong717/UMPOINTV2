@@ -16,7 +16,9 @@ import java.util.Map;
  */
 @Mapper
 public interface SpcSpaceDao extends BaseDao<SpcSpaceEntity> {
-    List<SpcSpaceEntity> getList(Map<String, Object> params);
+    List<SpcSpaceEntity> getSpaceList(Map<String, Object> params);
+
+    List<SpcSpaceEntity> getBookingRuleList(Map<String, Object> params);
 
     @Override
     SpcSpaceEntity selectById(Serializable id);

@@ -29,7 +29,7 @@ import java.util.Map;
  * @since 1.0.0 2024-09-10
  */
 @RestController
-@RequestMapping("payment-method")
+@RequestMapping("payment/method")
 @Tag(name="Payment Method")
 public class PaymentMethodController {
     @Autowired

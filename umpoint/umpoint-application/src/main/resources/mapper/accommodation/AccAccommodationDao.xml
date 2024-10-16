@@ -73,7 +73,7 @@
         </collection>
     </resultMap>
 
-    <select id="getList" resultMap="accAccommodationSelectMap">
+    <select id="getAccommodationList" resultMap="accAccommodationSelectMap">
         SELECT
             a.id,
             a.status,
@@ -94,20 +94,6 @@
             a.update_date,
             c.name AS category,
             d.name AS dept_name,
-            m.username AS manager_name,
-            cr.username AS creator_name,
-            u.username AS updater_name,
-            b.approval_required,
-            b.open_for_staff,
-            b.open_for_student,
-            b.open_for_public,
-            b.holiday_available,
-            b.max_booking_advance_day,
-            b.min_booking_advance_day,
-            b.max_reservation_days,
-            b.min_booking_days,
-            b.max_technician_number,
-            b.technician_price,
             i.id AS image_id,
             i.accommodation_id AS image_accommodation_id,
             i.image_url,
@@ -117,12 +103,8 @@
         LEFT JOIN acc_category c ON a.cat_id = c.id
         LEFT JOIN sys_dept d ON a.dept_id = d.id
         LEFT JOIN acc_image i ON a.id = i.accommodation_id
-        LEFT JOIN acc_booking_rule b ON a.booking_rule_id = b.id
         LEFT JOIN acc_accommodation_tag at ON a.id = at.accommodation_id
         LEFT JOIN acc_tag t ON at.tag_id = t.id
-        LEFT JOIN sys_user m ON a.manager = m.id
-        LEFT JOIN sys_user cr ON a.creator = cr.id
-        LEFT JOIN sys_user u ON a.updater = u.id
         <where>
             and a.status = 1
             <if test="name != null and name.trim() != ''">
@@ -140,9 +122,6 @@
                     #{id}
                 </foreach>
             </if>
-            <if test="approvalRequire != null">
-                AND b.approval_required = #{approvalRequire}
-            </if>
         </where>
         <if test="orderField != null and orderField.trim() != ''">
             ORDER BY
@@ -151,6 +130,60 @@
             </if>
             <if test="orderField == 'capacity'">
                 capacity
+            </if>
+            <if test="orderField == 'hour_price'">
+                day_price
+            </if>
+            <if test="order != 'desc'">
+                ASC
+            </if>
+            <if test="order == 'desc'">
+                DESC
+            </if>
+        </if>
+    </select>
+    <select id="getBookingRuleList" resultMap="accAccommodationSelectMap">
+        SELECT
+            a.id,
+            a.name,
+            a.manager,
+            a.day_price,
+            a.week_price,
+            a.booking_rule_id,
+            a.create_date,
+            c.name AS category,
+            d.name AS dept_name,
+            m.username AS manager_name,
+            cr.username AS creator_name,
+            u.username AS updater_name,
+            b.approval_required,
+            b.open_for_staff,
+            b.open_for_student,
+            b.open_for_public,
+            b.holiday_available,
+            b.max_booking_advance_day,
+            b.min_booking_advance_day,
+            b.max_reservation_days,
+            b.min_booking_days,
+            b.max_technician_number,
+            b.technician_price,
+            m.username AS manager_name
+        FROM acc_accommodation a
+        LEFT JOIN acc_booking_rule b ON a.booking_rule_id = b.id
+        LEFT JOIN sys_user m ON s.manager = m.id
+        <where>
+            and a.status = 1
+            <if test="name != null and name.trim() != ''">
+                and a.name like #{name}
+            </if>
+            <if test="approvalRequire != null">
+                AND b.approval_required = #{approvalRequire}
+            </if>
+        </where>
+        <if test="orderField != null and orderField.trim() != ''">
+            ORDER BY
+            <if test="orderField == 'name'">
+                name
             </if>
             <if test="orderField == 'hour_price'">
                 day_price

@@ -107,16 +107,11 @@ import useView from "@/hooks/useView";
 import {onActivated, onMounted, reactive, ref, toRefs} from "vue";
 import UpdateBookingRule from "@/views/space/booking-rule-add-or-update.vue";
 import UpdateDefaultBookingRule from "@/views/space/default-booking-rule-add-or-update.vue";
-import baseService from "@/service/baseService";
-import {IObject} from "@/types/interface";
-import {ElMessage} from "element-plus";
 
 const view = reactive({
   deleteIsBatch: true,
-  getDataListURL: "/space/space/page",
+  getDataListURL: "/space/booking-rule/page",
   getDataListIsPage: true,
-  exportURL: "/space/space/export",
-  deleteURL: "/space/space",
   dataForm: {
     name: "",
     approvalRequire: null

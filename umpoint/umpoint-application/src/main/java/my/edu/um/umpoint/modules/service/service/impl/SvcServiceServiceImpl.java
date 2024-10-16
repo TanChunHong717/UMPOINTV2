@@ -58,12 +58,24 @@ public class SvcServiceServiceImpl extends CrudServiceImpl<SvcServiceDao, SvcSer
 
     @Override
     @DataFilter(tableAlias = "s")
-    public PageData<SvcServiceDTO> page(Map<String, Object> params) {
+    public PageData<SvcServiceDTO> servicePage(Map<String, Object> params) {
         paramsToLike(params, "name");
 
         IPage<SvcServiceEntity> page = getPage(params, Constant.CREATE_DATE, false);
 
-        List<SvcServiceEntity> list = baseDao.getList(params);
+        List<SvcServiceEntity> list = baseDao.getServiceList(params);
+
+        return getPageData(list, page.getTotal(), currentDtoClass());
+    }
+
+    @Override
+    @DataFilter(tableAlias = "s")
+    public PageData<SvcServiceDTO> bookingRulePage(Map<String, Object> params) {
+        paramsToLike(params, "name");
+
+        IPage<SvcServiceEntity> page = getPage(params, Constant.CREATE_DATE, false);
+
+        List<SvcServiceEntity> list = baseDao.getBookingRuleList(params);
 
         return getPageData(list, page.getTotal(), currentDtoClass());
     }

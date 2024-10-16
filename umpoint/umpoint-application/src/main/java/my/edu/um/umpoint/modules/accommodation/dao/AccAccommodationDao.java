@@ -16,7 +16,8 @@ import java.util.Map;
  */
 @Mapper
 public interface AccAccommodationDao extends BaseDao<AccAccommodationEntity> {
-    List<AccAccommodationEntity> getList(Map<String, Object> params);
+    List<AccAccommodationEntity> getAccommodationList(Map<String, Object> params);
+    List<AccAccommodationEntity> getBookingRuleList(Map<String, Object> params);
 
     @Override
     AccAccommodationEntity selectById(Serializable id);

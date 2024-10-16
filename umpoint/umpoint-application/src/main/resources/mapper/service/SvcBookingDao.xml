@@ -21,7 +21,6 @@
         <result property="serviceId" column="service_id"/>
         <result property="adminId" column="admin_id"/>
         <result property="userId" column="user_id"/>
-        <result property="paymentId" column="payment_id"/>
         <result property="paymentAmount" column="payment_amount"/>
         <result property="createDate" column="create_date"/>
         <result property="updateDate" column="update_date"/>
@@ -36,6 +35,13 @@
             <result property="amount" column="amount"/>
             <result property="date" column="date"/>
             <result property="method" column="method"/>
+            <collection property="svcPaymentItemEntityList" javaType="java.util.List" ofType="my.edu.um.umpoint.modules.payment.entity.SvcPaymentItemEntity">
+                <id property="id" column="payment_item_id"/>
+                <result property="paymentId" column="parent_payment_id"/>
+                <result property="itemName" column="item_name"/>
+                <result property="itemAmount" column="item_amount"/>
+                <result property="itemPrice" column="item_price"/>
+            </collection>
         </collection>
     </resultMap>
 
@@ -58,12 +64,18 @@
             p.method_id,
             p.amount,
             p.date,
+            pi.id AS payment_item_id,
+            pi.payment_id AS parent_payment_id,
+            pi.item_name,
+            pi.item_amount,
+            pi.item_price,
             pm.method
         FROM svc_booking sb
-        LEFT JOIN svc_service s ON sb.space_id = s.id
+        LEFT JOIN svc_service s ON sb.service_id = s.id
         LEFT JOIN sys_user a ON sb.admin_id = a.id
         LEFT JOIN cli_user c ON sb.user_id = c.id
         LEFT JOIN svc_payment p ON sb.id = p.booking_id
+        LEFT JOIN svc_payment_item pi ON p.id = pi.payment_id
         LEFT JOIN payment_method pm ON p.method_id = pm.id
         <where>
             <if test="id != null">
@@ -84,8 +96,8 @@
             <if test="orderField == 'id'">
                 id
             </if>
-            <if test="orderField == 'space'">
-                space
+            <if test="orderField == 'service'">
+                service
             </if>
             <if test="orderField == 'create_date'">
                 create_date
@@ -117,12 +129,17 @@
             p.method_id,
             p.amount,
             p.date,
+            pi.id AS payment_item_id,
+            pi.item_name,
+            pi.item_amount,
+            pi.item_price,
             pm.method
         FROM svc_booking sb
         LEFT JOIN svc_service s ON sb.space_id = s.id
         LEFT JOIN sys_user a ON sb.admin_id = a.id
         LEFT JOIN cli_user c ON sb.user_id = c.id
         LEFT JOIN svc_payment p ON sb.id = p.booking_id
+        LEFT JOIN svc_payment_item pi ON p.id = pi.payment_id
         LEFT JOIN payment_method pm ON p.method_id = pm.id
         WHERE sb.id = #{id}
     </select>

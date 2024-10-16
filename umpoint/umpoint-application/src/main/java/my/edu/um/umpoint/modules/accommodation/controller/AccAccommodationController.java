@@ -48,14 +48,13 @@ public class AccAccommodationController {
         @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, ref="String") ,
         @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String") ,
         @Parameter(name = Constant.NAME, description = "Name", in = ParameterIn.QUERY, ref="String") ,
-        @Parameter(name = Constant.APPROVAL_REQUIRED, description = "Is admin approval required", in = ParameterIn.QUERY, ref="int"),
         @Parameter(name = Constant.DEPT_ID, description = "Department ID", in = ParameterIn.QUERY, ref="int") ,
         @Parameter(name = Constant.CAT_ID, description = "Category ID", in = ParameterIn.QUERY, ref="int") ,
         @Parameter(name = Constant.TAG_ID, description = "Tag ID", in = ParameterIn.QUERY, ref="int")
     })
     @RequiresPermissions("accommodation:accommodation:page")
     public Result<PageData<AccAccommodationDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
-        PageData<AccAccommodationDTO> page = accAccommodationService.page(params);
+        PageData<AccAccommodationDTO> page = accAccommodationService.accommodationPage(params);
 
         return new Result<PageData<AccAccommodationDTO>>().ok(page);
     }

@@ -56,12 +56,24 @@ public class AccAccommodationServiceImpl extends CrudServiceImpl<AccAccommodatio
 
     @Override
     @DataFilter(tableAlias = "a")
-    public PageData<AccAccommodationDTO> page(Map<String, Object> params) {
+    public PageData<AccAccommodationDTO> accommodationPage(Map<String, Object> params) {
         paramsToLike(params, "name");
 
         IPage<AccAccommodationEntity> page = getPage(params, Constant.CREATE_DATE, false);
 
-        List<AccAccommodationEntity> list = baseDao.getList(params);
+        List<AccAccommodationEntity> list = baseDao.getAccommodationList(params);
+
+        return getPageData(list, page.getTotal(), currentDtoClass());
+    }
+
+    @Override
+    @DataFilter(tableAlias = "a")
+    public PageData<AccAccommodationDTO> bookingRulePage(Map<String, Object> params) {
+        paramsToLike(params, "name");
+
+        IPage<AccAccommodationEntity> page = getPage(params, Constant.CREATE_DATE, false);
+
+        List<AccAccommodationEntity> list = baseDao.getBookingRuleList(params);
 
         return getPageData(list, page.getTotal(), currentDtoClass());
     }
