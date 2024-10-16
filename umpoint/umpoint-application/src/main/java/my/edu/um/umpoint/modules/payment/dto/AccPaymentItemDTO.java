@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 @Schema(name = "Accommodation Payment Itemized")
 public class AccPaymentItemDTO implements Serializable {
 	@Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -3998467780270441429L;
 
 	@SchemaProperty(name = "ID")
 	private Long id;
@@ -36,6 +36,4 @@ public class AccPaymentItemDTO implements Serializable {
 
 	@SchemaProperty(name = "Price per item (total = amount * price)")
 	private BigDecimal itemPrice;
-
-
 }

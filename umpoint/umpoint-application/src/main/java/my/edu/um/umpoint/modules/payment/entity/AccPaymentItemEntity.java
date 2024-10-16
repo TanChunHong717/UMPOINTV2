@@ -16,26 +16,25 @@ import java.util.Date;
 @Data
 @TableName("acc_payment_item")
 public class AccPaymentItemEntity {
-
-    /**
-     * ID
-     */
-		@TableId
-		private Long id;
-    /**
-     * Payment ID
-     */
-		private Long paymentId;
-    /**
-     * Payment Item Name
-     */
-		private String itemName;
-    /**
-     * Payment Item Count
-     */
-		private Integer itemAmount;
-    /**
-     * Price per item (total = amount * price)
-     */
-		private BigDecimal itemPrice;
+	/**
+	* ID
+	*/
+	@TableId
+	private Long id;
+	/**
+	* Payment ID
+	*/
+	private Long paymentId;
+	/**
+	* Payment Item Name
+	*/
+	private String itemName;
+	/**
+	* Payment Item Count
+	*/
+	private Integer itemAmount;
+	/**
+	* Price per item (total = amount * price)
+	*/
+	private BigDecimal itemPrice;
 }

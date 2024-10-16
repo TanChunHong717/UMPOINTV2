@@ -42,7 +42,7 @@ public class SpcPaymentDTO implements Serializable {
 	@Schema(title = "Payment Date")
 	private Date date;
 
-	@Schema(title = "Payment Method name")
+	@Schema(title = "Payment Method Name")
 	private String method;
 
 	@Schema(title = "Payment item dto list")

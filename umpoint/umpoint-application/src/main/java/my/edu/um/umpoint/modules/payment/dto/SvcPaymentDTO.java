@@ -7,6 +7,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Service Payment
@@ -41,6 +42,9 @@ public class SvcPaymentDTO implements Serializable {
 	@Schema(title = "Payment Date")
 	private Date date;
 
-	@Schema(title = "Payment Method name")
+	@Schema(title = "Payment Method Name")
 	private String method;
+
+	@Schema(title = "Payment item dto list")
+	private List<SvcPaymentItemDTO> svcPaymentItemDTOList;
 }
