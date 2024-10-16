@@ -149,6 +149,7 @@ public class SpcBookingController{
             request.getStartDay(), request.getEndDay(), request.getStartTime(), request.getEndTime()
         )) {
             List<SpcEventEntity> overlappedEvents = spcEventDao.getEventsBetweenTimeSpan(
+                request.getSpaceId(),
                 DateUtils.convertDateToLocalDateTime(dividedEvent.startTime).format(sqlDateDormatter),
                 DateUtils.convertDateToLocalDateTime(dividedEvent.endTime).format(sqlDateDormatter)
             );

@@ -28,10 +28,11 @@
     <select id="getEventsBetweenTimeSpan" resultMap="spcEventMap">
         SELECT *
         FROM spc_event e
-        WHERE (
-        (e.end_time BETWEEN #{startDateTime} AND #{endDateTime}) OR
-        (e.start_time BETWEEN #{startDateTime} AND #{endDateTime}) OR
-        (e.start_time &lt; #{startDateTime} AND e.end_time &gt; #{endDateTime})
+        WHERE space_id = #{spaceId} AND
+        (
+            (e.end_time BETWEEN #{startDateTime} AND #{endDateTime}) OR
+            (e.start_time BETWEEN #{startDateTime} AND #{endDateTime}) OR
+            (e.start_time &lt; #{startDateTime} AND e.end_time &gt; #{endDateTime})
         );
     </select>
 
