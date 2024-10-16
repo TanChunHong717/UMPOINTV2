@@ -16,13 +16,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
+@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 @AllArgsConstructor
 public class RenExceptionHandler {
     private final SysLogErrorService sysLogErrorService;
@@ -43,6 +46,7 @@ public class RenExceptionHandler {
         return result;
     }
 
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(UnauthorizedException.class)
     public Result handleUnauthorizedException(UnauthorizedException ex) {
         Result result = new Result();
