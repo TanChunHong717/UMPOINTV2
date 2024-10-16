@@ -65,7 +65,7 @@ CREATE TABLE acc_payment_item (
     `id` BIGINT NOT NULL COMMENT 'ID',
     `payment_id` BIGINT NOT NULL COMMENT 'Payment ID',
     `item_name` VARCHAR(255) NOT NULL COMMENT 'Payment Item Name',
-    `item_amount` INT NOT NULL 'Payment Item Count',
+    `item_amount` INT NOT NULL COMMENT 'Payment Item Count',
     `item_price` DECIMAL(10,2) NOT NULL COMMENT 'Price per item (total = amount * price)' ,
     PRIMARY KEY (`id`),
     FOREIGN KEY (payment_id) REFERENCES acc_payment(id)
