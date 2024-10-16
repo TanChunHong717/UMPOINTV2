@@ -1,7 +1,6 @@
 package my.edu.um.umpoint.modules.space.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
@@ -17,7 +16,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-
 /**
  * Space
  *
@@ -25,12 +23,12 @@ import java.util.List;
  * @since 1.0.0 2024-08-03
  */
 @Data
-@Schema(name = "Space")
+@Schema(title = "Space")
 public class SpcSpaceDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = 4955180313433960914L;
 
-	@SchemaProperty(name = "ID")
+	@Schema(title = "ID")
 	@Null(groups = {AddGroup.class})
 	@NotNull(groups = {UpdateGroup.class})
 	private Long id;
@@ -39,80 +37,80 @@ public class SpcSpaceDTO implements Serializable {
 	@Range(min=0, max=1, groups = DefaultGroup.class)
 	private Integer status;
 
-	@SchemaProperty(name = "Name")
+	@Schema(title = "Name")
 	@NotEmpty(groups = {DefaultGroup.class})
 	private String name;
 
-	@SchemaProperty(name = "Category ID")
+	@Schema(title = "Category ID")
 	@NotNull(groups = {DefaultGroup.class})
 	private Long catId;
 
-	@SchemaProperty(name = "Department ID")
+	@Schema(title = "Department ID")
 	@NotNull(groups = {DefaultGroup.class})
 	private Long deptId;
 
-	@SchemaProperty(name = "Address")
+	@Schema(title = "Address")
 	@NotEmpty(groups = {DefaultGroup.class})
 	private String address;
 
-	@SchemaProperty(name = "Description")
+	@Schema(title = "Description")
 	private String description;
 
-	@SchemaProperty(name = "Facilities")
+	@Schema(title = "Facilities")
 	private String facilities;
 
-	@SchemaProperty(name = "Capacity")
+	@Schema(title = "Capacity")
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer capacity;
 
-	@SchemaProperty(name = "Manager ID")
+	@Schema(title = "Manager ID")
 	private Long manager;
 
-	@SchemaProperty(name = "Price for book an hour")
+	@Schema(title = "Price for book an hour")
 	private BigDecimal hourPrice;
 
-	@SchemaProperty(name = "Price for book four hours")
+	@Schema(title = "Price for book four hours")
 	private BigDecimal fourHoursPrice;
 
-	@SchemaProperty(name = "Price for book a day")
+	@Schema(title = "Price for book a day")
 	private BigDecimal dayPrice;
 
-	@SchemaProperty(name = "Booking Rule ID")
+	@Schema(title = "Booking Rule ID")
 	private Long bookingRuleId;
 
-	@SchemaProperty(name = "Creator ID")
+	@Schema(title = "Creator ID")
 	private Long creator;
 
-	@SchemaProperty(name = "Create Date")
+	@Schema(title = "Create Date")
 	private Date createDate;
 
-	@SchemaProperty(name = "Last Updater ID")
+	@Schema(title = "Last Updater ID")
 	private Long updater;
 
-	@SchemaProperty(name = "Last Update Date")
+	@Schema(title = "Last Update Date")
 	private Date updateDate;
 
-	@SchemaProperty(name = "Category Name")
+	@Schema(title = "Category Name")
 	private String category;
 
-	@SchemaProperty(name = "Department Name")
+	@Schema(title = "Department Name")
 	private String deptName;
 
-	@SchemaProperty(name = "Manager Name")
+	@Schema(title = "Manager Name")
 	private String managerName;
 
-	@SchemaProperty(name = "Creator Name")
+	@Schema(title = "Creator Name")
 	private String creatorName;
 
-	@SchemaProperty(name = "Last Updater Name")
+	@Schema(title = "Last Updater Name")
 	private String updaterName;
 
-	@SchemaProperty(name = "Booking Rule DTO")
+	@Schema(title = "Booking Rule DTO")
 	private SpcBookingRuleDTO spcBookingRuleDTO;
 
-	@SchemaProperty(name = "Image DTO List")
+	@Schema(title = "Image DTO List")
 	private List<SpcImageDTO> spcImageDTOList;
 
-	@SchemaProperty(name = "Tag DTO List")
+	@Schema(title = "Tag DTO List")
 	private List<SpcTagDTO> spcTagDTOList;
 }

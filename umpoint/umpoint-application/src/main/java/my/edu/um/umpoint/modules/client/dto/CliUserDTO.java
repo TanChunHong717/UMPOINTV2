@@ -1,7 +1,6 @@
 package my.edu.um.umpoint.modules.client.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
@@ -14,7 +13,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
-
 /**
  * User
  *
@@ -22,45 +20,45 @@ import java.util.Date;
  * @since 1.0.0 2024-10-01
  */
 @Data
-@Schema(name = "User")
+@Schema(title = "User")
 public class CliUserDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = 6325567844814722921L;
 
-	@SchemaProperty(name = "ID")
+	@Schema(title = "ID")
 	@Null(groups = AddGroup.class)
 	@NotNull(groups = UpdateGroup.class)
 	private Long id;
 
-	@SchemaProperty(name = "Username")
+	@Schema(title = "Username")
 	@NotEmpty(groups = DefaultGroup.class)
 	private String username;
 
-	@SchemaProperty(name = "Mobile")
+	@Schema(title = "Mobile")
 	@NotEmpty(groups = DefaultGroup.class)
 	private String mobile;
 
-	@SchemaProperty(name = "Password")
+	@Schema(title = "Password")
 	@NotEmpty(groups = DefaultGroup.class)
 	private String password;
 
-	@SchemaProperty(name = "Email")
+	@Schema(title = "Email")
 	@NotEmpty(groups = DefaultGroup.class)
 	private String email;
 
-	@SchemaProperty(name = "Type")
+	@Schema(title = "Type")
 	@NotEmpty(groups = DefaultGroup.class)
 	private String type;
 
-	@SchemaProperty(name = "Have permission to book space")
+	@Schema(title = "Have permission to book space")
 	private Integer spacePermission;
 
-	@SchemaProperty(name = "Have permission to book service")
+	@Schema(title = "Have permission to book service")
 	private Integer servicePermission;
 
-	@SchemaProperty(name = "Have permission to book accommodation")
+	@Schema(title = "Have permission to book accommodation")
 	private Integer accommodationPermission;
 
-	@SchemaProperty(name = "Create date")
+	@Schema(title = "Create date")
 	private Date createDate;
 }

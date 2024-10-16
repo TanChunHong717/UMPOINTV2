@@ -1,7 +1,6 @@
 package my.edu.um.umpoint.modules.payment.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import lombok.Data;
 
 import java.io.Serial;
@@ -16,32 +15,32 @@ import java.util.Date;
  * @since 1.0.0 2024-09-08
  */
 @Data
-@Schema(name = "Payment")
+@Schema(title = "Payment")
 public class AccPaymentDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = -1511545322184053328L;
 
-	@SchemaProperty(name = "ID")
+	@Schema(title = "ID")
 	private Long id;
 
-	@SchemaProperty(name = "Status: 0:Pending, 1:Success, 2:Failed, 3:Refund")
+	@Schema(title = "Status: 0:Pending, 1:Success, 2:Failed, 3:Refund")
 	private Integer status;
 
-	@SchemaProperty(name = "Accommodation Booking ID")
+	@Schema(title = "Accommodation Booking ID")
 	private Long bookingId;
 
-	@SchemaProperty(name = "User ID")
+	@Schema(title = "User ID")
 	private Long userId;
 
-	@SchemaProperty(name = "Payment Method ID")
+	@Schema(title = "Payment Method ID")
 	private String methodId;
 
-	@SchemaProperty(name = "Payment Amount")
+	@Schema(title = "Payment Amount")
 	private BigDecimal amount;
 
-	@SchemaProperty(name = "Payment Date")
+	@Schema(title = "Payment Date")
 	private Date date;
 
-	@SchemaProperty(name = "Payment Method name")
+	@Schema(title = "Payment Method name")
 	private String method;
 }

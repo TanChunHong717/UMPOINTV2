@@ -16,7 +16,6 @@ import java.util.Date;
 @Data
 @TableName("svc_tag")
 public class SvcTagEntity {
-
 	/**
 	* ID
 	*/

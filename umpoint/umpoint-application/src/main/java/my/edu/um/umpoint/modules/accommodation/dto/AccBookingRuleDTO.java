@@ -1,7 +1,6 @@
 package my.edu.um.umpoint.modules.accommodation.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import lombok.Data;
@@ -21,58 +20,58 @@ import java.math.BigDecimal;
  * @since 1.0.0 2024-08-23
  */
 @Data
-@Schema(name = "Accommodation Booking Rule")
+@Schema(title = "Accommodation Booking Rule")
 @EqualsAndHashCode
 public class AccBookingRuleDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = 9187174069158066308L;
 
-	@SchemaProperty(name = "ID")
+	@Schema(title = "ID")
 	@Null(groups = {AddGroup.class})
 	@NotNull(groups = {UpdateGroup.class})
 	private Long id;
 
-	@SchemaProperty(name = "0:Automatic approve 1: Require admin approve")
+	@Schema(title = "0:Automatic approve 1: Require admin approve")
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer approvalRequired;
 
-	@SchemaProperty(name = "0:Staff not allow to book 1:Staff allow to book")
+	@Schema(title = "0:Staff not allow to book 1:Staff allow to book")
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer openForStaff;
 
-	@SchemaProperty(name = "0:Student not allow to book 1:Student allow to book")
+	@Schema(title = "0:Student not allow to book 1:Student allow to book")
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer openForStudent;
 
-	@SchemaProperty(name = "0:Automatic approve 1: Require admin approve")
+	@Schema(title = "0:Automatic approve 1: Require admin approve")
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer openForPublic;
 
-	@SchemaProperty(name = "Availability in weekend, 1: Available, 0: Close")
+	@Schema(title = "Availability in weekend, 1: Available, 0: Close")
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer holidayAvailable;
 
-	@SchemaProperty(name = "Max booking advance day")
+	@Schema(title = "Max booking advance day")
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer maxBookingAdvanceDay;
 
-	@SchemaProperty(name = "Min booking advance day")
+	@Schema(title = "Min booking advance day")
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer minBookingAdvanceDay;
 
-	@SchemaProperty(name = "Maximum reservation days")
+	@Schema(title = "Maximum reservation days")
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer maxReservationDays;
 
-	@SchemaProperty(name = "Minimum booking days")
+	@Schema(title = "Minimum booking days")
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer minBookingDays;
 
-	@SchemaProperty(name = "Maximum number of technician")
+	@Schema(title = "Maximum number of technician")
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer maxTechnicianNumber;
 
-	@SchemaProperty(name = "Price per technician")
+	@Schema(title = "Price per technician")
 	@NotNull(groups = {DefaultGroup.class})
 	private BigDecimal technicianPrice;
 }

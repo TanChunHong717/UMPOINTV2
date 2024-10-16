@@ -1,12 +1,10 @@
 package my.edu.um.umpoint.modules.payment.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
-
 
 /**
  * Payment Method
@@ -15,14 +13,14 @@ import java.io.Serializable;
  * @since 1.0.0 2024-09-10
  */
 @Data
-@Schema(name = "Payment Method")
+@Schema(title = "Payment Method")
 public class PaymentMethodDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = 4396241986506494703L;
 
-	@SchemaProperty(name = "ID")
+	@Schema(title = "ID")
 	private Long id;
 
-	@SchemaProperty(name = "Method")
+	@Schema(title = "Method")
 	private String method;
 }

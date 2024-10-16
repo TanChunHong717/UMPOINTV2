@@ -1,13 +1,11 @@
 package my.edu.um.umpoint.modules.client.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
-
 
 /**
  * UserToken
@@ -16,23 +14,23 @@ import java.util.Date;
  * @since 1.0.0 2024-10-01
  */
 @Data
-@Schema(name = "UserToken")
+@Schema(title = "UserToken")
 public class CliTokenDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = -719366732130846716L;
 
-	@SchemaProperty(name = "ID")
+	@Schema(title = "ID")
 	private Long id;
 
-	@SchemaProperty(name = "User ID")
+	@Schema(title = "User ID")
 	private Long userId;
 
-	@SchemaProperty(name = "token")
+	@Schema(title = "token")
 	private String token;
 
-	@SchemaProperty(name = "Expired date")
+	@Schema(title = "Expired date")
 	private Date expireDate;
 
-	@SchemaProperty(name = "Update date")
+	@Schema(title = "Update date")
 	private Date updateDate;
 }

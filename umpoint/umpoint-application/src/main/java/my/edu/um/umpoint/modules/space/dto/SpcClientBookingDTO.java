@@ -5,19 +5,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import jakarta.validation.constraints.*;
 import lombok.Data;
-import my.edu.um.umpoint.common.validator.group.AddGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
-import my.edu.um.umpoint.common.validator.group.InsertGroup;
-import my.edu.um.umpoint.common.validator.group.UpdateGroup;
-import my.edu.um.umpoint.modules.payment.dto.SpcPaymentDTO;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.sql.Time;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Data

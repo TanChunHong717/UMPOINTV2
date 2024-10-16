@@ -8,7 +8,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 @Data
-@Schema(title = "登录表单")
+@Schema(title = "Login DTO")
 public class LoginDTO implements Serializable {
 
     @Serial
