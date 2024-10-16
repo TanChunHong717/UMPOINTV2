@@ -11,7 +11,6 @@ import my.edu.um.umpoint.modules.payment.service.SpcPaymentItemService;
 import my.edu.um.umpoint.modules.payment.service.SpcPaymentService;
 import my.edu.um.umpoint.modules.space.dto.SpcSpaceDTO;
 import my.edu.um.umpoint.modules.space.entity.SpcBookingTechnicianEntity;
-import my.edu.um.umpoint.modules.space.entity.SpcEventEntity;
 import my.edu.um.umpoint.modules.space.service.SpcBookingTechnicianService;
 import my.edu.um.umpoint.modules.space.service.SpcEventService;
 import my.edu.um.umpoint.modules.space.dao.SpcBookingDao;
@@ -22,7 +21,7 @@ import cn.hutool.core.util.StrUtil;
 import my.edu.um.umpoint.modules.security.user.SecurityUser;
 import my.edu.um.umpoint.modules.security.user.UserDetail;
 import my.edu.um.umpoint.modules.space.service.SpcSpaceService;
-import my.edu.um.umpoint.modules.utils.BookingUtils;
+import my.edu.um.umpoint.modules.utils.SpaceBookingUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,20 +85,31 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
         spcBookingDTO.setStatus(BookingConstant.BookingStatus.PENDING.getValue());
         // payment calculation
         SpcSpaceDTO space = spcSpaceService.get(spcBookingDTO.getSpaceId());
-        List<SpcPaymentItemDTO> itemisedPrices = BookingUtils.itemisePrice(spcBookingDTO, space);
+        List<SpcPaymentItemDTO> itemisedPrices = SpaceBookingUtils.itemisePrice(spcBookingDTO, space);
         BigDecimal total = itemisedPrices.stream()
                                          .map(i -> BigDecimal.valueOf(i.getItemAmount()).multiply(i.getItemPrice()))
                                          .reduce(BigDecimal.ZERO, BigDecimal::add);
         spcBookingDTO.setPaymentAmount(total);
 
+        // check if can automatically approve
+        boolean automaticApprove = space.getSpcBookingRuleDTO().getApprovalRequired() == 0;
+        if (automaticApprove) {
+            if (total.compareTo(BigDecimal.ZERO) > 0) {
+                spcBookingDTO.setStatus(BookingConstant.BookingStatus.APPROVED.getValue());
+            } else {
+                spcBookingDTO.setStatus(BookingConstant.BookingStatus.COMPLETED.getValue());
+            }
+        }
+
+        // save to db and refresh ID
         super.save(spcBookingDTO);
 
-        // object that need id from booking dto
+        // insert object that need id from booking dto
         // daily event breakdown
         spcEventService.addEvent(spcBookingDTO);
 
         // add payment if required
-        if (total.compareTo(BigDecimal.ZERO) != 0) {
+        if (total.compareTo(BigDecimal.ZERO) > 0) {
             SpcPaymentDTO payment = new SpcPaymentDTO();
             payment.setBookingId(spcBookingDTO.getId());
             payment.setStatus(BookingConstant.PaymentStatus.PENDING.getValue());

@@ -9,7 +9,7 @@ import my.edu.um.umpoint.modules.space.dto.*;
 import my.edu.um.umpoint.modules.space.entity.SpcEventEntity;
 import my.edu.um.umpoint.modules.space.service.SpcEventService;
 import my.edu.um.umpoint.modules.space.service.SpcSpaceService;
-import my.edu.um.umpoint.modules.utils.BookingUtils;
+import my.edu.um.umpoint.modules.utils.SpaceBookingUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,7 +58,7 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void addEvent(SpcBookingDTO bookingDTO){
-        insertBatch(BookingUtils.divideBookingToEvents(bookingDTO));
+        insertBatch(SpaceBookingUtils.divideBookingToEvents(bookingDTO));
     }
 
     @Override
