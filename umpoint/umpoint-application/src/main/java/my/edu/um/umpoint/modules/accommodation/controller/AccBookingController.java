@@ -65,29 +65,16 @@ public class AccBookingController{
 
     @GetMapping("page")
     @Operation(summary = "Pagination")
-    @Parameters(
-        {
-            @Parameter(
-                name = Constant.PAGE, description = "Current page number, starting from 1", in = ParameterIn.QUERY,
-                required = true, ref = "int"
-            ),
-            @Parameter(
-                name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY,
-                required = true, ref = "int"
-            ),
-            @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(
-                name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY,
-                ref = "String"
-            ),
-            @Parameter(name = Constant.ID, description = "Booking ID", in = ParameterIn.QUERY),
-            @Parameter(name = Constant.STATUS, description = "Booking status", in = ParameterIn.QUERY, ref = "int"),
-            @Parameter(
-                name = Constant.EVENT, description = "Booking purpose description", in = ParameterIn.QUERY,
-                ref = "String"
-            )
-        }
-    )
+    @Parameters({
+        @Parameter(name = Constant.PAGE, description = "Current page number, starting from 1", in = ParameterIn.QUERY, required = true, ref = "int"),
+        @Parameter(name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY, required = true, ref = "int"),
+        @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, ref = "String"),
+        @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref = "String"),
+        @Parameter(name = Constant.ID, description = "Booking ID", in = ParameterIn.QUERY),
+        @Parameter(name = Constant.STATUS, description = "Booking status", in = ParameterIn.QUERY, ref = "int"),
+        @Parameter(name = Constant.ACCOMMODATION, description = "Accommodation name", in = ParameterIn.QUERY, ref = "String"),
+        @Parameter(name = Constant.EVENT, description = "Booking purpose description", in = ParameterIn.QUERY, ref = "String")
+    })
     @RequiresPermissions("accommodation:booking:page")
     public Result<PageData<AccBookingDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
         PageData<AccBookingDTO> page = accBookingService.page(params);

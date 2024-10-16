@@ -18,6 +18,9 @@
         </el-select>
       </el-form-item>
       <el-form-item>
+        <el-input v-model="state.dataForm.accommodation" placeholder="Accommodation" clearable></el-input>
+      </el-form-item>
+      <el-form-item>
         <el-input v-model="state.dataForm.event" placeholder="Event" clearable></el-input>
       </el-form-item>
       <el-form-item>
@@ -100,7 +103,8 @@ const view = reactive({
   dataForm: {
     id: route.query.id? route.query.id: null,
     status: null,
-    event: ''
+    accommodation: null,
+    event: null
   }
 });
 

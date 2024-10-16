@@ -75,6 +75,9 @@
             <if test="service != null and service.trim() != ''">
                 AND service LIKE #{service}
             </if>
+            <if test="userId != null">
+                AND sb.user_id = #{userId}
+            </if>
         </where>
         <if test="orderField != null and orderField.trim() != ''">
             ORDER BY

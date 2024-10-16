@@ -99,8 +99,14 @@
             <if test="status != null">
                 AND sb.status = #{status}
             </if>
+            <if test="space != null and space.trim() != ''">
+                AND space LIKE #{space}
+            </if>
             <if test="event != null and event.trim() != ''">
                 AND sb.event LIKE #{event}
+            </if>
+            <if test="userId != null">
+                AND sb.user_id = #{userId}
             </if>
         </where>
         <if test="orderField != null and orderField.trim() != ''">

@@ -66,6 +66,10 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
 
     @Override
     public PageData<SpcBookingDTO> page(Map<String, Object> params){
+        UserDetail user = SecurityUser.getUser();
+        if (user.getSuperAdmin() == null)
+            params.put("userId", user.getId());
+        paramsToLike(params, "space");
         paramsToLike(params, "event");
 
         IPage<SpcBookingEntity> page = getPage(params, "create_date", false);

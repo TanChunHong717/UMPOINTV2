@@ -38,6 +38,9 @@ public class SvcBookingServiceImpl extends CrudServiceImpl<SvcBookingDao, SvcBoo
 
     @Override
     public PageData<SvcBookingDTO> page(Map<String, Object> params) {
+        UserDetail user = SecurityUser.getUser();
+        if (user.getSuperAdmin() == null)
+            params.put("userId", user.getId());
         paramsToLike(params, "service");
 
         IPage<SvcBookingEntity> page = getPage(params, "create_date", false);

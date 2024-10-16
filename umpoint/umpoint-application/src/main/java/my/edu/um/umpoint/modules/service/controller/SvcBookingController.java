@@ -48,6 +48,7 @@ public class SvcBookingController {
         @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String") ,
         @Parameter(name = Constant.ID, description = "Booking ID", in = ParameterIn.QUERY) ,
         @Parameter(name = Constant.STATUS, description = "Booking status", in = ParameterIn.QUERY, ref="int") ,
+        @Parameter(name = Constant.SERVICE, description = "Service name", in = ParameterIn.QUERY, ref="String")
     })
     @RequiresPermissions("service:booking:page")
     public Result<PageData<SvcBookingDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){

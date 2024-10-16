@@ -93,8 +93,14 @@
             <if test="status != null">
                 AND ab.status = #{status}
             </if>
+            <if test="accommodation != null and accommodation.trim() != ''">
+                AND accommodation LIKE #{accommodation}
+            </if>
             <if test="event != null and event.trim() != ''">
                 AND ab.event LIKE #{event}
+            </if>
+            <if test="userId != null">
+                AND ab.user_id = #{userId}
             </if>
         </where>
         <if test="orderField != null and orderField.trim() != ''">

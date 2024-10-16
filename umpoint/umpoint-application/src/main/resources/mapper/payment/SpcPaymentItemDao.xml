@@ -4,12 +4,11 @@
 <mapper namespace="my.edu.um.umpoint.modules.payment.dao.SpcPaymentItemDao">
 
     <resultMap type="my.edu.um.umpoint.modules.payment.entity.SpcPaymentItemEntity" id="spcPaymentItemMap">
-        <result property="id" column="id"/>
+        <id property="id" column="id"/>
         <result property="paymentId" column="payment_id"/>
         <result property="itemName" column="item_name"/>
         <result property="itemAmount" column="item_amount"/>
         <result property="itemPrice" column="item_price"/>
     </resultMap>
-
 
 </mapper>

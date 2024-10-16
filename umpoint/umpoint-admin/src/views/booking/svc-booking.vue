@@ -18,6 +18,9 @@
         </el-select>
       </el-form-item>
       <el-form-item>
+        <el-input v-model="state.dataForm.service" placeholder="Service" clearable></el-input>
+      </el-form-item>
+      <el-form-item>
         <el-button @click="state.getDataList()">Search</el-button>
       </el-form-item>
     </el-form>
@@ -87,7 +90,8 @@ const view = reactive({
   deleteURL: "/service/booking",
   dataForm: {
     id: null,
-    status: null
+    status: null,
+    service: null
   }
 });
 

@@ -20,8 +20,11 @@ public interface Constant {
     String END_TIME = "endTime";
 
     String ID = "id";
+    String SPACE = "space";
     String SPACE_ID = "spaceId";
+    String SERVICE = "service";
     String SERVICE_ID = "serviceId";
+    String ACCOMMODATION = "accommodation";
     String ACCOMMODATION_ID = "accommodationId";
     String DEPT_ID = "deptId";
     String CAT_ID = "catId";
@@ -33,6 +36,7 @@ public interface Constant {
     String APPROVAL_REQUIRED = "approvalRequire";
 
     String CLOUD_STORAGE_CONFIG_KEY = "CLOUD_STORAGE_CONFIG_KEY";
+
 
     enum ScheduleStatus {
         PAUSE(0),
