@@ -140,7 +140,7 @@ public class SpcBookingController{
 
         spcBookingService.save(bookingDto);
 
-        return new Result<SpcBookingDTO>().ok(bookingDto);
+        return new Result();
     }
 
     private void validateEventOverlapped(SpcClientBookingDTO request){
