@@ -15,9 +15,8 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="Price" prop="price">
-        <el-input-number v-model="dataForm.price" controls-position="right" :precision="2" :step="0.5" :min="0"/>
-      </el-form-item>
+
+      <el-divider content-position="left">Permissions</el-divider>
       <el-form-item label="Required Approve" prop="approvalRequired">
         <el-radio-group v-model="dataForm.approvalRequired">
           <el-radio :value="Number(1)">Require Admin Approve</el-radio>
@@ -30,6 +29,11 @@
           <el-checkbox label="Student" v-model="dataForm.openForStudent" :true-value="Number(1)" :false-value="Number(0)"/>
           <el-checkbox label="Public" v-model="dataForm.openForPublic" :true-value="Number(1)" :false-value="Number(0)"/>
         </div>
+      </el-form-item>
+
+      <el-divider content-position="left">Pricing</el-divider>
+      <el-form-item label="Price" prop="price">
+        <el-input-number v-model="dataForm.price" controls-position="right" :precision="2" :step="0.5" :min="0"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -44,6 +48,7 @@
 import { reactive, ref } from "vue";
 import baseService from "@/service/baseService";
 import { ElMessage } from "element-plus";
+import {InfoFilled} from "@element-plus/icons-vue";
 const emit = defineEmits(["refreshData"]);
 
 const visible = ref(false);
