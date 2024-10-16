@@ -51,6 +51,7 @@ public class SpaceBookingUtils{
             spcEventEntity.setEndTime(event.endTime);
             spcEventEntity.setBookingId(bookingDTO.getId());
             spcEventEntity.setType(BookingConstant.EventStatus.BOOKING.getValue());
+            spcEventEntities.add(spcEventEntity);
         }
         return spcEventEntities;
     }
@@ -61,8 +62,8 @@ public class SpaceBookingUtils{
         // break booking into daily events and sum price
         List<SpcEventEntity> eventEntities = divideBookingToEvents(bookingInfo);
         List<SpcPaymentItemDTO> eventPrices = itemiseDailyEventPrices(eventEntities, spaceInfo);
-        List<SpcPaymentItemDTO> detailedItems = new LinkedList<>(eventPrices);
 
+        List<SpcPaymentItemDTO> detailedItems = new ArrayList<>(eventPrices);
         // calculate technician price if available
         if (bookingInfo.getTechnicianNumber() != 0) {
             // technician price

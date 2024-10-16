@@ -91,14 +91,25 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
                                          .reduce(BigDecimal.ZERO, BigDecimal::add);
         spcBookingDTO.setPaymentAmount(total);
 
+        // check if can automatically approve
+        boolean automaticApprove = space.getSpcBookingRuleDTO().getApprovalRequired() == 0;
+        if (automaticApprove) {
+            if (total.compareTo(BigDecimal.ZERO) > 0) {
+                spcBookingDTO.setStatus(BookingConstant.BookingStatus.APPROVED.getValue());
+            } else {
+                spcBookingDTO.setStatus(BookingConstant.BookingStatus.COMPLETED.getValue());
+            }
+        }
+
+        // save to db and refresh ID
         super.save(spcBookingDTO);
 
-        // object that need id from booking dto
+        // insert object that need id from booking dto
         // daily event breakdown
         spcEventService.addEvent(spcBookingDTO);
 
         // add payment if required
-        if (total.compareTo(BigDecimal.ZERO) != 0) {
+        if (total.compareTo(BigDecimal.ZERO) > 0) {
             SpcPaymentDTO payment = new SpcPaymentDTO();
             payment.setBookingId(spcBookingDTO.getId());
             payment.setStatus(BookingConstant.PaymentStatus.PENDING.getValue());

@@ -188,7 +188,7 @@ public class SpcBookingController{
                      .toLocalDate();
         LocalDate allowedRangeEndDate =
             LocalDate.now()
-                     .atStartOfDay(ZoneId.systemDefault())
+                     .atTime(LocalTime.MAX)
                      .plusDays(spcBookingRule.getMaxBookingAdvanceDay())
                      .toLocalDate();
         if (
