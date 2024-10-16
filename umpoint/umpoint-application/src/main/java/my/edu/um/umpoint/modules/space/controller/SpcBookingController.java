@@ -26,6 +26,7 @@ import my.edu.um.umpoint.modules.space.excel.SpcBookingExcel;
 import my.edu.um.umpoint.modules.space.service.SpcBookingService;
 import my.edu.um.umpoint.modules.space.service.SpcSpaceService;
 import my.edu.um.umpoint.modules.utils.BookingUtils;
+import my.edu.um.umpoint.modules.utils.EventEntity;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -144,12 +145,12 @@ public class SpcBookingController{
 
     private void validateEventOverlapped(SpcClientBookingDTO request){
         DateTimeFormatter sqlDateDormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        for (SpcEventEntity dividedEvent: BookingUtils.dividePeriodToEvents(
-            request.getSpaceId(), request.getStartDay(), request.getEndDay(), request.getStartTime(), request.getEndTime()
+        for (EventEntity dividedEvent: BookingUtils.dividePeriodToEvents(
+            request.getStartDay(), request.getEndDay(), request.getStartTime(), request.getEndTime()
         )) {
             List<SpcEventEntity> overlappedEvents = spcEventDao.getEventsBetweenTimeSpan(
-                DateUtils.convertDateToLocalDateTime(dividedEvent.getStartTime()).format(sqlDateDormatter),
-                DateUtils.convertDateToLocalDateTime(dividedEvent.getEndTime()).format(sqlDateDormatter)
+                DateUtils.convertDateToLocalDateTime(dividedEvent.startTime).format(sqlDateDormatter),
+                DateUtils.convertDateToLocalDateTime(dividedEvent.endTime).format(sqlDateDormatter)
             );
             if (!overlappedEvents.isEmpty()) {
                 throw new DateTimeException("Booking overlapped");

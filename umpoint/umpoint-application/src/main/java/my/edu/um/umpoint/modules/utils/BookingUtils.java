@@ -5,7 +5,6 @@ import my.edu.um.umpoint.common.utils.DateUtils;
 import my.edu.um.umpoint.modules.payment.dto.SpcPaymentItemDTO;
 import my.edu.um.umpoint.modules.space.dto.SpcBookingDTO;
 import my.edu.um.umpoint.modules.space.dto.SpcBookingRuleDTO;
-import my.edu.um.umpoint.modules.space.dto.SpcClosureDTO;
 import my.edu.um.umpoint.modules.space.dto.SpcSpaceDTO;
 import my.edu.um.umpoint.modules.space.entity.SpcEventEntity;
 
@@ -17,20 +16,18 @@ import java.util.*;
 
 public class BookingUtils{
 
-    public static List<SpcEventEntity> dividePeriodToEvents(
-        Long spaceId, Date startDate, Date endDate, Time startTime, Time endTime
+    public static List<EventEntity> dividePeriodToEvents(
+        Date startDate, Date endDate, Time startTime, Time endTime
     ){
-        List<SpcEventEntity> eventEntityList = new ArrayList<>();
+        List<EventEntity> eventEntityList = new ArrayList<>();
 
         LocalDate currentDay = DateUtils.convertDateToLocalDate(startDate);
         LocalDate endDay = DateUtils.convertDateToLocalDate(endDate);
         while (currentDay.isBefore(endDay) || currentDay.isEqual(endDay)) {
-            SpcEventEntity eventEntity = new SpcEventEntity();
+            EventEntity eventEntity = new EventEntity();
 
-            eventEntity.setSpaceId(spaceId);
-
-            eventEntity.setStartTime(DateUtils.convertLocalDateTimeToDate(currentDay, startTime));
-            eventEntity.setEndTime(DateUtils.convertLocalDateTimeToDate(currentDay, endTime));
+            eventEntity.startTime = DateUtils.convertLocalDateTimeToDate(currentDay, startTime);
+            eventEntity.endTime = DateUtils.convertLocalDateTimeToDate(currentDay, endTime);
 
             eventEntityList.add(eventEntity);
             currentDay = currentDay.plusDays(1);
@@ -40,18 +37,22 @@ public class BookingUtils{
     }
 
     public static List<SpcEventEntity> divideBookingToEvents(SpcBookingDTO bookingDTO){
-        List<SpcEventEntity> eventEntityList = dividePeriodToEvents(
-            bookingDTO.getSpaceId(),
+        List<EventEntity> eventEntities = dividePeriodToEvents(
             bookingDTO.getStartDay(),
             bookingDTO.getEndDay(),
             bookingDTO.getStartTime(),
             bookingDTO.getEndTime()
         );
-        for (SpcEventEntity event : eventEntityList) {
-            event.setBookingId(bookingDTO.getId());
-            event.setType(BookingConstant.EventStatus.BOOKING.getValue());
+        List<SpcEventEntity> spcEventEntities = new ArrayList<>();
+        for (EventEntity event : eventEntities) {
+            SpcEventEntity spcEventEntity = new SpcEventEntity();
+            spcEventEntity.setSpaceId(bookingDTO.getSpaceId());
+            spcEventEntity.setStartTime(event.startTime);
+            spcEventEntity.setEndTime(event.endTime);
+            spcEventEntity.setBookingId(bookingDTO.getId());
+            spcEventEntity.setType(BookingConstant.EventStatus.BOOKING.getValue());
         }
-        return eventEntityList;
+        return spcEventEntities;
     }
 
     public static List<SpcPaymentItemDTO> itemisePrice(SpcBookingDTO bookingInfo, SpcSpaceDTO spaceInfo){
@@ -162,3 +163,4 @@ public class BookingUtils{
         return detailedItems;
     }
 }
+
