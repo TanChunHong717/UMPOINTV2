@@ -1,5 +1,6 @@
 package my.edu.um.umpoint.modules.accommodation.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import my.edu.um.umpoint.common.constant.BookingConstant;
@@ -14,16 +15,11 @@ import my.edu.um.umpoint.modules.accommodation.entity.AccBookingEntity;
 import my.edu.um.umpoint.modules.accommodation.entity.AccBookingTechnicianEntity;
 import my.edu.um.umpoint.modules.accommodation.service.AccAccommodationService;
 import my.edu.um.umpoint.modules.accommodation.service.AccBookingService;
-import cn.hutool.core.util.StrUtil;
 import my.edu.um.umpoint.modules.accommodation.service.AccBookingTechnicianService;
 import my.edu.um.umpoint.modules.accommodation.service.AccEventService;
 import my.edu.um.umpoint.modules.payment.dto.AccPaymentItemDTO;
-import my.edu.um.umpoint.modules.payment.dto.SpcPaymentDTO;
-import my.edu.um.umpoint.modules.payment.dto.SpcPaymentItemDTO;
 import my.edu.um.umpoint.modules.security.user.SecurityUser;
 import my.edu.um.umpoint.modules.security.user.UserDetail;
-import my.edu.um.umpoint.modules.space.dto.SpcSpaceDTO;
-import my.edu.um.umpoint.modules.utils.EventEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +30,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Accommodation Booking
@@ -193,5 +188,13 @@ public class AccBookingServiceImpl extends CrudServiceImpl<AccBookingDao, AccBoo
         baseDao.update(entity, new QueryWrapper<AccBookingEntity>().eq("id",id));
         accEventService.deleteByBookingId(id);
         accBookingTechnicianService.deleteByBookingId(id);
+    }
+
+    @Override
+    public Long getUserId(Long id) {
+        QueryWrapper<AccBookingEntity> wrapper = new QueryWrapper<>();
+        wrapper.eq("id", id);
+        wrapper.select("user_id");
+        return baseDao.selectOne(wrapper).getUserId();
     }
 }

@@ -16,4 +16,5 @@ public interface AccBookingService extends CrudService<AccBookingEntity, AccBook
     void approve(Long id, List<Long> technicianIdList);
     void reject(Long id);
     void cancel(Long id);
+    Long getUserId(Long id);
 }

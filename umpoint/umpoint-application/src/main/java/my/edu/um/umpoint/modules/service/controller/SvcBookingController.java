@@ -16,15 +16,19 @@ import my.edu.um.umpoint.common.validator.ValidatorUtils;
 import my.edu.um.umpoint.common.validator.group.AddGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
+import my.edu.um.umpoint.modules.security.user.SecurityUser;
+import my.edu.um.umpoint.modules.security.user.UserDetail;
 import my.edu.um.umpoint.modules.service.dto.SvcBookingDTO;
 import my.edu.um.umpoint.modules.service.excel.SvcBookingExcel;
 import my.edu.um.umpoint.modules.service.service.SvcBookingService;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Space Booking
@@ -83,6 +87,9 @@ public class SvcBookingController {
     @LogOperation("Update")
     @RequiresPermissions("service:booking:update")
     public Result update(@RequestBody SvcBookingDTO dto){
+        UserDetail user = SecurityUser.getUser();
+        if (!Objects.equals(user.getId(), svcBookingService.getUserId(dto.getId())))
+            throw new UnauthorizedException();
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
 
         svcBookingService.update(dto);
@@ -106,6 +113,20 @@ public class SvcBookingController {
     @RequiresPermissions("service:booking:update")
     public Result reject(@PathVariable("id") Long id){
         svcBookingService.reject(id);
+
+        return new Result();
+    }
+
+    @PutMapping("cancel/{id}")
+    @Operation(summary = "Cancel")
+    @LogOperation("Cancel")
+    @RequiresPermissions("space:booking:cancel")
+    public Result cancel(@PathVariable("id") Long id){
+        UserDetail user = SecurityUser.getUser();
+        if (!Objects.equals(user.getId(), svcBookingService.getUserId(id)))
+            throw new UnauthorizedException();
+
+        svcBookingService.cancel(id);
 
         return new Result();
     }

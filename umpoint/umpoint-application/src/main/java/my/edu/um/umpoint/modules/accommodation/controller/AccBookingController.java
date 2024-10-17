@@ -18,18 +18,19 @@ import my.edu.um.umpoint.common.validator.group.AddGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import my.edu.um.umpoint.modules.accommodation.dao.AccEventDao;
-import my.edu.um.umpoint.modules.accommodation.dto.*;
+import my.edu.um.umpoint.modules.accommodation.dto.AccAccommodationDTO;
+import my.edu.um.umpoint.modules.accommodation.dto.AccBookingDTO;
+import my.edu.um.umpoint.modules.accommodation.dto.AccBookingRuleDTO;
+import my.edu.um.umpoint.modules.accommodation.dto.AccClientBookingDTO;
 import my.edu.um.umpoint.modules.accommodation.entity.AccEventEntity;
 import my.edu.um.umpoint.modules.accommodation.excel.AccBookingExcel;
 import my.edu.um.umpoint.modules.accommodation.service.AccAccommodationService;
 import my.edu.um.umpoint.modules.accommodation.service.AccBookingService;
-import my.edu.um.umpoint.modules.space.dto.SpcBookingDTO;
-import my.edu.um.umpoint.modules.space.dto.SpcBookingRuleDTO;
-import my.edu.um.umpoint.modules.space.dto.SpcClientBookingDTO;
-import my.edu.um.umpoint.modules.space.dto.SpcSpaceDTO;
-import my.edu.um.umpoint.modules.space.entity.SpcEventEntity;
-import my.edu.um.umpoint.modules.utils.SpaceBookingUtils;
+import my.edu.um.umpoint.modules.security.user.SecurityUser;
+import my.edu.um.umpoint.modules.security.user.UserDetail;
 import my.edu.um.umpoint.modules.utils.EventEntity;
+import my.edu.um.umpoint.modules.utils.SpaceBookingUtils;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +44,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Accommodation Booking
@@ -97,7 +99,6 @@ public class AccBookingController{
     @RequiresPermissions("accommodation:booking:save")
     public Result save(@RequestBody AccClientBookingDTO request){
         ValidatorUtils.validateEntity(request, AddGroup.class, DefaultGroup.class);
-
 
         // Check space exist
         AccAccommodationDTO accommodation = accAccommodationService.get(request.getAccommodationId());
@@ -199,6 +200,9 @@ public class AccBookingController{
     @LogOperation("Update")
     @RequiresPermissions("accommodation:booking:update")
     public Result update(@RequestBody AccBookingDTO dto){
+        UserDetail user = SecurityUser.getUser();
+        if (!Objects.equals(user.getId(), accBookingService.getUserId(dto.getId())))
+            throw new UnauthorizedException();
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
 
         accBookingService.update(dto);
@@ -231,6 +235,11 @@ public class AccBookingController{
     @LogOperation("Cancel")
     @RequiresPermissions("accommodation:booking:cancel")
     public Result cancel(@PathVariable("id") Long id){
+        UserDetail user = SecurityUser.getUser();
+        if (!Objects.equals(user.getId(), accBookingService.getUserId(id)))
+            throw new UnauthorizedException();
+
+
         accBookingService.cancel(id);
 
         return new Result();

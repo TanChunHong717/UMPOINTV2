@@ -13,4 +13,6 @@ import my.edu.um.umpoint.modules.service.entity.SvcBookingEntity;
 public interface SvcBookingService extends CrudService<SvcBookingEntity, SvcBookingDTO> {
     void approve(Long id);
     void reject(Long id);
+    void cancel(Long id);
+    Long getUserId(Long id);
 }

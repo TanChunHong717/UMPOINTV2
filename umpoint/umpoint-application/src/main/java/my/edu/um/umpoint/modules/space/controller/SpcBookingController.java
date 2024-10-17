@@ -16,6 +16,8 @@ import my.edu.um.umpoint.common.validator.ValidatorUtils;
 import my.edu.um.umpoint.common.validator.group.AddGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
+import my.edu.um.umpoint.modules.security.user.SecurityUser;
+import my.edu.um.umpoint.modules.security.user.UserDetail;
 import my.edu.um.umpoint.modules.space.dao.SpcEventDao;
 import my.edu.um.umpoint.modules.space.dto.SpcBookingDTO;
 import my.edu.um.umpoint.modules.space.dto.SpcBookingRuleDTO;
@@ -27,6 +29,7 @@ import my.edu.um.umpoint.modules.space.service.SpcBookingService;
 import my.edu.um.umpoint.modules.space.service.SpcSpaceService;
 import my.edu.um.umpoint.modules.utils.SpaceBookingUtils;
 import my.edu.um.umpoint.modules.utils.EventEntity;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +39,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Space Booking
@@ -212,6 +216,10 @@ public class SpcBookingController{
     @LogOperation("Update")
     @RequiresPermissions("space:booking:update")
     public Result update(@RequestBody SpcBookingDTO dto){
+        UserDetail user = SecurityUser.getUser();
+        if (!Objects.equals(user.getId(), spcBookingService.getUserId(dto.getId())))
+            throw new UnauthorizedException();
+
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
 
         spcBookingService.update(dto);
@@ -244,6 +252,10 @@ public class SpcBookingController{
     @LogOperation("Cancel")
     @RequiresPermissions("space:booking:cancel")
     public Result cancel(@PathVariable("id") Long id){
+        UserDetail user = SecurityUser.getUser();
+        if (!Objects.equals(user.getId(), spcBookingService.getUserId(id)))
+            throw new UnauthorizedException();
+
         spcBookingService.cancel(id);
 
         return new Result();

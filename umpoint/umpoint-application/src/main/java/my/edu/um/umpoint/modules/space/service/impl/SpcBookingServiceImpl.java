@@ -171,4 +171,12 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
         spcEventService.deleteByBookingId(id);
         spcBookingTechnicianService.deleteByBookingId(id);
     }
+
+    @Override
+    public Long getUserId(Long id) {
+        QueryWrapper<SpcBookingEntity> wrapper = new QueryWrapper<>();
+        wrapper.eq("id", id);
+        wrapper.select("user_id");
+        return baseDao.selectOne(wrapper).getUserId();
+    }
 }

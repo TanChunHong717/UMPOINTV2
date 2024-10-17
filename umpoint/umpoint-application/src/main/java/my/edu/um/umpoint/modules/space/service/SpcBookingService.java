@@ -16,4 +16,5 @@ public interface SpcBookingService extends CrudService<SpcBookingEntity, SpcBook
     void approve(Long id, List<Long> technicianIdList);
     void reject(Long id);
     void cancel(Long id);
+    Long getUserId(Long id);
 }
