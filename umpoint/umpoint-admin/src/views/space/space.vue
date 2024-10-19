@@ -55,7 +55,8 @@
         <el-button v-if="state.hasPermission('space:space:save')" type="primary" @click="addHandle()">Add</el-button>
       </el-form-item>
     </el-form>
-    <div v-for="space in state.dataList" :key="space.id">
+    <div v-for="(space, index) in state.dataList" :key="space.id">
+      <el-divider v-if="index != 0" style="margin: 8px"/>
       <el-row align="middle" justify="start" :gutter="10" style="padding-bottom: 3px">
         <el-col :span="4">
           <div v-if="space.spcImageDTOList && space.spcImageDTOList.length > 0">
@@ -199,9 +200,8 @@ onActivated(() => {
   justify-content: space-between;
 }
 .space-image {
-  width: 100%;
-  max-width: 200px;
-  max-height: 125px;
+  width: 205px;
+  height: 115px;
   padding: 0 10px;
 }
 .title {

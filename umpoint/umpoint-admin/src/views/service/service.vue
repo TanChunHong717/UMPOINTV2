@@ -55,7 +55,8 @@
         <el-button v-if="state.hasPermission('service:service:save')" type="primary" @click="addHandle()">Add</el-button>
       </el-form-item>
     </el-form>
-    <div v-for="service in state.dataList" :key="service.id" class="service-container">
+    <div v-for="(service, index) in state.dataList" :key="service.id" class="service-container">
+      <el-divider v-if="index != 0" style="margin: 8px"/>
       <el-row align="middle" justify="start" :gutter="10"  style="margin-bottom: 3px;">
         <el-col :span="4">
           <div v-if="service.svcImageDTOList && service.svcImageDTOList.length > 0">
@@ -183,9 +184,8 @@ onActivated(() => {
   justify-content: space-between;
 }
 .service-image {
-  width: 100%;
-  max-width: 200px;
-  max-height: 125px;
+  width: 205px;
+  height: 115px;
   padding: 0 10px;
 }
 .title {
