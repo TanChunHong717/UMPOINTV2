@@ -138,15 +138,17 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
 
         baseDao.update(entity, new QueryWrapper<SpcBookingEntity>().eq("id", id));
 
-        List<SpcBookingTechnicianEntity> technicianEntityList = technicianIdList
-            .stream()
-            .map(technicianId -> {
-                SpcBookingTechnicianEntity technicianEntity = new SpcBookingTechnicianEntity();
-                technicianEntity.setBookingId(id);
-                technicianEntity.setTechnicianId(technicianId);
-                return technicianEntity;
-            }).toList();
-        spcBookingTechnicianService.insertBatch(technicianEntityList);
+        if (technicianIdList != null) {
+            List<SpcBookingTechnicianEntity> technicianEntityList = technicianIdList
+                    .stream()
+                    .map(technicianId -> {
+                        SpcBookingTechnicianEntity technicianEntity = new SpcBookingTechnicianEntity();
+                        technicianEntity.setBookingId(id);
+                        technicianEntity.setTechnicianId(technicianId);
+                        return technicianEntity;
+                    }).toList();
+            spcBookingTechnicianService.insertBatch(technicianEntityList);
+        }
     }
 
     @Override

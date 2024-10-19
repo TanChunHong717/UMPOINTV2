@@ -50,7 +50,7 @@
               <el-tag v-else type="info">No Tag</el-tag>
             </el-col>
           </el-row>
-          <div v-if="service.description?.trim().length > 0">
+          <div v-if="service.description?.trim().length > 0" style="padding-bottom: 20px">
             <h2>Description</h2>
             <div v-html="formatDescription(service.description)"></div>
           </div>

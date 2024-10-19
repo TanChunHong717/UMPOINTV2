@@ -156,15 +156,17 @@ public class AccBookingServiceImpl extends CrudServiceImpl<AccBookingDao, AccBoo
 
         baseDao.update(entity, new QueryWrapper<AccBookingEntity>().eq("id",id));
 
-        List<AccBookingTechnicianEntity> technicianEntityList = technicianIdList
-                .stream()
-                .map(technicianId -> {
-                    AccBookingTechnicianEntity technicianEntity = new AccBookingTechnicianEntity();
-                    technicianEntity.setBookingId(id);
-                    technicianEntity.setTechnicianId(technicianId);
-                    return technicianEntity;
-                }).toList();
-        accBookingTechnicianService.insertBatch(technicianEntityList);
+        if (technicianIdList != null){
+            List<AccBookingTechnicianEntity> technicianEntityList = technicianIdList
+                    .stream()
+                    .map(technicianId -> {
+                        AccBookingTechnicianEntity technicianEntity = new AccBookingTechnicianEntity();
+                        technicianEntity.setBookingId(id);
+                        technicianEntity.setTechnicianId(technicianId);
+                        return technicianEntity;
+                    }).toList();
+            accBookingTechnicianService.insertBatch(technicianEntityList);
+        }
     }
 
     @Override

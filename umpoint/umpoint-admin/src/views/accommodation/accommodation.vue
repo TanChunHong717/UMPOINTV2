@@ -55,7 +55,8 @@
         <el-button v-if="state.hasPermission('accommodation:accommodation:save')" type="primary" @click="addHandle()">Add</el-button>
       </el-form-item>
     </el-form>
-    <div v-for="accommodation in state.dataList" :key="accommodation.id" class="accommodation-container">
+    <div v-for="(accommodation, index) in state.dataList" :key="accommodation.id" class="accommodation-container">
+      <el-divider v-if="index != 0" style="margin: 8px"/>
       <el-row align="middle" justify="start" :gutter="10" style="margin-bottom: 3px;">
         <el-col :span="4">
           <div v-if="accommodation.accImageDTOList && accommodation.accImageDTOList.length > 0">
@@ -199,9 +200,8 @@ onActivated(() => {
   justify-content: space-between;
 }
 .accommodation-image {
-  width: 100%;
-  max-width: 200px;
-  max-height: 125px;
+  width: 205px;
+  height: 115px;
   padding: 0 10px;
 }
 .title {
