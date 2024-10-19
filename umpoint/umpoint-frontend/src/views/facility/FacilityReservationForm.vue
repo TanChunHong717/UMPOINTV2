@@ -94,7 +94,6 @@ async function getFacilityInfo(facilityId) {
 }
 
 const pricingDetails = computed(() => {
-    if (!form || !form.numberOfParticipants) return [];
     return [
         {
             item: "Facility Rental",

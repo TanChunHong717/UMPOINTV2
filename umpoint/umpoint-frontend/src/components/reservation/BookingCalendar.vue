@@ -198,8 +198,22 @@ const maxDate = ref(null);
 const holidays = ref([]);
 const specialHours = ref({});
 const bookedEvents: ShallowRef<VueCalEvent[]> = shallowRef([]);
-const startTime = ref();
-const endTime = ref();
+const facilityStartTime = ref();
+const facilityEndTime = ref();
+const facilityStartTimeMinutes = computed(() => {
+    if (!facilityStartTime.value) return 0;
+    return (
+        Number(facilityStartTime.value.split(":")[0]) * 60 +
+        Number(facilityStartTime.value.split(":")[1])
+    );
+});
+const facilityEndTimeMinutes = computed(() => {
+    if (!facilityStartTime.value) return 60 * 24;
+    return (
+        Number(facilityEndTime.value.split(":")[0]) * 60 +
+        Number(facilityEndTime.value.split(":")[1])
+    );
+});
 const weekendDays = [6, 7];
 
 const triggerUpdateDisplayEvents = ref(0);
@@ -250,13 +264,12 @@ const initializeTimeTable = () => {
     const startTimeArray = facilityInfo.value.bookingRule?.startTime.split(
         ":"
     ) ?? ["07", "00"];
-    startTime.value =
-        Number(startTimeArray[0]) * 60 + Number(startTimeArray[1]);
+    facilityStartTime.value = startTimeArray.join(":");
     const endTimeArray = facilityInfo.value.bookingRule?.endTime.split(":") ?? [
         "19",
         "00",
     ];
-    endTime.value = Number(endTimeArray[0]) * 60 + Number(endTimeArray[1]);
+    facilityEndTime.value = endTimeArray.join(":");
 
     onViewChange(getMondayAndSunday(today));
 
@@ -440,14 +453,18 @@ const validateBookingTimeRange = (startDate: Date, endDate: Date) => {
         diffDays(startDate, endDate) >
             facilityInfo.value.bookingRule?.maxReservationDays
     ) {
-        throw new Error(`Booking length is more than ${facilityInfo.value.bookingRule?.maxReservationDays} day(s)`);
+        throw new Error(
+            `Booking length is more than ${facilityInfo.value.bookingRule?.maxReservationDays} day(s)`
+        );
     }
     if (
         facilityInfo.value.bookingRule?.minBookingHours &&
         endDate.getTime() - startDate.getTime() <
             facilityInfo.value.bookingRule?.minBookingHours * 60 * 60 * 1000
     ) {
-        throw new Error(`Booking length is less than ${facilityInfo.value.bookingRule?.minBookingHours} hour(s)`);
+        throw new Error(
+            `Booking length is less than ${facilityInfo.value.bookingRule?.minBookingHours} hour(s)`
+        );
     }
     // check if booking on weekend
     if (!facilityInfo.value.bookingRule?.allowWeekend) {
@@ -457,7 +474,9 @@ const validateBookingTimeRange = (startDate: Date, endDate: Date) => {
             endDate.getDay() == 0 ||
             endDate.getDay() == 6
         ) {
-            throw new Error("Booking on weekend is not allowed for this facility");
+            throw new Error(
+                "Booking on weekend is not allowed for this facility"
+            );
         }
     }
     // check if booking overlapped
@@ -540,9 +559,9 @@ onActivated(() => {
                 <el-time-select
                     v-model="startTimeInput"
                     placeholder="Start time"
-                    start="08:00"
+                    :start="facilityStartTime"
                     step="00:30"
-                    end="18:00"
+                    :end="facilityEndTime"
                     :max-time="startTimeMaxTime()"
                     :editable="!!formData.startDate"
                 ></el-time-select
@@ -550,9 +569,9 @@ onActivated(() => {
                 <el-time-select
                     v-model="endTimeInput"
                     placeholder="End time"
-                    start="08:00"
+                    :start="facilityStartTime"
                     step="00:30"
-                    end="18:00"
+                    :end="facilityEndTime"
                     :min-time="endTimeMinTime()"
                     :editable="!!formData.endDate"
                 ></el-time-select>
@@ -568,8 +587,8 @@ onActivated(() => {
         :max-date="maxDate"
         :special-hours="specialHours"
         v-model:events="displayedEvents"
-        :time-from="startTime"
-        :time-to="endTime"
+        :time-from="facilityStartTimeMinutes"
+        :time-to="facilityEndTimeMinutes"
         :time-step="30"
         :snap-to-time="30"
         :editable-events="{
