@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, useTemplateRef, h, Reactive, Ref, computed } from "vue";
 import BookingCalendar from "./BookingCalendar.vue";
-import { itemiseDailyEventPrices } from "@/helpers/pricing.js";
+import { itemiseDailyEventPrices } from "@/helpers/pricing";
 
 const emit = defineEmits(["nextStep"]);
 const props = defineProps(["facilityInfo"]);
@@ -15,7 +15,8 @@ const formData = reactive({
     additionalTechnicians: 0,
     startDate: null,
     endDate: null,
-    isTimeSet: [false, false], // [start, end] time is set
+    startTime: null,
+    endTime: null,
     termsAndConditions: false,
 });
 
@@ -84,13 +85,13 @@ const rulesMessage = reactive({
 
 // technician input
 const showDefaultTechnicianSelect = computed(() => {
-    return props.facilityInfo.spcBookingRuleDTO?.maxTechnicianNumber > 0;
+    return props.facilityInfo.bookingRule?.maxTechnicianNumber > 0;
 });
 const showTechnicianSelect = computed(() => {
-    return props.facilityInfo.spcBookingRuleDTO?.maxTechnicianNumber > 1;
+    return props.facilityInfo.bookingRule?.maxTechnicianNumber > 1;
 });
 const maxTechnicianNumber = computed(() => {
-    return props.facilityInfo.spcBookingRuleDTO?.maxTechnicianNumber - 1;
+    return props.facilityInfo.bookingRule?.maxTechnicianNumber - 1;
 });
 
 // price table
@@ -99,7 +100,8 @@ const pricingDetails = computed(() => {
         !formData ||
         !formData.startDate ||
         !formData.endDate ||
-        !formData.isTimeSet.every((bool) => bool)
+        !formData.startTime ||
+        !formData.endTime
     )
         return [];
 
@@ -111,17 +113,20 @@ const pricingDetails = computed(() => {
     }> = itemiseDailyEventPrices(
         props.facilityInfo,
         formData.startDate,
-        formData.endDate
+        formData.endDate,
+        formData.startTime,
+        formData.endTime,
+        props.facilityInfo.bookingRule.technicianPrice
     );
     if (showDefaultTechnicianSelect.value) {
         let technicianCount = (formData.additionalTechnicians ?? 0) + 1;
         itemisedPrice.push({
             item: "Technician",
             amount: technicianCount,
-            price: props.facilityInfo.spcBookingRuleDTO.technicianPrice,
+            price: props.facilityInfo.bookingRule.technicianPrice,
             total:
                 technicianCount *
-                props.facilityInfo.spcBookingRuleDTO.technicianPrice,
+                props.facilityInfo.bookingRule.technicianPrice,
         });
     }
 
