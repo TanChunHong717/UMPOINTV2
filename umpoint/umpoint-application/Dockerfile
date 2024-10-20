@@ -1,7 +1,4 @@
-FROM java:8
+FROM openjdk:17
+WORKDIR /app
+COPY ./target/umpoint-application.jar /app/umpoint-application.jar
 EXPOSE 8080
-
-VOLUME /tmp
-ADD renren-admin.jar /app.jar
-RUN bash -c 'touch /app.jar'
-ENTRYPOINT ["java","-jar","/app.jar"]
