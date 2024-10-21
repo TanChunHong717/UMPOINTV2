@@ -1,14 +1,44 @@
-version: '2'
+version: "3.8"
 services:
-  renren-admin:
-    image: renren/renren-admin
-    ports:
-    - "8080:8080"
+  mysql:
+    image: mysql:9.0.0
+    container_name: mysql-container
     environment:
-    - spring.profiles.active=dev
-  renren-api:
-    image: renren/renren-api
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: umpoint
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./sql-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - app-network
+    restart: always
+
+  umpoint-application:
+    image: chunhong717/umpoint-application:latest
+    container_name: umpoint-application
     ports:
-    - "8081:8081"
+      - "8080:8080"
+    networks:
+      - app-network
     environment:
-    - spring.profiles.active=dev
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/umpoint?useUnicode=true&characterEncoding=UTF-8&nullCatalogMeansCurrent=true
+    depends_on:
+      - mysql
+    restart: always
+
+  umpoint-admin:
+    image: chunhong717/umpoint-admin:latest
+    container_name: umpoint-admin
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+    environment:
+      VITE_APP_API: http://4.227.186.113:8080/api
+    restart: always
+
+volumes:
+  mysql-data:
+
+networks:
+  app-network:
