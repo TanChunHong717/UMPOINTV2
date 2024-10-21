@@ -95,7 +95,7 @@ const auth = {
 
             // get user info
             const userInfo = await getUserInformation();
-            if (response.status !== 200 || response.data.code !== 0) {
+            if (userInfo.status !== 200 || userInfo.data.code !== 0) {
                 throw new Error("Server error");
             }
             commit("setUserId", userInfo.data.id);
