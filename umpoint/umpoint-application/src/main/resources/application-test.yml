@@ -3,9 +3,9 @@ spring:
     druid:
       #MySQL
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/renren_security?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&nullCatalogMeansCurrent=true
-      username: renren
-      password: 123456
+      url: jdbc:mysql://4.227.186.113:3306/umpoint?useUnicode=true&characterEncoding=UTF-8&nullCatalogMeansCurrent=true
+      username: root
+      password: root
       initial-size: 10
       max-active: 100
       min-idle: 10

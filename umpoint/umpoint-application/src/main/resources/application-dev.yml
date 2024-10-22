@@ -22,7 +22,3 @@ spring:
         url-pattern: /druid/*
         #login-username: admin
         #login-password: admin
-azure:
-  storage:
-    connection-string:
-    container: upload

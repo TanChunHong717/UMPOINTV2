@@ -51,6 +51,14 @@ spring:
           max-wait: -1ms
           max-idle: 10
           min-idle: 5
+  ai:
+    azure:
+      openai:
+        api-key:
+        endpoint: https://umpointv2.openai.azure.com/
+        chat:
+          options:
+            deployment-name: gpt-4o-mini
 
 # enable redis
 renren:
@@ -74,6 +82,12 @@ mybatis-plus:
     prefix:
     blobType: BLOB
     boolValue: TRUE
+
+#azure
+azure:
+  storage:
+    connection-string:
+    container: upload
 
 umpoint:
   booking:
