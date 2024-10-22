@@ -53,7 +53,7 @@ import {
     mdiAccountHardHat,
 } from "@mdi/js";
 import { defineProps, computed } from "vue";
-import { formatDateToTimezoneDateTimeStr } from "@/utils/date";
+import { formatDateToTimezoneDateStr } from "@/utils/date";
 
 const props = defineProps(["formData"]);
 const eventInfoDisplay = computed(() => {
@@ -62,9 +62,9 @@ const eventInfoDisplay = computed(() => {
         eventName: props.formData.eventName ?? "No event name",
         numberOfParticipants: props.formData.numberOfParticipants,
         totalTechnicians: 1 + props.formData.additionalTechnicians,
-        datetimeStr: `${formatDateToTimezoneDateTimeStr(
+        datetimeStr: `${formatDateToTimezoneDateStr(
             props.formData.startDate
-        )} to ${formatDateToTimezoneDateTimeStr(props.formData.startDate)}`,
+        )} to ${formatDateToTimezoneDateStr(props.formData.startDate)}, ${props.formData.startTime} to ${props.formData.endTime}`,
     };
 });
 </script>

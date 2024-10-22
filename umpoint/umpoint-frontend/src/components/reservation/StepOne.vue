@@ -2,6 +2,7 @@
 import { ref, reactive, useTemplateRef, h, Reactive, Ref, computed } from "vue";
 import BookingCalendar from "./BookingCalendar.vue";
 import { itemiseDailyEventPrices } from "@/helpers/pricing";
+import { ElMessage } from "element-plus";
 
 const emit = defineEmits(["nextStep"]);
 const props = defineProps(["facilityInfo"]);
@@ -116,7 +117,6 @@ const pricingDetails = computed(() => {
         formData.endDate,
         formData.startTime,
         formData.endTime,
-        props.facilityInfo.bookingRule.technicianPrice
     );
     if (showDefaultTechnicianSelect.value) {
         let technicianCount = (formData.additionalTechnicians ?? 0) + 1;
@@ -182,6 +182,11 @@ async function returnFormInfo(formEl) {
             emit("nextStep", formData);
         } else {
             console.log("error submit!", fields);
+            // pop notification
+            ElMessage({
+                message: "Please fill in all required fields",
+                type: "error",
+            });
         }
     });
 }
@@ -288,11 +293,11 @@ async function returnFormInfo(formEl) {
                 <li>
                     The space will be available for booking from
                     <b>{{
-                        props.facilityInfo.bookingRule?.closeDaysAfterBooking
+                        props.facilityInfo.bookingRule?.minBookingAdvanceDay
                     }}</b>
                     day(s) after today, up to
                     <b>{{
-                        props.facilityInfo.bookingRule?.openDaysPriorBooking
+                        props.facilityInfo.bookingRule?.maxBookingAdvanceDay
                     }}</b>
                     day(s) in advance.
                 </li>

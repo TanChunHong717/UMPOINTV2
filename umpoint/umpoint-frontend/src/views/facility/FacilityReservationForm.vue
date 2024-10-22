@@ -32,7 +32,6 @@
                 :is="formsPage[currentStep]"
                 :facilityInfo="facilityInfo"
                 :formData="form"
-                :pricingDetails="pricingDetails"
                 @nextStep="nextStep"
                 @previousStep="previousStep"
                 @submitForm="submitForm"
@@ -93,23 +92,6 @@ async function getFacilityInfo(facilityId) {
     isLoading.value = false;
 }
 
-const pricingDetails = computed(() => {
-    return [
-        {
-            item: "Facility Rental",
-            amount: 1,
-            price: 100,
-            total: 100,
-        },
-        {
-            item: "Technician",
-            amount: 1 + form.additionalTechnicians,
-            price: 50,
-            total: (1 + form.additionalTechnicians) * 50,
-        },
-    ];
-});
-
 // form stepping
 function previousStep() {
     currentStep.value--;
@@ -124,6 +106,8 @@ function nextStep(componentForm) {
 async function submitForm() {
     // submit form
     console.log("Form submitted", form);
+    // TODO: upload files
+
     let result = await createBooking({
         spaceId: form.facilityId,
         event: form.eventName,
@@ -131,12 +115,6 @@ async function submitForm() {
         endDay: formatDateToTimezoneDateStr(form.endDate),
         startTime: formatDateToTimezoneTimeStr(form.startDate),
         endTime: formatDateToTimezoneTimeStr(form.endDate),
-        spcPaymentDTOList: [
-            {
-                amount: 0,
-                method: "",
-            },
-        ],
     });
     if (result.status != 200 || result.data.code != 0) {
         console.error("Error submitting form", result);

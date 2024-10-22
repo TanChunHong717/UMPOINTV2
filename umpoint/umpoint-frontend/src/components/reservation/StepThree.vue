@@ -1,8 +1,9 @@
 <script setup>
 import { computed } from "vue";
 import EventInfo from "./EventInfo.vue";
+import { itemiseDailyEventPrices } from "@/helpers/pricing";
 
-const props = defineProps(["formData", "pricingDetails"]);
+const props = defineProps(["formData", "facilityInfo"]);
 const emit = defineEmits(["previousStep", "submitForm"]);
 defineOptions({
     inheritAttrs: false,
@@ -11,12 +12,34 @@ defineOptions({
 /**
  * STEP 3: ORDER CONFIRMATION
  * */
+const pricingDetails = computed(() => {
+    let itemisedPrice = itemiseDailyEventPrices(
+        props.facilityInfo,
+        props.formData.startDate,
+        props.formData.endDate,
+        props.formData.startTime,
+        props.formData.endTime,
+    );
+    if (props.facilityInfo.bookingRule?.maxTechnicianNumber > 0) {
+        let technicianCount = (props.formData.additionalTechnicians ?? 0) + 1;
+        itemisedPrice.push({
+            item: "Technician",
+            amount: technicianCount,
+            price: props.facilityInfo.bookingRule.technicianPrice,
+            total:
+                technicianCount *
+                props.facilityInfo.bookingRule.technicianPrice,
+        });
+    }
+
+    return itemisedPrice;
+});
 function formatCurrency(row) {
     return row.price.toFixed(2);
 }
 
 const totalPrice = computed(() => {
-    return props.pricingDetails.reduce((acc, item) => {
+    return pricingDetails.value.reduce((acc, item) => {
         return acc + item.total;
     }, 0);
 });
@@ -35,7 +58,7 @@ async function submitForm() {
             <h2>Order Confirmation</h2>
         </el-divider>
 
-        <el-table :data="props.pricingDetails">
+        <el-table :data="pricingDetails">
             <el-table-column type="index" label="#" />
             <el-table-column prop="item" label="Item" />
             <el-table-column prop="amount" label="Amount" width="80" />

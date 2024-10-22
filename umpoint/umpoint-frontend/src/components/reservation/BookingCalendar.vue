@@ -18,6 +18,7 @@ import {
     addDays,
     diffDays,
     sameDay,
+    formatDateToTimezoneDateTimeStr,
 } from "@/utils/date";
 import baseService from "@/utils/api.js";
 import { getFacilityBookings } from "@/helpers/api.js";
@@ -193,18 +194,18 @@ const initializeTimeTable = () => {
     isCalendarLoading.value = true;
 
     // set allowed start and end date
-    if (facilityInfo.value.bookingRule?.closeDaysAfterBooking) {
+    if (facilityInfo.value.bookingRule?.minBookingAdvanceDay) {
         minDate.value = addDays(
             today,
-            facilityInfo.value.bookingRule?.closeDaysAfterBooking
+            facilityInfo.value.bookingRule?.minBookingAdvanceDay
         );
     } else {
         minDate.value = today;
     }
-    if (facilityInfo.value.bookingRule?.openDaysPriorBooking) {
+    if (facilityInfo.value.bookingRule?.maxBookingAdvanceDay) {
         maxDate.value = addDays(
             today,
-            facilityInfo.value.bookingRule?.openDaysPriorBooking
+            facilityInfo.value.bookingRule?.maxBookingAdvanceDay
         );
     } else {
         maxDate.value = addDays(today, 30);
@@ -284,8 +285,8 @@ const generateWeekendAndHoliday = (startDate: Date, endDate: Date) => {
 const updateEvents = async (startDate: Date, endDate: Date) => {
     const facilityEvents = await getFacilityBookings(
         facilityInfo.value.id,
-        startDate,
-        endDate
+        formatDateToTimezoneDateTimeStr(startDate),
+        formatDateToTimezoneDateTimeStr(endDate)
     );
 
     if (!facilityEvents || facilityEvents.data.code !== 0) {
@@ -366,24 +367,39 @@ const validateDate = (formData, callback: Function) => {
         callback(new Error("Start date must be after today"));
         return;
     }
+    // check if booking length is within length limit
+    let events = breakBookingByDays(
+        formData.startDate,
+        formData.endDate,
+        formData.startTime,
+        formData.endTime,
+        facilityInfo.value.bookingRule?.holidayAvailable === 1
+    );
+    let bookingLength = events.length;
+    if (
+        facilityInfo.value.bookingRule?.maxReservationDays &&
+        bookingLength > facilityInfo.value.bookingRule?.maxReservationDays
+    ) {
+        throw new Error(
+            `Booking length is more than ${facilityInfo.value.bookingRule?.maxReservationDays} day(s)`
+        );
+    }
+    // additional check if time is set
     if (formData.startTime && formData.endTime) {
-        let currStartDateTime = new Date(formData.startDate);
-        currStartDateTime.setHours(
-            Number(formData.startTime.split(":")[0]),
-            Number(formData.startTime.split(":")[1])
-        );
-        let currEndDateTime = new Date(formData.endDate);
-        currEndDateTime.setHours(
-            Number(formData.endTime.split(":")[0]),
-            Number(formData.endTime.split(":")[1])
-        );
-
-        try {
-            validateBookingTimeRange(formData.startDate, formData.endDate);
-            callback();
-        } catch (e) {
-            callback(e);
-            return;
+        for (let event of breakBookingByDays(
+            formData.startDate,
+            formData.endDate,
+            formData.startTime,
+            formData.endTime,
+            facilityInfo.value.bookingRule?.holidayAvailable === 1
+        )) {
+            try {
+                validateEventInTimeRange(event.start, event.end);
+                callback();
+            } catch (e) {
+                callback(e);
+                return;
+            }
         }
     }
 };
@@ -398,37 +414,28 @@ const validateTime = (formData, callback: Function) => {
     }
     callback();
 };
-const validateBookingTimeRange = (startDate: Date, endDate: Date) => {
-    if (!startDate) startDate = formData.value.startDate;
-    if (!endDate) endDate = formData.value.endDate;
-
-    if (!startDate || !endDate) {
+/**
+ * Validate if the booking time range is valid, startDate and endDate must be on the same day
+ * @param startDateTime start date and time
+ * @param endDateTime end date and time
+ */
+const validateEventInTimeRange = (startDateTime: Date, endDateTime: Date) => {
+    if (!startDateTime || !endDateTime) {
         throw new Error("Please select a date range");
     }
 
     // check if booking on holiday
     if (!facilityInfo.value.bookingRule?.holidayAvailable) {
         for (let holiday of holidays.value) {
-            if (
-                startDate <= new Date(holiday.date.iso) &&
-                endDate >= new Date(holiday.date.iso)
-            ) {
+            if (sameDay(startDateTime, new Date(holiday.date.iso))) {
                 throw new Error("Booking on holiday is not allowed");
             }
         }
     }
-    // check if booking length is within length limit
-    if (
-        facilityInfo.value.bookingRule?.maxReservationDays &&
-        currentEvent.value.length > facilityInfo.value.bookingRule?.maxReservationDays
-    ) {
-        throw new Error(
-            `Booking length is more than ${facilityInfo.value.bookingRule?.maxReservationDays} day(s)`
-        );
-    }
+    // check if time reach minimum length
     if (
         facilityInfo.value.bookingRule?.minBookingHours &&
-        endDate.getTime() - startDate.getTime() <
+        endDateTime.getTime() - startDateTime.getTime() <
             facilityInfo.value.bookingRule?.minBookingHours * 60 * 60 * 1000
     ) {
         throw new Error(
@@ -438,10 +445,10 @@ const validateBookingTimeRange = (startDate: Date, endDate: Date) => {
     // check if booking on weekend
     if (!facilityInfo.value.bookingRule?.holidayAvailable) {
         if (
-            startDate.getDay() == 0 ||
-            startDate.getDay() == 6 ||
-            endDate.getDay() == 0 ||
-            endDate.getDay() == 6
+            startDateTime.getDay() == 0 ||
+            startDateTime.getDay() == 6 ||
+            endDateTime.getDay() == 0 ||
+            endDateTime.getDay() == 6
         ) {
             throw new Error(
                 "Booking on weekend is not allowed for this facility"
@@ -451,9 +458,12 @@ const validateBookingTimeRange = (startDate: Date, endDate: Date) => {
     // check if booking overlapped
     for (let bookedEvent of bookedEvents.value) {
         if (
-            (startDate >= bookedEvent.start && startDate < bookedEvent.end) ||
-            (endDate > bookedEvent.start && endDate <= bookedEvent.end) ||
-            (startDate <= bookedEvent.start && endDate >= bookedEvent.end)
+            (startDateTime >= bookedEvent.start &&
+                startDateTime < bookedEvent.end) ||
+            (endDateTime > bookedEvent.start &&
+                endDateTime <= bookedEvent.end) ||
+            (startDateTime <= bookedEvent.start &&
+                endDateTime >= bookedEvent.end)
         ) {
             throw new Error("Booking overlapped");
         }
@@ -463,7 +473,7 @@ const validateBookingTimeRange = (startDate: Date, endDate: Date) => {
 function validateBeforeSetNewEvent(events: VueCalEvent[]) {
     try {
         for (let event of events) {
-            validateBookingTimeRange(event.start, event.end);
+            validateEventInTimeRange(event.start, event.end);
         }
         // only allow one event to be booked
         currentEvent.value = events;

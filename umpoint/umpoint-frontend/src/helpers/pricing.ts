@@ -41,11 +41,12 @@ function breakBookingByDays(
     return returnList;
 }
 
-function itemiseDailyEventPrices(facilityInfo: any, startDate: Date, endDate: Date, startTime: string, endTime: string, isHolidayAvailable: boolean = true) {
+function itemiseDailyEventPrices(facilityInfo: any, startDate: Date, endDate: Date, startTime: string, endTime: string) {
     let resultArr = [];
 
-    let eventDays = breakBookingByDays(startDate, endDate, startTime, endTime, isHolidayAvailable);
-    let dayCount = eventDays.length;
+    let eventDays = breakBookingByDays(startDate, endDate, startTime, endTime, facilityInfo.bookingRule?.holidayAvailable === 1);
+    // variables for price calculation
+    let dayCount = 0, fourHoursCount = 0, oneHourCount = 0;
 
     for (let {
         start: eventStartDate,
@@ -66,38 +67,10 @@ function itemiseDailyEventPrices(facilityInfo: any, startDate: Date, endDate: Da
         let hourLength =
             Math.abs(eventEndDate.getTime() - eventStartDate.getTime()) / (60 * 60 * 1000);
         if (facilityInfo.fourHoursPrice) {
-            let fourHoursCount = Math.floor(hourLength / 4);
-            let oneHourCount = Math.ceil(hourLength % 4);
-            if (fourHoursCount) {
-                resultArr.push({
-                    item: `${fourHoursCount} * 4 hours (${formatDateToTimezoneDateStr(
-                        eventStartDate
-                    )})`,
-                    amount: fourHoursCount,
-                    price: facilityInfo.fourHoursPrice,
-                    total: facilityInfo.fourHoursPrice * fourHoursCount,
-                });
-            }
-            if (oneHourCount) {
-                resultArr.push({
-                    item: `${oneHourCount} hours (${formatDateToTimezoneDateStr(
-                        eventStartDate
-                    )})`,
-                    amount: oneHourCount,
-                    price: facilityInfo.hourPrice,
-                    total: facilityInfo.hourPrice * oneHourCount,
-                });
-            }
+            fourHoursCount += Math.floor(hourLength / 4);
+            oneHourCount += Math.ceil(hourLength % 4);
         } else {
-            let oneHourCount = Math.ceil(hourLength);
-            resultArr.push({
-                item: `${oneHourCount} hours (${formatDateToTimezoneDateStr(
-                    eventStartDate
-                )})`,
-                amount: oneHourCount,
-                price: facilityInfo.hourPrice,
-                total: facilityInfo.hourPrice * oneHourCount,
-            });
+            oneHourCount += Math.ceil(hourLength);
         }
     }
 
@@ -107,6 +80,22 @@ function itemiseDailyEventPrices(facilityInfo: any, startDate: Date, endDate: Da
             amount: dayCount,
             price: facilityInfo.dayPrice,
             total: dayCount * facilityInfo.dayPrice,
+        });
+    }
+    if (fourHoursCount) {
+        resultArr.push({
+            item: `4 hours price ×${fourHoursCount}`,
+            amount: fourHoursCount,
+            price: facilityInfo.fourHoursPrice,
+            total: facilityInfo.fourHoursPrice * fourHoursCount,
+        });
+    }
+    if (oneHourCount) {
+        resultArr.push({
+            item: `1 hour price ×${oneHourCount}`,
+            amount: oneHourCount,
+            price: facilityInfo.hourPrice,
+            total: facilityInfo.hourPrice * oneHourCount,
         });
     }
 
