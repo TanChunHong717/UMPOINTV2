@@ -2,6 +2,7 @@ package my.edu.um.umpoint.modules.security.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import lombok.AllArgsConstructor;
 import my.edu.um.umpoint.modules.client.dao.CliTokenDao;
 import my.edu.um.umpoint.modules.client.dao.CliUserDao;
 import my.edu.um.umpoint.modules.client.entity.CliTokenEntity;
@@ -16,8 +17,6 @@ import my.edu.um.umpoint.modules.sys.dao.SysRoleDataScopeDao;
 import my.edu.um.umpoint.modules.sys.dao.SysUserDao;
 import my.edu.um.umpoint.modules.sys.entity.SysUserEntity;
 import my.edu.um.umpoint.modules.sys.enums.SuperAdminEnum;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -42,7 +41,7 @@ public class ShiroServiceImpl implements ShiroService {
             else
                 permissionsList = sysMenuDao.getUserPermissionsList(user.getId());
         } else {
-            permissionsList = new ArrayList<>();
+            permissionsList = new ArrayList<>(cliPermissionConfig.getCommon());
             if (user.getSpacePermission() == 1)
                 permissionsList.addAll(cliPermissionConfig.getSpace());
             if (user.getServicePermission() == 1)

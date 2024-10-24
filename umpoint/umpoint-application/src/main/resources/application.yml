@@ -99,6 +99,9 @@ umpoint:
       find-approve-admin-first: true
   user:
     permission:
+      common:
+        - common:upload
+        - common:ai-chat
       space:
         - space:event:info
         - space:booking:page
