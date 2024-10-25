@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+
 import java.util.List;
 
 @Component
@@ -11,6 +12,8 @@ import java.util.List;
 @Setter
 @ConfigurationProperties(prefix = "umpoint.user.permission")
 public class CliPermissionConfig {
+
+    private List<String> common;
 
     private List<String> space;
 

@@ -3,7 +3,7 @@ package my.edu.um.umpoint.modules.thirdparty.controller;
 import my.edu.um.umpoint.modules.accommodation.service.AccAccommodationService;
 import my.edu.um.umpoint.modules.service.service.SvcServiceService;
 import my.edu.um.umpoint.modules.space.service.SpcSpaceService;
-import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -46,7 +46,7 @@ public class AIController {
     }
 
     @GetMapping("/client/chat")
-    @RequiresAuthentication
+    @RequiresPermissions("common:ai-chat")
     public Flux<String> generation(
             String chatId,
             String message,
