@@ -12,7 +12,11 @@
 
         <el-carousel arrow="always" trigger="click" :autoplay="false">
             <el-carousel-item v-for="item in 5" :key="item">
-                <el-image fit="contain" :src="getImgUrl(item - 1)" style="width: 100%; height: 100%;"/>
+                <el-image
+                    fit="contain"
+                    :src="getImgUrl(item - 1)"
+                    style="width: 100%; height: 100%"
+                />
             </el-carousel-item>
         </el-carousel>
 
@@ -181,24 +185,50 @@
                 </el-text>
             </el-card>
         </el-row>
-        <!-- <el-row>
-            <el-card shadow="never">
+        <el-row>
+            <el-card shadow="never" body-style="padding:0">
                 <template #header>
                     <div class="card-header">
                         <span class="el-descriptions__title">Map</span>
                     </div>
                 </template>
-                Map here
+                <iframe
+                    style="width: 100%"
+                    height="400"
+                    frameborder="0"
+                    scrolling="no"
+                    marginheight="0"
+                    marginwidth="0"
+                    id="gmap_canvas"
+                    src="https://maps.google.com/maps?hl=en&amp;q=Universiti%20Malaya,%2050603%20Kuala%20Lumpur,%20Wilayah%20Persekutuan%20Kuala%20Lumpur%20Kuala%20Lumpur+(Universiti%20Malaya)&amp;t=&amp;z=15&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
+                ></iframe>
+                <component
+                    is="script"
+                    type="text/javascript"
+                    src="https://embedmaps.com/google-maps-authorization/script.js?id=cbb494ed3cb0456153f19889066b28b85dcedcd5"
+                ></component>
             </el-card>
-        </el-row> -->
+        </el-row>
         <el-row>
-            <el-card shadow="never">
+            <el-card shadow="never" body-style="padding:0">
                 <template #header>
                     <div class="card-header">
                         <span class="el-descriptions__title">Schedule</span>
                     </div>
                 </template>
-                Map here
+                <vue-cal
+                    small
+                    :disable-views="['years', 'year', 'day']"
+                    :time-from="7 * 60"
+                    :time-to="20 * 60"
+                    :time-step="30"
+                    :snap-to-time="30"
+                    :editable-events="false"
+                    :drag-to-create-event="false"
+                    :min-event-width="100"
+                    @view-change="onViewChange"
+                    style="height: 580px"
+                ></vue-cal>
             </el-card>
         </el-row>
     </BaseLayout>
@@ -216,6 +246,8 @@ import {
     mdiPhone,
     mdiMessageTextOutline,
 } from "@mdi/js";
+import VueCal from "vue-cal";
+import "vue-cal/dist/vuecal.css";
 import { ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getFacilityInformation } from "@/helpers/api.js";
@@ -254,7 +286,8 @@ const bookingUrl = `/facility/${route.params.id}/reserve`;
 const baseUrl =
     "https://raw.githubusercontent.com/vueComponent/ant-design-vue/main/components/carousel/demo/";
 const getImgUrl = (i) => {
-    if (i==0) return "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAeAXCYHdm1-SXe-evCVF1VlhelqfXEG8TGw&s";
+    if (i == 0)
+        return "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAeAXCYHdm1-SXe-evCVF1VlhelqfXEG8TGw&s";
     return `${baseUrl}abstract0${i + 1}.jpg`;
 };
 </script>
