@@ -30,8 +30,14 @@
           <el-checkbox label="Public" v-model="dataForm.openForPublic" :true-value="Number(1)" :false-value="Number(0)"/>
         </div>
       </el-form-item>
-      
+
       <el-divider content-position="left">Venue Time and Booking Window</el-divider>
+      <el-form-item label="Booking Mode">
+        <el-radio-group v-model="dataForm.bookingMode">
+          <el-radio label="Free time selection" :value="0">Free time selection</el-radio>
+          <el-radio label="Limited to preset slots" :value="1">Limited to preset slots</el-radio>
+        </el-radio-group>
+      </el-form-item>
       <el-form-item label="Start time" prop="startTime">
         <el-time-select
           v-model="dataForm.startTime"
@@ -49,6 +55,20 @@
           end="23:59"
           step="00:30"
         />
+      </el-form-item>
+      <el-form-item label="Booking Unit" prop="bookingUnit">
+        <el-col :span="14">
+          <el-input-number v-model="dataForm.bookingUnit" controls-position="right" :min="0.5" :step="0.5" style="width: 100%"/>
+        </el-col>
+        <el-col :span="10" style="padding-left: 6px;">
+          <el-tooltip
+            class="box-item"
+            placement="bottom-end"
+          >
+            <template #content>Minimum increment for booking duration, e.g., '0.5' means bookings can be made in 30-minute intervals</template>
+            <el-button tabindex="-1" size="small" :icon="InfoFilled" circle />
+          </el-tooltip>
+        </el-col>
       </el-form-item>
       <el-form-item label="Open for booking after" prop="minBookingAdvanceDay">
         <el-col :span="14">
@@ -88,11 +108,17 @@
       </el-form-item>
 
       <el-divider content-position="left">Booking requirements</el-divider>
-      <el-form-item label="Max reservation days" prop="maxReservationDays">
-        <el-input-number v-model="dataForm.maxReservationDays" controls-position="right" :min="1"/>
+      <el-form-item label="Max reservation day" prop="maxReservationDay">
+        <el-input-number v-model="dataForm.maxReservationDay" controls-position="right" :min="1"/>
       </el-form-item>
-      <el-form-item label="Min booking hours" prop="minBookingHours">
-        <el-input-number v-model="dataForm.minBookingHours" controls-position="right" :min="1"/>
+      <el-form-item label="Min reservation day" prop="minReservationDay">
+        <el-input-number v-model="dataForm.minReservationDay" controls-position="right" :min="1"/>
+      </el-form-item>
+      <el-form-item label="Max booking hour" prop="maxBookingHour">
+        <el-input-number v-model="dataForm.maxBookingHour" controls-position="right" :min="0.5" :step="0.5"/>
+      </el-form-item>
+      <el-form-item label="Min booking hour" prop="minBookingHour">
+        <el-input-number v-model="dataForm.minBookingHour" controls-position="right" :min="0.5" :step="0.5"/>
       </el-form-item>
       <el-form-item label="Max technician number" prop="maxTechnicianNumber">
         <el-col :span="22">
@@ -112,7 +138,7 @@
           </el-tooltip>
         </el-col>
       </el-form-item>
-      
+
       <el-divider content-position="left">Pricing</el-divider>
       <el-form-item label="Price for an hour" prop="hourPrice">
         <el-input-number v-model="dataForm.hourPrice" controls-position="right" :precision="2" :step="0.5" :min="0"/>
@@ -157,15 +183,19 @@ const dataForm = reactive({
   openForStudent: null,
   openForPublic: null,
   holidayAvailable: null,
+  bookingMode: null,
   startTime: null,
   endTime: null,
+  bookingUnit: null,
   hourPrice: null,
   fourHoursPrice: null,
   dayPrice: null,
   maxBookingAdvanceDay: null,
   minBookingAdvanceDay: null,
-  maxReservationDays: null,
-  minBookingHours: null,
+  maxReservationDay: null,
+  minReservationDay: null,
+  maxBookingHour: null,
+  minBookingHour: null,
   maxTechnicianNumber: null,
   technicianPrice: null
 });
@@ -180,10 +210,16 @@ const rules = ref({
   holidayAvailable: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
+  bookingMode: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ],
   startTime: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
   endTime: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ],
+  bookingUnit: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
   hourPrice: [
@@ -195,10 +231,16 @@ const rules = ref({
   minBookingAdvanceDay: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
-  maxReservationDays: [
+  maxReservationDay: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
-  minBookingHours: [
+  minReservationDay: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ],
+  maxBookingHour: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ],
+  minBookingHour: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
   maxTechnicianNumber: [
@@ -276,12 +318,16 @@ const dataFormSubmitHandle = () => {
         openForStudent: dataForm.openForStudent ?? 0,
         openForPublic: dataForm.openForPublic ?? 0,
         holidayAvailable: dataForm.holidayAvailable,
+        bookingMode: dataForm.bookingMode,
         startTime: addSecond(dataForm.startTime),
         endTime: addSecond(dataForm.endTime),
+        bookingUnit: dataForm.bookingUnit,
         maxBookingAdvanceDay: dataForm.maxBookingAdvanceDay,
         minBookingAdvanceDay: dataForm.minBookingAdvanceDay,
-        maxReservationDays: dataForm.maxReservationDays,
-        minBookingHours: dataForm.minBookingHours,
+        maxReservationDay: dataForm.maxReservationDay,
+        minReservationDay: dataForm.minReservationDay,
+        maxBookingHour: dataForm.maxBookingHour,
+        minBookingHour: dataForm.minBookingHour,
         maxTechnicianNumber: dataForm.maxTechnicianNumber,
         technicianPrice: dataForm.technicianPrice
       }

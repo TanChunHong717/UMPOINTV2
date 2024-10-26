@@ -113,8 +113,8 @@
               The accommodation will be open for booking {{ accommodation.accBookingRuleDTO.maxBookingAdvanceDay }} day(s) prior the event and will be closed {{  accommodation.accBookingRuleDTO.minBookingAdvanceDay }} day(s) before accommodation booking date.
             </el-row>
             <el-row style="margin-bottom: 14px">
-              <el-col :span="12">Maximum reservation days: {{ accommodation.accBookingRuleDTO.maxReservationDays }}</el-col>
-              <el-col :span="12">Minimum reservation days: {{ accommodation.accBookingRuleDTO.minBookingDays }}</el-col>
+              <el-col :span="12">Maximum reservation day: {{ accommodation.accBookingRuleDTO.maxReservationDay }}</el-col>
+              <el-col :span="12">Minimum reservation day: {{ accommodation.accBookingRuleDTO.minReservationDay }}</el-col>
             </el-row>
             <el-row>
               <el-col :span="12">Maximum technician number: {{ accommodation.accBookingRuleDTO.maxTechnicianNumber }}</el-col>

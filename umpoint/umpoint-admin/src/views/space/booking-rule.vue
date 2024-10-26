@@ -41,16 +41,28 @@
                   <el-tag v-else type="info">No</el-tag>
                 </el-col>
               </el-row>
-              <el-row style="margin-bottom: 14px">
+              <el-row class="content-row">
                 The space will be open for booking {{ scope.row.spcBookingRuleDTO.maxBookingAdvanceDay }} day(s) prior the event and will be closed {{  scope.row.spcBookingRuleDTO.minBookingAdvanceDay }} day(s) before space booking date.
+              </el-row>
+              <el-row class="content-row">
+                <el-col :span="12">
+                  Booking Mode:
+                  <el-tag v-if="scope.row.spcBookingRuleDTO.bookingMode == 1" type="primary">Free time selection</el-tag>
+                  <el-tag v-else type="info">Limited to preset slots</el-tag>
+                </el-col>
+                <el-col :span="12">Booking unit in hour: {{ scope.row.spcBookingRuleDTO.bookingUnit }}</el-col>
               </el-row>
               <el-row class="content-row">
                 <el-col :span="12">Start Time: {{ scope.row.spcBookingRuleDTO.startTime }}</el-col>
                 <el-col :span="12">End Time: {{ scope.row.spcBookingRuleDTO.endTime }}</el-col>
               </el-row>
-              <el-row style="margin-bottom: 14px">
-                <el-col :span="12">Maximum reservation days: {{ scope.row.spcBookingRuleDTO.maxReservationDays }}</el-col>
-                <el-col :span="12">Minimum booking hours: {{ scope.row.spcBookingRuleDTO.minBookingHours }}</el-col>
+              <el-row class="content-row">
+                <el-col :span="12">Maximum reservation day: {{ scope.row.spcBookingRuleDTO.maxReservationDay }}</el-col>
+                <el-col :span="12">Minimum reservation day: {{ scope.row.spcBookingRuleDTO.minReservationDay }}</el-col>
+              </el-row>
+              <el-row class="content-row">
+                <el-col :span="12">Maximum booking hour: {{ scope.row.spcBookingRuleDTO.maxBookingHour }}</el-col>
+                <el-col :span="12">Minimum booking hour: {{ scope.row.spcBookingRuleDTO.minBookingHour }}</el-col>
               </el-row>
               <el-row>
                 <el-col :span="12">Maximum technician number: {{ scope.row.spcBookingRuleDTO.maxTechnicianNumber }}</el-col>
@@ -140,8 +152,7 @@ onActivated(() => {
   justify-content: space-between;
 }
 .content-row {
-  margin-bottom: 5px;
-  min-height: 24px;
+  margin-bottom: 14px;
 }
 .expand-row {
   padding: 0 30px;

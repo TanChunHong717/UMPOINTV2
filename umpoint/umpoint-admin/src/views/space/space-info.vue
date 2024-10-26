@@ -23,7 +23,7 @@
       </el-carousel>
       <el-tabs>
         <el-tab-pane label="Details">
-          <el-row class="content-row">
+          <el-row class="mb-5">
             <el-col :span="23">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-location"></use></svg>
               {{ space.address }}
@@ -32,7 +32,7 @@
               <el-button type="primary" @click="$router.push({name: 'space-update', params: {id: space.id}})" size="small">Edit</el-button>
             </el-col>
           </el-row>
-          <el-row class="content-row">
+          <el-row class="mb-5">
             <el-col :span="8">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-apartment"></use></svg>
               Department: {{ space.deptName }}
@@ -46,13 +46,13 @@
               Capacity: {{ space.capacity }}
             </el-col>
           </el-row>
-          <el-row class="content-row" v-if="space.facilities?.trim().length > 0">
+          <el-row class="mb-5" v-if="space.facilities?.trim().length > 0">
             <el-col :span="24">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-wrench"></use></svg>
               Facilities: {{ space.facilities }}
             </el-col>
           </el-row>
-          <el-row class="content-row">
+          <el-row class="mb-5">
             <el-col :span="24">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-tag"></use></svg>
               Tag:
@@ -66,7 +66,7 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="Booking Rule">
-          <el-row class="content-row">
+          <el-row class="mb-5">
             <el-col :span="23">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-user"></use></svg>
               Contact:
@@ -90,14 +90,14 @@
           </div>
           <h1>Booking Rule</h1>
           <div v-if="space.spcBookingRuleDTO">
-            <el-row class="content-row">
+            <el-row class="mb-5">
               <el-col :span="24">
                 Approval Required:
                 <el-tag v-if="space.spcBookingRuleDTO.approvalRequired == 1" type="primary">Yes</el-tag>
                 <el-tag v-else type="info">No</el-tag>
               </el-col>
             </el-row>
-            <el-row class="content-row">
+            <el-row class="mb-5">
               <span class="radio-label">Open booking:</span>
               <el-checkbox v-model="space.spcBookingRuleDTO.openForStaff" :true-value="Number(1)" disabled>Staff</el-checkbox>
               <el-checkbox v-model="space.spcBookingRuleDTO.openForStudent" :true-value="Number(1)" disabled>Student</el-checkbox>
@@ -110,16 +110,28 @@
                 <el-tag v-else type="info">No</el-tag>
               </el-col>
             </el-row>
-            <el-row style="margin-bottom: 14px">
+            <el-row class="mb-14">
               The space will be open for booking {{ space.spcBookingRuleDTO.maxBookingAdvanceDay }} day(s) prior the event and will be closed {{  space.spcBookingRuleDTO.minBookingAdvanceDay }} day(s) before space booking date.
             </el-row>
-            <el-row style="margin-bottom: 14px">
+            <el-row class="mb-14">
+              <el-col :span="12">
+                Booking Mode:
+                <el-tag v-if="space.spcBookingRuleDTO.bookingMode == 1" type="primary">Free time selection</el-tag>
+                <el-tag v-else type="info">Limited to preset slots</el-tag>
+              </el-col>
+              <el-col :span="12">Booking unit in hour: {{ space.spcBookingRuleDTO.bookingUnit }}</el-col>
+            </el-row>
+            <el-row class="mb-14">
               <el-col :span="12">Start Time: {{ space.spcBookingRuleDTO.startTime }}</el-col>
               <el-col :span="12">End Time: {{ space.spcBookingRuleDTO.endTime }}</el-col>
             </el-row>
-            <el-row style="margin-bottom: 14px">
-              <el-col :span="12">Maximum reservation days: {{ space.spcBookingRuleDTO.maxReservationDays }}</el-col>
-              <el-col :span="12">Minimum booking hours: {{ space.spcBookingRuleDTO.minBookingHours }}</el-col>
+            <el-row class="mb-14">
+              <el-col :span="12">Maximum reservation day: {{ space.spcBookingRuleDTO.maxReservationDay }}</el-col>
+              <el-col :span="12">Minimum reservation day: {{ space.spcBookingRuleDTO.minReservationDay }}</el-col>
+            </el-row>
+            <el-row class="mb-14">
+              <el-col :span="12">Maximum booking hour: {{ space.spcBookingRuleDTO.maxBookingHour }}</el-col>
+              <el-col :span="12">Minimum booking hour: {{ space.spcBookingRuleDTO.minBookingHour }}</el-col>
             </el-row>
             <el-row>
               <el-col :span="12">Maximum technician number: {{ space.spcBookingRuleDTO.maxTechnicianNumber }}</el-col>
@@ -347,8 +359,11 @@ onActivated(() => {
 .ml-5 {
   margin-left: 5px;
 }
-.content-row {
+.mb-5 {
   margin-bottom: 5px;
+}
+.mb-14 {
+  margin-bottom: 14px;
 }
 h1 {
   margin-bottom: 10px;

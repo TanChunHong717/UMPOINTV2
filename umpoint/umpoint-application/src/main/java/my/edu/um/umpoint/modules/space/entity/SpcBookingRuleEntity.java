@@ -42,6 +42,10 @@ public class SpcBookingRuleEntity {
 	 */
 	private Integer holidayAvailable;
 	/**
+	 * 0: Free time selection, 1: Limited to preset slots
+	 */
+	private Integer bookingMode;
+	/**
 	 * Start time in a day when booking is allow,range: (0,24)
 	 */
 	private Time startTime;
@@ -49,6 +53,10 @@ public class SpcBookingRuleEntity {
 	 * End time in a day when booking is allow,range: (0,24)
 	 */
 	private Time endTime;
+	/**
+	 * Booking unit in hour (e.g., 0.5 for half-hour increments)
+	 */
+	private BigDecimal bookingUnit;
     /**
      * Max booking advance day
      */
@@ -58,13 +66,21 @@ public class SpcBookingRuleEntity {
 	 */
 	private Integer minBookingAdvanceDay;
     /**
-     * Maximum reservation days
+     * Maximum reservation day
      */
-	private Integer maxReservationDays;
+	private Integer maxReservationDay;
+	/**
+	 * Minimum reservation day
+	 */
+	private Integer minReservationDay;
+	/**
+	 * Maximum booking hour per day
+	 */
+	private BigDecimal maxBookingHour;
     /**
-     * Minimum booking hours per day
+     * Minimum booking hour per day
      */
-	private Integer minBookingHours;
+	private BigDecimal minBookingHour;
 	/**
 	 * Maximum number of technician
 	 */

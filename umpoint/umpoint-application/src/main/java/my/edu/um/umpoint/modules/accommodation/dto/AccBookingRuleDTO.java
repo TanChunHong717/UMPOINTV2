@@ -59,13 +59,13 @@ public class AccBookingRuleDTO implements Serializable {
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer minBookingAdvanceDay;
 
-	@Schema(title = "Maximum reservation days")
+	@Schema(title = "Maximum reservation day")
 	@NotNull(groups = {DefaultGroup.class})
-	private Integer maxReservationDays;
+	private Integer maxReservationDay;
 
-	@Schema(title = "Minimum booking days")
+	@Schema(title = "Minimum reservation day")
 	@NotNull(groups = {DefaultGroup.class})
-	private Integer minBookingDays;
+	private Integer minReservationDay;
 
 	@Schema(title = "Maximum number of technician")
 	@NotNull(groups = {DefaultGroup.class})

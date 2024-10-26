@@ -2,6 +2,7 @@ package my.edu.um.umpoint.modules.space.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import my.edu.um.umpoint.common.annotation.DataFilter;
 import my.edu.um.umpoint.common.constant.BookingConstant;
 import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
@@ -65,6 +66,7 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
     }
 
     @Override
+    @DataFilter(tableAlias = "s")
     public PageData<SpcBookingDTO> page(Map<String, Object> params){
         UserDetail user = SecurityUser.getUser();
         if (user.getSuperAdmin() == null)

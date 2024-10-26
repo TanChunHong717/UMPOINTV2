@@ -57,8 +57,8 @@
             <result property="holidayAvailable" column="holiday_available"/>
             <result property="maxBookingAdvanceDay" column="max_booking_advance_day"/>
             <result property="minBookingAdvanceDay" column="min_booking_advance_day"/>
-            <result property="maxReservationDays" column="max_reservation_days"/>
-            <result property="minBookingDays" column="min_booking_days"/>
+            <result property="maxReservationDay" column="max_reservation_day"/>
+            <result property="minReservationDay" column="min_reservation_day"/>
             <result property="maxTechnicianNumber" column="max_technician_number"/>
             <result property="technicianPrice" column="technician_price"/>
         </association>
@@ -163,8 +163,8 @@
             b.holiday_available,
             b.max_booking_advance_day,
             b.min_booking_advance_day,
-            b.max_reservation_days,
-            b.min_booking_days,
+            b.max_reservation_day,
+            b.min_reservation_day,
             b.max_technician_number,
             b.technician_price,
             m.username AS manager_name
@@ -227,8 +227,8 @@
             b.holiday_available,
             b.max_booking_advance_day,
             b.min_booking_advance_day,
-            b.max_reservation_days,
-            b.min_booking_days,
+            b.max_reservation_day,
+            b.min_reservation_day,
             b.max_technician_number,
             b.technician_price,
             i.id AS image_id,

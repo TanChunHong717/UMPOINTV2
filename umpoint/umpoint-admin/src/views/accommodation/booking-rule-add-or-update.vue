@@ -70,11 +70,11 @@
       </el-form-item>
 
       <el-divider content-position="left">Booking requirements</el-divider>
-      <el-form-item label="Max reservation days" prop="maxReservationDays">
-        <el-input-number v-model="dataForm.maxReservationDays" controls-position="right" :min="1"/>
+      <el-form-item label="Max reservation day" prop="maxReservationDay">
+        <el-input-number v-model="dataForm.maxReservationDay" controls-position="right" :min="1"/>
       </el-form-item>
-      <el-form-item label="Min reservation days" prop="minBookingDays">
-        <el-input-number v-model="dataForm.minBookingDays" controls-position="right" :min="1"/>
+      <el-form-item label="Min reservation day" prop="minReservationDay">
+        <el-input-number v-model="dataForm.minReservationDay" controls-position="right" :min="1"/>
       </el-form-item>
       <el-form-item label="Max technician number" prop="maxTechnicianNumber">
         <el-col :span="22">
@@ -140,8 +140,8 @@ const dataForm = reactive({
   weekPrice: null,
   maxBookingAdvanceDay: null,
   minBookingAdvanceDay: null,
-  maxReservationDays: null,
-  minBookingDays: null,
+  maxReservationDay: null,
+  minReservationDay: null,
   maxTechnicianNumber: null,
   technicianPrice: null
 });
@@ -165,10 +165,10 @@ const rules = ref({
   minBookingAdvanceDay: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
-  maxReservationDays: [
+  maxReservationDay: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
-  minBookingDays: [
+  minReservationDay: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
   maxTechnicianNumber: [
@@ -231,8 +231,8 @@ const dataFormSubmitHandle = () => {
         openForPublic: dataForm.openForPublic ?? 0,
         maxBookingAdvanceDay: dataForm.maxBookingAdvanceDay,
         minBookingAdvanceDay: dataForm.minBookingAdvanceDay,
-        maxReservationDays: dataForm.maxReservationDays,
-        minBookingDays: dataForm.minBookingDays,
+        maxReservationDay: dataForm.maxReservationDay,
+        minReservationDay: dataForm.minReservationDay,
         maxTechnicianNumber: dataForm.maxTechnicianNumber,
         technicianPrice: dataForm.technicianPrice
       }

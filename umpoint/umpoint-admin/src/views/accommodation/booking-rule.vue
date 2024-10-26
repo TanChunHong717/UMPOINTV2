@@ -45,8 +45,8 @@
                 The accommodation will be open for booking {{ scope.row.accBookingRuleDTO.maxBookingAdvanceDay }} day(s) prior the event and will be closed {{  scope.row.accBookingRuleDTO.minBookingAdvanceDay }} day(s) before space booking date.
               </el-row>
               <el-row style="margin-bottom: 14px">
-                <el-col :span="12">Maximum reservation days: {{ scope.row.accBookingRuleDTO.maxReservationDays }}</el-col>
-                <el-col :span="12">Minimum reservation days: {{ scope.row.accBookingRuleDTO.minBookingDays }}</el-col>
+                <el-col :span="12">Maximum reservation day: {{ scope.row.accBookingRuleDTO.maxReservationDay }}</el-col>
+                <el-col :span="12">Minimum reservation day: {{ scope.row.accBookingRuleDTO.minReservationDay }}</el-col>
               </el-row>
               <el-row>
                 <el-col :span="12">Maximum technician number: {{ scope.row.spcBookingRuleDTO.maxTechnicianNumber }}</el-col>
