@@ -21,8 +21,8 @@ CREATE TABLE acc_booking_rule (
     approval_required tinyint NOT NULL COMMENT '0:Automatic approve 1:Require admin approve',
     max_booking_advance_day decimal(5,0) NOT NULL COMMENT 'Max booking advance day',
     min_booking_advance_day decimal(5,0) NOT NULL COMMENT 'Min booking advance day',
-    max_reservation_days decimal(5, 0) NOT NULL COMMENT 'Maximum reservation days',
-    min_booking_days decimal(5, 0) NOT NULL COMMENT 'Minimum booking days',
+    max_reservation_day decimal(5, 0) NOT NULL COMMENT 'Maximum reservation day',
+    min_reservation_day decimal(5, 0) NOT NULL COMMENT 'Minimum reservation day',
     max_technician_number decimal(5, 0) NOT NULL COMMENT 'Maximum number of technician',
     technician_price decimal(5, 0) NOT NULL COMMENT 'Price per technician',
     PRIMARY KEY (id)

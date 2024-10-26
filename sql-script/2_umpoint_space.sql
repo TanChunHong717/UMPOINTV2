@@ -19,18 +19,22 @@ CREATE TABLE spc_booking_rule (
     open_for_student tinyint NOT NULL COMMENT '0:Student not allow to book 1:Student allow to book',
     open_for_public tinyint NOT NULL COMMENT '0:Public not allow to book 1:Public allow to book',
     holiday_available tinyint NOT NULL COMMENT 'Availability in public holiday, 1: Available, 0: Close',
+    booking_mode tinyint NOT NULL COMMENT '0: Free time selection, 1: Limited to preset slots',
     start_time time NOT NULL COMMENT 'Start time in a day when booking is allow',
     end_time time NOT NULL COMMENT 'End time in a day when booking is allow',
+    booking_unit DECIMAL(3, 2) NOT NULL COMMENT 'Booking unit in hour (e.g., 0.5 for half-hour increments)',
     max_booking_advance_day decimal(5,0) NOT NULL COMMENT 'Max booking advance day',
     min_booking_advance_day decimal(5,0) NOT NULL COMMENT 'Min booking advance day',
-    max_reservation_days decimal(5, 0) NOT NULL COMMENT 'Maximum reservation days',
-    min_booking_hours decimal(5, 0) NOT NULL COMMENT 'Minimum booking hours per day',
+    max_reservation_day decimal(5, 0) NOT NULL COMMENT 'Maximum reservation day',
+    min_reservation_day decimal(5, 0) NOT NULL COMMENT 'Minimum reservation day',
+    max_booking_hour decimal(3, 2) NOT NULL COMMENT 'Maximum booking hour per day',
+    min_booking_hour decimal(3, 2) NOT NULL COMMENT 'Minimum booking hour per day',
     max_technician_number decimal(5, 0) NOT NULL COMMENT 'Maximum number of technician',
     technician_price decimal(10, 2) NOT NULL COMMENT 'Price per technician',
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space Booking Rule';
 
-INSERT INTO spc_booking_rule VALUE (0,1,1,1,1,1,('00:00:00'),('23:59:59'),60,0,5,1,0,0);
+INSERT INTO spc_booking_rule VALUE (0,1,1,1,1,1,0,('00:00:00'),('23:59:59'),1,60,0,5,1,8,1,0,0);
 
 CREATE TABLE spc_space (
     id bigint NOT NULL COMMENT 'ID',

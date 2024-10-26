@@ -49,13 +49,13 @@ public class AccBookingRuleEntity {
 	 */
 	private Integer minBookingAdvanceDay;
 	/**
-	* Maximum reservation days
+	* Maximum reservation day
 	*/
-	private Integer maxReservationDays;
+	private Integer maxReservationDay;
 	/**
-	* Minimum booking days
+	* Minimum reservation day
 	*/
-	private Integer minBookingDays;
+	private Integer minReservationDay;
 	/**
 	 * Maximum number of technician
 	 */

@@ -53,6 +53,10 @@ public class SpcBookingRuleDTO implements Serializable {
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer holidayAvailable;
 
+	@Schema(title = "0: Free time selection, 1: Limited to preset slots")
+	@NotNull(groups = {DefaultGroup.class})
+	private Integer bookingMode;
+
 	@Schema(title = "Start time in a day when booking is allow,range: (0,24)")
 	@NotNull(groups = {DefaultGroup.class})
 	private Time startTime;
@@ -60,6 +64,10 @@ public class SpcBookingRuleDTO implements Serializable {
 	@Schema(title = "End time in a day when booking is allow,range: (0,24)")
 	@NotNull(groups = {DefaultGroup.class})
 	private Time endTime;
+
+	@Schema(title = "Booking unit in hour (e.g., 0.5 for half-hour increments)")
+	@NotNull(groups = {DefaultGroup.class})
+	private BigDecimal bookingUnit;
 
 	@Schema(title = "Max booking advance day")
 	@NotNull(groups = {DefaultGroup.class})
@@ -69,13 +77,21 @@ public class SpcBookingRuleDTO implements Serializable {
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer minBookingAdvanceDay;
 
-	@Schema(title = "Maximum reservation days")
+	@Schema(title = "Maximum reservation day")
 	@NotNull(groups = {DefaultGroup.class})
-	private Integer maxReservationDays;
+	private Integer maxReservationDay;
 
-	@Schema(title = "Minimum booking hours per day")
+	@Schema(title = "Minimum reservation day")
 	@NotNull(groups = {DefaultGroup.class})
-	private Integer minBookingHours;
+	private Integer minReservationDay;
+
+	@Schema(title = "Maximum booking hour per day")
+	@NotNull(groups = {DefaultGroup.class})
+	private BigDecimal maxBookingHour;
+
+	@Schema(title = "Minimum booking hour per day")
+	@NotNull(groups = {DefaultGroup.class})
+	private BigDecimal minBookingHour;
 
 	@Schema(title = "Maximum number of technician")
 	@NotNull(groups = {DefaultGroup.class})

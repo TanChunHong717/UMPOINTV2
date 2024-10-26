@@ -159,11 +159,11 @@ public class AccBookingController{
         LocalDate endDate
     ) throws DateTimeException{
         long differenceInDays = ChronoUnit.DAYS.between(startDate, endDate);
-        if (differenceInDays > spcBookingRule.getMaxReservationDays()) {
+        if (differenceInDays > spcBookingRule.getMaxReservationDay()) {
             throw new DateTimeException("Selected date range is over the maximum number of reservation days");
         }
 
-        if (differenceInDays < spcBookingRule.getMinBookingDays()) {
+        if (differenceInDays < spcBookingRule.getMinReservationDay()) {
             throw new DateTimeException("Selected time range does not reach minimum number of hours");
         }
     }
