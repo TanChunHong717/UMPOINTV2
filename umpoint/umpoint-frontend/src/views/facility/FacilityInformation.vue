@@ -12,7 +12,7 @@
 
         <el-carousel arrow="always" trigger="click" :autoplay="false">
             <el-carousel-item v-for="item in 5" :key="item">
-                <img :src="getImgUrl(item - 1)" />
+                <el-image fit="contain" :src="getImgUrl(item - 1)" style="width: 100%; height: 100%;"/>
             </el-carousel-item>
         </el-carousel>
 
@@ -254,6 +254,7 @@ const bookingUrl = `/facility/${route.params.id}/reserve`;
 const baseUrl =
     "https://raw.githubusercontent.com/vueComponent/ant-design-vue/main/components/carousel/demo/";
 const getImgUrl = (i) => {
+    if (i==0) return "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAeAXCYHdm1-SXe-evCVF1VlhelqfXEG8TGw&s";
     return `${baseUrl}abstract0${i + 1}.jpg`;
 };
 </script>
