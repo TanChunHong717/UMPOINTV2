@@ -1,5 +1,5 @@
 <template>
-    <section id="page-title" class="page-title-pattern">
+    <section v-if="$slots.title" id="page-title" class="page-title-pattern">
         <div class="container clearfix">
             <h1 class="section-title">
                 <slot name="title"></slot>
@@ -8,13 +8,16 @@
                 <slot name="subtitle"></slot>
             </span>
             <el-breadcrumb class="breadcrumb">
-                <el-breadcrumb-item v-for="(item, index) in breadList" :key="item.name">
-
-                    <router-link v-if="item.name != name && index != 1"
-                        :to="{ path: item.path === '' ? '/' : item.path }">{{ item.meta.title }}
+                <el-breadcrumb-item
+                    v-for="(item, index) in breadList"
+                    :key="item.name"
+                >
+                    <router-link
+                        v-if="item.name != name && index != 1"
+                        :to="{ path: item.path === '' ? '/' : item.path }"
+                        >{{ item.meta.title }}
                     </router-link>
                     <span v-else>{{ item.meta.title }}</span>
-                    
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -25,38 +28,36 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRoute } from 'vue-router'
+import { ref } from "vue";
+import { useRoute } from "vue-router";
 
 // background image for the header
 const props = defineProps({
     headerBackgroundImage: {
         type: String,
-        default: 'url("/images/facility.png")'
+        default: 'url("/images/facility.png")',
     },
-    loading: Boolean
+    loading: Boolean,
 });
 
 // slots
 defineSlots<{
-    default(props: any): void,
-    title(props: any): void,
-    subtitle(props: any): void
+    default(props: any): void;
+    title(props: any): void;
+    subtitle(props: any): void;
 }>();
 
-
 // breadcrumbs
-const route = useRoute()
-const name =  ref(route.name)
-const breadList = ref(route.matched)
-
+const route = useRoute();
+const name = ref(route.name);
+const breadList = ref(route.matched);
 </script>
 
 <style scoped>
 #page-title {
     position: relative;
     padding: 3.5rem 0;
-    border-bottom: 1px solid #EEE;
+    border-bottom: 1px solid #eee;
 }
 
 .page-title-pattern {
