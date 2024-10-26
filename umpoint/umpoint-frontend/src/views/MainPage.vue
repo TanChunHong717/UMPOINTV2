@@ -17,7 +17,12 @@
         placeholder="SEARCH NOW"
     >
         <template #prefix>
-            <SvgIcon style="cursor: pointer;" type="mdi" :path="mdiMagnify" @click.prevent="searchFacility"/>
+            <SvgIcon
+                style="cursor: pointer"
+                type="mdi"
+                :path="mdiMagnify"
+                @click.prevent="searchFacility"
+            />
         </template>
     </el-input>
 
@@ -27,7 +32,12 @@
         >
 
         <div class="card-grid">
-            <el-card>
+            <!-- <el-card>
+                <el-image
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAeAXCYHdm1-SXe-evCVF1VlhelqfXEG8TGw&s"
+                    fit="cover"
+                    style="width: 100%"
+                ></el-image>
                 <div slot="header" class="clearfix">
                     <h4>Test facility</h4>
                 </div>
@@ -35,8 +45,13 @@
                     <p>Auditorium - 2</p>
                 </div>
                 <RouterLink :to="`/facility/2`">Visit test location</RouterLink>
-            </el-card>
+            </el-card> -->
             <el-card v-for="facility in facilities" :key="facility.id">
+                <el-image
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAeAXCYHdm1-SXe-evCVF1VlhelqfXEG8TGw&s"
+                    fit="cover"
+                    style="width: 100%"
+                ></el-image>
                 <div slot="header" class="clearfix">
                     <h4>{{ facility.name }}</h4>
                 </div>
@@ -55,6 +70,9 @@
 import { mdiMagnify } from "@mdi/js";
 import { getFacilities } from "@/helpers/api";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const facilities = ref([]);
 getFacilities("space").then((response) => {
@@ -69,6 +87,7 @@ getFacilities("space").then((response) => {
 const searchInput = ref("");
 const searchFacility = () => {
     console.log("Searching for: ", searchInput.value);
+    router.push({ path: "/search", query: { q: searchInput.value } });
 };
 </script>
 
@@ -117,12 +136,12 @@ const searchFacility = () => {
 
 .card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1em;
     margin-block-start: 1em;
 
     .el-card h4 {
-        margin-block-start: 0;
+        margin-block: 0.5em;
     }
 }
 </style>
