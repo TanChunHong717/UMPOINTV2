@@ -35,7 +35,7 @@ import { useRoute } from "vue-router";
 const props = defineProps({
     headerBackgroundImage: {
         type: String,
-        default: 'url("/images/facility.png")',
+        default: `url("${import.meta.env.BASE_URL}images/facility.png")`,
     },
     loading: Boolean,
 });
