@@ -3,15 +3,17 @@
 
 FROM node:18-alpine AS build
 
+WORKDIR /app
+COPY package.json package-lock.json /app/
+RUN npm install
+
 # Set build args as environment variables during the build process
+# Put here to prevent arg affecting npm install cache
 ARG VITE_BOOKING_API_URL
 ARG VITE_BASE_URL
 ENV VITE_BOOKING_API_URL=$VITE_BOOKING_API_URL
 ENV VITE_BASE_URL=$VITE_BASE_URL
 
-WORKDIR /app
-COPY package.json package-lock.json /app/
-RUN npm install
 COPY --exclude=Dockerfile.* . .
 RUN npm run build --base=${VITE_BASE_URL}
 
