@@ -151,6 +151,9 @@ const searchFacility = () => {
     border-radius: 5em;
     padding-inline: 1.5em;
     box-shadow: var(--el-box-shadow);
+    &:hover {
+        box-shadow: var(--el-box-shadow-dark);
+    }
 }
 .el-divider.hero-divider .el-divider__text {
     letter-spacing: 2px;
