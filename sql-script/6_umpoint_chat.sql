@@ -15,7 +15,7 @@ CREATE TABLE `chat_room` (
 CREATE TABLE `chat_message` (
     `id` bigint(20) NOT NULL COMMENT 'Message ID',
     `chat_room_id` bigint(20) NOT NULL COMMENT 'Chat room ID',
-    `sender_type` tinyint NOT NULL COMMENT 'Sender user type: 0:System/Bot, 1:User, 2:Admin',
+    `sender_type` tinyint NOT NULL COMMENT 'Sender user type: 0:System, 1:Bot, 2:User, 3:Admin',
     `user_id` bigint(20) NULL COMMENT 'Sender user ID',
     `admin_id` bigint(20) NULL COMMENT 'Sender admin ID',
     `message` text NOT NULL COMMENT 'Message body',
