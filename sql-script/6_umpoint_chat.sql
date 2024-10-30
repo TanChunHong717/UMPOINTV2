@@ -1,12 +1,13 @@
 CREATE TABLE `chat_room` (
     `id` bigint(20) NOT NULL COMMENT 'Room ID',
     `name` varchar(255) NOT NULL COMMENT 'Room name',
-    `status` tinyint(4) NOT NULL COMMENT 'Status: 0:Created(No admin), 1:Open(Admin assigned), 2:Closed, 3:Resolved, 4:Reported',
+    `status` tinyint(4) NOT NULL DEFAULT 0 COMMENT 'Status: 0:Created(No admin), 1:Open(Admin assigned), 2:Closed, 3:Resolved, 4:Reported',
+    `auto_chatbot_reply` tinyint NOT NULL DEFAULT 1 COMMENT 'Should chatbot auto reply',
     `facility_type` tinyint(4) NOT NULL COMMENT 'Type: 0:Space, 1:Service, 2:Accommodation',
     `facility_id` bigint(20) NOT NULL COMMENT 'Facility ID',
     `initiate_user_id` bigint(20) NOT NULL COMMENT 'User ID that created room',
     `assigned_admin_id` bigint(20) DEFAULT NULL COMMENT 'Admin user ID',
-    `created_at` datetime NOT NULL COMMENT 'Creation Date',
+    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation Date',
     PRIMARY KEY (`id`),
     FOREIGN KEY (`initiate_user_id`) REFERENCES `cli_user` (`id`),
     FOREIGN KEY (`assigned_admin_id`) REFERENCES `sys_user` (`id`)
@@ -20,7 +21,7 @@ CREATE TABLE `chat_message` (
     `admin_id` bigint(20) NULL COMMENT 'Sender admin ID',
     `message` text NOT NULL COMMENT 'Message body',
     `reply_message_id` bigint(20) NULL COMMENT 'Message ID that is responding to',
-    `created_at` datetime NOT NULL COMMENT 'Creation Date',
+    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation Date',
     PRIMARY KEY (`id`),
     FOREIGN KEY (`chat_room_id`) REFERENCES `chat_room` (`id`),
     FOREIGN KEY (`reply_message_id`) REFERENCES `chat_message` (`id`)
@@ -35,12 +36,14 @@ CREATE TABLE `chat_message_attachment` (
     FOREIGN KEY (`message_id`) REFERENCES `chat_message` (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'Chat message attachment';
 
-CREATE TABLE `chat_reported_user` (
+CREATE TABLE `chat_user_report` (
     `id` bigint(20) NOT NULL COMMENT 'ID',
     `reported_user_id` bigint(20) NOT NULL COMMENT 'User ID that is reported',
-    `chat_room_id` bigint(20) NOT NULL COMMENT 'Chat room ID',
+    `chat_room_id` bigint(20) NOT NULL COMMENT 'Reported chat room ID',
+    `message_id` bigint(20) NULL COMMENT 'Reported message ID',
     `reason` text NOT NULL COMMENT 'Reason',
-    `created_at` datetime NOT NULL COMMENT 'Creation Date',
+    `reported_by` bigint(20) NOT NULL COMMENT 'User ID that send this report',
+    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation Date',
     PRIMARY KEY (`id`),
     FOREIGN KEY (`chat_room_id`) REFERENCES `chat_room` (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'Report user in chat';

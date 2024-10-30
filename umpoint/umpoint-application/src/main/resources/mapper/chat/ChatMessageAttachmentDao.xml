@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="my.edu.um.umpoint.modules.chat.dao.ChatMessageAttachmentDao">
+
+    <resultMap type="my.edu.um.umpoint.modules.chat.entity.ChatMessageAttachmentEntity" id="chatMessageAttachmentMap">
+        <result property="id" column="id"/>
+        <result property="messageId" column="message_id"/>
+        <result property="type" column="type"/>
+        <result property="url" column="url"/>
+    </resultMap>
+
+
+</mapper>
