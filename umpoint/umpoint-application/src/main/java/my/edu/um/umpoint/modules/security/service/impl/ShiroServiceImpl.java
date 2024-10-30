@@ -48,6 +48,7 @@ public class ShiroServiceImpl implements ShiroService {
                 permissionsList.addAll(cliPermissionConfig.getService());
             if (user.getAccommodationPermission() == 1)
                 permissionsList.addAll(cliPermissionConfig.getAccommodation());
+            permissionsList.addAll(cliPermissionConfig.getChat());
         }
 
         Set<String> permsSet = new HashSet<>();
