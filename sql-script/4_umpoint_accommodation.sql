@@ -23,7 +23,7 @@ CREATE TABLE acc_booking_rule (
     min_booking_advance_day decimal(5,0) NOT NULL COMMENT 'Min booking advance day',
     max_reservation_day decimal(5, 0) NOT NULL COMMENT 'Maximum reservation day',
     min_reservation_day decimal(5, 0) NOT NULL COMMENT 'Minimum reservation day',
-    max_technician_number decimal(5, 0) NOT NULL COMMENT 'Maximum number of technician',
+    max_technician_number decimal(3, 0) NOT NULL COMMENT 'Maximum number of technician',
     technician_price decimal(5, 0) NOT NULL COMMENT 'Price per technician',
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Accommodation Booking Rule';
