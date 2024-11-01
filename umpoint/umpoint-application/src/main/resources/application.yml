@@ -101,7 +101,6 @@ umpoint:
     permission:
       common:
         - common:upload
-        - common:ai-chat
       space:
         - space:event:info
         - space:booking:page
@@ -119,3 +118,10 @@ umpoint:
         - accommodation:booking:save
         - accommodation:booking:update
         - accommodation:booking:cancel
+      chat:
+        - common:ai-chat
+        - chat:room:page
+        - chat:room:info
+        - chat:room:getroom
+        - chat:message:view
+        - chat:message:save
