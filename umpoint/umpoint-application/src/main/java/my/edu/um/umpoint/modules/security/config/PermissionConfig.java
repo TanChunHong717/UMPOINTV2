@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @ConfigurationProperties(prefix = "umpoint.user.permission")
-public class CliPermissionConfig {
+public class PermissionConfig {
 
     private List<String> common;
 

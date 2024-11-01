@@ -47,8 +47,6 @@ public class ShiroConfig {
         filters.put("oauth2", new Oauth2Filter());
         shiroFilter.setFilters(filters);
 
-
-
         Map<String, String> filterMap = new LinkedHashMap<>();
         filterMap.put("/webjars/**", "anon");
         filterMap.put("/druid/**", "anon");

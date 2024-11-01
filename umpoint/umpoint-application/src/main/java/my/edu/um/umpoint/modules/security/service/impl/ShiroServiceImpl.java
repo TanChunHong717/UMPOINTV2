@@ -7,7 +7,7 @@ import my.edu.um.umpoint.modules.client.dao.CliTokenDao;
 import my.edu.um.umpoint.modules.client.dao.CliUserDao;
 import my.edu.um.umpoint.modules.client.entity.CliTokenEntity;
 import my.edu.um.umpoint.modules.client.entity.CliUserEntity;
-import my.edu.um.umpoint.modules.security.config.CliPermissionConfig;
+import my.edu.um.umpoint.modules.security.config.PermissionConfig;
 import my.edu.um.umpoint.modules.security.dao.SysUserTokenDao;
 import my.edu.um.umpoint.modules.security.entity.SysUserTokenEntity;
 import my.edu.um.umpoint.modules.security.service.ShiroService;
@@ -30,25 +30,24 @@ public class ShiroServiceImpl implements ShiroService {
     private final SysRoleDataScopeDao sysRoleDataScopeDao;
     private final CliUserDao cliUserDao;
     private final CliTokenDao cliTokenDao;
-    private final CliPermissionConfig cliPermissionConfig;
+    private final PermissionConfig permissionConfig;
 
     @Override
     public Set<String> getUserPermissions(UserDetail user) {
-        List<String> permissionsList;
+        List<String> permissionsList = new ArrayList<>(permissionConfig.getCommon());
         if (user.getSuperAdmin() != null) {
             if (user.getSuperAdmin() == SuperAdminEnum.YES.value())
-                permissionsList = sysMenuDao.getPermissionsList();
+                permissionsList.addAll(sysMenuDao.getPermissionsList());
             else
-                permissionsList = sysMenuDao.getUserPermissionsList(user.getId());
+                permissionsList.addAll(sysMenuDao.getUserPermissionsList(user.getId()));
         } else {
-            permissionsList = new ArrayList<>(cliPermissionConfig.getCommon());
             if (user.getSpacePermission() == 1)
-                permissionsList.addAll(cliPermissionConfig.getSpace());
+                permissionsList.addAll(permissionConfig.getSpace());
             if (user.getServicePermission() == 1)
-                permissionsList.addAll(cliPermissionConfig.getService());
+                permissionsList.addAll(permissionConfig.getService());
             if (user.getAccommodationPermission() == 1)
-                permissionsList.addAll(cliPermissionConfig.getAccommodation());
-            permissionsList.addAll(cliPermissionConfig.getChat());
+                permissionsList.addAll(permissionConfig.getAccommodation());
+            permissionsList.addAll(permissionConfig.getChat());
         }
 
         Set<String> permsSet = new HashSet<>();
