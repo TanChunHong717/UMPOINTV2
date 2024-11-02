@@ -1,5 +1,6 @@
 package my.edu.um.umpoint.modules.space.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -69,4 +70,9 @@ public class SpcClosureEntity {
 	* Recur on Sunday, 0:No, 1:Yes
 	*/
 	private Integer recurSunday;
+	/**
+	 * Space name
+	 */
+	@TableField(exist = false)
+	private String name;
 }

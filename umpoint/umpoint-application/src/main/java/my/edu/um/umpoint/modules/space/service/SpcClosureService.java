@@ -11,5 +11,4 @@ import my.edu.um.umpoint.modules.space.entity.SpcClosureEntity;
  * @since 1.0.0 2024-09-16
  */
 public interface SpcClosureService extends CrudService<SpcClosureEntity, SpcClosureDTO> {
-    void delete(Long id);
 }

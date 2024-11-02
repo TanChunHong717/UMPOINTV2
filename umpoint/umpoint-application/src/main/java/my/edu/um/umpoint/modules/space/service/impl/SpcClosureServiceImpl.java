@@ -1,6 +1,10 @@
 package my.edu.um.umpoint.modules.space.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import my.edu.um.umpoint.common.constant.Constant;
+import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
 import my.edu.um.umpoint.modules.space.dao.SpcClosureDao;
 import my.edu.um.umpoint.modules.space.dao.SpcEventDao;
@@ -8,13 +12,12 @@ import my.edu.um.umpoint.modules.space.dto.SpcClosureDTO;
 import my.edu.um.umpoint.modules.space.entity.SpcClosureEntity;
 import my.edu.um.umpoint.modules.space.service.SpcBookingService;
 import my.edu.um.umpoint.modules.space.service.SpcClosureService;
-import cn.hutool.core.util.StrUtil;
 import my.edu.um.umpoint.modules.space.service.SpcEventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,15 +39,24 @@ public class SpcClosureServiceImpl extends CrudServiceImpl<SpcClosureDao, SpcClo
     private SpcEventDao spcEventDao;
 
     @Override
-    public QueryWrapper<SpcClosureEntity> getWrapper(Map<String, Object> params){
+    public QueryWrapper<SpcClosureEntity> getWrapper(Map<String, Object> params) {
         String id = (String)params.get("id");
 
         QueryWrapper<SpcClosureEntity> wrapper = new QueryWrapper<>();
         wrapper.eq(StrUtil.isNotBlank(id), "id", id);
-        if (!params.containsKey("showPast"))
-            wrapper.ge("endDay", new Date());
 
         return wrapper;
+    }
+
+    @Override
+    public PageData<SpcClosureDTO> page(Map<String, Object> params) {
+        paramsToLike(params, "deptName");
+
+        IPage<SpcClosureEntity> page = getPage(params, Constant.CREATE_DATE, false);
+
+        List<SpcClosureEntity> list = baseDao.list(params);
+
+        return getPageData(list, page.getTotal(), currentDtoClass());
     }
 
     @Override
@@ -68,11 +80,10 @@ public class SpcClosureServiceImpl extends CrudServiceImpl<SpcClosureDao, SpcClo
         rejectOverlapBooking(dto.getId());
     }
 
+    @Override
     @Transactional(rollbackFor = Exception.class)
-    public void delete(Long id) {
-        spcEventService.deleteByClosureId(id);
-
-        Long[] ids = {id};
+    public void delete(Long[] ids) {
+        spcEventService.deleteByClosureId(ids);
         super.delete(ids);
     }
 

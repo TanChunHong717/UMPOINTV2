@@ -4,11 +4,36 @@
 <mapper namespace="my.edu.um.umpoint.modules.accommodation.dao.AccClosureDao">
 
     <resultMap type="my.edu.um.umpoint.modules.accommodation.entity.AccClosureEntity" id="accClosureMap">
-        <result property="id" column="id"/>
+        <id property="id" column="id"/>
         <result property="accommodationId" column="accommodation_id"/>
         <result property="startDay" column="start_day"/>
         <result property="endDay" column="end_day"/>
     </resultMap>
 
+    <resultMap type="my.edu.um.umpoint.modules.accommodation.entity.AccClosureEntity" id="accClosureSelectMap">
+        <id property="id" column="id"/>
+        <result property="accommodationId" column="accommodation_id"/>
+        <result property="startDay" column="start_day"/>
+        <result property="endDay" column="end_day"/>
+        <result property="name" column="name"/>
+    </resultMap>
 
+    <select id="list" resultMap="spcClosureSelectMap">
+        SELECT
+            ac.id,
+            ac.accommodation_id,
+            ac.start_day,
+            ac.end_day,
+            a.name
+        FROM acc_closure ac
+        JOIN acc_accommodation ON ac.space_id = a.id
+        <where>
+            <if test="name != null and name.trim() != ''">
+                a.name like #{name}
+            </if>
+            <if test="showPast != 1">
+                AND CURDATE() &lt; ac.end_day
+            </if>
+        </where>
+    </select>
 </mapper>

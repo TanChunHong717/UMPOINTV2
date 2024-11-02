@@ -2,7 +2,11 @@ package my.edu.um.umpoint.modules.space.dao;
 
 import my.edu.um.umpoint.common.dao.BaseDao;
 import my.edu.um.umpoint.modules.space.entity.SpcClosureEntity;
+import my.edu.um.umpoint.modules.space.entity.SpcDeptBookingRuleEntity;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Space Closure Period
@@ -12,5 +16,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface SpcClosureDao extends BaseDao<SpcClosureEntity> {
-	
+    List<SpcClosureEntity> list(Map<String, Object> params);
 }

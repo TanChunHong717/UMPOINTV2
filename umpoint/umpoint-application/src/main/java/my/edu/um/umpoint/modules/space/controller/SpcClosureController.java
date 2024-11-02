@@ -45,7 +45,8 @@ public class SpcClosureController {
             @Parameter(name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY,required = true, ref="int") ,
             @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, ref="String") ,
             @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String") ,
-            @Parameter(name = "showPast", description = "Show past closure event, optional", in = ParameterIn.QUERY, ref="boolean")
+            @Parameter(name = Constant.NAME, description = "Name", in = ParameterIn.QUERY, ref="String") ,
+            @Parameter(name = "showPast", description = "Show past closure event, optional", in = ParameterIn.QUERY, ref="int")
     })
     @RequiresPermissions("space:closure:page")
     public Result<PageData<SpcClosureDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
@@ -89,14 +90,14 @@ public class SpcClosureController {
         return new Result();
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping
     @Operation(summary = "Delete")
     @LogOperation("Delete")
     @RequiresPermissions("space:closure:delete")
-    public Result delete(@PathVariable("id")  Long id){
-        AssertUtils.isNull(id);
+    public Result delete(@RequestBody Long[] ids){
+        AssertUtils.isArrayEmpty(ids);
 
-        spcClosureService.delete(id);
+        spcClosureService.delete(ids);
 
         return new Result();
     }
