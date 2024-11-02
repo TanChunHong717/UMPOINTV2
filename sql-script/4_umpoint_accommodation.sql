@@ -28,8 +28,6 @@ CREATE TABLE acc_booking_rule (
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Accommodation Booking Rule';
 
-INSERT INTO acc_booking_rule VALUE (0,1,1,1,1,1,60,0,5,1,0,0);
-
 CREATE TABLE acc_accommodation (
     id bigint NOT NULL COMMENT 'ID',
     status tinyint COMMENT 'Status 0:Suspend 1:Normal',

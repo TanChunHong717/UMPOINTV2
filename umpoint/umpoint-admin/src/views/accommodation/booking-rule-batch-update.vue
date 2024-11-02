@@ -17,44 +17,6 @@
       </el-form-item>
 
       <el-divider content-position="left">Venue Time and Booking Window</el-divider>
-      <el-form-item label="Booking Mode">
-        <el-radio-group v-model="dataForm.bookingMode">
-          <el-radio label="Free time selection" :value="0">Free time selection</el-radio>
-          <el-radio label="Limited to preset slots" :value="1">Limited to preset slots</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="Start time" prop="startTime">
-        <el-time-select
-          v-model="dataForm.startTime"
-          placeholder="Start time"
-          start="00:00"
-          end="23:59"
-          step="00:30"
-        />
-      </el-form-item>
-      <el-form-item label="End time" prop="endTime">
-        <el-time-select
-          v-model="dataForm.endTime"
-          placeholder="End time"
-          :start="dataForm.startTime"
-          end="23:59"
-          step="00:30"
-        />
-      </el-form-item>
-      <el-form-item label="Booking Unit" prop="bookingUnit">
-        <el-col :span="14">
-          <el-input-number v-model="dataForm.bookingUnit" controls-position="right" :min="0.5" :step="0.5" style="width: 100%"/>
-        </el-col>
-        <el-col :span="10" style="padding-left: 6px;">
-          <el-tooltip
-            class="box-item"
-            placement="bottom-end"
-          >
-            <template #content>Minimum increment for booking duration, e.g., '0.5' means bookings can be made in 30-minute intervals</template>
-            <el-button tabindex="-1" size="small" :icon="InfoFilled" circle />
-          </el-tooltip>
-        </el-col>
-      </el-form-item>
       <el-form-item label="Open for booking after" prop="minBookingAdvanceDay">
         <el-col :span="14">
           <el-input-number v-model="dataForm.minBookingAdvanceDay" controls-position="right" style="width: 100%" :min="0"/>
@@ -99,12 +61,6 @@
       <el-form-item label="Min reservation day" prop="minReservationDay">
         <el-input-number v-model="dataForm.minReservationDay" controls-position="right" :min="1"/>
       </el-form-item>
-      <el-form-item label="Max booking hour" prop="maxBookingHour">
-        <el-input-number v-model="dataForm.maxBookingHours" controls-position="right" :min="0.5" :step="0.5"/>
-      </el-form-item>
-      <el-form-item label="Min booking hour" prop="minBookingHour">
-        <el-input-number v-model="dataForm.minBookingHour" controls-position="right" :min="0.5" :step="0.5"/>
-      </el-form-item>
       <el-form-item label="Max technician number" prop="maxTechnicianNumber">
         <el-col :span="22">
           <el-input-number v-model="dataForm.maxTechnicianNumber" controls-position="right" style="width: 100%" :min="0"/>
@@ -138,28 +94,21 @@ import { ElMessage } from "element-plus";
 import {InfoFilled} from "@element-plus/icons-vue";
 const emit = defineEmits(["refreshDataList"]);
 
+const idList = ref([]);
 const visible = ref(false);
 const dataFormRef = ref();
 
 const dataForm = reactive({
-  id: 0,
   approvalRequired: 1,
   openForStaff: null,
   openForStudent: null,
   openForPublic: null,
-  holidayAvailable: null,
-  bookingMode: null,
-  startTime: null,
-  endTime: null,
-  bookingUnit: null,
+  holidayAvailable: 1,
   maxBookingAdvanceDay: null,
   minBookingAdvanceDay: null,
   maxReservationDay: null,
   minReservationDay: null,
-  maxBookingHour: null,
-  minBookingHour: null,
-  maxTechnicianNumber: null,
-  technicianPrice: null
+  maxTechnicianNumber: 0
 });
 
 const rules = ref({
@@ -167,18 +116,6 @@ const rules = ref({
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
   holidayAvailable: [
-    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
-  ],
-  bookingMode: [
-    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
-  ],
-  startTime: [
-    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
-  ],
-  endTime: [
-    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
-  ],
-  bookingUnit: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
   maxBookingAdvanceDay: [
@@ -193,43 +130,18 @@ const rules = ref({
   minReservationDay: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
-  maxBookingHour: [
-    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
-  ],
-  minBookingHour: [
-    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
-  ],
   maxTechnicianNumber: [
-    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
-  ],
-  technicianPrice: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ]
 });
 
-const removeSecond = (timeString: any): any => {
-  return timeString.substring(0, timeString.lastIndexOf(":"));
-}
-
-const addSecond = (timeString: any): any => {
-  return timeString + ':00';
-}
-
-const getInfo = () => {
-  baseService.get("/space/booking-rule/default").then((res) => {
-    Object.assign(dataForm, res.data);
-    dataForm.startTime = removeSecond(dataForm.startTime);
-    dataForm.endTime = removeSecond(dataForm.endTime);
-  });
-};
-
-const init = () => {
-  visible.value = true;
-
+const init = (dataListSelections: any) => {
+  if (dataListSelections) {
+    visible.value = true;
+    idList.value = dataListSelections.map((data: any)  => data.bookingRuleId);
+  }
   if (dataFormRef.value)
     dataFormRef.value.resetFields();
-
-  getInfo()
 };
 
 // Form submission
@@ -238,9 +150,8 @@ const dataFormSubmitHandle = () => {
     if (!valid) {
       return false;
     }
-    dataForm.startTime = addSecond(dataForm.startTime);
-    dataForm.endTime = addSecond(dataForm.endTime);
-    baseService.put("/space/booking-rule/default", dataForm).then((res) => {
+    const idListString = idList.value.join(',');
+    baseService.put(`/accommodation/booking-rule?idList=${idListString}`, dataForm).then((res) => {
       ElMessage.success({
         message: 'Success',
         duration: 500,

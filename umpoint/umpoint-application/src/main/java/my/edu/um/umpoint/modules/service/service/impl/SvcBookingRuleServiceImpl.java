@@ -3,12 +3,15 @@ package my.edu.um.umpoint.modules.service.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
+import my.edu.um.umpoint.common.utils.ConvertUtils;
 import my.edu.um.umpoint.modules.service.dao.SvcBookingRuleDao;
 import my.edu.um.umpoint.modules.service.dto.SvcBookingRuleDTO;
 import my.edu.um.umpoint.modules.service.entity.SvcBookingRuleEntity;
 import my.edu.um.umpoint.modules.service.service.SvcBookingRuleService;
+import my.edu.um.umpoint.modules.space.entity.SpcBookingRuleEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,4 +34,11 @@ public class SvcBookingRuleServiceImpl extends CrudServiceImpl<SvcBookingRuleDao
     }
 
 
+    @Override
+    public void updateBatch(List<Long> idList, SvcBookingRuleDTO svcBookingRuleDTO) {
+        QueryWrapper<SvcBookingRuleEntity> wrapper = new QueryWrapper<>();
+        wrapper.in("id", idList);
+
+        baseDao.update(ConvertUtils.sourceToTarget(svcBookingRuleDTO, currentModelClass()), wrapper);
+    }
 }

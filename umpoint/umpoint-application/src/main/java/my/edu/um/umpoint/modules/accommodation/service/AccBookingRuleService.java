@@ -4,6 +4,8 @@ import my.edu.um.umpoint.common.service.CrudService;
 import my.edu.um.umpoint.modules.accommodation.dto.AccBookingRuleDTO;
 import my.edu.um.umpoint.modules.accommodation.entity.AccBookingRuleEntity;
 
+import java.util.List;
+
 /**
  * Accommodation Booking Rule
  *
@@ -11,5 +13,5 @@ import my.edu.um.umpoint.modules.accommodation.entity.AccBookingRuleEntity;
  * @since 1.0.0 2024-08-23
  */
 public interface AccBookingRuleService extends CrudService<AccBookingRuleEntity, AccBookingRuleDTO> {
-
+    void updateBatch(List<Long> idList, AccBookingRuleDTO accBookingRuleDTO);
 }

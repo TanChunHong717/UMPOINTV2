@@ -4,6 +4,8 @@ import my.edu.um.umpoint.common.service.CrudService;
 import my.edu.um.umpoint.modules.service.dto.SvcBookingRuleDTO;
 import my.edu.um.umpoint.modules.service.entity.SvcBookingRuleEntity;
 
+import java.util.List;
+
 /**
  * Space Booking Rule
  *
@@ -11,5 +13,5 @@ import my.edu.um.umpoint.modules.service.entity.SvcBookingRuleEntity;
  * @since 1.0.0 2024-08-11
  */
 public interface SvcBookingRuleService extends CrudService<SvcBookingRuleEntity, SvcBookingRuleDTO> {
-
+    void updateBatch(List<Long> idList, SvcBookingRuleDTO svcBookingRuleDTO);
 }

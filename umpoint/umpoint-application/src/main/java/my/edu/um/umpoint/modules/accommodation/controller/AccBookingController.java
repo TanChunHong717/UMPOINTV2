@@ -137,64 +137,6 @@ public class AccBookingController{
         return new Result();
     }
 
-    private void validateEventOverlapped(AccClientBookingDTO request){
-        DateTimeFormatter sqlDateDormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        for (EventEntity dividedEvent : SpaceBookingUtils.dividePeriodToEvents(
-            request.getStartDay(), request.getEndDay(), Time.valueOf(LocalTime.MIN), Time.valueOf(LocalTime.MAX)
-        )) {
-            List<AccEventEntity> overlappedEvents = accEventDao.getEventsBetweenTimeSpan(
-                request.getAccommodationId(),
-                DateUtils.convertDateToLocalDateTime(dividedEvent.startTime).format(sqlDateDormatter),
-                DateUtils.convertDateToLocalDateTime(dividedEvent.endTime).format(sqlDateDormatter)
-            );
-            if (!overlappedEvents.isEmpty()) {
-                throw new DateTimeException("Booking overlapped");
-            }
-        }
-    }
-
-    private static void validateReservationLength(
-        AccBookingRuleDTO spcBookingRule,
-        LocalDate startDate,
-        LocalDate endDate
-    ) throws DateTimeException{
-        long differenceInDays = ChronoUnit.DAYS.between(startDate, endDate);
-        if (differenceInDays > spcBookingRule.getMaxReservationDay()) {
-            throw new DateTimeException("Selected date range is over the maximum number of reservation days");
-        }
-
-        if (differenceInDays < spcBookingRule.getMinReservationDay()) {
-            throw new DateTimeException("Selected time range does not reach minimum number of hours");
-        }
-    }
-
-    private static void validateInAllowedRange(
-        AccBookingRuleDTO accBookingRule, LocalDate startDate, LocalDate endDate
-    ) throws DateTimeException{
-        // Date time check
-        LocalDate allowedRangeStartDate =
-            LocalDate.now()
-                     .atStartOfDay(ZoneId.systemDefault())
-                     .plusDays(accBookingRule.getMinBookingAdvanceDay())
-                     .toLocalDate();
-        LocalDate allowedRangeEndDate =
-            LocalDate.now()
-                     .atStartOfDay(ZoneId.systemDefault())
-                     .plusDays(accBookingRule.getMaxBookingAdvanceDay())
-                     .toLocalDate();
-        if (
-            startDate.isBefore(allowedRangeStartDate) ||
-            startDate.isAfter(allowedRangeEndDate)
-        ) {
-            throw new DateTimeException("Invalid start date");
-        } else if (
-            endDate.isBefore(allowedRangeStartDate) ||
-            endDate.isAfter(allowedRangeEndDate)
-        ) {
-            throw new DateTimeException("Invalid end date");
-        }
-    }
-
     @PutMapping
     @Operation(summary = "Update")
     @LogOperation("Update")
@@ -269,4 +211,63 @@ public class AccBookingController{
         ExcelUtils.exportExcelToTarget(response, null, "Accommodation Booking", list, AccBookingExcel.class);
     }
 
+    private void validateEventOverlapped(AccClientBookingDTO request){
+        DateTimeFormatter sqlDateDormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        //Todo: No need to validate by event, just query all overlap event and check is exist
+        //Example: SELECT * FROM acc_event WHERE (startTime >= startDay AND startTime <= endDay) OR (endTime >= startDay AND endTime <= endDay)
+        for (EventEntity dividedEvent : SpaceBookingUtils.dividePeriodToEvents(
+                request.getStartDay(), request.getEndDay(), Time.valueOf(LocalTime.MIN), Time.valueOf(LocalTime.MAX)
+        )) {
+            List<AccEventEntity> overlappedEvents = accEventDao.getEventsBetweenTimeSpan(
+                    request.getAccommodationId(),
+                    DateUtils.convertDateToLocalDateTime(dividedEvent.startTime).format(sqlDateDormatter),
+                    DateUtils.convertDateToLocalDateTime(dividedEvent.endTime).format(sqlDateDormatter)
+            );
+            if (!overlappedEvents.isEmpty()) {
+                throw new DateTimeException("Booking overlapped");
+            }
+        }
+    }
+
+    private static void validateReservationLength(
+            AccBookingRuleDTO spcBookingRule,
+            LocalDate startDate,
+            LocalDate endDate
+    ) throws DateTimeException{
+        long differenceInDays = ChronoUnit.DAYS.between(startDate, endDate);
+        if (differenceInDays > spcBookingRule.getMaxReservationDay()) {
+            throw new DateTimeException("Selected date range is over the maximum number of reservation days");
+        }
+
+        if (differenceInDays < spcBookingRule.getMinReservationDay()) {
+            throw new DateTimeException("Selected time range does not reach minimum number of hours");
+        }
+    }
+
+    private static void validateInAllowedRange(
+            AccBookingRuleDTO accBookingRule, LocalDate startDate, LocalDate endDate
+    ) throws DateTimeException{
+        // Date time check
+        LocalDate allowedRangeStartDate =
+                LocalDate.now()
+                        .atStartOfDay(ZoneId.systemDefault())
+                        .plusDays(accBookingRule.getMinBookingAdvanceDay())
+                        .toLocalDate();
+        LocalDate allowedRangeEndDate =
+                LocalDate.now()
+                        .atStartOfDay(ZoneId.systemDefault())
+                        .plusDays(accBookingRule.getMaxBookingAdvanceDay())
+                        .toLocalDate();
+        if (
+                startDate.isBefore(allowedRangeStartDate) ||
+                        startDate.isAfter(allowedRangeEndDate)
+        ) {
+            throw new DateTimeException("Invalid start date");
+        } else if (
+                endDate.isBefore(allowedRangeStartDate) ||
+                        endDate.isAfter(allowedRangeEndDate)
+        ) {
+            throw new DateTimeException("Invalid end date");
+        }
+    }
 }

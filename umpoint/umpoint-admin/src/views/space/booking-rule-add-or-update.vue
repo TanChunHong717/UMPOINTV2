@@ -155,7 +155,6 @@
     </el-form>
     <template #footer>
       <el-button @click="visible = false">Cancel</el-button>
-      <el-button type="info" @click="Object.assign(dataForm, defaultBookingRule)">Apply Default Booking Rule</el-button>
       <el-button type="primary" @click="dataFormSubmitHandle()">Confirm</el-button>
     </template>
   </el-dialog>
@@ -171,7 +170,6 @@ const emit = defineEmits(["refreshData"]);
 const visible = ref(false);
 const dataFormRef = ref();
 const userList = ref<{id: number; username: string}[]>([]);
-const defaultBookingRule = ref();
 
 const spaceId = ref(null);
 const dataForm = reactive({
@@ -251,15 +249,6 @@ const rules = ref({
   ]
 });
 
-const getDefaultBookingRule = async () => {
-  return baseService.get("/space/booking-rule/default").then((res) => {
-    if (res.code !== 0) {
-      return ElMessage.error(res.msg);
-    }
-    defaultBookingRule.value = res.data;
-  });
-}
-
 const getUserList = async () => {
   return baseService.get("/sys/user/list").then((res) => {
     if (res.code !== 0) {
@@ -282,7 +271,6 @@ const addSecond = (timeString: any): any => {
 }
 
 const init = (space?: any) => {
-  getDefaultBookingRule();
   getUserList();
 
   visible.value = true;

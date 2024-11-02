@@ -134,83 +134,6 @@ public class SpcBookingController{
         return new Result();
     }
 
-    private void validateEventOverlapped(SpcClientBookingDTO request){
-        DateTimeFormatter sqlDateDormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        for (EventEntity dividedEvent: SpaceBookingUtils.dividePeriodToEvents(
-            request.getStartDay(), request.getEndDay(), request.getStartTime(), request.getEndTime()
-        )) {
-            List<SpcEventEntity> overlappedEvents = spcEventDao.getEventsBetweenTimeSpan(
-                request.getSpaceId(),
-                DateUtils.convertDateToLocalDateTime(dividedEvent.startTime).format(sqlDateDormatter),
-                DateUtils.convertDateToLocalDateTime(dividedEvent.endTime).format(sqlDateDormatter)
-            );
-            if (!overlappedEvents.isEmpty()) {
-                throw new DateTimeException("Booking overlapped");
-            }
-        }
-    }
-
-    private static void validateReservationLength(
-        SpcBookingRuleDTO spcBookingRule,
-        LocalDate startDate,
-        LocalDate endDate,
-        LocalTime startTime,
-        LocalTime endTime
-    ) throws DateTimeException{
-        long differenceInDays = ChronoUnit.DAYS.between(startDate, endDate);
-        if (differenceInDays > spcBookingRule.getMaxReservationDay()) {
-            throw new DateTimeException("Selected date range is over the maximum number of reservation days");
-        }
-
-        double differenceInHours = ChronoUnit.MINUTES.between(startTime, endTime) / 60.0; // may have half hour limit
-        if (differenceInHours < spcBookingRule.getMinBookingHour().doubleValue()){
-            throw new DateTimeException("Selected time range does not reach minimum number of hours");
-        }
-    }
-
-    private static void validateInAllowedRange(
-        SpcBookingRuleDTO spcBookingRule, LocalDate startDate, LocalDate endDate
-    ) throws DateTimeException{
-        // Date time check
-        LocalDate allowedRangeStartDate =
-            LocalDate.now()
-                     .atStartOfDay(ZoneId.systemDefault())
-                     .plusDays(spcBookingRule.getMinBookingAdvanceDay())
-                     .toLocalDate();
-        LocalDate allowedRangeEndDate =
-            LocalDate.now()
-                     .atTime(LocalTime.MAX)
-                     .plusDays(spcBookingRule.getMaxBookingAdvanceDay())
-                     .toLocalDate();
-        if (
-            startDate.isBefore(allowedRangeStartDate) ||
-            startDate.isAfter(allowedRangeEndDate)
-        ) {
-            throw new DateTimeException("Invalid start date");
-        } else if (
-            endDate.isBefore(allowedRangeStartDate) ||
-            endDate.isAfter(allowedRangeEndDate)
-        ) {
-            throw new DateTimeException("Invalid end date");
-        }
-    }
-
-    private static SpcBookingDTO makeSpcBookingDTO(SpcClientBookingDTO request, SpcSpaceDTO space){
-        SpcBookingDTO bookingDto = new SpcBookingDTO();
-        bookingDto.setSpaceId(space.getId());
-        bookingDto.setEvent(request.getEvent());
-        bookingDto.setStartDay(request.getStartDay());
-        bookingDto.setEndDay(request.getEndDay());
-        bookingDto.setStartTime(request.getStartTime());
-        bookingDto.setEndTime(request.getEndTime());
-        if (request.getTechnicianNumber() != null && request.getTechnicianNumber().isPresent()) {
-            bookingDto.setTechnicianNumber(request.getTechnicianNumber().get());
-        } else {
-            bookingDto.setTechnicianNumber(0);
-        }
-        return bookingDto;
-    }
-
     @PutMapping
     @Operation(summary = "Update")
     @LogOperation("Update")
@@ -274,4 +197,85 @@ public class SpcBookingController{
         ExcelUtils.exportExcelToTarget(response, null, "Space Booking", list, SpcBookingExcel.class);
     }
 
+    private void validateEventOverlapped(SpcClientBookingDTO request){
+        DateTimeFormatter sqlDateDormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        for (EventEntity dividedEvent: SpaceBookingUtils.dividePeriodToEvents(
+                request.getStartDay(), request.getEndDay(), request.getStartTime(), request.getEndTime()
+        )) {
+            //Todo: Enhance it to a single query, also try to avoid calling dao in controller
+            //Try to query all event between startDay and endDay, and do comparison of time in backend
+            //Also move this logic to booking service
+            List<SpcEventEntity> overlappedEvents = spcEventDao.getEventsBetweenTimeSpan(
+                    request.getSpaceId(),
+                    DateUtils.convertDateToLocalDateTime(dividedEvent.startTime).format(sqlDateDormatter),
+                    DateUtils.convertDateToLocalDateTime(dividedEvent.endTime).format(sqlDateDormatter)
+            );
+            if (!overlappedEvents.isEmpty()) {
+                throw new DateTimeException("Booking overlapped");
+            }
+        }
+    }
+
+    private static void validateReservationLength(
+            SpcBookingRuleDTO spcBookingRule,
+            LocalDate startDate,
+            LocalDate endDate,
+            LocalTime startTime,
+            LocalTime endTime
+    ) throws DateTimeException{
+        long differenceInDays = ChronoUnit.DAYS.between(startDate, endDate);
+        if (differenceInDays > spcBookingRule.getMaxReservationDay()) {
+            throw new DateTimeException("Selected date range is over the maximum number of reservation days");
+        }
+        if (differenceInDays < spcBookingRule.getMinReservationDay()) {
+            throw new DateTimeException("Selected date range does not reach minimum number of reservation days");
+        }
+
+        double differenceInHours = ChronoUnit.MINUTES.between(startTime, endTime) / 60.0; // may have half hour limit
+        if (differenceInHours > spcBookingRule.getMaxBookingHour().doubleValue()){
+            throw new DateTimeException("Selected time range is over the minimum number of hours");
+        }
+        if (differenceInHours < spcBookingRule.getMinBookingHour().doubleValue()){
+            throw new DateTimeException("Selected time range does not reach minimum number of hours");
+        }
+    }
+
+    private static void validateInAllowedRange(
+            SpcBookingRuleDTO spcBookingRule, LocalDate startDate, LocalDate endDate
+    ) throws DateTimeException{
+        // Date time check
+        LocalDate allowedRangeStartDate =
+                LocalDate.now()
+                        .atStartOfDay(ZoneId.systemDefault())
+                        .plusDays(spcBookingRule.getMinBookingAdvanceDay())
+                        .toLocalDate();
+        LocalDate allowedRangeEndDate =
+                LocalDate.now()
+                        .atTime(LocalTime.MAX)
+                        .plusDays(spcBookingRule.getMaxBookingAdvanceDay())
+                        .toLocalDate();
+        if (
+                startDate.isBefore(allowedRangeStartDate) ||
+                        startDate.isAfter(allowedRangeEndDate)
+        ) {
+            throw new DateTimeException("Invalid start date");
+        } else if (
+                endDate.isBefore(allowedRangeStartDate) ||
+                        endDate.isAfter(allowedRangeEndDate)
+        ) {
+            throw new DateTimeException("Invalid end date");
+        }
+    }
+
+    private static SpcBookingDTO makeSpcBookingDTO(SpcClientBookingDTO request, SpcSpaceDTO space){
+        SpcBookingDTO bookingDto = new SpcBookingDTO();
+        bookingDto.setSpaceId(space.getId());
+        bookingDto.setEvent(request.getEvent());
+        bookingDto.setStartDay(request.getStartDay());
+        bookingDto.setEndDay(request.getEndDay());
+        bookingDto.setStartTime(request.getStartTime());
+        bookingDto.setEndTime(request.getEndTime());
+        bookingDto.setTechnicianNumber((request.getTechnicianNumber() != null)? request.getTechnicianNumber(): 0);
+        return bookingDto;
+    }
 }

@@ -19,22 +19,22 @@ import java.util.List;
  * @since 1.0.0 2024-09-08
  */
 @Data
-@Schema(name = "Accommodation Booking")
+@Schema(title = "Accommodation Booking")
 public class AccClientBookingDTO implements Serializable {
 	@Serial
-    private static final long serialVersionUID = 12345L;
+    private static final long serialVersionUID = -7813381979265040276L;
 
-	@SchemaProperty(name = "Accommodation ID")
+	@Schema(title = "Accommodation ID")
 	private Long accommodationId;
 
-	@SchemaProperty(name = "Description of the event or purpose for the booking")
+	@Schema(title = "Description of the event or purpose for the booking")
 	private String event;
 
-	@SchemaProperty(name = "Start day of booking")
+	@Schema(title = "Start day of booking")
 	@JsonFormat(pattern="yyyy-MM-dd")
 	private Date startDay;
 
-	@SchemaProperty(name = "End day of booking")
+	@Schema(title = "End day of booking")
 	@JsonFormat(pattern="yyyy-MM-dd")
 	private Date endDay;
 }

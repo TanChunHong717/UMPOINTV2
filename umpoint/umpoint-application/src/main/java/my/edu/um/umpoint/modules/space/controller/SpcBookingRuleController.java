@@ -7,9 +7,11 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import my.edu.um.umpoint.common.annotation.LogOperation;
 import my.edu.um.umpoint.common.constant.Constant;
+import my.edu.um.umpoint.common.exception.RenException;
 import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.utils.Result;
 import my.edu.um.umpoint.common.validator.ValidatorUtils;
+import my.edu.um.umpoint.common.validator.group.BatchUpdateGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import my.edu.um.umpoint.modules.space.dto.SpcBookingRuleDTO;
 import my.edu.um.umpoint.modules.space.dto.SpcSpaceDTO;
@@ -19,6 +21,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -54,21 +57,16 @@ public class SpcBookingRuleController {
         return new Result<PageData<SpcSpaceDTO>>().ok(page);
     }
 
-    @GetMapping("default")
-    @Operation(summary = "Get Default Booking Rule")
-    @RequiresPermissions("space:default-booking-rule:info")
-    public Result<SpcBookingRuleDTO> getDefaultBookingRule() {
-        return new Result<SpcBookingRuleDTO>().ok(spcBookingRuleService.get(0L));
-    }
-
-    @PutMapping("default")
-    @Operation(summary = "Update Default Booking Rule")
+    @PutMapping
+    @Operation(summary = "Batch Update Booking Rule")
     @LogOperation("Update")
-    @RequiresPermissions("space:default-booking-rule:update")
-    public Result updateDefaultBookingRule(@RequestBody SpcBookingRuleDTO spcBookingRuleDTO) {
-        ValidatorUtils.validateEntity(spcBookingRuleDTO, UpdateGroup.class);
+    @RequiresPermissions("space:booking-rule:update")
+    public Result updateBatchBookingRule(@RequestParam List<Long> idList, @RequestBody SpcBookingRuleDTO spcBookingRuleDTO) {
+        if (idList.isEmpty())
+            throw new RenException("Empty booking id list");
+        ValidatorUtils.validateEntity(spcBookingRuleDTO, BatchUpdateGroup.class);
 
-        spcBookingRuleService.update(spcBookingRuleDTO);
+        spcBookingRuleService.updateBatch(idList, spcBookingRuleDTO);
 
         return new Result();
     }

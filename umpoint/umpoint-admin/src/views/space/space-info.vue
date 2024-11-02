@@ -116,7 +116,7 @@
             <el-row class="mb-14">
               <el-col :span="12">
                 Booking Mode:
-                <el-tag v-if="space.spcBookingRuleDTO.bookingMode == 1" type="primary">Free time selection</el-tag>
+                <el-tag v-if="space.spcBookingRuleDTO.bookingMode == 0" type="primary">Free time selection</el-tag>
                 <el-tag v-else type="info">Limited to preset slots</el-tag>
               </el-col>
               <el-col :span="12">Booking unit in hour: {{ space.spcBookingRuleDTO.bookingUnit }}</el-col>
