@@ -66,7 +66,7 @@ public class SpcBookingRuleDTO implements Serializable {
 	@NotNull(groups = {DefaultGroup.class})
 	private Time endTime;
 
-	@Schema(title = "Booking unit in hour (e.g., 0.5 for half-hour increments)")
+	@Schema(title = "Booking unit in minutes")
 	@NotNull(groups = {DefaultGroup.class})
 	private BigDecimal bookingUnit;
 

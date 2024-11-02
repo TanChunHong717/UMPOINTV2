@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -40,6 +41,8 @@ public class SpcClosureServiceImpl extends CrudServiceImpl<SpcClosureDao, SpcClo
 
         QueryWrapper<SpcClosureEntity> wrapper = new QueryWrapper<>();
         wrapper.eq(StrUtil.isNotBlank(id), "id", id);
+        if (!params.containsKey("showPast"))
+            wrapper.ge("endDay", new Date());
 
         return wrapper;
     }

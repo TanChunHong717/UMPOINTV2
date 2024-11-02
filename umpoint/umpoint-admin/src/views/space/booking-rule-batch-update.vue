@@ -43,14 +43,14 @@
       </el-form-item>
       <el-form-item label="Booking Unit" prop="bookingUnit">
         <el-col :span="14">
-          <el-input-number v-model="dataForm.bookingUnit" controls-position="right" :min="0.5" :step="0.5" style="width: 100%"/>
+          <el-input-number v-model="dataForm.bookingUnit" controls-position="right" :min="1" style="width: 100%"/>
         </el-col>
         <el-col :span="10" style="padding-left: 6px;">
           <el-tooltip
             class="box-item"
             placement="bottom-end"
           >
-            <template #content>Minimum increment for booking duration, e.g., '0.5' means bookings can be made in 30-minute intervals</template>
+            <template #content>Minimum increment for booking duration, e.g., 30 means bookings can be made in 30-minute intervals</template>
             <el-button tabindex="-1" size="small" :icon="InfoFilled" circle />
           </el-tooltip>
         </el-col>

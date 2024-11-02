@@ -51,7 +51,7 @@
                   <el-tag v-if="scope.row.spcBookingRuleDTO.bookingMode == 0" type="primary">Free time selection</el-tag>
                   <el-tag v-else type="info">Limited to preset slots</el-tag>
                 </el-col>
-                <el-col :span="12">Booking unit in hour: {{ scope.row.spcBookingRuleDTO.bookingUnit }}</el-col>
+                <el-col :span="12">Booking unit in minutes: {{ scope.row.spcBookingRuleDTO.bookingUnit }}</el-col>
               </el-row>
               <el-row class="content-row">
                 <el-col :span="12">Start Time: {{ scope.row.spcBookingRuleDTO.startTime }}</el-col>
