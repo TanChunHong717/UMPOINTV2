@@ -41,24 +41,6 @@
                 AND pm.method = #{method}
             </if>
         </where>
-        <if test="orderField != null and orderField.trim() != ''">
-            ORDER BY
-            <if test="orderField == 'id'">
-                id
-            </if>
-            <if test="orderField == 'amount'">
-                amount
-            </if>
-            <if test="orderField == 'date'">
-                date
-            </if>
-            <if test="order != 'desc'">
-                ASC
-            </if>
-            <if test="order == 'desc'">
-                DESC
-            </if>
-        </if>
     </select>
     <select id="selectById" resultMap="accPaymentSelectMap">
         SELECT

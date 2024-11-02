@@ -130,21 +130,6 @@
                 </foreach>
             </if>
         </where>
-        <if test="orderField != null and orderField.trim() != ''">
-            ORDER BY
-            <if test="orderField == 'name'">
-                name
-            </if>
-            <if test="orderField == 'capacity'">
-                capacity
-            </if>
-            <if test="order != 'desc'">
-                ASC
-            </if>
-            <if test="order == 'desc'">
-                DESC
-            </if>
-        </if>
     </select>
     <select id="getBookingRuleList" resultMap="spcSpaceSelectMap">
         SELECT
@@ -186,21 +171,6 @@
                 AND b.approval_required = #{approvalRequire}
             </if>
         </where>
-        <if test="orderField != null and orderField.trim() != ''">
-            ORDER BY
-            <if test="orderField == 'name'">
-                name
-            </if>
-            <if test="orderField == 'hour_price'">
-                hour_price
-            </if>
-            <if test="order != 'desc'">
-                ASC
-            </if>
-            <if test="order == 'desc'">
-                DESC
-            </if>
-        </if>
     </select>
     <select id="selectById" resultMap="spcSpaceSelectMap">
         SELECT
