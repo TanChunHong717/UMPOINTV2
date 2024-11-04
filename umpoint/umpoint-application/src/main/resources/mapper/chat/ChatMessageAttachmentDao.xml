@@ -6,6 +6,7 @@
     <resultMap type="my.edu.um.umpoint.modules.chat.entity.ChatMessageAttachmentEntity" id="chatMessageAttachmentMap">
         <result property="id" column="id"/>
         <result property="messageId" column="message_id"/>
+        <result property="name" column="name"/>
         <result property="type" column="type"/>
         <result property="url" column="url"/>
     </resultMap>

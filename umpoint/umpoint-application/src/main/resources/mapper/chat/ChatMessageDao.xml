@@ -14,5 +14,38 @@
         <result property="createdAt" column="created_at"/>
     </resultMap>
 
+    <resultMap type="my.edu.um.umpoint.modules.chat.entity.ChatMessageEntity" id="chatMessageSelectMap">
+        <result property="id" column="id"/>
+        <result property="chatRoomId" column="chat_room_id"/>
+        <result property="senderType" column="sender_type"/>
+        <result property="userId" column="user_id"/>
+        <result property="adminId" column="admin_id"/>
+        <result property="message" column="message"/>
+        <result property="replyMessageId" column="reply_message_id"/>
+        <result property="createdAt" column="created_at"/>
+        <collection property="chatMessageAttachmentEntityList" javaType="java.util.List" ofType="my.edu.um.umpoint.modules.chat.entity.ChatMessageAttachmentEntity">
+            <result property="type" column="type"/>
+            <result property="url" column="url"/>
+        </collection>
+    </resultMap>
+
+    <select id="getRoomMessages" resultMap="chatMessageSelectMap">
+        SELECT
+            m.id,
+            m.chat_room_id,
+            m.sender_type,
+            m.user_id,
+            m.admin_id,
+            m.message,
+            m.reply_message_id,
+            m.created_at,
+            a.type,
+            a.url
+        FROM chat_message m
+        LEFT JOIN chat_message_attachment a ON m.id = a.message_id
+        WHERE
+            m.chat_room_id = #{roomId}
+        ORDER BY m.created_at ASC
+    </select>
 
 </mapper>

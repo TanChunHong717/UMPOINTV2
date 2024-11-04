@@ -19,7 +19,7 @@ CREATE TABLE `chat_message` (
     `sender_type` tinyint NOT NULL COMMENT 'Sender user type: 0:System, 1:Bot, 2:User, 3:Admin',
     `user_id` bigint(20) NULL COMMENT 'Sender user ID',
     `admin_id` bigint(20) NULL COMMENT 'Sender admin ID',
-    `message` text NOT NULL COMMENT 'Message body',
+    `message` text DEFAULT NULL COMMENT 'Message body',
     `reply_message_id` bigint(20) NULL COMMENT 'Message ID that is responding to',
     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation Date',
     PRIMARY KEY (`id`),
@@ -30,6 +30,7 @@ CREATE TABLE `chat_message` (
 CREATE TABLE `chat_message_attachment` (
     `id` bigint(20) NOT NULL COMMENT 'Attachment ID',
     `message_id` bigint(20) NOT NULL COMMENT 'Message ID',
+    `name` varchar(250) NOT NULL COMMENT 'Attachment name',
     `type` varchar(20) NOT NULL COMMENT 'Attachment type',
     `url` varchar(250) NOT NULL COMMENT 'Image url',
     PRIMARY KEY (id),
