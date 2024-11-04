@@ -2,7 +2,7 @@ import {
     login as loginApi,
     logout as logoutApi,
     getUserInformation,
-} from "@/helpers/credentials.js";
+} from "@/helpers/api-credentials.js";
 import { setCache, getCache, removeCache } from "@/utils/cache";
 import { CacheToken } from "@/constants/app";
 
@@ -63,11 +63,11 @@ const auth = {
                 }
                 throw new Error("Server error");
             }
-            commit("setUserId", userInfo.data.id);
+            commit("setUserId", userInfo.data.data.id);
             commit("setPermissions", {
-                space: userInfo.data.spacePermission,
-                service: userInfo.data.servicePermission,
-                accommodation: userInfo.data.accommodationPermission,
+                space: !!userInfo.data.data.spacePermission,
+                service: !!userInfo.data.data.servicePermission,
+                accommodation: !!userInfo.data.data.accommodationPermission,
             });
         },
         async login({ commit }, { username, password }) {
@@ -95,6 +95,7 @@ const auth = {
 
             // get user info
             const userInfo = await getUserInformation();
+            console.log(userInfo);
             if (userInfo.status !== 200 || userInfo.data.code !== 0) {
                 throw new Error("Server error");
             }
