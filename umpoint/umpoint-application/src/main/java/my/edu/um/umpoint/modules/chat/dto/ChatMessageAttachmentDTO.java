@@ -26,6 +26,9 @@ public class ChatMessageAttachmentDTO implements Serializable {
 	@Schema(title = "Message ID")
 	private Long messageId;
 
+	@Schema(title = "Attachment name")
+	private String name;
+
 	@Schema(title = "Attachment type")
 	private String type;
 

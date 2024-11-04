@@ -25,6 +25,10 @@ public class ChatMessageAttachmentEntity {
      * Message ID
      */
 		private Long messageId;
+	/**
+	 * Attachment name
+	 */
+	private String name;
     /**
      * Attachment type
      */

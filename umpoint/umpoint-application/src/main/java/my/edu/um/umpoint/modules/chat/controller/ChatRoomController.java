@@ -12,15 +12,14 @@ import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.utils.ExcelUtils;
 import my.edu.um.umpoint.common.utils.Result;
-import my.edu.um.umpoint.common.validator.AssertUtils;
 import my.edu.um.umpoint.common.validator.ValidatorUtils;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import my.edu.um.umpoint.modules.accommodation.dto.AccAccommodationDTO;
 import my.edu.um.umpoint.modules.accommodation.service.AccAccommodationService;
-import my.edu.um.umpoint.modules.chat.dto.ChatMessageDTO;
 import my.edu.um.umpoint.modules.chat.dto.ChatRoomDTO;
 import my.edu.um.umpoint.modules.chat.excel.ChatRoomExcel;
+import my.edu.um.umpoint.modules.chat.service.ChatMessageService;
 import my.edu.um.umpoint.modules.chat.service.ChatRoomService;
 import my.edu.um.umpoint.modules.service.dto.SvcServiceDTO;
 import my.edu.um.umpoint.modules.service.service.SvcServiceService;
@@ -48,6 +47,8 @@ import java.util.Map;
 public class ChatRoomController{
     @Autowired
     private ChatRoomService chatRoomService;
+    @Autowired
+    private ChatMessageService chatMessageService;
     @Autowired
     private SpcSpaceService spcSpaceService;
     @Autowired
@@ -94,7 +95,19 @@ public class ChatRoomController{
     @Operation(summary = "Get Room ID")
     @LogOperation("Get Room ID")
     @RequiresPermissions("chat:room:getroom")
-    public Result<Long> getRoom(@RequestBody Map<String, Object> request){
+    @Parameters(
+        {
+            @Parameter(
+                name = "facilityType", description = "Facility type, one of space/accommodation/service",
+                in = ParameterIn.QUERY, required = true, ref = "String"
+            ),
+            @Parameter(
+                name = "facilityId", description = "Facility ID",
+                in = ParameterIn.QUERY, required = true, ref = "Long"
+            )
+        }
+    )
+    public Result getRoom(@RequestBody Map<String, Object> request) throws InvalidResourceUsageException{
         // param validation
         if (
             request.get("facilityType") == null ||
@@ -107,7 +120,7 @@ public class ChatRoomController{
                 request.get("facilityType").toString().toUpperCase().equals(type.name())
             )
         )
-            throw new InvalidResourceUsageException("Invalid facility type");
+            return new Result().error(400, "Invalid facility type");
 
         String facilityType = request.get("facilityType").toString();
         ChatConstant.FacilityType facilityEnum = ChatConstant.FacilityType.fromString(facilityType);
@@ -129,7 +142,7 @@ public class ChatRoomController{
                 }
             }
         } catch (Exception e) {
-            throw new InvalidResourceUsageException("Invalid facility ID");
+            return new Result().error(400, "Invalid facility ID");
         }
 
         Long roomId = chatRoomService.getRoomByFacilityId(facilityEnum, facilityId);
@@ -161,22 +174,4 @@ public class ChatRoomController{
         ExcelUtils.exportExcelToTarget(response, null, "Chat room", list, ChatRoomExcel.class);
     }
 
-    @GetMapping("{roomId}/message")
-    @Operation(summary = "Information")
-    @RequiresPermissions("chat:message:view")
-    public Result<List<ChatMessageDTO>> getMessages(@PathVariable("id") Long roomId){
-        List<ChatMessageDTO> data = chatRoomService.getRoomMessages(roomId);
-
-        return new Result<List<ChatMessageDTO>>().ok(data);
-    }
-
-    @PostMapping("{roomId}/message")
-    @Operation(summary = "Information")
-    @RequiresPermissions("chat:message:save")
-    public Result<List<ChatMessageDTO>> sendMessage(@PathVariable("id") Long roomId, @RequestBody Map<String, Object> request){
-        // validate if user is in chat room
-        //
-
-        return new Result();
-    }
 }

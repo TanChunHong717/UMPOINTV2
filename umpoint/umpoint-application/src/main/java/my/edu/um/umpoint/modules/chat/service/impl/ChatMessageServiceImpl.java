@@ -7,8 +7,11 @@ import my.edu.um.umpoint.modules.chat.dto.ChatMessageDTO;
 import my.edu.um.umpoint.modules.chat.entity.ChatMessageEntity;
 import my.edu.um.umpoint.modules.chat.service.ChatMessageService;
 import cn.hutool.core.util.StrUtil;
+import my.edu.um.umpoint.modules.space.dto.SpcBookingDTO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,5 +33,9 @@ public class ChatMessageServiceImpl extends CrudServiceImpl<ChatMessageDao, Chat
         return wrapper;
     }
 
+    @Override
+    public List<ChatMessageEntity> getRoomMessages(Long roomId){
+        return baseDao.getRoomMessages(roomId);
+    }
 
 }

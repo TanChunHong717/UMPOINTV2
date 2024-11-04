@@ -15,7 +15,5 @@ import java.util.List;
  * @since 1.0.0 2024-10-28
  */
 public interface ChatRoomService extends CrudService<ChatRoomEntity, ChatRoomDTO>{
-    List<ChatMessageDTO> getRoomMessages(Long roomId);
-
     Long getRoomByFacilityId(ChatConstant.FacilityType facilityType, Long facilityId);
 }

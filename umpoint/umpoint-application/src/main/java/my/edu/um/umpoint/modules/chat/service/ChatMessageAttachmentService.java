@@ -2,7 +2,10 @@ package my.edu.um.umpoint.modules.chat.service;
 
 import my.edu.um.umpoint.common.service.CrudService;
 import my.edu.um.umpoint.modules.chat.dto.ChatMessageAttachmentDTO;
+import my.edu.um.umpoint.modules.chat.dto.ChatMessageDTO;
 import my.edu.um.umpoint.modules.chat.entity.ChatMessageAttachmentEntity;
+
+import java.util.List;
 
 /**
  * Chat message attachment
@@ -13,4 +16,5 @@ import my.edu.um.umpoint.modules.chat.entity.ChatMessageAttachmentEntity;
 public interface ChatMessageAttachmentService extends CrudService<ChatMessageAttachmentEntity,
     ChatMessageAttachmentDTO>{
 
+    void save(List attachments, ChatMessageDTO chatMessageDTO);
 }

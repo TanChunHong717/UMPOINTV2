@@ -13,6 +13,7 @@ import my.edu.um.umpoint.modules.chat.dto.ChatMessageDTO;
 import my.edu.um.umpoint.modules.chat.dto.ChatRoomDTO;
 import my.edu.um.umpoint.modules.chat.entity.ChatMessageEntity;
 import my.edu.um.umpoint.modules.chat.entity.ChatRoomEntity;
+import my.edu.um.umpoint.modules.chat.service.ChatMessageService;
 import my.edu.um.umpoint.modules.chat.service.ChatRoomService;
 import my.edu.um.umpoint.modules.security.user.SecurityUser;
 import my.edu.um.umpoint.modules.security.user.UserDetail;
@@ -56,15 +57,6 @@ public class ChatRoomServiceImpl extends CrudServiceImpl<ChatRoomDao, ChatRoomEn
     }
 
     @Override
-    public List<ChatMessageDTO> getRoomMessages(Long roomId){
-
-        QueryWrapper<ChatMessageEntity> wrapper = new QueryWrapper<>();
-        wrapper.eq("chat_room_id", roomId);
-
-        return chatMessageDao.selectObjs(wrapper);
-    }
-
-    @Override
     public Long getRoomByFacilityId(ChatConstant.FacilityType facilityType, Long facilityId){
         UserDetail user = SecurityUser.getUser();
 
@@ -72,16 +64,17 @@ public class ChatRoomServiceImpl extends CrudServiceImpl<ChatRoomDao, ChatRoomEn
         wrapper.eq("facility_type", facilityType.getValue());
         wrapper.eq("facility_id", facilityId);
         wrapper.eq("initiate_user_id", user.getId());
+        wrapper.notIn("initiate_user_id", List.of(
+            ChatConstant.RoomStatus.CLOSED.getValue(),
+            ChatConstant.RoomStatus.RESOLVED.getValue(),
+            ChatConstant.RoomStatus.REPORTED.getValue()
+        ));
         wrapper.orderByDesc("created_at");
+        wrapper.last("LIMIT 1");
 
         ChatRoomEntity chatRoom = baseDao.selectOne(wrapper);
         Long chatRoomId;
-        if (
-            chatRoom == null ||
-            chatRoom.getStatus() == ChatConstant.RoomStatus.CLOSED.getValue() ||
-            chatRoom.getStatus() == ChatConstant.RoomStatus.RESOLVED.getValue() ||
-            chatRoom.getStatus() == ChatConstant.RoomStatus.REPORTED.getValue()
-        ) {
+        if (chatRoom == null ) {
             // create new room if no room or room was closed/resolved/reported
             String roomName = "";
             switch (facilityType) {

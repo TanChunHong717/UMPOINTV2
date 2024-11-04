@@ -1,10 +1,13 @@
 package my.edu.um.umpoint.modules.chat.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import my.edu.um.umpoint.modules.payment.entity.SpcPaymentEntity;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Chat message
@@ -49,4 +52,9 @@ public class ChatMessageEntity {
      * Creation Date
      */
 		private Date createdAt;
+	/**
+	 * Attachment entity list
+	 */
+	@TableField(exist = false)
+	private List<ChatMessageAttachmentEntity> chatMessageAttachmentEntityList;
 }

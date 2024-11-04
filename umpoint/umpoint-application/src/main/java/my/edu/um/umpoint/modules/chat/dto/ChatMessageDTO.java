@@ -6,6 +6,7 @@ import lombok.Data;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -44,5 +45,6 @@ public class ChatMessageDTO implements Serializable {
 	@Schema(title = "Creation Date")
 	private Date createdAt;
 
-
+	@Schema(title = "Attachment dto list")
+	private List<ChatMessageAttachmentDTO> chatMessageAttachmentDTOList;
 }
