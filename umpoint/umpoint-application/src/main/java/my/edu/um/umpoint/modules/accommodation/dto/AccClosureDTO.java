@@ -23,7 +23,7 @@ import java.util.Date;
 @Schema(title = "Accommodation Closure Period")
 public class AccClosureDTO implements Serializable {
 	@Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -4395228089775543219L;
 
 	@Schema(title = "ID")
 	@Null(groups = {AddGroup.class})
@@ -43,4 +43,7 @@ public class AccClosureDTO implements Serializable {
 	@NotNull(groups = {DefaultGroup.class})
 	@JsonFormat(pattern="yyyy-MM-dd")
 	private Date endDay;
+
+	@Schema(title = "Accommodation name")
+	private String name;
 }

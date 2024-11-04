@@ -122,27 +122,6 @@
                 AND sb.user_id = #{userId}
             </if>
         </where>
-        <if test="orderField != null and orderField.trim() != ''">
-            ORDER BY
-            <if test="orderField == 'id'">
-                sb.id
-            </if>
-            <if test="orderField == 'space'">
-                space
-            </if>
-            <if test="orderField == 'create_date'">
-                sb.create_date
-            </if>
-            <if test="orderField == 'payment_amount'">
-                sb.payment_amount
-            </if>
-            <if test="order != 'desc'">
-                ASC
-            </if>
-            <if test="order == 'desc'">
-                DESC
-            </if>
-        </if>
     </select>
     <select id="selectById" resultMap="spcBookingSelectMap">
         SELECT

@@ -21,8 +21,6 @@ CREATE TABLE svc_booking_rule (
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Service Booking Rule';
 
-INSERT INTO svc_booking_rule VALUE (0,1,1,1,1);
-
 CREATE TABLE svc_service (
     id bigint NOT NULL COMMENT 'ID',
     status tinyint COMMENT 'Status 0:Suspend 1:Normal',

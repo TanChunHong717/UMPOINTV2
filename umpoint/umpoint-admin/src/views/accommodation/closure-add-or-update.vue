@@ -120,7 +120,7 @@ const updateDataForm = () => {
 }
 
 const deleteHandle = () => {
-  baseService.delete("/accommodation/closure/" + dataForm.id, {}).then((res) => {
+  baseService.delete("/accommodation/closure/", [dataForm.id]).then((res) => {
     ElMessage.success({
       message: 'Success',
       duration: 500,

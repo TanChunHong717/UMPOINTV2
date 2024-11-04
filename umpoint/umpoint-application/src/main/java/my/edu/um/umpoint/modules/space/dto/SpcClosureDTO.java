@@ -24,7 +24,7 @@ import java.util.Date;
 @Schema(title = "Space Closure Period")
 public class SpcClosureDTO implements Serializable {
 	@Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -2702607703982735056L;
 
 	@Schema(title = "ID")
 	@Null(groups = {AddGroup.class})
@@ -80,4 +80,7 @@ public class SpcClosureDTO implements Serializable {
 	@Schema(title = "Recur on Sunday, 0:No, 1:Yes")
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer recurSunday;
+
+	@Schema(title = "Space name")
+	private String name;
 }

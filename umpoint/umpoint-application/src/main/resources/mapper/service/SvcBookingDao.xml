@@ -91,24 +91,6 @@
                 AND sb.user_id = #{userId}
             </if>
         </where>
-        <if test="orderField != null and orderField.trim() != ''">
-            ORDER BY
-            <if test="orderField == 'id'">
-                id
-            </if>
-            <if test="orderField == 'service'">
-                service
-            </if>
-            <if test="orderField == 'create_date'">
-                create_date
-            </if>
-            <if test="order != 'desc'">
-                ASC
-            </if>
-            <if test="order == 'desc'">
-                DESC
-            </if>
-        </if>
     </select>
     <select id="selectById" resultMap="svcBookingSelectMap">
         SELECT

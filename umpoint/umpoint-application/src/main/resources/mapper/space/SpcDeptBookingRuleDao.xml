@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="my.edu.um.umpoint.modules.space.dao.SpcDeptBookingRuleDao">
+
+    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcDeptBookingRuleEntity" id="spcDeptBookingRuleMap">
+        <id property="id" column="id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="maxUserDailyBooking" column="max_user_daily_booking"/>
+        <result property="maxUserDailyBookingHour" column="max_user_daily_booking_hour"/>
+    </resultMap>
+
+    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcDeptBookingRuleEntity" id="spcDeptBookingRuleSelectMap">
+        <id property="id" column="id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="maxUserDailyBooking" column="max_user_daily_booking"/>
+        <result property="maxUserDailyBookingHour" column="max_user_daily_booking_hour"/>
+        <result property="name" column="name"/>
+    </resultMap>
+
+    <select id="list" resultMap="spcDeptBookingRuleSelectMap">
+        SELECT
+            s.id,
+            d.id as dept_id,
+            s.max_user_daily_booking,
+            s.max_user_daily_booking_hour,
+            d.name
+        FROM spc_dept_booking_rule s
+        RIGHT JOIN sys_dept d ON s.dept_id = d.id
+        <where>
+            <if test="deptName != null and deptName.trim() != ''">
+                d.name like #{deptName}
+            </if>
+        </where>
+    </select>
+</mapper>

@@ -22,14 +22,15 @@
       <div>
         <el-form-item>
           <el-button
-            v-if="state.hasPermission('accommodation:default-booking-rule:update')"
-            @click="defaultBookingRuleUpdateHandle"
+            v-if="state.hasPermission('accommodation:booking-rule:update') && state.dataListSelections && state.dataListSelections.length > 0"
+            @click="batchBookingRuleUpdateHandle"
             type="primary"
           >Update Default Booking Rule</el-button>
         </el-form-item>
       </div>
     </el-form>
-    <el-table v-loading="state.dataListLoading" :data="state.dataList" border @sort-change="state.dataListSortChangeHandle" style="width: 100%">
+    <el-table v-loading="state.dataListLoading" :data="state.dataList" border @selection-change="state.dataListSelectionChangeHandle" @sort-change="state.dataListSortChangeHandle" style="width: 100%">
+      <el-table-column type="selection" :selectable="selectable" width="55" />
       <el-table-column type="expand">
         <template #default="scope">
           <div class="expand-row">
@@ -95,16 +96,13 @@
   </div>
   <!-- Popup, Add / Edit -->
   <update-booking-rule ref="bookingRuleUpdateRef" @refreshData="state.getDataList">Confirm</update-booking-rule>
-  <update-default-booking-rule ref="defaultBookingRuleUpdateRef" @refreshDataList="state.getDataList">Confirm</update-default-booking-rule>
+  <batch-update-booking-rule ref="batchBookingRuleUpdateRef" @refreshDataList="state.getDataList">Confirm</batch-update-booking-rule>
 </template>
 <script lang="ts" setup>
 import useView from "@/hooks/useView";
 import {onActivated, reactive, ref, toRefs} from "vue";
 import UpdateBookingRule from "@/views/accommodation/booking-rule-add-or-update.vue";
-import UpdateDefaultBookingRule from "@/views/accommodation/default-booking-rule-add-or-update.vue";
-import baseService from "@/service/baseService";
-import {IObject} from "@/types/interface";
-import {ElMessage} from "element-plus";
+import BatchUpdateBookingRule from "@/views/accommodation/booking-rule-batch-update.vue";
 
 const view = reactive({
   deleteIsBatch: true,
@@ -118,9 +116,12 @@ const view = reactive({
 
 const state = reactive({ ...useView(view), ...toRefs(view) });
 
-const defaultBookingRuleUpdateRef = ref();
-const defaultBookingRuleUpdateHandle = () => {
-  defaultBookingRuleUpdateRef.value.init();
+const selectable = (row: any) => {
+  return row.bookingRuleId;
+}
+const batchBookingRuleUpdateRef = ref();
+const batchBookingRuleUpdateHandle = () => {
+  batchBookingRuleUpdateRef.value.init(state.dataListSelections);
 };
 
 const bookingRuleUpdateRef = ref();

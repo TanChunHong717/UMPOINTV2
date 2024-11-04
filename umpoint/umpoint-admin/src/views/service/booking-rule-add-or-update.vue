@@ -38,7 +38,6 @@
     </el-form>
     <template #footer>
       <el-button @click="visible = false">Cancel</el-button>
-      <el-button type="info" @click="Object.assign(dataForm, defaultBookingRule)">Apply Default Booking Rule</el-button>
       <el-button type="primary" @click="dataFormSubmitHandle()">Confirm</el-button>
     </template>
   </el-dialog>
@@ -80,15 +79,6 @@ const rules = ref({
   ]
 });
 
-const getDefaultBookingRule = async () => {
-  return baseService.get("/service/booking-rule/default").then((res) => {
-    if (res.code !== 0) {
-      return ElMessage.error(res.msg);
-    }
-    defaultBookingRule.value = res.data;
-  });
-}
-
 const getUserList = async () => {
   return baseService.get("/sys/user/list").then((res) => {
     if (res.code !== 0) {
@@ -99,7 +89,6 @@ const getUserList = async () => {
 };
 
 const init = (service?: any) => {
-  getDefaultBookingRule();
   getUserList();
 
   visible.value = true;

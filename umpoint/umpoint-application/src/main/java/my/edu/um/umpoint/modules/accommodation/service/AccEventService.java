@@ -15,6 +15,7 @@ import my.edu.um.umpoint.modules.accommodation.entity.AccEventEntity;
 public interface AccEventService extends CrudService<AccEventEntity, AccEventDTO> {
     void addEvent(AccBookingDTO bookingDTO);
     void addEvent(AccClosureDTO closureDTO);
-    void deleteByClosureId(Long closureId);
     void deleteByBookingId(Long bookingId);
+    void deleteByClosureId(Long closureId);
+    void deleteByClosureId(Long[] closureIds);
 }

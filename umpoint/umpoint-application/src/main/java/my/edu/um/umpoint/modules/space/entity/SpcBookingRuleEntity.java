@@ -54,7 +54,7 @@ public class SpcBookingRuleEntity {
 	 */
 	private Time endTime;
 	/**
-	 * Booking unit in hour (e.g., 0.5 for half-hour increments)
+	 * Booking unit in minutes
 	 */
 	private BigDecimal bookingUnit;
     /**

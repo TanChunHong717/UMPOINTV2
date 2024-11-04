@@ -17,43 +17,35 @@ import java.util.Optional;
 @Schema(name = "Space Booking")
 public class SpcClientBookingDTO implements Serializable {
     @Serial
-    private static final long serialVersionUID = -1234L;
-
+    private static final long serialVersionUID = -2657852531901294966L;
 
     @Schema(title = "Space ID")
-    @SchemaProperty(name = "Space ID")
     @NotNull(message = "{id.require}", groups = {DefaultGroup.class})
     private Long spaceId;
 
     @Schema(title = "Description of the event or purpose for the booking")
-    @SchemaProperty(name = "Description of the event or purpose for the booking")
     @NotEmpty(groups = {DefaultGroup.class})
     private String event;
 
     @Schema(title = "Start day of booking")
-    @SchemaProperty(name = "Start day of booking")
     @NotNull(groups = {DefaultGroup.class})
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date startDay;
 
     @Schema(title = "End day of booking")
-    @SchemaProperty(name = "End day of booking")
     @NotNull(groups = {DefaultGroup.class})
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date endDay;
 
     @Schema(title = "Start time of booking in a day")
-    @SchemaProperty(name = "Start time of booking in a day")
     @NotNull(groups = {DefaultGroup.class})
     private Time startTime;
 
     @Schema(title = "End time of booking in a day")
-    @SchemaProperty(name = "End time of booking in a day")
     @NotNull(groups = {DefaultGroup.class})
     private Time endTime;
 
     @Schema(title = "Number of additional technician(s) if required")
-    @SchemaProperty(name = "Number of additional technician(s) if required")
-    @PositiveOrZero(message = "Number of technicians must be positive value")
-    private Optional<Integer> technicianNumber;
+    @PositiveOrZero(groups = {DefaultGroup.class}) // Null element is consider valid
+    private Integer technicianNumber;
 }

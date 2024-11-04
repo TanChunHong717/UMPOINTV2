@@ -28,11 +28,11 @@ import baseService from "@/service/baseService";
 import { ElMessage } from "element-plus";
 const emit = defineEmits(["refreshDataList"]);
 
+const idList = ref([]);
 const visible = ref(false);
 const dataFormRef = ref();
 
 const dataForm = reactive({
-  id: 0,
   approvalRequired: 1,
   openForStaff: null,
   openForStudent: null,
@@ -45,19 +45,14 @@ const rules = ref({
   ]
 });
 
-const init = () => {
-  visible.value = true;
+const init = (dataListSelections: any) => {
+  if (dataListSelections) {
+    visible.value = true;
+    idList.value = dataListSelections.map((data: any)  => data.bookingRuleId);
+  }
 
   if (dataFormRef.value)
     dataFormRef.value.resetFields();
-
-  getInfo()
-};
-
-const getInfo = () => {
-  baseService.get("/service/booking-rule/default").then((res) => {
-    Object.assign(dataForm, res.data);
-  });
 };
 
 // Form submission
