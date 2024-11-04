@@ -27,7 +27,7 @@
 <script setup>
 import { ref, onMounted, onActivated, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { getCurrentUserBookings } from "@/helpers/api.js";
+import { getCurrentUserBookings } from "@/helpers/api-facility.js";
 import { bookingStatus, paymentStatus } from "@/constants/app.js";
 import BookingList from "@/components/booking-table/BookingList.vue";
 

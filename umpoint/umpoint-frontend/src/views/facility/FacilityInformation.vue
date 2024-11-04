@@ -250,7 +250,7 @@ import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
 import { ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getFacilityInformation } from "@/helpers/api.js";
+import { getFacilityInformation } from "@/helpers/api-facility.js";
 
 const router = useRouter();
 const route = useRoute();

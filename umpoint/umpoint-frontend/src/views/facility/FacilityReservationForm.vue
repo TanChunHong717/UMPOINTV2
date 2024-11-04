@@ -48,7 +48,7 @@ import {
 } from "@mdi/js";
 import { ref, reactive, computed, watch, shallowRef } from "vue";
 import { useRoute } from "vue-router";
-import { getFacilityInformation, createBooking } from "@/helpers/api.js";
+import { getFacilityInformation, createBooking } from "@/helpers/api-facility.js";
 import {
     formatDateToTimezoneDateStr,
     formatDateToTimezoneTimeStr,
