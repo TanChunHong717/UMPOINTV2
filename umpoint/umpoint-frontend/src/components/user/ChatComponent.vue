@@ -44,10 +44,10 @@ import { mdiMenuOpen } from "@mdi/js";
 import { ref, nextTick, watch } from "vue";
 import { useRoute } from "vue-router";
 import { default as chatApi } from "@/helpers/api-chat.js";
+import { uploadFile } from "@/helpers/api-upload.js";
 
 // chat component
 import { register } from "vue-advanced-chat";
-import api from "@/utils/api";
 register();
 
 const props = defineProps(["userId"]);
@@ -123,11 +123,13 @@ async function sendMessage(event) {
         message.replyTo = replyMessage._id;
     }
     if (files && files.length) {
-        message.files = files;
+        message.attachments = await Promise.all(
+            files.map((file) => uploadFile(file))
+        );
     }
     let indexId = messages.value.length + 1;
     messages.value.push({
-        content,
+        content: content ?? "",
         replyMessage,
         files,
         // default values
