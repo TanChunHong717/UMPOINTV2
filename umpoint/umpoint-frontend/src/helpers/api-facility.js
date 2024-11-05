@@ -73,8 +73,8 @@ the space used`,
                         holidayAvailable: 1,
                         startTime: "08:00",
                         endTime: "18:00",
-                        openDaysPriorBooking: 60,
-                        closeDaysAfterBooking: 5,
+                        maxBookingAdvanceDay: 60,
+                        minBookingAdvanceDay: 5,
                         maxReservationDays: 3,
                         minBookingHours: 1,
                     },
@@ -118,15 +118,15 @@ function getFacilityBookings(facilityID, startTime, endTime) {
 }
 
 function getCurrentUserBookings() {
-    return api.get(`/client/bookings`, {
-        data: {
-            userID: id,
-        },
-    });
+    return api.get(`/space/booking/page`);
 }
 
 function createBooking(formData) {
     return api.post(`/space/booking`, formData);
+}
+
+function cancelBooking(id) {
+    return api.put(`/space/booking/cancel/${id}`);
 }
 
 export {
@@ -135,4 +135,5 @@ export {
     getFacilityBookings,
     getCurrentUserBookings,
     createBooking,
+    cancelBooking,
 };

@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, reactive, useTemplateRef, h, Reactive } from "vue";
+import { ref, reactive, useTemplateRef, h, Reactive, Ref, computed } from "vue";
 import BookingCalendar from "./BookingCalendar.vue";
-import { addDays } from "@/utils/date.js";
+import { itemiseDailyEventPrices } from "@/helpers/pricing";
+import { ElMessage } from "element-plus";
 
 const emit = defineEmits(["nextStep"]);
 const props = defineProps(["facilityInfo"]);
@@ -15,7 +16,8 @@ const formData = reactive({
     additionalTechnicians: 0,
     startDate: null,
     endDate: null,
-    isTimeSet: [false, false], // [start, end] time is set
+    startTime: null,
+    endTime: null,
     termsAndConditions: false,
 });
 
@@ -30,7 +32,7 @@ today.setHours(0, 0, 0, 0);
  * */
 
 // form validation
-const formNode = useTemplateRef("formNode");
+const formNode: Ref<any> = useTemplateRef("formNode");
 const calendarNode = useTemplateRef("calendarNode");
 const rulesMessage = reactive({
     eventName: [
@@ -82,11 +84,54 @@ const rulesMessage = reactive({
     ],
 });
 
-// price calculation
-const priceEstimate = reactive([
-    { item: "Facility (2 hours)", price: 1100 },
-    { item: "Technician Service", price: 65 },
-]);
+// technician input
+const showDefaultTechnicianSelect = computed(() => {
+    return props.facilityInfo.bookingRule?.maxTechnicianNumber > 0;
+});
+const showTechnicianSelect = computed(() => {
+    return props.facilityInfo.bookingRule?.maxTechnicianNumber > 1;
+});
+const maxTechnicianNumber = computed(() => {
+    return props.facilityInfo.bookingRule?.maxTechnicianNumber - 1;
+});
+
+// price table
+const pricingDetails = computed(() => {
+    if (
+        !formData ||
+        !formData.startDate ||
+        !formData.endDate ||
+        !formData.startTime ||
+        !formData.endTime
+    )
+        return [];
+
+    let itemisedPrice: Array<{
+        item: String;
+        amount: number;
+        price: number;
+        total: number;
+    }> = itemiseDailyEventPrices(
+        props.facilityInfo,
+        formData.startDate,
+        formData.endDate,
+        formData.startTime,
+        formData.endTime,
+    );
+    if (showDefaultTechnicianSelect.value) {
+        let technicianCount = (formData.additionalTechnicians ?? 0) + 1;
+        itemisedPrice.push({
+            item: "Technician",
+            amount: technicianCount,
+            price: props.facilityInfo.bookingRule.technicianPrice,
+            total:
+                technicianCount *
+                props.facilityInfo.bookingRule.technicianPrice,
+        });
+    }
+
+    return itemisedPrice;
+});
 const getTotal = (param) => {
     const { columns, data } = param;
     const sums = [];
@@ -114,9 +159,11 @@ const getTotal = (param) => {
 
     return sums;
 };
-function formatCurrency(row) {
-    return row.price.toFixed(2);
+function formatCurrency(row, col, cellValue) {
+    return cellValue.toFixed(2);
 }
+
+// form validation
 function validateForm(field) {
     // only validate specific field
     if (field) {
@@ -135,6 +182,11 @@ async function returnFormInfo(formEl) {
             emit("nextStep", formData);
         } else {
             console.log("error submit!", fields);
+            // pop notification
+            ElMessage({
+                message: "Please fill in all required fields",
+                type: "error",
+            });
         }
     });
 }
@@ -171,13 +223,17 @@ async function returnFormInfo(formEl) {
                             :max="facilityInfo.capacity"
                         ></el-input-number>
                     </el-form-item>
-                    <el-form-item label="Technician">
+                    <el-form-item
+                        v-if="showDefaultTechnicianSelect"
+                        label="Technician"
+                    >
                         <el-input
                             value="Space include 1 technician"
                             disabled
                         ></el-input>
                     </el-form-item>
                     <el-form-item
+                        v-if="showTechnicianSelect"
                         label="Additional Technicians"
                         prop="additionalTechnicians"
                     >
@@ -185,6 +241,7 @@ async function returnFormInfo(formEl) {
                             v-model="formData.additionalTechnicians"
                             required
                             style="width: 100%"
+                            :max="maxTechnicianNumber"
                         ></el-input-number>
                     </el-form-item>
                 </div>
@@ -206,13 +263,13 @@ async function returnFormInfo(formEl) {
                         </div>
                     </template>
                     <el-table
-                        :data="priceEstimate"
+                        :data="pricingDetails"
                         show-summary
                         :summary-method="getTotal"
                     >
                         <el-table-column prop="item" label="Item" />
                         <el-table-column
-                            prop="price"
+                            prop="total"
                             label="Price RM"
                             align="right"
                             min-width="50%"
@@ -235,9 +292,13 @@ async function returnFormInfo(formEl) {
                 </li>
                 <li>
                     The space will be available for booking from
-                    <b>{{ props.facilityInfo.bookingRule?.closeDaysAfterBooking }}</b>
+                    <b>{{
+                        props.facilityInfo.bookingRule?.minBookingAdvanceDay
+                    }}</b>
                     day(s) after today, up to
-                    <b>{{ props.facilityInfo.bookingRule?.openDaysPriorBooking }}</b>
+                    <b>{{
+                        props.facilityInfo.bookingRule?.maxBookingAdvanceDay
+                    }}</b>
                     day(s) in advance.
                 </li>
                 <li>
@@ -247,7 +308,9 @@ async function returnFormInfo(formEl) {
                 </li>
                 <li>
                     Maximum reservation days is
-                    <b>{{ props.facilityInfo.bookingRule?.maxReservationDays }}</b>
+                    <b>{{
+                        props.facilityInfo.bookingRule?.maxReservationDays
+                    }}</b>
                     day(s) per reservation.
                 </li>
             </ul>

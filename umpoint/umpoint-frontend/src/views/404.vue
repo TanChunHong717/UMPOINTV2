@@ -1,8 +1,8 @@
 <template>
-    <el-result title="404" sub-title="Sorry, request error">
+    <el-result title="404" sub-title="Sorry, seems like the place is missing.">
         <template #icon>
             <el-image
-                src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+                src="/images/404.png"
             />
         </template>
         <template #extra>
@@ -19,3 +19,13 @@ function back() {
     router.go(-1);
 }
 </script>
+
+<style>
+.el-image {
+    max-width: 500px; width: 100%;
+}
+.el-result__title p{
+    font-size: 4em;
+    font-weight: 900;
+}
+</style>

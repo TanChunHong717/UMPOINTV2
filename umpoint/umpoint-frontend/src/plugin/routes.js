@@ -5,6 +5,14 @@ export default [
         component: () => import("@/views/MainPage.vue"),
     },
     {
+        path: "/search",
+        name: "search",
+        component: () => import("@/views/Search.vue"),
+        meta: {
+            title: "Search",
+        }
+    },
+    {
         path: "/facility",
         name: "facility",
         meta: {

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { VueCalEvent } from "@/types/interface";
 import {
     ref,
     Ref,
@@ -11,15 +10,19 @@ import {
 } from "vue";
 import "vue-cal/dist/vuecal.css";
 import VueCal from "vue-cal";
+import { VueCalEvent } from "@/types/interface";
 import { ElMessage } from "element-plus";
 import {
     formatDateToTimezoneDateStr,
     formatDateToTimezoneTimeStr,
     addDays,
     diffDays,
+    sameDay,
+    formatDateToTimezoneDateTimeStr,
 } from "@/utils/date";
 import baseService from "@/utils/api.js";
-import { getFacilityBookings } from "@/helpers/api.js";
+import { getFacilityBookings } from "@/helpers/api-facility.js";
+import { breakBookingByDays } from "@/helpers/pricing";
 
 const isCalendarLoading = ref(true);
 
@@ -30,43 +33,52 @@ const formData: Ref<{
     additionalTechnicians: number;
     startDate: Date | null;
     endDate: Date | null;
-    isTimeSet: [boolean, boolean];
+    startTime: string | null;
+    endTime: string | null;
 }> = defineModel("formData");
 const emit = defineEmits(["validateForm"]);
-// store curent event for calendar
-const currentEvent = computed<VueCalEvent>({
-    get() {
-        if (
-            formData.value.isTimeSet.every((bool) => bool) &&
-            formData.value.startDate &&
-            formData.value.endDate
-        )
-            return {
-                start: formData.value.startDate,
-                end: formData.value.endDate,
-                class: "selecting",
-            };
-        else return null;
-    },
-    set(eventDTO) {
-        if (!eventDTO || !eventDTO.start || !eventDTO.end) return;
 
-        formData.value.isTimeSet = [true, true];
+// store curent event for calendar
+// note: the return event list is separated by days, i.e. length of array is the number of available days
+const currentEvent = computed<VueCalEvent[]>({
+    get() {
+        const isHolidayAvailable =
+            facilityInfo.value.bookingRule?.holidayAvailable === 1;
+        if (
+            formData.value.startDate &&
+            formData.value.endDate &&
+            formData.value.startTime &&
+            formData.value.endTime
+        ) {
+            return breakBookingByDays(
+                formData.value.startDate,
+                formData.value.endDate,
+                formData.value.startTime,
+                formData.value.endTime,
+                isHolidayAvailable
+            ).map((event) => {
+                event.class = "selecting";
+                return event;
+            });
+        } else return null;
+    },
+    set(event: VueCalEvent[]) {
+        if (!event[0] || !event[0].start || !event[0].end) return;
+
         // two Date object given
-        formData.value.startDate = eventDTO.start;
-        formData.value.endDate = eventDTO.end;
+        formData.value.startDate = event[0].start;
+        formData.value.endDate = event[0].end;
+        formData.value.startTime = formatDateToTimezoneTimeStr(
+            event[0].start
+        ).slice(0, -3);
+        formData.value.endTime = formatDateToTimezoneTimeStr(
+            event[0].end
+        ).slice(0, -3);
     },
 });
 
 /* COMPUTED FOR INPUT ELEMENTS */
 // prepare computed for input element
-function sameDay(d1: Date, d2: Date) {
-    return (
-        d1.getFullYear() === d2.getFullYear() &&
-        d1.getMonth() === d2.getMonth() &&
-        d1.getDate() === d2.getDate()
-    );
-}
 const dateInput = computed({
     get() {
         return formData.value.startDate && formData.value.endDate
@@ -74,37 +86,22 @@ const dateInput = computed({
             : [];
     },
     set(value: Date[]) {
-        let originalStartDate = formData.value.startDate;
-        let originalEndDate = formData.value.endDate;
-        let originalTimeSet = formData.value.isTimeSet;
-
         let newStartDate = value[0];
         let newEndDate = value[1];
 
-        // preserve time if already set
-        if (formData.value.startDate && originalTimeSet[0]) {
-            newStartDate.setHours(
-                originalStartDate.getHours(),
-                originalStartDate.getMinutes()
-            );
-        }
-        if (formData.value.endDate && originalTimeSet[1]) {
-            newEndDate.setHours(
-                originalEndDate.getHours(),
-                originalEndDate.getMinutes()
-            );
-        }
-
         let canSetDate = true;
         // if all time is set
-        if (originalTimeSet.every((bool) => bool)) {
-            // validate event overlap
-            canSetDate = validateBeforeSetNewEvent({
-                start: newStartDate,
-                end: newEndDate,
-            });
-            // maintain the original is time set (validateBeforeSetNewEvent will change it)
-            formData.value.isTimeSet = originalTimeSet;
+        if (formData.value.startTime && formData.value.endTime) {
+            // validate events overlap
+            canSetDate = validateBeforeSetNewEvent(
+                breakBookingByDays(
+                    newStartDate,
+                    newEndDate,
+                    formData.value.startTime,
+                    formData.value.endTime,
+                    facilityInfo.value.bookingRule?.holidayAvailable === 1
+                )
+            );
         }
         // else just set date without validate
 
@@ -119,65 +116,19 @@ const dateInput = computed({
 const setTomorrow = () => {
     dateInput.value = [addDays(today, 1), addDays(today, 1)];
 };
-const startTimeInput = computed({
-    get() {
-        return formData.value.startDate && formData.value.isTimeSet[0]
-            ? formatDateToTimezoneTimeStr(formData.value.startDate).slice(0, -3)
-            : null;
-    },
-    set(value: string) {
-        let time = value.split(":");
-        try {
-            formData.value.startDate.setHours(
-                Number(time[0]),
-                Number(time[1]),
-                0
-            );
-            formData.value.isTimeSet[0] = true;
-        } catch (e) {
-            ElMessage({
-                message: "Please select start date first",
-                type: "error",
-            });
-        }
-    },
-});
 const startTimeMaxTime = () => {
     // only limit for same day booking
     if (!formData.value.startDate || !formData.value.endDate) return "";
     if (!sameDay(formData.value.startDate, formData.value.endDate)) return "";
-    // only give max time if end time is chosen
-    if (!formData.value.isTimeSet[1]) return "";
 
-    return formatDateToTimezoneTimeStr(formData.value.endDate).slice(0, -3);
+    return formData.value.endTime;
 };
-const endTimeInput = computed({
-    get() {
-        return formData.value.endDate && formData.value.isTimeSet[1]
-            ? formatDateToTimezoneTimeStr(formData.value.endDate).slice(0, -3)
-            : null;
-    },
-    set(value: string) {
-        let time = value.split(":");
-        try {
-            formData.value.endDate.setHours(Number(time[0]), Number(time[1]));
-            formData.value.isTimeSet[1] = true;
-        } catch (e) {
-            ElMessage({
-                message: "Please select end date first",
-                type: "error",
-            });
-        }
-    },
-});
 const endTimeMinTime = () => {
     // only limit for same day booking
     if (!formData.value.startDate || !formData.value.endDate) return "";
     if (!sameDay(formData.value.startDate, formData.value.endDate)) return "";
-    // only give min time if start time is chosen
-    if (!formData.value.isTimeSet[0]) return "";
 
-    return formatDateToTimezoneTimeStr(formData.value.startDate).slice(0, -3);
+    return formData.value.startTime;
 };
 /* END COMPUTED FOR INPUT ELEMENTS */
 
@@ -198,15 +149,29 @@ const maxDate = ref(null);
 const holidays = ref([]);
 const specialHours = ref({});
 const bookedEvents: ShallowRef<VueCalEvent[]> = shallowRef([]);
-const startTime = ref();
-const endTime = ref();
+const facilityStartTime = ref();
+const facilityEndTime = ref();
+const facilityStartTimeMinutes = computed(() => {
+    if (!facilityStartTime.value) return 0;
+    return (
+        Number(facilityStartTime.value.split(":")[0]) * 60 +
+        Number(facilityStartTime.value.split(":")[1])
+    );
+});
+const facilityEndTimeMinutes = computed(() => {
+    if (!facilityStartTime.value) return 60 * 24;
+    return (
+        Number(facilityEndTime.value.split(":")[0]) * 60 +
+        Number(facilityEndTime.value.split(":")[1])
+    );
+});
 const weekendDays = [6, 7];
 
 const triggerUpdateDisplayEvents = ref(0);
 const displayedEvents = computed<VueCalEvent[]>(() => {
     triggerUpdateDisplayEvents.value;
     if (!currentEvent.value) return bookedEvents.value;
-    return bookedEvents.value.concat([currentEvent.value]);
+    return bookedEvents.value.concat(currentEvent.value);
 });
 
 /* INITIALISE VUE-CAL */
@@ -229,18 +194,18 @@ const initializeTimeTable = () => {
     isCalendarLoading.value = true;
 
     // set allowed start and end date
-    if (facilityInfo.value.bookingRule?.closeDaysAfterBooking) {
+    if (facilityInfo.value.bookingRule?.minBookingAdvanceDay) {
         minDate.value = addDays(
             today,
-            facilityInfo.value.bookingRule?.closeDaysAfterBooking
+            facilityInfo.value.bookingRule?.minBookingAdvanceDay
         );
     } else {
         minDate.value = today;
     }
-    if (facilityInfo.value.bookingRule?.openDaysPriorBooking) {
+    if (facilityInfo.value.bookingRule?.maxBookingAdvanceDay) {
         maxDate.value = addDays(
             today,
-            facilityInfo.value.bookingRule?.openDaysPriorBooking
+            facilityInfo.value.bookingRule?.maxBookingAdvanceDay
         );
     } else {
         maxDate.value = addDays(today, 30);
@@ -250,13 +215,12 @@ const initializeTimeTable = () => {
     const startTimeArray = facilityInfo.value.bookingRule?.startTime.split(
         ":"
     ) ?? ["07", "00"];
-    startTime.value =
-        Number(startTimeArray[0]) * 60 + Number(startTimeArray[1]);
+    facilityStartTime.value = startTimeArray.join(":");
     const endTimeArray = facilityInfo.value.bookingRule?.endTime.split(":") ?? [
         "19",
         "00",
     ];
-    endTime.value = Number(endTimeArray[0]) * 60 + Number(endTimeArray[1]);
+    facilityEndTime.value = endTimeArray.join(":");
 
     onViewChange(getMondayAndSunday(today));
 
@@ -302,7 +266,7 @@ const generateWeekendAndHoliday = (startDate: Date, endDate: Date) => {
         }
     });
 
-    if (isHolidayAvailable) {
+    if (!isHolidayAvailable) {
         weekendDays.forEach((day) => {
             if (!holidayObject[day]) {
                 holidayObject[day] = {
@@ -321,8 +285,8 @@ const generateWeekendAndHoliday = (startDate: Date, endDate: Date) => {
 const updateEvents = async (startDate: Date, endDate: Date) => {
     const facilityEvents = await getFacilityBookings(
         facilityInfo.value.id,
-        startDate,
-        endDate
+        formatDateToTimezoneDateTimeStr(startDate),
+        formatDateToTimezoneDateTimeStr(endDate)
     );
 
     if (!facilityEvents || facilityEvents.data.code !== 0) {
@@ -354,15 +318,27 @@ const updateEvents = async (startDate: Date, endDate: Date) => {
 };
 
 const onCalendarDragCreate = (event: VueCalEvent) => {
-    validateBeforeSetNewEvent(event);
+    validateBeforeSetNewEvent([event]);
 };
 const onCalendarEventChange = ({
     event,
+    originalEvent,
 }: {
     event: VueCalEvent;
     originalEvent: VueCalEvent;
 }) => {
-    validateBeforeSetNewEvent(event);
+    // bug: vue-cal event-drag-create originalEvent startdate is string instead of Date
+    // https://github.com/antoniandre/vue-cal-v4/issues/588
+    if (sameDay(event.start, new Date(originalEvent.start))) {
+        // only time changed, copy date range from saved input
+        event.start.setFullYear(formData.value.startDate.getFullYear());
+        event.start.setMonth(formData.value.startDate.getMonth());
+        event.start.setDate(formData.value.startDate.getDate());
+        event.end.setFullYear(formData.value.endDate.getFullYear());
+        event.end.setMonth(formData.value.endDate.getMonth());
+        event.end.setDate(formData.value.endDate.getDate());
+    }
+    validateBeforeSetNewEvent([event]);
 };
 /* END INITIALISE VUE-CAL */
 
@@ -391,92 +367,116 @@ const validateDate = (formData, callback: Function) => {
         callback(new Error("Start date must be after today"));
         return;
     }
-    if (formData.isTimeSet.every((bool) => bool)) {
-        try {
-            validateBookingTimeRange(formData.startDate, formData.endDate);
-            callback();
-        } catch (e) {
-            callback(e);
-            return;
+    // check if booking length is within length limit
+    let events = breakBookingByDays(
+        formData.startDate,
+        formData.endDate,
+        formData.startTime,
+        formData.endTime,
+        facilityInfo.value.bookingRule?.holidayAvailable === 1
+    );
+    let bookingLength = events.length;
+    if (
+        facilityInfo.value.bookingRule?.maxReservationDays &&
+        bookingLength > facilityInfo.value.bookingRule?.maxReservationDays
+    ) {
+        throw new Error(
+            `Booking length is more than ${facilityInfo.value.bookingRule?.maxReservationDays} day(s)`
+        );
+    }
+    // additional check if time is set
+    if (formData.startTime && formData.endTime) {
+        for (let event of breakBookingByDays(
+            formData.startDate,
+            formData.endDate,
+            formData.startTime,
+            formData.endTime,
+            facilityInfo.value.bookingRule?.holidayAvailable === 1
+        )) {
+            try {
+                validateEventInTimeRange(event.start, event.end);
+                callback();
+            } catch (e) {
+                callback(e);
+                return;
+            }
         }
     }
 };
 const validateTime = (formData, callback: Function) => {
-    if (!formData.isTimeSet.every((bool: boolean) => bool)) {
-        callback(new Error("Please select time range"));
+    if (!formData.startTime || !formData.endTime) {
+        callback(new Error("Please select the time"));
         return;
     }
-    if (
-        sameDay(formData.startDate, formData.endDate) &&
-        formData.startDate > formData.endDate
-    ) {
+    if (formData.startTime > formData.endTime) {
         callback(new Error("End time must be after start time"));
         return;
     }
     callback();
 };
-const validateBookingTimeRange = (startDate: Date, endDate: Date) => {
-    if (!startDate) startDate = formData.value.startDate;
-    if (!endDate) endDate = formData.value.endDate;
-
-    if (!startDate || !endDate) {
+/**
+ * Validate if the booking time range is valid, startDate and endDate must be on the same day
+ * @param startDateTime start date and time
+ * @param endDateTime end date and time
+ */
+const validateEventInTimeRange = (startDateTime: Date, endDateTime: Date) => {
+    if (!startDateTime || !endDateTime) {
         throw new Error("Please select a date range");
     }
 
     // check if booking on holiday
     if (!facilityInfo.value.bookingRule?.holidayAvailable) {
         for (let holiday of holidays.value) {
-            if (
-                startDate <= new Date(holiday.date.iso) &&
-                endDate >= new Date(holiday.date.iso)
-            ) {
+            if (sameDay(startDateTime, new Date(holiday.date.iso))) {
                 throw new Error("Booking on holiday is not allowed");
             }
         }
     }
-    // check if booking length is within length limit
-    if (
-        facilityInfo.value.bookingRule?.maxReservationDays &&
-        diffDays(startDate, endDate) >
-            facilityInfo.value.bookingRule?.maxReservationDays
-    ) {
-        throw new Error(`Booking length is more than ${facilityInfo.value.bookingRule?.maxReservationDays} day(s)`);
-    }
+    // check if time reach minimum length
     if (
         facilityInfo.value.bookingRule?.minBookingHours &&
-        endDate.getTime() - startDate.getTime() <
+        endDateTime.getTime() - startDateTime.getTime() <
             facilityInfo.value.bookingRule?.minBookingHours * 60 * 60 * 1000
     ) {
-        throw new Error(`Booking length is less than ${facilityInfo.value.bookingRule?.minBookingHours} hour(s)`);
+        throw new Error(
+            `Booking length is less than ${facilityInfo.value.bookingRule?.minBookingHours} hour(s)`
+        );
     }
     // check if booking on weekend
-    if (!facilityInfo.value.bookingRule?.allowWeekend) {
+    if (!facilityInfo.value.bookingRule?.holidayAvailable) {
         if (
-            startDate.getDay() == 0 ||
-            startDate.getDay() == 6 ||
-            endDate.getDay() == 0 ||
-            endDate.getDay() == 6
+            startDateTime.getDay() == 0 ||
+            startDateTime.getDay() == 6 ||
+            endDateTime.getDay() == 0 ||
+            endDateTime.getDay() == 6
         ) {
-            throw new Error("Booking on weekend is not allowed for this facility");
+            throw new Error(
+                "Booking on weekend is not allowed for this facility"
+            );
         }
     }
     // check if booking overlapped
     for (let bookedEvent of bookedEvents.value) {
         if (
-            (startDate >= bookedEvent.start && startDate < bookedEvent.end) ||
-            (endDate > bookedEvent.start && endDate <= bookedEvent.end) ||
-            (startDate <= bookedEvent.start && endDate >= bookedEvent.end)
+            (startDateTime >= bookedEvent.start &&
+                startDateTime < bookedEvent.end) ||
+            (endDateTime > bookedEvent.start &&
+                endDateTime <= bookedEvent.end) ||
+            (startDateTime <= bookedEvent.start &&
+                endDateTime >= bookedEvent.end)
         ) {
             throw new Error("Booking overlapped");
         }
     }
     return true;
 };
-function validateBeforeSetNewEvent(event: VueCalEvent) {
+function validateBeforeSetNewEvent(events: VueCalEvent[]) {
     try {
-        validateBookingTimeRange(event.start, event.end);
+        for (let event of events) {
+            validateEventInTimeRange(event.start, event.end);
+        }
         // only allow one event to be booked
-        currentEvent.value = event;
+        currentEvent.value = events;
         return true;
     } catch (e) {
         // pop notification
@@ -538,21 +538,21 @@ onActivated(() => {
                 class="time-select-col"
             >
                 <el-time-select
-                    v-model="startTimeInput"
+                    v-model="formData.startTime"
                     placeholder="Start time"
-                    start="08:00"
+                    :start="facilityStartTime"
                     step="00:30"
-                    end="18:00"
+                    :end="facilityEndTime"
                     :max-time="startTimeMaxTime()"
                     :editable="!!formData.startDate"
                 ></el-time-select
                 >&nbsp;&nbsp; → &nbsp;&nbsp;
                 <el-time-select
-                    v-model="endTimeInput"
+                    v-model="formData.endTime"
                     placeholder="End time"
-                    start="08:00"
+                    :start="facilityStartTime"
                     step="00:30"
-                    end="18:00"
+                    :end="facilityEndTime"
                     :min-time="endTimeMinTime()"
                     :editable="!!formData.endDate"
                 ></el-time-select>
@@ -568,8 +568,8 @@ onActivated(() => {
         :max-date="maxDate"
         :special-hours="specialHours"
         v-model:events="displayedEvents"
-        :time-from="startTime"
-        :time-to="endTime"
+        :time-from="facilityStartTimeMinutes"
+        :time-to="facilityEndTimeMinutes"
         :time-step="30"
         :snap-to-time="30"
         :editable-events="{

@@ -2,6 +2,7 @@ import constants from "@/constants/app";
 import axios from "axios";
 import { getToken } from "./cache";
 import qs from "qs";
+import { ElMessage } from "element-plus";
 
 const api = axios.create({
     baseURL: constants.apiUrl,
@@ -32,5 +33,18 @@ api.interceptors.request.use(
         return Promise.reject(error);
     }
 );
+
+api.interceptors.response.use(
+    function (response) {
+        if (response.data.code && response.data.code !== 0) {
+            console.log(response);
+            throw new Error(response.data.message);
+        }
+        return response;
+    }, function (error) {
+        ElMessage.error(error.message);
+        return Promise.reject(error);
+    }
+)
 
 export default api;

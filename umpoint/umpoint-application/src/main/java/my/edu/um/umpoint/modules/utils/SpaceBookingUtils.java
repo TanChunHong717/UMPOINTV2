@@ -67,10 +67,7 @@ public class SpaceBookingUtils{
         // calculate technician price if available
         if (bookingInfo.getTechnicianNumber() != 0) {
             // technician price
-            String technicianDisplay =
-                bookingInfo.getTechnicianNumber() +
-                " technician" +
-                (bookingInfo.getTechnicianNumber() > 1 ? "s" : "");
+            String technicianDisplay = "Technician price";
 
             SpcPaymentItemDTO fullDayPaymentItem = new SpcPaymentItemDTO();
             fullDayPaymentItem.setItemName(technicianDisplay);
@@ -129,8 +126,7 @@ public class SpaceBookingUtils{
                 // calculate price
                 String fourHoursDisplayDate =
                     "4 hours price for " + DateUtils.convertDateToLocalDate(eventEntity.getStartTime())
-                                                    .format(DateTimeFormatter.ISO_DATE) +
-                    "(x" + fourHoursCount + ")";
+                                                    .format(DateTimeFormatter.ISO_DATE);
                 SpcPaymentItemDTO fourHoursPaymentItem = new SpcPaymentItemDTO();
                 fourHoursPaymentItem.setItemName(fourHoursDisplayDate);
                 fourHoursPaymentItem.setItemPrice(spaceInfo.getFourHoursPrice());
@@ -139,8 +135,7 @@ public class SpaceBookingUtils{
 
                 String oneHourDisplayDate =
                     "1 hour price for " + DateUtils.convertDateToLocalDate(eventEntity.getStartTime())
-                                                   .format(DateTimeFormatter.ISO_DATE) +
-                    "(x" + oneHourCount + ")";
+                                                   .format(DateTimeFormatter.ISO_DATE);
                 SpcPaymentItemDTO oneHourPaymentItem = new SpcPaymentItemDTO();
                 oneHourPaymentItem.setItemName(oneHourDisplayDate);
                 oneHourPaymentItem.setItemPrice(spaceInfo.getHourPrice());
@@ -151,8 +146,7 @@ public class SpaceBookingUtils{
                 int oneHourCount = (int) Math.ceil(length.toMinutes() / 60.0);
                 String oneHourDisplayDate =
                     "1 hour price for " + DateUtils.convertDateToLocalDate(eventEntity.getStartTime())
-                                                   .format(DateTimeFormatter.ISO_DATE) +
-                    "(x" + oneHourCount + ")";
+                                                   .format(DateTimeFormatter.ISO_DATE);
 
                 SpcPaymentItemDTO oneHourPaymentItem = new SpcPaymentItemDTO();
                 oneHourPaymentItem.setItemName(oneHourDisplayDate);
