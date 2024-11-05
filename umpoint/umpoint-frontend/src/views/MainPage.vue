@@ -68,7 +68,7 @@
 
 <script setup>
 import { mdiMagnify } from "@mdi/js";
-import { getFacilities } from "@/helpers/api";
+import { getFacilities } from "@/helpers/api-facility.js";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 

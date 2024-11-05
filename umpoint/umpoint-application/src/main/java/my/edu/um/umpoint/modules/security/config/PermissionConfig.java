@@ -21,4 +21,6 @@ public class PermissionConfig {
 
     private List<String> accommodation;
 
+    private List<String> chat;
+
 }

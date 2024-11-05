@@ -36,7 +36,7 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
     function (response) {
-        if (response.data.code !== 0) {
+        if (response.data.code && response.data.code !== 0) {
             console.log(response);
             throw new Error(response.data.message);
         }

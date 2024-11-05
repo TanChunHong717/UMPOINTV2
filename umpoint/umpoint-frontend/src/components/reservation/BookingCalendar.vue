@@ -21,7 +21,7 @@ import {
     formatDateToTimezoneDateTimeStr,
 } from "@/utils/date";
 import baseService from "@/utils/api.js";
-import { getFacilityBookings } from "@/helpers/api.js";
+import { getFacilityBookings } from "@/helpers/api-facility.js";
 import { breakBookingByDays } from "@/helpers/pricing";
 
 const isCalendarLoading = ref(true);

@@ -14,6 +14,7 @@ CREATE TABLE spc_tag (
 
 CREATE TABLE spc_booking_rule (
     id bigint NOT NULL COMMENT 'ID',
+    contact_required tinyint NOT NULL COMMENT '1:Require contact with admin beforehand, 0: No need',
     approval_required tinyint NOT NULL COMMENT '0:Automatic approve 1:Require admin approve',
     open_for_staff tinyint NOT NULL COMMENT '0:Staff not allow to book 1:Staff allow to book',
     open_for_student tinyint NOT NULL COMMENT '0:Student not allow to book 1:Student allow to book',
