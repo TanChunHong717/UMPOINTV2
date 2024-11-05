@@ -5,6 +5,7 @@
 
     <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcBookingRuleEntity" id="spcBookingRuleMap">
         <result property="id" column="id"/>
+        <result property="contactRequired" column="contact_required"/>
         <result property="approvalRequired" column="approval_required"/>
         <result property="openForStaff" column="open_for_staff"/>
         <result property="openForStudent" column="open_for_student"/>

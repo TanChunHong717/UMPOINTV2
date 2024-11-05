@@ -34,6 +34,10 @@ public class SpcBookingRuleDTO implements Serializable {
 	@NotNull(groups = {UpdateGroup.class})
 	private Long id;
 
+	@Schema(title = "1:Require contact with admin beforehand, 0: No need")
+	@NotNull(groups = {DefaultGroup.class})
+	private Integer contactRequired;
+
 	@Schema(title = "0:Automatic approve 1: Require admin approve")
 	@NotNull(groups = {DefaultGroup.class})
 	private Integer approvalRequired;
