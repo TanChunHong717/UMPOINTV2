@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Null;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import my.edu.um.umpoint.common.validator.group.AddGroup;
+import my.edu.um.umpoint.common.validator.group.BatchUpdateGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 
@@ -27,7 +28,7 @@ public class AccBookingRuleDTO implements Serializable {
     private static final long serialVersionUID = 9187174069158066308L;
 
 	@Schema(title = "ID")
-	@Null(groups = {AddGroup.class})
+	@Null(groups = {AddGroup.class, BatchUpdateGroup.class})
 	@NotNull(groups = {UpdateGroup.class})
 	private Long id;
 

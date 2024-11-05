@@ -35,20 +35,5 @@
             </if>
         </where>
         GROUP BY t.id
-        <if test="orderField != null and orderField.trim() != ''">
-            ORDER BY
-            <if test="orderField == 'tag_name'">
-                tag_name
-            </if>
-            <if test="orderField == 'accommodation_count'">
-                accommodation_count
-            </if>
-            <if test="order != 'desc'">
-                ASC
-            </if>
-            <if test="order == 'desc'">
-                DESC
-            </if>
-        </if>
     </select>
 </mapper>

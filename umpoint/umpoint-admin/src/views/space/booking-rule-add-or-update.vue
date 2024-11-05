@@ -58,14 +58,14 @@
       </el-form-item>
       <el-form-item label="Booking Unit" prop="bookingUnit">
         <el-col :span="14">
-          <el-input-number v-model="dataForm.bookingUnit" controls-position="right" :min="0.5" :step="0.5" style="width: 100%"/>
+          <el-input-number v-model="dataForm.bookingUnit" controls-position="right" :min="1" style="width: 100%"/>
         </el-col>
         <el-col :span="10" style="padding-left: 6px;">
           <el-tooltip
             class="box-item"
             placement="bottom-end"
           >
-            <template #content>Minimum increment for booking duration, e.g., '0.5' means bookings can be made in 30-minute intervals</template>
+            <template #content>Minimum increment for booking duration, e.g., 30 means bookings can be made in 30-minute intervals</template>
             <el-button tabindex="-1" size="small" :icon="InfoFilled" circle />
           </el-tooltip>
         </el-col>
@@ -155,7 +155,6 @@
     </el-form>
     <template #footer>
       <el-button @click="visible = false">Cancel</el-button>
-      <el-button type="info" @click="Object.assign(dataForm, defaultBookingRule)">Apply Default Booking Rule</el-button>
       <el-button type="primary" @click="dataFormSubmitHandle()">Confirm</el-button>
     </template>
   </el-dialog>
@@ -171,7 +170,6 @@ const emit = defineEmits(["refreshData"]);
 const visible = ref(false);
 const dataFormRef = ref();
 const userList = ref<{id: number; username: string}[]>([]);
-const defaultBookingRule = ref();
 
 const spaceId = ref(null);
 const dataForm = reactive({
@@ -251,15 +249,6 @@ const rules = ref({
   ]
 });
 
-const getDefaultBookingRule = async () => {
-  return baseService.get("/space/booking-rule/default").then((res) => {
-    if (res.code !== 0) {
-      return ElMessage.error(res.msg);
-    }
-    defaultBookingRule.value = res.data;
-  });
-}
-
 const getUserList = async () => {
   return baseService.get("/sys/user/list").then((res) => {
     if (res.code !== 0) {
@@ -282,7 +271,6 @@ const addSecond = (timeString: any): any => {
 }
 
 const init = (space?: any) => {
-  getDefaultBookingRule();
   getUserList();
 
   visible.value = true;

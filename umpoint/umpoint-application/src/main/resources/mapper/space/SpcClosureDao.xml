@@ -4,7 +4,7 @@
 <mapper namespace="my.edu.um.umpoint.modules.space.dao.SpcClosureDao">
 
     <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcClosureEntity" id="spcClosureMap">
-        <result property="id" column="id"/>
+        <id property="id" column="id"/>
         <result property="spaceId" column="space_id"/>
         <result property="startDay" column="start_day"/>
         <result property="endDay" column="end_day"/>
@@ -19,5 +19,48 @@
         <result property="recurSunday" column="recur_sunday"/>
     </resultMap>
 
+    <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcClosureEntity" id="spcClosureSelectMap">
+        <id property="id" column="id"/>
+        <result property="spaceId" column="space_id"/>
+        <result property="startDay" column="start_day"/>
+        <result property="endDay" column="end_day"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="recurMonday" column="recur_monday"/>
+        <result property="recurTuesday" column="recur_tuesday"/>
+        <result property="recurWednesday" column="recur_wednesday"/>
+        <result property="recurThursday" column="recur_thursday"/>
+        <result property="recurFriday" column="recur_friday"/>
+        <result property="recurSaturday" column="recur_saturday"/>
+        <result property="recurSunday" column="recur_sunday"/>
+        <result property="name" column="name"/>
+    </resultMap>
 
+    <select id="list" resultMap="spcClosureSelectMap">
+        SELECT
+            sc.id,
+            sc.space_id,
+            sc.start_day,
+            sc.end_day,
+            sc.start_time,
+            sc.end_time,
+            sc.recur_monday,
+            sc.recur_tuesday,
+            sc.recur_wednesday,
+            sc.recur_thursday,
+            sc.recur_friday,
+            sc.recur_saturday,
+            sc.recur_sunday,
+            s.name
+        FROM spc_closure sc
+        JOIN spc_space s ON sc.space_id = s.id
+        <where>
+            <if test="name != null and name.trim() != ''">
+                s.name like #{name}
+            </if>
+            <if test="showPast != 1">
+                AND CURDATE() &lt; sc.end_day
+            </if>
+        </where>
+    </select>
 </mapper>

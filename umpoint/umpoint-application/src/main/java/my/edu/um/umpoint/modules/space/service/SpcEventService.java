@@ -17,4 +17,5 @@ public interface SpcEventService extends CrudService<SpcEventEntity, SpcEventDTO
     void addEvent(SpcClosureDTO closureDTO);
     void deleteByBookingId(Long bookingId);
     void deleteByClosureId(Long closureId);
+    void deleteByClosureId(Long[] closureIds);
 }

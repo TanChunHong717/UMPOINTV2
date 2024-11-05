@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Null;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import my.edu.um.umpoint.common.validator.group.AddGroup;
+import my.edu.um.umpoint.common.validator.group.BatchUpdateGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 
@@ -29,7 +30,7 @@ public class SpcBookingRuleDTO implements Serializable {
     private static final long serialVersionUID = 3105155482684743857L;
 
 	@Schema(title = "ID")
-	@Null(groups = {AddGroup.class})
+	@Null(groups = {AddGroup.class, BatchUpdateGroup.class})
 	@NotNull(groups = {UpdateGroup.class})
 	private Long id;
 
@@ -65,7 +66,7 @@ public class SpcBookingRuleDTO implements Serializable {
 	@NotNull(groups = {DefaultGroup.class})
 	private Time endTime;
 
-	@Schema(title = "Booking unit in hour (e.g., 0.5 for half-hour increments)")
+	@Schema(title = "Booking unit in minutes")
 	@NotNull(groups = {DefaultGroup.class})
 	private BigDecimal bookingUnit;
 

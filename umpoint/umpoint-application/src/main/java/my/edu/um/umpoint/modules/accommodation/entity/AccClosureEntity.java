@@ -1,5 +1,6 @@
 package my.edu.um.umpoint.modules.accommodation.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -32,4 +33,9 @@ public class AccClosureEntity {
 	* End day of booking
 	*/
 	private Date endDay;
+	/**
+	 * Accommodation name
+	 */
+	@TableField(exist = false)
+	private String name;
 }

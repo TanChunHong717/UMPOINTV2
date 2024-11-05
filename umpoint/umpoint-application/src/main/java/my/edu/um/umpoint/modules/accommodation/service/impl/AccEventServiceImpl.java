@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 
@@ -74,13 +75,18 @@ public class AccEventServiceImpl extends CrudServiceImpl<AccEventDao, AccEventEn
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteByBookingId(Long bookingId) {
+        baseDao.delete(new QueryWrapper<AccEventEntity>().eq("booking_id", bookingId));
+    }
+
+    @Override
     public void deleteByClosureId(Long closureId) {
         baseDao.delete(new QueryWrapper<AccEventEntity>().eq("closure_id", closureId));
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void deleteByBookingId(Long bookingId) {
-        baseDao.delete(new QueryWrapper<AccEventEntity>().eq("booking_id", bookingId));
+    public void deleteByClosureId(Long[] closureIds) {
+        baseDao.delete(new QueryWrapper<AccEventEntity>().in("closure_id", Arrays.asList(closureIds)));
     }
 }

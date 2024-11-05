@@ -19,16 +19,14 @@ CREATE TABLE acc_booking_rule (
     open_for_public tinyint NOT NULL COMMENT '0:Public not allow to book 1:Public allow to book',
     holiday_available tinyint NOT NULL COMMENT 'Availability in public holiday, 1: Available, 0: Close',
     approval_required tinyint NOT NULL COMMENT '0:Automatic approve 1:Require admin approve',
-    max_booking_advance_day decimal(5,0) NOT NULL COMMENT 'Max booking advance day',
-    min_booking_advance_day decimal(5,0) NOT NULL COMMENT 'Min booking advance day',
-    max_reservation_day decimal(5, 0) NOT NULL COMMENT 'Maximum reservation day',
-    min_reservation_day decimal(5, 0) NOT NULL COMMENT 'Minimum reservation day',
-    max_technician_number decimal(5, 0) NOT NULL COMMENT 'Maximum number of technician',
-    technician_price decimal(5, 0) NOT NULL COMMENT 'Price per technician',
+    max_booking_advance_day decimal(3,0) NOT NULL COMMENT 'Max booking advance day',
+    min_booking_advance_day decimal(3,0) NOT NULL COMMENT 'Min booking advance day',
+    max_reservation_day decimal(3, 0) NOT NULL COMMENT 'Maximum reservation day',
+    min_reservation_day decimal(3, 0) NOT NULL COMMENT 'Minimum reservation day',
+    max_technician_number decimal(3, 0) NOT NULL COMMENT 'Maximum number of technician',
+    technician_price decimal(3, 0) NOT NULL COMMENT 'Price per technician',
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Accommodation Booking Rule';
-
-INSERT INTO acc_booking_rule VALUE (0,1,1,1,1,1,60,0,5,1,0,0);
 
 CREATE TABLE acc_accommodation (
     id bigint NOT NULL COMMENT 'ID',
@@ -39,7 +37,7 @@ CREATE TABLE acc_accommodation (
     address varchar(250) NOT NULL COMMENT 'Address',
     description varchar(2500) COMMENT 'Description',
     facilities varchar(250) COMMENT 'Facilities',
-    capacity decimal(5,0) COMMENT 'Max capacity',
+    capacity decimal(3,0) COMMENT 'Max capacity',
     manager bigint NULL COMMENT 'Manager ID',
     day_price decimal(10, 2) NULL COMMENT 'Price for book a day',
     week_price decimal(10, 2) NULL COMMENT 'Price for book a week',
@@ -83,7 +81,7 @@ CREATE TABLE acc_booking (
     payment_amount decimal(10,2) NOT NULL COMMENT 'Amount need to be pay',
     start_day date NOT NULL COMMENT 'Start day of booking',
     end_day date NOT NULL COMMENT 'End day of booking',
-    technician_number decimal(5,0) NOT NULL COMMENT 'Number of technician',
+    technician_number decimal(3,0) NOT NULL COMMENT 'Number of technician',
     create_date datetime NOT NULL COMMENT 'Create date',
     update_date datetime NOT NULL COMMENT 'Update date',
     PRIMARY KEY (id),

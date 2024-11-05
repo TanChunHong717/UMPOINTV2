@@ -2,7 +2,11 @@ package my.edu.um.umpoint.modules.accommodation.dao;
 
 import my.edu.um.umpoint.common.dao.BaseDao;
 import my.edu.um.umpoint.modules.accommodation.entity.AccClosureEntity;
+import my.edu.um.umpoint.modules.space.entity.SpcDeptBookingRuleEntity;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Accommodation Closure Period
@@ -12,5 +16,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface AccClosureDao extends BaseDao<AccClosureEntity> {
-	
+    List<AccClosureEntity> list(Map<String, Object> params);
 }

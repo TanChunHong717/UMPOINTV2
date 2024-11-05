@@ -11,5 +11,4 @@ import my.edu.um.umpoint.modules.accommodation.entity.AccClosureEntity;
  * @since 1.0.0 2024-09-16
  */
 public interface AccClosureService extends CrudService<AccClosureEntity, AccClosureDTO> {
-    void delete(Long id);
 }

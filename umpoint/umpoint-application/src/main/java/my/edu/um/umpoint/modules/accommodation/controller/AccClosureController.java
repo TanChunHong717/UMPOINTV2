@@ -1,9 +1,14 @@
 package my.edu.um.umpoint.modules.accommodation.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import my.edu.um.umpoint.common.annotation.LogOperation;
+import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.exception.RenException;
+import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.utils.DateUtils;
 import my.edu.um.umpoint.common.utils.Result;
 import my.edu.um.umpoint.common.validator.AssertUtils;
@@ -18,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
  * Accommodation Closure Period
@@ -32,6 +37,23 @@ import java.time.LocalDateTime;
 public class AccClosureController {
     @Autowired
     private AccClosureService accClosureService;
+
+    @GetMapping("page")
+    @Operation(summary = "Pagination")
+    @Parameters({
+            @Parameter(name = Constant.PAGE, description = "Current page number, starting from 1", in = ParameterIn.QUERY, required = true, ref="int") ,
+            @Parameter(name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY,required = true, ref="int") ,
+            @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, ref="String") ,
+            @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String") ,
+            @Parameter(name = Constant.NAME, description = "Name", in = ParameterIn.QUERY, ref="String") ,
+            @Parameter(name = "showPast", description = "Show past closure event, optional", in = ParameterIn.QUERY, ref="int")
+    })
+    @RequiresPermissions("space:closure:page")
+    public Result<PageData<AccClosureDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
+        PageData<AccClosureDTO> page = accClosureService.page(params);
+
+        return new Result<PageData<AccClosureDTO>>().ok(page);
+    }
 
     @GetMapping("{id}")
     @Operation(summary = "Information")
@@ -68,14 +90,14 @@ public class AccClosureController {
         return new Result();
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping
     @Operation(summary = "Delete")
     @LogOperation("Delete")
     @RequiresPermissions("accommodation:closure:delete")
-    public Result delete(@PathVariable("id")  Long id){
-        AssertUtils.isNull(id);
+    public Result delete(@RequestBody Long[] ids){
+        AssertUtils.isArrayEmpty(ids);
 
-        accClosureService.delete(id);
+        accClosureService.delete(ids);
 
         return new Result();
     }
