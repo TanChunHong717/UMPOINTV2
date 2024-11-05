@@ -42,21 +42,17 @@ public class ChatMessageAttachmentServiceImpl extends CrudServiceImpl<ChatMessag
     public void save(List attachments, ChatMessageDTO chatMessageDTO){
         List<ChatMessageAttachmentEntity> attachmentList = new ArrayList<>();
         for (Object attachment : attachments) {
-            if (attachment instanceof String attachmentURL) {
-                // treat default string item as url to image
-                ChatMessageAttachmentEntity attachmentEntity = new ChatMessageAttachmentEntity();
-                attachmentEntity.setType("image");
-                attachmentEntity.setUrl(attachmentURL);
-                attachmentEntity.setMessageId(chatMessageDTO.getId());
-                attachmentList.add(attachmentEntity);
-            } else if (attachment instanceof Map<?, ?> attachmentMap) {
+            if (attachment instanceof Map<?, ?> attachmentMap) {
                 if (
+                    attachmentMap.containsKey("name") &&
                     attachmentMap.containsKey("type") &&
                     attachmentMap.containsKey("url") &&
+                    !attachmentMap.get("name").toString().isEmpty() &&
                     !attachmentMap.get("type").toString().isEmpty() &&
                     !attachmentMap.get("url").toString().isEmpty()
                 ) {
                     ChatMessageAttachmentEntity attachmentEntity = new ChatMessageAttachmentEntity();
+                    attachmentEntity.setName(attachmentMap.get("name").toString());
                     attachmentEntity.setType(attachmentMap.get("type").toString());
                     attachmentEntity.setUrl(attachmentMap.get("url").toString());
                     attachmentEntity.setMessageId(chatMessageDTO.getId());
