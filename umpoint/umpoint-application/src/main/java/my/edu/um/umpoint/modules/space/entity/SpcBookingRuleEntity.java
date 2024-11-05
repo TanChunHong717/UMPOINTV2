@@ -22,6 +22,10 @@ public class SpcBookingRuleEntity {
 	@TableId
 	private Long id;
 	/**
+	 * 1:Require contact with admin beforehand, 0: No need
+	 */
+	private Integer contactRequired;
+	/**
 	 * 0:Automatic approve 1: Require admin approve
 	 */
 	private Integer approvalRequired;

@@ -17,10 +17,26 @@
       </el-form-item>
 
       <el-divider content-position="left">Permissions</el-divider>
+      <el-form-item label="Prior Contact with Admin" prop="contactRequired">
+        <el-radio-group v-model="dataForm.contactRequired">
+          <el-radio :value="Number(1)">Required</el-radio>
+          <el-radio :value="Number(0)">Not Needed</el-radio>
+          <el-tooltip
+          class="box-item"
+          placement="bottom-end"
+          >
+          <template #content>
+            Only used to inform if the user needs to contact the manager before booking. <br>
+            No checks are performed during booking.
+          </template>
+            <el-button tabindex="-1" size="small" :icon="InfoFilled" circle />
+          </el-tooltip>
+        </el-radio-group>
+      </el-form-item>
       <el-form-item label="Required Approve" prop="approvalRequired">
         <el-radio-group v-model="dataForm.approvalRequired">
           <el-radio :value="Number(1)">Require Admin Approve</el-radio>
-          <el-radio :value="Number(0)">Automatic Approve</el-radio>
+          <el-radio :value="Number(0)">Automatic Approval</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="Open Booking">
@@ -32,12 +48,6 @@
       </el-form-item>
 
       <el-divider content-position="left">Venue Time and Booking Window</el-divider>
-      <el-form-item label="Booking Mode">
-        <el-radio-group v-model="dataForm.bookingMode">
-          <el-radio label="Free time selection" :value="0">Free time selection</el-radio>
-          <el-radio label="Limited to preset slots" :value="1">Limited to preset slots</el-radio>
-        </el-radio-group>
-      </el-form-item>
       <el-form-item label="Start time" prop="startTime">
         <el-time-select
           v-model="dataForm.startTime"
@@ -56,11 +66,18 @@
           step="00:30"
         />
       </el-form-item>
+      <el-form-item label="Booking Mode" prop="bookingMode">
+        <el-radio-group v-model="dataForm.bookingMode">
+          <el-radio label="Free time selection" :value="0">Free time selection</el-radio>
+          <el-radio label="Limited to preset slots" :value="1">Limited to preset slots</el-radio>
+        </el-radio-group>
+      </el-form-item>
       <el-form-item label="Booking Unit" prop="bookingUnit">
         <el-col :span="14">
           <el-input-number v-model="dataForm.bookingUnit" controls-position="right" :min="1" style="width: 100%"/>
         </el-col>
         <el-col :span="10" style="padding-left: 6px;">
+          minutes
           <el-tooltip
             class="box-item"
             placement="bottom-end"
@@ -108,20 +125,28 @@
       </el-form-item>
 
       <el-divider content-position="left">Booking requirements</el-divider>
-      <el-form-item label="Max reservation day" prop="maxReservationDay">
-        <el-input-number v-model="dataForm.maxReservationDay" controls-position="right" :min="1"/>
-      </el-form-item>
       <el-form-item label="Min reservation day" prop="minReservationDay">
         <el-input-number v-model="dataForm.minReservationDay" controls-position="right" :min="1"/>
       </el-form-item>
-      <el-form-item label="Max booking hour" prop="maxBookingHour">
-        <el-input-number v-model="dataForm.maxBookingHour" controls-position="right" :min="0.5" :step="0.5"/>
+      <el-form-item label="Max reservation day" prop="maxReservationDay">
+        <el-input-number v-model="dataForm.maxReservationDay" controls-position="right" :min="1"/>
       </el-form-item>
-      <el-form-item label="Min booking hour" prop="minBookingHour">
+      <el-form-item label="Min booking hours" prop="minBookingHour">
         <el-input-number v-model="dataForm.minBookingHour" controls-position="right" :min="0.5" :step="0.5"/>
       </el-form-item>
-      <el-form-item label="Max technician number" prop="maxTechnicianNumber">
-        <el-col :span="22">
+      <el-form-item label="Max booking hours" prop="maxBookingHour">
+          <el-input-number v-model="dataForm.maxBookingHour" controls-position="right" :min="0.5" :step="0.5"/>
+      </el-form-item>
+      <el-form-item label="Technicians available" prop="maxTechnicianNumber">
+        <el-col :span="2" :xs="4" style="padding-right: 6px;">
+          <el-switch
+            v-model="hasTechnician"
+            inline-prompt
+            :active-icon="Check"
+            :inactive-icon="Close"
+          />
+        </el-col>
+        <el-col :span="20" :xs="18">
           <el-input-number v-model="dataForm.maxTechnicianNumber" controls-position="right" style="width: 100%" :min="0"/>
         </el-col>
         <el-col :span="2" style="padding-left: 6px;">
@@ -130,9 +155,7 @@
           placement="bottom-end"
           >
           <template #content>
-            • Set to 0 if the space does not provide technicians.<br>
-            • 1 technician is included in every booking by default.<br>
-            • If the number of technicians is set to 1, users may not choose any additional technicians.
+            Each booking includes 1 technician by default if technicians are provided. If set to 1, users cannot add any additional technicians.
           </template>
             <el-button tabindex="-1" size="small" :icon="InfoFilled" circle />
           </el-tooltip>
@@ -140,17 +163,17 @@
       </el-form-item>
 
       <el-divider content-position="left">Pricing</el-divider>
-      <el-form-item label="Price for an hour" prop="hourPrice">
+      <el-form-item label="Price for 1 hour" prop="hourPrice">
         <el-input-number v-model="dataForm.hourPrice" controls-position="right" :precision="2" :step="0.5" :min="0"/>
       </el-form-item>
       <el-form-item label="Price for 4 hours" prop="fourHoursPrice">
         <el-input-number v-model="dataForm.fourHoursPrice" controls-position="right" :precision="2" :step="0.5" :min="0"/>
       </el-form-item>
-      <el-form-item label="Price for one day" prop="dayPrice">
+      <el-form-item label="Price for 1 day" prop="dayPrice">
         <el-input-number v-model="dataForm.dayPrice" controls-position="right" :precision="2" :step="0.5" :min="0"/>
       </el-form-item>
       <el-form-item label="Price per technician" prop="technicianPrice">
-        <el-input-number v-model="dataForm.technicianPrice" controls-position="right" :precision="2" :step="0.5" :min="0"/>
+        <el-input-number v-model="dataForm.technicianPrice" controls-position="right" :precision="2" :step="0.5" :min="0" :readonly="!hasTechnician"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -162,20 +185,33 @@
 
 <script lang="ts" setup>
 import { InfoFilled } from '@element-plus/icons-vue'
-import { reactive, ref } from "vue";
+import { computed, reactive, readonly, ref } from "vue";
 import baseService from "@/service/baseService";
 import { ElMessage } from "element-plus";
+import { Check, Close } from '@element-plus/icons-vue'
 const emit = defineEmits(["refreshData"]);
 
 const visible = ref(false);
 const dataFormRef = ref();
 const userList = ref<{id: number; username: string}[]>([]);
 
+// switch to set technicians available
+const hasTechnician = computed({
+  get: () => dataForm.maxTechnicianNumber > 0,
+  set: (hasTechnicianValue) => {
+    // only set if maxTechnicianNumber is not set
+    if (hasTechnicianValue && !dataForm.maxTechnicianNumber) dataForm.maxTechnicianNumber = 1;
+    // no technicians available, set to 0
+    else dataForm.maxTechnicianNumber = 0;
+  }
+});
+
 const spaceId = ref(null);
 const dataForm = reactive({
   id: null,
   bookingRuleId: null,
   manager: null,
+  contactRequired: 1,
   approvalRequired: 1,
   openForStaff: null,
   openForStudent: null,
@@ -194,12 +230,15 @@ const dataForm = reactive({
   minReservationDay: null,
   maxBookingHour: null,
   minBookingHour: null,
-  maxTechnicianNumber: null,
-  technicianPrice: null
+  maxTechnicianNumber: 0,
+  technicianPrice: 0,
 });
 
 const rules = ref({
   manager: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ],
+  contactRequired: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
   approvalRequired: [
@@ -301,6 +340,7 @@ const dataFormSubmitHandle = () => {
       dayPrice: dataForm.dayPrice,
       spcBookingRuleDTO: {
         id: dataForm.bookingRuleId,
+        contactRequired: dataForm.contactRequired,
         approvalRequired: dataForm.approvalRequired,
         openForStaff: dataForm.openForStaff ?? 0,
         openForStudent: dataForm.openForStudent ?? 0,
