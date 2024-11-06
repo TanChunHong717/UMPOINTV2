@@ -195,17 +195,6 @@ const visible = ref(false);
 const dataFormRef = ref();
 const userList = ref<{id: number; username: string}[]>([]);
 
-// switch to set technicians available
-const hasTechnician = computed({
-  get: () => dataForm.maxTechnicianNumber > 0,
-  set: (hasTechnicianValue) => {
-    // only set if maxTechnicianNumber is not set
-    if (hasTechnicianValue && !dataForm.maxTechnicianNumber) dataForm.maxTechnicianNumber = 1;
-    // no technicians available, set to 0
-    else dataForm.maxTechnicianNumber = 0;
-  }
-});
-
 const spaceId = ref(null);
 const dataForm = reactive({
   id: null,
@@ -320,6 +309,17 @@ const getEndTimeStep = () => {
   }
   return "00:30";
 };
+
+// switch to set technicians available
+const hasTechnician = computed({
+  get: () => dataForm.maxTechnicianNumber > 0,
+  set: (hasTechnicianValue) => {
+    // only set if maxTechnicianNumber is not set
+    if (hasTechnicianValue && !dataForm.maxTechnicianNumber) dataForm.maxTechnicianNumber = 1;
+    // no technicians available, set to 0
+    else dataForm.maxTechnicianNumber = 0;
+  }
+});
 
 const init = (space?: any) => {
   getUserList();

@@ -16,6 +16,7 @@ import java.util.List;
 public interface SpcBookingService extends CrudService<SpcBookingEntity, SpcBookingDTO> {
     void approve(Long id, List<Long> technicianIdList);
     void reject(Long id);
+    void reject(List<Long> idList);
     void cancel(Long id);
     Long getUserId(Long id);
     void validateBookingHasOverlap(SpcClientBookingDTO request);

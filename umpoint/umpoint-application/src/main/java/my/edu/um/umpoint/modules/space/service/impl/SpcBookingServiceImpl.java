@@ -177,6 +177,17 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
     }
 
     @Override
+    public void reject(List<Long> idList) {
+        UserDetail user = SecurityUser.getUser();
+        SpcBookingEntity entity = new SpcBookingEntity();
+        entity.setAdminId(user.getId());
+        entity.setStatus(BookingConstant.BookingStatus.REJECT.getValue());
+
+        baseDao.update(entity, new QueryWrapper<SpcBookingEntity>().in("id", idList));
+        spcEventService.deleteByBookingId(idList);
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void cancel(Long id){
         SpcBookingEntity entity = new SpcBookingEntity();

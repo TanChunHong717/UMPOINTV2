@@ -92,14 +92,20 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteByClosureId(Long[] closureIds){
-        baseDao.delete(new QueryWrapper<SpcEventEntity>().in("closure_id", Arrays.asList(closureIds)));
+    public void deleteByClosureId(List<Long> closureIdList){
+        baseDao.delete(new QueryWrapper<SpcEventEntity>().in("closure_id", closureIdList));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteByBookingId(Long bookingId){
         baseDao.delete(new QueryWrapper<SpcEventEntity>().eq("booking_id", bookingId));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteByBookingId(List<Long> bookingIdList){
+        baseDao.delete(new QueryWrapper<SpcEventEntity>().in("booking_id", bookingIdList));
     }
 
     private static Boolean needToAddEvent(SpcClosureDTO dto, LocalDate date){

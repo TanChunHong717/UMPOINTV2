@@ -14,16 +14,23 @@ import my.edu.um.umpoint.common.utils.Result;
 import my.edu.um.umpoint.common.validator.AssertUtils;
 import my.edu.um.umpoint.common.validator.ValidatorUtils;
 import my.edu.um.umpoint.common.validator.group.AddGroup;
+import my.edu.um.umpoint.common.validator.group.BatchUpdateGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
+import my.edu.um.umpoint.modules.security.user.SecurityUser;
 import my.edu.um.umpoint.modules.space.dto.SpcClosureDTO;
 import my.edu.um.umpoint.modules.space.service.SpcClosureService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Space Closure Period
@@ -37,6 +44,9 @@ import java.util.Map;
 public class SpcClosureController {
     @Autowired
     private SpcClosureService spcClosureService;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     @GetMapping("page")
     @Operation(summary = "Pagination")
@@ -73,6 +83,33 @@ public class SpcClosureController {
         validateEventTime(dto);
 
         spcClosureService.save(dto);
+
+        return new Result();
+    }
+
+    @PostMapping("batch")
+    @Operation(summary = "Batch Save")
+    @LogOperation("Save")
+    @RequiresPermissions("space:closure:save")
+    public Result batchSave(@RequestParam Long[] spaceIdList, @RequestBody SpcClosureDTO dto){
+        AssertUtils.isArrayEmpty(spaceIdList);
+        ValidatorUtils.validateEntity(dto, BatchUpdateGroup.class, DefaultGroup.class);
+        validateEventTime(dto);
+
+        List<CompletableFuture<Void>> completableFutures = Arrays.stream(spaceIdList)
+                .map(spaceId -> CompletableFuture.runAsync(() -> {
+                    SpcClosureDTO dtoCopy = new SpcClosureDTO();
+                    BeanUtils.copyProperties(dto, dtoCopy);
+                    dtoCopy.setSpaceId(spaceId);
+                    spcClosureService.save(dtoCopy);
+                }))
+                .toList();
+
+        CompletableFuture
+                .allOf(completableFutures.toArray(new CompletableFuture[0]))
+                .thenRunAsync(() -> {
+                    messagingTemplate.convertAndSend("/topic/" + SecurityUser.getUserId() + "/messages", "Successfully save closure");
+                });
 
         return new Result();
     }

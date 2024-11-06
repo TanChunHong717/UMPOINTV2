@@ -164,17 +164,6 @@ const idList = ref([]);
 const visible = ref(false);
 const dataFormRef = ref();
 
-// switch to set technicians available
-const hasTechnician = computed({
-  get: () => dataForm.maxTechnicianNumber > 0,
-  set: (hasTechnicianValue) => {
-    // only set if maxTechnicianNumber is not set
-    if (hasTechnicianValue && !dataForm.maxTechnicianNumber) dataForm.maxTechnicianNumber = 1;
-    // no technicians available, set to 0
-    else dataForm.maxTechnicianNumber = 0;
-  }
-});
-
 const dataForm = reactive({
   contactRequired: null,
   approvalRequired: null,
@@ -256,6 +245,17 @@ const getEndTimeStep = () => {
   }
   return "00:30";
 };
+
+// switch to set technicians available
+const hasTechnician = computed({
+  get: () => dataForm.maxTechnicianNumber > 0,
+  set: (hasTechnicianValue) => {
+    // only set if maxTechnicianNumber is not set
+    if (hasTechnicianValue && !dataForm.maxTechnicianNumber) dataForm.maxTechnicianNumber = 1;
+    // no technicians available, set to 0
+    else dataForm.maxTechnicianNumber = 0;
+  }
+});
 
 const init = (dataListSelections: any) => {
   if (dataListSelections) {
