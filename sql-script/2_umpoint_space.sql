@@ -193,3 +193,5 @@ BEGIN
 END;
 
 |
+
+DELIMITER ;
