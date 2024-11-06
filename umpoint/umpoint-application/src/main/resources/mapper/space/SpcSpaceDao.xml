@@ -50,6 +50,7 @@
         <result column="updater_name" property="updaterName" />
         <association property="spcBookingRuleEntity">
             <id property="id" column="booking_rule_id"/>
+            <result property="contactRequired" column="contact_required"/>
             <result property="approvalRequired" column="approval_required"/>
             <result property="openForStaff" column="open_for_staff"/>
             <result property="openForStudent" column="open_for_student"/>
@@ -141,6 +142,7 @@
             s.day_price,
             s.booking_rule_id,
             s.create_date,
+            b.contact_required,
             b.approval_required,
             b.open_for_staff,
             b.open_for_student,
