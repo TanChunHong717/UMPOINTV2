@@ -43,4 +43,16 @@ public interface BookingConstant {
             this.value = value;
         }
     }
+
+    @Getter
+    enum BookingUnit {
+        FREEFORM(0),
+        SLOTTED(1);
+
+        private final int value;
+
+        BookingUnit(int value) {
+            this.value = value;
+        }
+    }
 }

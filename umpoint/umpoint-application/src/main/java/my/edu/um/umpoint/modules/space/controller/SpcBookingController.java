@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import my.edu.um.umpoint.common.annotation.LogOperation;
+import my.edu.um.umpoint.common.constant.BookingConstant;
 import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.utils.DateUtils;
@@ -35,9 +36,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Space Booking
@@ -130,6 +129,10 @@ public class SpcBookingController{
             validateInAllowedRange(spcBookingRule, startDate, endDate);
             validateReservationLength(spcBookingRule, startDate, endDate, startTime, endTime);
 
+            if (spcBookingRule.getBookingMode() == BookingConstant.BookingUnit.SLOTTED.getValue()) {
+                validateReservationInSlot(spcBookingRule, startTime, endTime);
+            }
+
             spcBookingService.validateBookingHasOverlap(request);
         } catch (DateTimeException e) {
             return new Result().error(400, e.getMessage());
@@ -206,6 +209,24 @@ public class SpcBookingController{
         ExcelUtils.exportExcelToTarget(response, null, "Space Booking", list, SpcBookingExcel.class);
     }
 
+    private static void validateReservationInSlot(
+        SpcBookingRuleDTO spcBookingRule, LocalTime startTime, LocalTime endTime
+    ) throws DateTimeException{
+        List<LocalTime> allowedTimeSlots = new ArrayList<>();
+        LocalTime currentAllowTime = spcBookingRule.getStartTime().toLocalTime();
+        long slotDiffMinutes = spcBookingRule.getBookingUnit().longValue();
+
+        while (!currentAllowTime.isAfter(spcBookingRule.getEndTime().toLocalTime())) {
+            allowedTimeSlots.add(currentAllowTime);
+            currentAllowTime = currentAllowTime.plusMinutes(slotDiffMinutes);
+        }
+
+        if (!allowedTimeSlots.contains(startTime)) {
+            throw new DateTimeException("Selected start time is not in allowed time slot");
+        } else if (!allowedTimeSlots.contains(endTime)) {
+            throw new DateTimeException("Selected end time is not in allowed time slot");
+        }
+    }
 
     private static void validateReservationLength(
         SpcBookingRuleDTO spcBookingRule,
@@ -249,12 +270,12 @@ public class SpcBookingController{
             startDate.isBefore(allowedRangeStartDate) ||
             startDate.isAfter(allowedRangeEndDate)
         ) {
-            throw new DateTimeException("Invalid start date");
+            throw new DateTimeException("Start date is out of range");
         } else if (
             endDate.isBefore(allowedRangeStartDate) ||
             endDate.isAfter(allowedRangeEndDate)
         ) {
-            throw new DateTimeException("Invalid end date");
+            throw new DateTimeException("End date is out of range");
         }
     }
 
