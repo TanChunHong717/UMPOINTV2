@@ -123,7 +123,8 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
 
         // insert object that need id from booking dto
         // daily event breakdown
-        spcEventService.addEvent(spcBookingDTO);
+        spcEventService.addEvent(spcBookingDTO, space.getSpcBookingRuleDTO().getHolidayAvailable() ==
+                                                BookingConstant.Holiday.AVAILABLE.getValue());
 
         // add payment if required
         if (total.compareTo(BigDecimal.ZERO) > 0) {
@@ -209,8 +210,6 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
         for (EventEntity currentEvent : SpaceBookingUtils.dividePeriodToEvents(
             request.getStartDay(), request.getEndDay(), request.getStartTime(), request.getEndTime()
         )) {
-            LocalDateTime currentStart = DateUtils.convertDateToLocalDateTime(currentEvent.startTime);
-            LocalDateTime currentEnd = DateUtils.convertDateToLocalDateTime(currentEvent.endTime);
             List<SpcEventEntity> overlappedEvents = sameDateRangeEvents
                 .stream()
                 .filter((overlapEvent) -> {
@@ -218,9 +217,9 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
                     LocalDateTime overlapEnd = DateUtils.convertDateToLocalDateTime(overlapEvent.getEndTime());
                     return !(
                         // if overlapStart - overlapEnd - currentStart (- currentEnd) then doesnt overlap
-                        (currentStart.isAfter(overlapStart) && currentStart.isAfter(overlapEnd)) ||
+                        (currentEvent.startTime.isAfter(overlapStart) && currentEvent.startTime.isAfter(overlapEnd)) ||
                         // if (currentStart -) currentEnd - overlapStart - overlapEnd then doesnt overlap
-                        (currentEnd.isBefore(overlapStart) && currentEnd.isBefore(overlapEnd))
+                        (currentEvent.endTime.isBefore(overlapStart) && currentEvent.endTime.isBefore(overlapEnd))
                     ); // otherwise event is overlapping
                 })
                 .toList();
