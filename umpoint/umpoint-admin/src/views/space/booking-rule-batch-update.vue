@@ -17,12 +17,6 @@
       </el-form-item>
 
       <el-divider content-position="left">Venue Time and Booking Window</el-divider>
-      <el-form-item label="Booking Mode">
-        <el-radio-group v-model="dataForm.bookingMode">
-          <el-radio label="Free time selection" :value="0">Free time selection</el-radio>
-          <el-radio label="Limited to preset slots" :value="1">Limited to preset slots</el-radio>
-        </el-radio-group>
-      </el-form-item>
       <el-form-item label="Start time" prop="startTime">
         <el-time-select
           v-model="dataForm.startTime"
@@ -40,6 +34,12 @@
           end="23:59"
           step="00:30"
         />
+      </el-form-item>
+      <el-form-item label="Booking Mode">
+        <el-radio-group v-model="dataForm.bookingMode">
+          <el-radio label="Free time selection" :value="0">Free time selection</el-radio>
+          <el-radio label="Limited to preset slots" :value="1">Limited to preset slots</el-radio>
+        </el-radio-group>
       </el-form-item>
       <el-form-item label="Booking Unit" prop="bookingUnit">
         <el-col :span="14">
