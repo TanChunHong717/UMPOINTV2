@@ -10,6 +10,7 @@ package my.edu.um.umpoint.common.exception;
 
 public interface ErrorCode {
     int INTERNAL_SERVER_ERROR = 500;
+    int BAD_REQUEST = 400;
     int UNAUTHORIZED = 401;
 
     int NOT_NULL = 10001;

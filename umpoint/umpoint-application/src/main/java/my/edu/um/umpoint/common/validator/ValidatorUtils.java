@@ -1,9 +1,9 @@
 package my.edu.um.umpoint.common.validator;
 
-import my.edu.um.umpoint.common.exception.RenException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
+import my.edu.um.umpoint.common.exception.BadHttpRequestException;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -21,8 +21,7 @@ public class ValidatorUtils {
         return bundleMessageSource;
     }
 
-    public static void validateEntity(Object object, Class<?>... groups)
-            throws RenException {
+    public static void validateEntity(Object object, Class<?>... groups) {
         Locale.setDefault(LocaleContextHolder.getLocale());
         Validator validator = Validation.byDefaultProvider().configure().messageInterpolator(
                 new ResourceBundleMessageInterpolator(new MessageSourceResourceBundleLocator(getMessageSource())))
@@ -31,7 +30,7 @@ public class ValidatorUtils {
         Set<ConstraintViolation<Object>> constraintViolations = validator.validate(object, groups);
         if (!constraintViolations.isEmpty()) {
         	ConstraintViolation<Object> constraint = constraintViolations.iterator().next();
-            throw new RenException(constraint.getMessage());
+            throw new BadHttpRequestException(constraint.getPropertyPath() + " " + constraint.getMessage());
         }
     }
 }

@@ -1,9 +1,6 @@
 package my.edu.um.umpoint.common.exception;
 
 import cn.hutool.core.map.MapUtil;
-import my.edu.um.umpoint.common.exception.ErrorCode;
-import my.edu.um.umpoint.common.exception.ExceptionUtils;
-import my.edu.um.umpoint.common.exception.RenException;
 import my.edu.um.umpoint.common.utils.HttpContextUtils;
 import my.edu.um.umpoint.common.utils.IpUtils;
 import my.edu.um.umpoint.common.utils.JsonUtils;
@@ -27,7 +24,7 @@ import java.util.Map;
 @RestControllerAdvice
 @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 @AllArgsConstructor
-public class RenExceptionHandler {
+public class GlobalExceptionHandler {
     private final SysLogErrorService sysLogErrorService;
 
     @ExceptionHandler(RenException.class)
@@ -42,6 +39,15 @@ public class RenExceptionHandler {
     public Result handleDuplicateKeyException(DuplicateKeyException ex) {
         Result result = new Result();
         result.error(ErrorCode.DB_RECORD_EXISTS);
+
+        return result;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BadHttpRequestException.class)
+    public Result handleBadHttpRequestException(RenException ex) {
+        Result result = new Result();
+        result.error(ErrorCode.BAD_REQUEST, ex.getMsg());
 
         return result;
     }
