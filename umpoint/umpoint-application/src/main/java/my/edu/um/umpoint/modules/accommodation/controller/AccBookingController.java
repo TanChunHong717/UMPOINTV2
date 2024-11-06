@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import my.edu.um.umpoint.common.annotation.LogOperation;
 import my.edu.um.umpoint.common.constant.Constant;
+import my.edu.um.umpoint.common.exception.BadHttpRequestException;
 import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.utils.DateUtils;
 import my.edu.um.umpoint.common.utils.ExcelUtils;
@@ -100,7 +101,7 @@ public class AccBookingController{
         // Check space exist
         AccAccommodationDTO accommodation = accAccommodationService.get(request.getAccommodationId());
         if (accommodation == null) {
-            return new Result().error(400, "Space ID does not exist");
+            throw new BadHttpRequestException(400, "Space ID does not exist");
         }
         // Validate booking rule
         AccBookingRuleDTO accBookingRule = accommodation.getAccBookingRuleDTO();
@@ -120,7 +121,7 @@ public class AccBookingController{
 
             accBookingService.validateBookingHasOverlap(request);
         } catch (DateTimeException e) {
-            return new Result().error(400, e.getMessage());
+            throw new BadHttpRequestException(400, e.getMessage());
         }
 
 

@@ -20,6 +20,11 @@ public class BadHttpRequestException extends RuntimeException {
 		this.msg = MessageUtils.getMessage(code);
 	}
 
+	public BadHttpRequestException(int code, String message) {
+		this.code = code;
+		this.msg = message;
+	}
+
 	public BadHttpRequestException(int code, String... params) {
 		this.code = code;
 		this.msg = MessageUtils.getMessage(code, params);

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import my.edu.um.umpoint.common.annotation.LogOperation;
 import my.edu.um.umpoint.common.constant.ChatConstant;
 import my.edu.um.umpoint.common.constant.Constant;
+import my.edu.um.umpoint.common.exception.BadHttpRequestException;
 import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.utils.Result;
 import my.edu.um.umpoint.common.validator.ValidatorUtils;
@@ -105,13 +106,13 @@ public class ChatMessageController{
         // validate if chat room exist
         ChatRoomDTO chatRoomDTO = chatRoomService.get(roomId);
         if (chatRoomDTO == null) {
-            return new Result().error(400, "Invalid room ID");
+            throw new BadHttpRequestException(400, "Invalid room ID");
         }
 
         // validate if user is in chat room
         UserDetail user = SecurityUser.getUser();
         if (!validateChatIsUser(chatRoomDTO, user)) {
-            return new Result().error(400, "Invalid room ID");
+            throw new BadHttpRequestException(400, "Invalid room ID");
         }
 
         ChatMessageDTO chatMessageDTO = new ChatMessageDTO();
@@ -149,13 +150,13 @@ public class ChatMessageController{
             hasAttachment = true;
         }
         if (contentIsEmpty) {
-            return new Result().error(400, "Message content can not be empty");
+            throw new BadHttpRequestException(400, "Message content can not be empty");
         }
 
         chatMessageDTO.setChatRoomId(chatRoomDTO.getId());
         if (dto.containsKey("replyMessageId")) {
             if (!validateChatMessageId(dto.get("replyMessageId").toString())) {
-                return new Result().error(400, "Invalid reply message ID");
+                throw new BadHttpRequestException(400, "Invalid reply message ID");
             }
             chatMessageDTO.setReplyMessageId((Long) dto.get("replyMessageId"));
         }

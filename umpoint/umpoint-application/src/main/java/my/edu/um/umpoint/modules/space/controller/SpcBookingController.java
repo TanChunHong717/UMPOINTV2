@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import my.edu.um.umpoint.common.annotation.LogOperation;
 import my.edu.um.umpoint.common.constant.BookingConstant;
 import my.edu.um.umpoint.common.constant.Constant;
+import my.edu.um.umpoint.common.exception.BadHttpRequestException;
 import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.utils.DateUtils;
 import my.edu.um.umpoint.common.utils.ExcelUtils;
@@ -106,7 +107,7 @@ public class SpcBookingController{
         // Check space exist
         SpcSpaceDTO space = spcSpaceService.get(request.getSpaceId());
         if (space == null) {
-            return new Result().error(400, "Space ID does not exist");
+            throw new BadHttpRequestException(400, "Space ID does not exist");
         }
         // Validate booking rule
         SpcBookingRuleDTO spcBookingRule = space.getSpcBookingRuleDTO();
@@ -135,14 +136,14 @@ public class SpcBookingController{
 
             spcBookingService.validateBookingHasOverlap(request);
         } catch (DateTimeException e) {
-            return new Result().error(400, e.getMessage());
+            throw new BadHttpRequestException(400, e.getMessage());
         }
 
         // technician available check
         // might be null so coerce to 0
         if (request.getTechnicianNumber() == null) request.setTechnicianNumber(0);
         if (request.getTechnicianNumber() > spcBookingRule.getMaxTechnicianNumber()){
-            return new Result().error(400, "Number of technicians exceeded limit");
+            throw new BadHttpRequestException(400, "Number of technicians exceeded limit");
         }
 
         // prepare to save
