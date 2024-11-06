@@ -3,9 +3,9 @@ package my.edu.um.umpoint.common.validator;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ArrayUtil;
-import my.edu.um.umpoint.common.exception.ErrorCode;
-import my.edu.um.umpoint.common.exception.RenException;
 import cn.hutool.core.util.StrUtil;
+import my.edu.um.umpoint.common.exception.BadHttpRequestException;
+import my.edu.um.umpoint.common.exception.ErrorCode;
 
 import java.util.List;
 import java.util.Map;
@@ -18,11 +18,11 @@ public class AssertUtils {
 
     public static void isBlank(String str, Integer code, String... params) {
         if(code == null){
-            throw new RenException(ErrorCode.NOT_NULL, "code");
+            throw new BadHttpRequestException(ErrorCode.NOT_NULL, "code");
         }
 
         if (StrUtil.isBlank(str)) {
-            throw new RenException(code, params);
+            throw new BadHttpRequestException(code, params);
         }
     }
 
@@ -32,11 +32,11 @@ public class AssertUtils {
 
     public static void isNull(Object object, Integer code, String... params) {
         if(code == null){
-            throw new RenException(ErrorCode.NOT_NULL, "code");
+            throw new BadHttpRequestException(ErrorCode.NOT_NULL, "code");
         }
 
         if (object == null) {
-            throw new RenException(code, params);
+            throw new BadHttpRequestException(code, params);
         }
     }
 
@@ -46,11 +46,11 @@ public class AssertUtils {
 
     public static void isArrayEmpty(Object[] array, Integer code, String... params) {
         if(code == null){
-            throw new RenException(ErrorCode.NOT_NULL, "code");
+            throw new BadHttpRequestException(ErrorCode.NOT_NULL, "code");
         }
 
         if(ArrayUtil.isEmpty(array)){
-            throw new RenException(code, params);
+            throw new BadHttpRequestException(code, params);
         }
     }
 
@@ -60,11 +60,11 @@ public class AssertUtils {
 
     public static void isListEmpty(List<?> list, Integer code, String... params) {
         if(code == null){
-            throw new RenException(ErrorCode.NOT_NULL, "code");
+            throw new BadHttpRequestException(ErrorCode.NOT_NULL, "code");
         }
 
         if(CollUtil.isEmpty(list)){
-            throw new RenException(code, params);
+            throw new BadHttpRequestException(code, params);
         }
     }
 
@@ -74,11 +74,11 @@ public class AssertUtils {
 
     public static void isMapEmpty(Map map, Integer code, String... params) {
         if(code == null){
-            throw new RenException(ErrorCode.NOT_NULL, "code");
+            throw new BadHttpRequestException(ErrorCode.NOT_NULL, "code");
         }
 
         if(MapUtil.isEmpty(map)){
-            throw new RenException(code, params);
+            throw new BadHttpRequestException(code, params);
         }
     }
 }
