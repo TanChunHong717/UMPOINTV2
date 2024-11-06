@@ -2,6 +2,22 @@
   <el-dialog v-model="visible" :title="'Configure Default Booking Rule'" width="900" :close-on-click-modal="false" :close-on-press-escape="false" align-center>
     <el-form :model="dataForm" :rules="rules" ref="dataFormRef" @keyup.enter="dataFormSubmitHandle()" label-width="300px">
       <el-divider content-position="left">Permissions</el-divider>
+      <el-form-item label="Prior Contact with Admin" prop="contactRequired">
+        <el-radio-group v-model="dataForm.contactRequired">
+          <el-radio :value="Number(1)">Required</el-radio>
+          <el-radio :value="Number(0)">Not Needed</el-radio>
+          <el-tooltip
+            class="box-item"
+            placement="bottom-end"
+          >
+            <template #content>
+              Only used to inform if the user needs to contact the manager before booking. <br>
+              No checks are performed during booking.
+            </template>
+            <el-button tabindex="-1" size="small" :icon="InfoFilled" circle />
+          </el-tooltip>
+        </el-radio-group>
+      </el-form-item>
       <el-form-item label="Required Approve" prop="approvalRequired">
         <el-radio-group v-model="dataForm.approvalRequired">
           <el-radio :value="Number(1)">Require Admin Approve</el-radio>
@@ -17,24 +33,6 @@
       </el-form-item>
 
       <el-divider content-position="left">Venue Time and Booking Window</el-divider>
-      <el-form-item label="Start time" prop="startTime">
-        <el-time-select
-          v-model="dataForm.startTime"
-          placeholder="Start time"
-          start="00:00"
-          end="23:59"
-          step="00:30"
-        />
-      </el-form-item>
-      <el-form-item label="End time" prop="endTime">
-        <el-time-select
-          v-model="dataForm.endTime"
-          placeholder="End time"
-          :start="dataForm.startTime"
-          end="23:59"
-          step="00:30"
-        />
-      </el-form-item>
       <el-form-item label="Booking Mode">
         <el-radio-group v-model="dataForm.bookingMode">
           <el-radio label="Free time selection" :value="0">Free time selection</el-radio>
@@ -54,6 +52,24 @@
             <el-button tabindex="-1" size="small" :icon="InfoFilled" circle />
           </el-tooltip>
         </el-col>
+      </el-form-item>
+      <el-form-item label="Start time" prop="startTime">
+        <el-time-select
+          v-model="dataForm.startTime"
+          placeholder="Start time"
+          start="00:00"
+          end="23:59"
+          step="00:30"
+        />
+      </el-form-item>
+      <el-form-item label="End time" prop="endTime">
+        <el-time-select
+          v-model="dataForm.endTime"
+          placeholder="End time"
+          :start="dataForm.startTime"
+          end="23:59"
+          :step="getEndTimeStep()"
+        />
       </el-form-item>
       <el-form-item label="Open for booking after" prop="minBookingAdvanceDay">
         <el-col :span="14">
@@ -105,19 +121,25 @@
       <el-form-item label="Min booking hour" prop="minBookingHour">
         <el-input-number v-model="dataForm.minBookingHour" controls-position="right" :min="0.5" :step="0.5"/>
       </el-form-item>
-      <el-form-item label="Max technician number" prop="maxTechnicianNumber">
-        <el-col :span="22">
-          <el-input-number v-model="dataForm.maxTechnicianNumber" controls-position="right" style="width: 100%" :min="0"/>
+      <el-form-item label="Technicians available" prop="maxTechnicianNumber">
+        <el-col :span="2" :xs="4">
+          <el-switch
+            v-model="hasTechnician"
+            inline-prompt
+            :active-icon="Check"
+            :inactive-icon="Close"
+          />
         </el-col>
-        <el-col :span="2" style="padding-left: 6px;">
+        <el-col :span="20" :xs="18" offset="1">
+          <el-input-number v-if="hasTechnician" v-model="dataForm.maxTechnicianNumber" controls-position="right" style="width: 100%" :min="0"/>
+        </el-col>
+        <el-col :span="1" style="padding-left: 6px;">
           <el-tooltip
             class="box-item"
             placement="bottom-end"
           >
             <template #content>
-              • Set to 0 if the space does not provide technicians.<br>
-              • 1 technician is included in every booking by default.<br>
-              • If the number of technicians is set to 1, users may not choose any additional technicians.
+              Each booking includes 1 technician by default if technicians are provided. If set to 1, users cannot add any additional technicians.
             </template>
             <el-button tabindex="-1" size="small" :icon="InfoFilled" circle />
           </el-tooltip>
@@ -132,22 +154,34 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
+import {computed, reactive, ref} from "vue";
 import baseService from "@/service/baseService";
 import { ElMessage } from "element-plus";
-import {InfoFilled} from "@element-plus/icons-vue";
+import {Check, Close, InfoFilled} from "@element-plus/icons-vue";
 const emit = defineEmits(["refreshDataList"]);
 
 const idList = ref([]);
 const visible = ref(false);
 const dataFormRef = ref();
 
+// switch to set technicians available
+const hasTechnician = computed({
+  get: () => dataForm.maxTechnicianNumber > 0,
+  set: (hasTechnicianValue) => {
+    // only set if maxTechnicianNumber is not set
+    if (hasTechnicianValue && !dataForm.maxTechnicianNumber) dataForm.maxTechnicianNumber = 1;
+    // no technicians available, set to 0
+    else dataForm.maxTechnicianNumber = 0;
+  }
+});
+
 const dataForm = reactive({
-  approvalRequired: 1,
+  contactRequired: null,
+  approvalRequired: null,
   openForStaff: null,
   openForStudent: null,
   openForPublic: null,
-  holidayAvailable: 1,
+  holidayAvailable: null,
   bookingMode: null,
   startTime: null,
   endTime: null,
@@ -162,6 +196,9 @@ const dataForm = reactive({
 });
 
 const rules = ref({
+  contactRequired: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ],
   approvalRequired: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],
@@ -207,6 +244,19 @@ const addSecond = (timeString: any): any => {
   return timeString + ':00';
 }
 
+const getEndTimeStep = () => {
+  if (dataForm.bookingMode == 1 && dataForm.bookingUnit) {
+    let hour = Math.floor(dataForm.bookingUnit / 60);
+    let minute = dataForm.bookingUnit % 60;
+
+    const formattedHour = hour.toString().padStart(2, '0');
+    const formattedMinute = minute.toString().padStart(2, '0');
+
+    return `${formattedHour}:${formattedMinute}`;
+  }
+  return "00:30";
+};
+
 const init = (dataListSelections: any) => {
   if (dataListSelections) {
     visible.value = true;
@@ -222,6 +272,16 @@ const dataFormSubmitHandle = () => {
   dataFormRef.value.validate((valid: boolean) => {
     if (!valid) {
       return false;
+    }
+    if (dataForm.bookingMode == 1) {
+      const start = new Date(`1970-01-01T${dataForm.startTime}:00`);
+      const end = new Date(`1970-01-01T${dataForm.endTime}:00`);
+
+      const diffInMin = (end.getTime() - start.getTime()) / 60000;
+      if (!dataForm.bookingUnit || diffInMin % dataForm.bookingUnit != 0) {
+        ElMessage.error("The diff between start time and end time must be multiple of booking unit.");
+        return false;
+      }
     }
     dataForm.startTime = addSecond(dataForm.startTime);
     dataForm.endTime = addSecond(dataForm.endTime);

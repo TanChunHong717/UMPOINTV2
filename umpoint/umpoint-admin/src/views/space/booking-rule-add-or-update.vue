@@ -48,24 +48,6 @@
       </el-form-item>
 
       <el-divider content-position="left">Venue Time and Booking Window</el-divider>
-      <el-form-item label="Start time" prop="startTime">
-        <el-time-select
-          v-model="dataForm.startTime"
-          placeholder="Start time"
-          start="00:00"
-          end="23:59"
-          step="00:30"
-        />
-      </el-form-item>
-      <el-form-item label="End time" prop="endTime">
-        <el-time-select
-          v-model="dataForm.endTime"
-          placeholder="End time"
-          :start="dataForm.startTime"
-          end="23:59"
-          step="00:30"
-        />
-      </el-form-item>
       <el-form-item label="Booking Mode" prop="bookingMode">
         <el-radio-group v-model="dataForm.bookingMode">
           <el-radio label="Free time selection" :value="0">Free time selection</el-radio>
@@ -86,6 +68,24 @@
             <el-button tabindex="-1" size="small" :icon="InfoFilled" circle />
           </el-tooltip>
         </el-col>
+      </el-form-item>
+      <el-form-item label="Start time" prop="startTime">
+        <el-time-select
+          v-model="dataForm.startTime"
+          placeholder="Start time"
+          start="00:00"
+          end="23:59"
+          step="00:30"
+        />
+      </el-form-item>
+      <el-form-item label="End time" prop="endTime">
+        <el-time-select
+          v-model="dataForm.endTime"
+          placeholder="End time"
+          :start="dataForm.startTime"
+          end="23:59"
+          :step="getEndTimeStep()"
+        />
       </el-form-item>
       <el-form-item label="Open for booking after" prop="minBookingAdvanceDay">
         <el-col :span="14">
@@ -138,7 +138,7 @@
           <el-input-number v-model="dataForm.maxBookingHour" controls-position="right" :min="0.5" :step="0.5"/>
       </el-form-item>
       <el-form-item label="Technicians available" prop="maxTechnicianNumber">
-        <el-col :span="2" :xs="4" style="padding-right: 6px;">
+        <el-col :span="2" :xs="4">
           <el-switch
             v-model="hasTechnician"
             inline-prompt
@@ -146,10 +146,10 @@
             :inactive-icon="Close"
           />
         </el-col>
-        <el-col :span="20" :xs="18">
-          <el-input-number v-model="dataForm.maxTechnicianNumber" controls-position="right" style="width: 100%" :min="0"/>
+        <el-col :span="20" :xs="18" offset="1">
+          <el-input-number v-if="hasTechnician" v-model="dataForm.maxTechnicianNumber" controls-position="right" style="width: 100%" :min="0"/>
         </el-col>
-        <el-col :span="2" style="padding-left: 6px;">
+        <el-col :span="1" style="padding-left: 6px;">
           <el-tooltip
           class="box-item"
           placement="bottom-end"
@@ -172,7 +172,7 @@
       <el-form-item label="Price for 1 day" prop="dayPrice">
         <el-input-number v-model="dataForm.dayPrice" controls-position="right" :precision="2" :step="0.5" :min="0"/>
       </el-form-item>
-      <el-form-item label="Price per technician" prop="technicianPrice">
+      <el-form-item v-if="hasTechnician" label="Price per technician" prop="technicianPrice">
         <el-input-number v-model="dataForm.technicianPrice" controls-position="right" :precision="2" :step="0.5" :min="0" :readonly="!hasTechnician"/>
       </el-form-item>
     </el-form>
@@ -209,10 +209,9 @@ const hasTechnician = computed({
 const spaceId = ref(null);
 const dataForm = reactive({
   id: null,
-  bookingRuleId: null,
   manager: null,
-  contactRequired: 1,
-  approvalRequired: 1,
+  contactRequired: null,
+  approvalRequired: null,
   openForStaff: null,
   openForStudent: null,
   openForPublic: null,
@@ -309,20 +308,43 @@ const addSecond = (timeString: any): any => {
   return timeString;
 }
 
+const getEndTimeStep = () => {
+  if (dataForm.bookingMode == 1 && dataForm.bookingUnit) {
+    let hour = Math.floor(dataForm.bookingUnit / 60);
+    let minute = dataForm.bookingUnit % 60;
+
+    const formattedHour = hour.toString().padStart(2, '0');
+    const formattedMinute = minute.toString().padStart(2, '0');
+
+    return `${formattedHour}:${formattedMinute}`;
+  }
+  return "00:30";
+};
+
 const init = (space?: any) => {
   getUserList();
 
   visible.value = true;
-  dataForm.id = null;
+  Object.keys(dataForm).forEach((key) => {
+    (dataForm as any)[key] = null;
+  });
+  dataForm.maxTechnicianNumber = 0;
+  dataForm.technicianPrice = 0;
 
   if (dataFormRef.value)
     dataFormRef.value.resetFields();
 
-  Object.assign(dataForm, space, space.spcBookingRuleDTO);
-  spaceId.value = space.id;
-  dataForm.bookingRuleId = space.bookingRuleId;
-  dataForm.startTime = removeSecond(dataForm.startTime);
-  dataForm.endTime = removeSecond(dataForm.endTime);
+  if (space.spcBookingRuleDTO) {
+    Object.assign(dataForm, space.spcBookingRuleDTO);
+    spaceId.value = space.id;
+    dataForm.manager = space.manager;
+    dataForm.startTime = removeSecond(dataForm.startTime);
+    dataForm.endTime = removeSecond(dataForm.endTime);
+    dataForm.hourPrice = space.hourPrice;
+    dataForm.fourHoursPrice = space.fourHoursPrice;
+    dataForm.dayPrice = space.dayPrice;
+    dataForm.technicianPrice = space.technicianPrice;
+  }
 };
 
 // Form submission
@@ -331,15 +353,25 @@ const dataFormSubmitHandle = () => {
     if (!valid) {
       return false;
     }
+    if (dataForm.bookingMode == 1) {
+      const start = new Date(`1970-01-01T${dataForm.startTime}:00`);
+      const end = new Date(`1970-01-01T${dataForm.endTime}:00`);
+
+      const diffInMin = (end.getTime() - start.getTime()) / 60000;
+      if (!dataForm.bookingUnit || diffInMin % dataForm.bookingUnit != 0) {
+        ElMessage.error("The diff between start time and end time must be multiple of booking unit.");
+        return false;
+      }
+    }
     const space = {
       id: spaceId.value,
-      bookingRuleId: dataForm.bookingRuleId,
+      bookingRuleId: dataForm.id,
       manager: dataForm.manager,
       hourPrice: dataForm.hourPrice,
       fourHoursPrice: dataForm.fourHoursPrice,
       dayPrice: dataForm.dayPrice,
       spcBookingRuleDTO: {
-        id: dataForm.bookingRuleId,
+        id: dataForm.id,
         contactRequired: dataForm.contactRequired,
         approvalRequired: dataForm.approvalRequired,
         openForStaff: dataForm.openForStaff ?? 0,
