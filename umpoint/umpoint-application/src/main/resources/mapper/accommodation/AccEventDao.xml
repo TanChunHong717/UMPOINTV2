@@ -31,8 +31,8 @@
         FROM acc_event e
         WHERE accommodation_id = #{accommodationId} AND
         (
-        (e.end_time BETWEEN #{startDateTime} AND #{endDateTime}) OR
         (e.start_time BETWEEN #{startDateTime} AND #{endDateTime}) OR
+        (e.end_time BETWEEN #{startDateTime} AND #{endDateTime}) OR
         (e.start_time &lt; #{startDateTime} AND e.end_time &gt; #{endDateTime})
         );
     </select>

@@ -9,11 +9,14 @@ import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
 import my.edu.um.umpoint.common.utils.DateUtils;
 import my.edu.um.umpoint.modules.accommodation.dao.AccBookingDao;
+import my.edu.um.umpoint.modules.accommodation.dao.AccEventDao;
 import my.edu.um.umpoint.modules.accommodation.dto.AccAccommodationDTO;
 import my.edu.um.umpoint.modules.accommodation.dto.AccBookingDTO;
 import my.edu.um.umpoint.modules.accommodation.dto.AccBookingRuleDTO;
+import my.edu.um.umpoint.modules.accommodation.dto.AccClientBookingDTO;
 import my.edu.um.umpoint.modules.accommodation.entity.AccBookingEntity;
 import my.edu.um.umpoint.modules.accommodation.entity.AccBookingTechnicianEntity;
+import my.edu.um.umpoint.modules.accommodation.entity.AccEventEntity;
 import my.edu.um.umpoint.modules.accommodation.service.AccAccommodationService;
 import my.edu.um.umpoint.modules.accommodation.service.AccBookingService;
 import my.edu.um.umpoint.modules.accommodation.service.AccBookingTechnicianService;
@@ -21,12 +24,18 @@ import my.edu.um.umpoint.modules.accommodation.service.AccEventService;
 import my.edu.um.umpoint.modules.payment.dto.AccPaymentItemDTO;
 import my.edu.um.umpoint.modules.security.user.SecurityUser;
 import my.edu.um.umpoint.modules.security.user.UserDetail;
+import my.edu.um.umpoint.modules.utils.EventEntity;
+import my.edu.um.umpoint.modules.utils.SpaceBookingUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.sql.Time;
+import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +58,9 @@ public class AccBookingServiceImpl extends CrudServiceImpl<AccBookingDao, AccBoo
 
     @Autowired
     private AccAccommodationService accAccommodationService;
+
+    @Autowired
+    private AccEventDao accEventDao;
 
     @Override
     public QueryWrapper<AccBookingEntity> getWrapper(Map<String, Object> params){
@@ -200,5 +212,19 @@ public class AccBookingServiceImpl extends CrudServiceImpl<AccBookingDao, AccBoo
         wrapper.eq("id", id);
         wrapper.select("user_id");
         return baseDao.selectOne(wrapper).getUserId();
+    }
+
+    @Override
+    public void validateBookingHasOverlap(AccClientBookingDTO request){
+        DateTimeFormatter sqlDateDormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        List<AccEventEntity> overlappedEvents = accEventDao.getEventsBetweenTimeSpan(
+            request.getAccommodationId(),
+            DateUtils.convertDateToLocalDateTime(request.getStartDay()).format(sqlDateDormatter),
+            DateUtils.convertDateToLocalDateTime(request.getEndDay()).format(sqlDateDormatter)
+        );
+        if (!overlappedEvents.isEmpty()) {
+            throw new DateTimeException("Booking overlapped");
+        }
     }
 }
