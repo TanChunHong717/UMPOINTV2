@@ -138,6 +138,13 @@ public class SpcBookingController{
             return new Result().error(400, e.getMessage());
         }
 
+        // technician available check
+        // might be null so coerce to 0
+        if (request.getTechnicianNumber() == null) request.setTechnicianNumber(0);
+        if (request.getTechnicianNumber() > spcBookingRule.getMaxTechnicianNumber()){
+            return new Result().error(400, "Number of technicians exceeded limit");
+        }
+
         // prepare to save
         SpcBookingDTO bookingDto = makeSpcBookingDTO(request, space);
 
@@ -287,7 +294,7 @@ public class SpcBookingController{
         bookingDto.setEndDay(request.getEndDay());
         bookingDto.setStartTime(request.getStartTime());
         bookingDto.setEndTime(request.getEndTime());
-        bookingDto.setTechnicianNumber((request.getTechnicianNumber() != null) ? request.getTechnicianNumber() : 0);
+        bookingDto.setTechnicianNumber(request.getTechnicianNumber());
         return bookingDto;
     }
 }
