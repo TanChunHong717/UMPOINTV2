@@ -9,10 +9,14 @@ import my.edu.um.umpoint.modules.space.dto.SpcSpaceDTO;
 import my.edu.um.umpoint.modules.space.entity.SpcEventEntity;
 
 import java.sql.Time;
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 public class SpaceBookingUtils{
 
@@ -26,8 +30,8 @@ public class SpaceBookingUtils{
         while (currentDay.isBefore(endDay) || currentDay.isEqual(endDay)) {
             EventEntity eventEntity = new EventEntity();
 
-            eventEntity.startTime = DateUtils.convertLocalDateTimeToDate(currentDay, startTime);
-            eventEntity.endTime = DateUtils.convertLocalDateTimeToDate(currentDay, endTime);
+            eventEntity.startTime = currentDay.atTime(startTime.toLocalTime());
+            eventEntity.endTime = currentDay.atTime(endTime.toLocalTime());
 
             eventEntityList.add(eventEntity);
             currentDay = currentDay.plusDays(1);
@@ -36,7 +40,7 @@ public class SpaceBookingUtils{
         return eventEntityList;
     }
 
-    public static List<SpcEventEntity> divideBookingToEvents(SpcBookingDTO bookingDTO){
+    public static List<SpcEventEntity> divideBookingToEvents(SpcBookingDTO bookingDTO, boolean holidayAvailable){
         List<EventEntity> eventEntities = dividePeriodToEvents(
             bookingDTO.getStartDay(),
             bookingDTO.getEndDay(),
@@ -45,10 +49,17 @@ public class SpaceBookingUtils{
         );
         List<SpcEventEntity> spcEventEntities = new ArrayList<>();
         for (EventEntity event : eventEntities) {
+            if (!holidayAvailable && (
+                event.startTime.getDayOfWeek().equals(DayOfWeek.SATURDAY) ||
+                event.startTime.getDayOfWeek().equals(DayOfWeek.SUNDAY)
+            )) {
+                // skip saturday and sunday if not available
+                continue;
+            }
             SpcEventEntity spcEventEntity = new SpcEventEntity();
             spcEventEntity.setSpaceId(bookingDTO.getSpaceId());
-            spcEventEntity.setStartTime(event.startTime);
-            spcEventEntity.setEndTime(event.endTime);
+            spcEventEntity.setStartTime(DateUtils.convertLocalDateTimeToDate(event.startTime));
+            spcEventEntity.setEndTime(DateUtils.convertLocalDateTimeToDate(event.endTime));
             spcEventEntity.setBookingId(bookingDTO.getId());
             spcEventEntity.setType(BookingConstant.EventStatus.BOOKING.getValue());
             spcEventEntities.add(spcEventEntity);
@@ -60,7 +71,8 @@ public class SpaceBookingUtils{
         SpcBookingRuleDTO spaceBookingRule = spaceInfo.getSpcBookingRuleDTO();
 
         // break booking into daily events and sum price
-        List<SpcEventEntity> eventEntities = divideBookingToEvents(bookingInfo);
+        List<SpcEventEntity> eventEntities =
+            divideBookingToEvents(bookingInfo, spaceBookingRule.getHolidayAvailable() == BookingConstant.Holiday.AVAILABLE.getValue());
         List<SpcPaymentItemDTO> eventPrices = itemiseDailyEventPrices(eventEntities, spaceInfo);
 
         List<SpcPaymentItemDTO> detailedItems = new ArrayList<>(eventPrices);

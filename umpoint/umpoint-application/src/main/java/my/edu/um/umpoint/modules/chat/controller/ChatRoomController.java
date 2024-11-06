@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import my.edu.um.umpoint.common.annotation.LogOperation;
 import my.edu.um.umpoint.common.constant.ChatConstant;
 import my.edu.um.umpoint.common.constant.Constant;
+import my.edu.um.umpoint.common.exception.BadHttpRequestException;
 import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.utils.ExcelUtils;
 import my.edu.um.umpoint.common.utils.Result;
@@ -120,7 +121,7 @@ public class ChatRoomController{
                 request.get("facilityType").toString().toUpperCase().equals(type.name())
             )
         )
-            return new Result().error(400, "Invalid facility type");
+            throw new BadHttpRequestException(400, "Invalid facility type");
 
         String facilityType = request.get("facilityType").toString();
         ChatConstant.FacilityType facilityEnum = ChatConstant.FacilityType.fromString(facilityType);
@@ -142,7 +143,7 @@ public class ChatRoomController{
                 }
             }
         } catch (Exception e) {
-            return new Result().error(400, "Invalid facility ID");
+            throw new BadHttpRequestException(400, "Invalid facility ID");
         }
 
         Long roomId = chatRoomService.getRoomByFacilityId(facilityEnum, facilityId);

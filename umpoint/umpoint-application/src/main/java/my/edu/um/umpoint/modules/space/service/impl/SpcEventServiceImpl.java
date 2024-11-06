@@ -54,8 +54,8 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void addEvent(SpcBookingDTO bookingDTO){
-        insertBatch(SpaceBookingUtils.divideBookingToEvents(bookingDTO));
+    public void addEvent(SpcBookingDTO bookingDTO, boolean holidayAvailable){
+        insertBatch(SpaceBookingUtils.divideBookingToEvents(bookingDTO, holidayAvailable));
     }
 
     @Override
