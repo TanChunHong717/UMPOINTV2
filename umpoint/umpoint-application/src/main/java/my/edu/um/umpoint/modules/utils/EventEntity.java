@@ -1,8 +1,8 @@
 package my.edu.um.umpoint.modules.utils;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class EventEntity{
-    public Date startTime;
-    public Date endTime;
+    public LocalDateTime startTime;
+    public LocalDateTime endTime;
 }

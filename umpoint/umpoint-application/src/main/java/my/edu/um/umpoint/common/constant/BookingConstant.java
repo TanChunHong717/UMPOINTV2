@@ -55,4 +55,16 @@ public interface BookingConstant {
             this.value = value;
         }
     }
+
+    @Getter
+    enum Holiday {
+        CLOSED(0),
+        AVAILABLE(1);
+
+        private final int value;
+
+        Holiday(int value) {
+            this.value = value;
+        }
+    }
 }

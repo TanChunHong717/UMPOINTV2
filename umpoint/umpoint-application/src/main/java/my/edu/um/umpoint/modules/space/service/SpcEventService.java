@@ -13,7 +13,7 @@ import my.edu.um.umpoint.modules.space.entity.SpcEventEntity;
  * @since 1.0.0 2024-09-16
  */
 public interface SpcEventService extends CrudService<SpcEventEntity, SpcEventDTO> {
-    void addEvent(SpcBookingDTO bookingDTO);
+    void addEvent(SpcBookingDTO bookingDTO, boolean holidayAvailable);
     void addEvent(SpcClosureDTO closureDTO);
     void deleteByBookingId(Long bookingId);
     void deleteByClosureId(Long closureId);

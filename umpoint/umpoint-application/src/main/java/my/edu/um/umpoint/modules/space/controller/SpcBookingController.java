@@ -31,12 +31,12 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Space Booking
@@ -255,7 +255,7 @@ public class SpcBookingController{
     private static void validateInAllowedRange(
         SpcBookingRuleDTO spcBookingRule, LocalDate startDate, LocalDate endDate
     ) throws DateTimeException{
-        // Date time check
+        // Date time range check
         LocalDate allowedRangeStartDate =
             LocalDate.now()
                      .atStartOfDay(ZoneId.systemDefault())
