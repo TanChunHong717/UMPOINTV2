@@ -65,6 +65,11 @@ public class SpcBookingRuleController {
         if (idList.isEmpty())
             throw new RenException("Empty booking id list");
         ValidatorUtils.validateEntity(spcBookingRuleDTO, BatchUpdateGroup.class);
+        if (spcBookingRuleDTO.getBookingMode() == 1) {
+            long diffInMin = (spcBookingRuleDTO.getStartTime().getTime() - spcBookingRuleDTO.getEndTime().getTime()) / 60000;
+            if (diffInMin % spcBookingRuleDTO.getBookingUnit().intValue() != 0)
+                throw new RenException("The difference between start time and end time must be a multiple of the booking unit.");
+        }
 
         spcBookingRuleService.updateBatch(idList, spcBookingRuleDTO);
 

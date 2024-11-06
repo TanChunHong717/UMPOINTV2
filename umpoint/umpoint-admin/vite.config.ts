@@ -61,6 +61,9 @@ export default (config: UserConfig): UserConfigExport => {
       host: "0.0.0.0", // localhost
       port: 8001, // 端口号
       hmr: { overlay: false }
-    }
+    },
+    define: {
+      global: 'window',  // Polyfill global as window
+    },
   });
 };

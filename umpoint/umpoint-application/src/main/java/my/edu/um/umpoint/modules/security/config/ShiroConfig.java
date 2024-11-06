@@ -58,6 +58,7 @@ public class ShiroConfig {
         filterMap.put("/swagger-resources/**", "anon");
         filterMap.put("/captcha", "anon");
         filterMap.put("/favicon.ico", "anon");
+        filterMap.put("/ws/**", "anon");
         filterMap.put("/", "anon");
 
         // public api

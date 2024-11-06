@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import my.edu.um.umpoint.common.annotation.LogOperation;
 import my.edu.um.umpoint.common.constant.Constant;
+import my.edu.um.umpoint.common.exception.RenException;
 import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.utils.ExcelUtils;
 import my.edu.um.umpoint.common.utils.Result;
@@ -17,6 +18,7 @@ import my.edu.um.umpoint.common.validator.group.AddGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.InsertGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
+import my.edu.um.umpoint.modules.space.dto.SpcBookingRuleDTO;
 import my.edu.um.umpoint.modules.space.dto.SpcSpaceDTO;
 import my.edu.um.umpoint.modules.space.excel.SpcSpaceExcel;
 import my.edu.um.umpoint.modules.space.service.SpcSpaceService;
@@ -120,10 +122,17 @@ public class SpcSpaceController {
 
     private static void validateSpaceBookingRuleDTO(SpcSpaceDTO dto) {
         if (dto.getSpcBookingRuleDTO() != null) {
+            SpcBookingRuleDTO bookingRuleDTO = dto.getSpcBookingRuleDTO();
             if (dto.getBookingRuleId() == null)
-                ValidatorUtils.validateEntity(dto.getSpcBookingRuleDTO(), AddGroup.class, DefaultGroup.class);
+                ValidatorUtils.validateEntity(bookingRuleDTO, AddGroup.class, DefaultGroup.class);
             else
-                ValidatorUtils.validateEntity(dto.getSpcBookingRuleDTO(), UpdateGroup.class);
+                ValidatorUtils.validateEntity(bookingRuleDTO, UpdateGroup.class);
+
+            if (bookingRuleDTO.getBookingMode() == 1) {
+                long diffInMin = (bookingRuleDTO.getStartTime().getTime() - bookingRuleDTO.getEndTime().getTime()) / 60000;
+                if (diffInMin % bookingRuleDTO.getBookingUnit().intValue() != 0)
+                    throw new RenException("The difference between start time and end time must be a multiple of the booking unit.");
+            }
         }
     }
 
