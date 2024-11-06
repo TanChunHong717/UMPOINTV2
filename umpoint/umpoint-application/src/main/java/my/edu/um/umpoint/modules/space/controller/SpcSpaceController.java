@@ -129,8 +129,8 @@ public class SpcSpaceController {
                 ValidatorUtils.validateEntity(bookingRuleDTO, UpdateGroup.class);
 
             if (bookingRuleDTO.getBookingMode() == 1) {
-                long diff = (bookingRuleDTO.getStartTime().getTime() - bookingRuleDTO.getEndTime().getTime()) / 60;
-                if (diff % bookingRuleDTO.getBookingUnit().intValue() != 0)
+                long diffInMin = (bookingRuleDTO.getStartTime().getTime() - bookingRuleDTO.getEndTime().getTime()) / 60000;
+                if (diffInMin % bookingRuleDTO.getBookingUnit().intValue() != 0)
                     throw new RenException("The difference between start time and end time must be a multiple of the booking unit.");
             }
         }
