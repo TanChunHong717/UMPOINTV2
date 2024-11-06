@@ -2,7 +2,9 @@ package my.edu.um.umpoint.modules.accommodation.service;
 
 import my.edu.um.umpoint.common.service.CrudService;
 import my.edu.um.umpoint.modules.accommodation.dto.AccBookingDTO;
+import my.edu.um.umpoint.modules.accommodation.dto.AccClientBookingDTO;
 import my.edu.um.umpoint.modules.accommodation.entity.AccBookingEntity;
+import my.edu.um.umpoint.modules.space.dto.SpcClientBookingDTO;
 
 import java.util.List;
 
@@ -17,4 +19,5 @@ public interface AccBookingService extends CrudService<AccBookingEntity, AccBook
     void reject(Long id);
     void cancel(Long id);
     Long getUserId(Long id);
+    void validateBookingHasOverlap(AccClientBookingDTO request);
 }

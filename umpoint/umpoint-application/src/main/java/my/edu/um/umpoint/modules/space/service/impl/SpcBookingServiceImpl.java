@@ -1,33 +1,41 @@
 package my.edu.um.umpoint.modules.space.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import my.edu.um.umpoint.common.annotation.DataFilter;
 import my.edu.um.umpoint.common.constant.BookingConstant;
 import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
+import my.edu.um.umpoint.common.utils.DateUtils;
 import my.edu.um.umpoint.modules.payment.dto.SpcPaymentDTO;
 import my.edu.um.umpoint.modules.payment.dto.SpcPaymentItemDTO;
 import my.edu.um.umpoint.modules.payment.service.SpcPaymentItemService;
 import my.edu.um.umpoint.modules.payment.service.SpcPaymentService;
-import my.edu.um.umpoint.modules.space.dto.SpcSpaceDTO;
-import my.edu.um.umpoint.modules.space.entity.SpcBookingTechnicianEntity;
-import my.edu.um.umpoint.modules.space.service.SpcBookingTechnicianService;
-import my.edu.um.umpoint.modules.space.service.SpcEventService;
-import my.edu.um.umpoint.modules.space.dao.SpcBookingDao;
-import my.edu.um.umpoint.modules.space.dto.SpcBookingDTO;
-import my.edu.um.umpoint.modules.space.entity.SpcBookingEntity;
-import my.edu.um.umpoint.modules.space.service.SpcBookingService;
-import cn.hutool.core.util.StrUtil;
 import my.edu.um.umpoint.modules.security.user.SecurityUser;
 import my.edu.um.umpoint.modules.security.user.UserDetail;
+import my.edu.um.umpoint.modules.space.dao.SpcBookingDao;
+import my.edu.um.umpoint.modules.space.dao.SpcEventDao;
+import my.edu.um.umpoint.modules.space.dto.SpcBookingDTO;
+import my.edu.um.umpoint.modules.space.dto.SpcClientBookingDTO;
+import my.edu.um.umpoint.modules.space.dto.SpcSpaceDTO;
+import my.edu.um.umpoint.modules.space.entity.SpcBookingEntity;
+import my.edu.um.umpoint.modules.space.entity.SpcBookingTechnicianEntity;
+import my.edu.um.umpoint.modules.space.entity.SpcEventEntity;
+import my.edu.um.umpoint.modules.space.service.SpcBookingService;
+import my.edu.um.umpoint.modules.space.service.SpcBookingTechnicianService;
+import my.edu.um.umpoint.modules.space.service.SpcEventService;
 import my.edu.um.umpoint.modules.space.service.SpcSpaceService;
+import my.edu.um.umpoint.modules.utils.EventEntity;
 import my.edu.um.umpoint.modules.utils.SpaceBookingUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.DateTimeException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -54,6 +62,9 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
 
     @Autowired
     private SpcPaymentItemService spcPaymentItemService;
+
+    @Autowired
+    private SpcEventDao spcEventDao;
 
     @Override
     public QueryWrapper<SpcBookingEntity> getWrapper(Map<String, Object> params){
@@ -142,13 +153,13 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
 
         if (technicianIdList != null) {
             List<SpcBookingTechnicianEntity> technicianEntityList = technicianIdList
-                    .stream()
-                    .map(technicianId -> {
-                        SpcBookingTechnicianEntity technicianEntity = new SpcBookingTechnicianEntity();
-                        technicianEntity.setBookingId(id);
-                        technicianEntity.setTechnicianId(technicianId);
-                        return technicianEntity;
-                    }).toList();
+                .stream()
+                .map(technicianId -> {
+                    SpcBookingTechnicianEntity technicianEntity = new SpcBookingTechnicianEntity();
+                    technicianEntity.setBookingId(id);
+                    technicianEntity.setTechnicianId(technicianId);
+                    return technicianEntity;
+                }).toList();
             spcBookingTechnicianService.insertBatch(technicianEntityList);
         }
     }
@@ -177,10 +188,45 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
     }
 
     @Override
-    public Long getUserId(Long id) {
+    public Long getUserId(Long id){
         QueryWrapper<SpcBookingEntity> wrapper = new QueryWrapper<>();
         wrapper.eq("id", id);
         wrapper.select("user_id");
         return baseDao.selectOne(wrapper).getUserId();
+    }
+
+    @Override
+    public void validateBookingHasOverlap(SpcClientBookingDTO request) throws DateTimeException{
+        DateTimeFormatter sqlDateDormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        List<SpcEventEntity> sameDateRangeEvents = spcEventDao.getEventsBetweenTimeSpan(
+            request.getSpaceId(),
+            DateUtils.convertDateTimeToLocalDateTime(request.getStartDay(), request.getStartTime())
+                     .format(sqlDateDormatter),
+            DateUtils.convertDateTimeToLocalDateTime(request.getEndDay(), request.getEndTime())
+                     .format(sqlDateDormatter)
+        );
+
+        for (EventEntity currentEvent : SpaceBookingUtils.dividePeriodToEvents(
+            request.getStartDay(), request.getEndDay(), request.getStartTime(), request.getEndTime()
+        )) {
+            LocalDateTime currentStart = DateUtils.convertDateToLocalDateTime(currentEvent.startTime);
+            LocalDateTime currentEnd = DateUtils.convertDateToLocalDateTime(currentEvent.endTime);
+            List<SpcEventEntity> overlappedEvents = sameDateRangeEvents
+                .stream()
+                .filter((overlapEvent) -> {
+                    LocalDateTime overlapStart = DateUtils.convertDateToLocalDateTime(overlapEvent.getStartTime());
+                    LocalDateTime overlapEnd = DateUtils.convertDateToLocalDateTime(overlapEvent.getEndTime());
+                    return !(
+                        // if overlapStart - overlapEnd - currentStart (- currentEnd) then doesnt overlap
+                        (currentStart.isAfter(overlapStart) && currentStart.isAfter(overlapEnd)) ||
+                        // if (currentStart -) currentEnd - overlapStart - overlapEnd then doesnt overlap
+                        (currentEnd.isBefore(overlapStart) && currentEnd.isBefore(overlapEnd))
+                    ); // otherwise event is overlapping
+                })
+                .toList();
+            if (!overlappedEvents.isEmpty()) {
+                throw new DateTimeException("Booking overlapped");
+            }
+        }
     }
 }

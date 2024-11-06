@@ -62,9 +62,6 @@ public class AccBookingController{
     @Autowired
     private AccAccommodationService accAccommodationService;
 
-    @Autowired
-    private AccEventDao accEventDao;
-
     @GetMapping("page")
     @Operation(summary = "Pagination")
     @Parameters({
@@ -121,7 +118,7 @@ public class AccBookingController{
             validateInAllowedRange(accBookingRule, startDate, endDate);
             validateReservationLength(accBookingRule, startDate, endDate);
 
-            validateEventOverlapped(request);
+            accBookingService.validateBookingHasOverlap(request);
         } catch (DateTimeException e) {
             return new Result().error(400, e.getMessage());
         }
@@ -209,24 +206,6 @@ public class AccBookingController{
         List<AccBookingDTO> list = accBookingService.list(params);
 
         ExcelUtils.exportExcelToTarget(response, null, "Accommodation Booking", list, AccBookingExcel.class);
-    }
-
-    private void validateEventOverlapped(AccClientBookingDTO request){
-        DateTimeFormatter sqlDateDormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        //Todo: No need to validate by event, just query all overlap event and check is exist
-        //Example: SELECT * FROM acc_event WHERE (startTime >= startDay AND startTime <= endDay) OR (endTime >= startDay AND endTime <= endDay)
-        for (EventEntity dividedEvent : SpaceBookingUtils.dividePeriodToEvents(
-                request.getStartDay(), request.getEndDay(), Time.valueOf(LocalTime.MIN), Time.valueOf(LocalTime.MAX)
-        )) {
-            List<AccEventEntity> overlappedEvents = accEventDao.getEventsBetweenTimeSpan(
-                    request.getAccommodationId(),
-                    DateUtils.convertDateToLocalDateTime(dividedEvent.startTime).format(sqlDateDormatter),
-                    DateUtils.convertDateToLocalDateTime(dividedEvent.endTime).format(sqlDateDormatter)
-            );
-            if (!overlappedEvents.isEmpty()) {
-                throw new DateTimeException("Booking overlapped");
-            }
-        }
     }
 
     private static void validateReservationLength(

@@ -2,6 +2,7 @@ package my.edu.um.umpoint.modules.space.service;
 
 import my.edu.um.umpoint.common.service.CrudService;
 import my.edu.um.umpoint.modules.space.dto.SpcBookingDTO;
+import my.edu.um.umpoint.modules.space.dto.SpcClientBookingDTO;
 import my.edu.um.umpoint.modules.space.entity.SpcBookingEntity;
 
 import java.util.List;
@@ -17,4 +18,5 @@ public interface SpcBookingService extends CrudService<SpcBookingEntity, SpcBook
     void reject(Long id);
     void cancel(Long id);
     Long getUserId(Long id);
+    void validateBookingHasOverlap(SpcClientBookingDTO request);
 }

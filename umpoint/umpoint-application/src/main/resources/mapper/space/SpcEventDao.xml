@@ -30,8 +30,8 @@
         FROM spc_event e
         WHERE space_id = #{spaceId} AND
         (
-            (e.end_time BETWEEN #{startDateTime} AND #{endDateTime}) OR
             (e.start_time BETWEEN #{startDateTime} AND #{endDateTime}) OR
+            (e.end_time BETWEEN #{startDateTime} AND #{endDateTime}) OR
             (e.start_time &lt; #{startDateTime} AND e.end_time &gt; #{endDateTime})
         );
     </select>
