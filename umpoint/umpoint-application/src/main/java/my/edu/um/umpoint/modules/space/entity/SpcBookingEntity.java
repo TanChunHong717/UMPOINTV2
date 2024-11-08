@@ -101,6 +101,11 @@ public class SpcBookingEntity {
 	@TableField(exist = false)
 	private List<SpcBookingTechnicianEntity> spcBookingTechnicianEntityList;
 	/**
+	 * Attachment entity list
+	 */
+	@TableField(exist = false)
+	private List<SpcBookingAttachmentEntity> spcBookingAttachmentEntityList;
+	/**
 	 * Payment entity list
 	 */
 	@TableField(exist = false)

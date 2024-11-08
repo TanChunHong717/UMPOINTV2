@@ -109,6 +109,16 @@ CREATE TABLE spc_booking (
     FOREIGN KEY (user_id) REFERENCES cli_user(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space Booking';
 
+CREATE TABLE `spc_booking_attachment` (
+    `id` bigint(20) NOT NULL COMMENT 'Attachment ID',
+    `booking_id` bigint(20) NOT NULL COMMENT 'Booking ID',
+    `name` varchar(250) NOT NULL COMMENT 'Attachment name',
+    `type` varchar(20) NOT NULL COMMENT 'Attachment type',
+    `url` varchar(250) NOT NULL COMMENT 'Image url',
+    PRIMARY KEY (id),
+    FOREIGN KEY (`booking_id`) REFERENCES `spc_booking` (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'Space Booking Attachment';
+
 CREATE TABLE spc_booking_technician (
     id bigint NOT NULL COMMENT 'ID',
     booking_id bigint NOT NULL COMMENT 'Booking ID',

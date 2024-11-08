@@ -11,6 +11,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Time;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Data
@@ -48,4 +49,7 @@ public class SpcClientBookingDTO implements Serializable {
     @Schema(title = "Number of additional technician(s) if required")
     @PositiveOrZero(groups = {DefaultGroup.class}) // Null element is consider valid
     private Integer technicianNumber;
+
+    @Schema(title = "Attachment dto list")
+    private List<SpcBookingAttachmentDTO> attachments;
 }

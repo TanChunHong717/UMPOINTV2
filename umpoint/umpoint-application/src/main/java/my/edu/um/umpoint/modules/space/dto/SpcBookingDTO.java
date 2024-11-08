@@ -81,6 +81,9 @@ public class SpcBookingDTO implements Serializable {
 	@Schema(title = "Technician dto list")
 	private List<SpcBookingTechnicianDTO> spcBookingTechnicianDTOList;
 
+	@Schema(title = "Attachment dto list")
+	private List<SpcBookingAttachmentDTO> spcBookingAttachmentDTOList;
+
 	@Schema(title = "Payment dto list")
 	private List<SpcPaymentDTO> spcPaymentDTOList;
 }

@@ -17,6 +17,7 @@ import my.edu.um.umpoint.common.utils.Result;
 import my.edu.um.umpoint.common.validator.ValidatorUtils;
 import my.edu.um.umpoint.common.validator.group.AddGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
+import my.edu.um.umpoint.common.validator.group.InsertGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import my.edu.um.umpoint.modules.security.user.SecurityUser;
 import my.edu.um.umpoint.modules.security.user.UserDetail;
@@ -136,6 +137,7 @@ public class SpcBookingController{
 
             spcBookingService.validateBookingHasOverlap(request);
         } catch (DateTimeException e) {
+            System.out.println(e);
             throw new BadHttpRequestException(400, e.getMessage());
         }
 
@@ -145,6 +147,9 @@ public class SpcBookingController{
         if (request.getTechnicianNumber() > spcBookingRule.getMaxTechnicianNumber()){
             throw new BadHttpRequestException(400, "Number of technicians exceeded limit");
         }
+
+        // attachment check
+        validateBookingAttachmentDTO(request);
 
         // prepare to save
         SpcBookingDTO bookingDto = makeSpcBookingDTO(request, space);
@@ -296,6 +301,18 @@ public class SpcBookingController{
         bookingDto.setStartTime(request.getStartTime());
         bookingDto.setEndTime(request.getEndTime());
         bookingDto.setTechnicianNumber(request.getTechnicianNumber());
+        bookingDto.setSpcBookingAttachmentDTOList(request.getAttachments());
         return bookingDto;
+    }
+
+    private void validateBookingAttachmentDTO(SpcClientBookingDTO dto) {
+        if (dto.getAttachments() != null && !dto.getAttachments().isEmpty()) {
+            dto.getAttachments().forEach(attachmentDTO -> {
+                ValidatorUtils.validateEntity(
+                    attachmentDTO,
+                    InsertGroup.class
+                );
+            });
+        }
     }
 }
