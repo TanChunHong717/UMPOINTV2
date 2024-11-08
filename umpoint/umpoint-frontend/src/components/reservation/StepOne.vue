@@ -288,7 +288,7 @@ async function returnFormInfo(formEl) {
             <ul>
                 <li v-if="!!props.facilityInfo.bookingRule?.approvalRequired">
                     This reservation request will be sent for approval from the
-                    space administrator.
+                    facility administrator.
                 </li>
                 <li>
                     The space will be available for booking from
@@ -304,14 +304,23 @@ async function returnFormInfo(formEl) {
                 <li>
                     Minimum duration for booking is
                     <b>{{ props.facilityInfo.bookingRule?.minBookingHours }}</b>
+                    hour(s) per day; maximum duration is 
+                    <b>{{ props.facilityInfo.bookingRule?.maxBookingHours }}</b>
                     hour(s) per day.
                 </li>
                 <li>
-                    Maximum reservation days is
+                    Minimum reservation days is
+                    <b>{{
+                        props.facilityInfo.bookingRule?.minReservationDays
+                    }}</b>
+                    day(s) per reservation; maximum reservation days is
                     <b>{{
                         props.facilityInfo.bookingRule?.maxReservationDays
                     }}</b>
                     day(s) per reservation.
+                </li>
+                <li v-if="!!props.facilityInfo.bookingRule?.bookingMode">
+                    This facility uses a <b>fixed time slot</b> booking system.
                 </li>
             </ul>
         </el-alert>
