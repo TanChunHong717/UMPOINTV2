@@ -63,6 +63,7 @@ public class ShiroConfig {
 
         // public api
         filterMap.put("/space/space/page", "anon");
+        filterMap.put("/space/space/list", "anon");
         filterMap.put("/space/space/[0-9]+", "anon");
         filterMap.put("/space/category/list/filter", "anon");
         filterMap.put("/service/service/page", "anon");

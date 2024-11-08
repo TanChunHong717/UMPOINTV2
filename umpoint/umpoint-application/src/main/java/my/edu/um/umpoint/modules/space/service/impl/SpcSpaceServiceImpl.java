@@ -7,6 +7,7 @@ import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.exception.RenException;
 import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
+import my.edu.um.umpoint.common.utils.ConvertUtils;
 import my.edu.um.umpoint.modules.security.user.SecurityUser;
 import my.edu.um.umpoint.modules.space.dao.SpcSpaceDao;
 import my.edu.um.umpoint.modules.space.dto.SpcBookingRuleDTO;
@@ -78,6 +79,18 @@ public class SpcSpaceServiceImpl extends CrudServiceImpl<SpcSpaceDao, SpcSpaceEn
         List<SpcSpaceEntity> list = baseDao.getBookingRuleList(params);
 
         return getPageData(list, page.getTotal(), currentDtoClass());
+    }
+
+    @Override
+    public List<SpcSpaceDTO> listWithBookingRule() {
+        List<Long> deptIdList = SecurityUser.getUser().getDeptIdList();
+
+        QueryWrapper<SpcSpaceEntity> wrapper = new QueryWrapper<>();
+        wrapper.isNotNull("booking_rule_id");
+        wrapper.in((deptIdList != null && !deptIdList.isEmpty()), "dept_id", deptIdList);
+        wrapper.select("id", "name");
+
+        return ConvertUtils.sourceToTarget(baseDao.selectList(wrapper), currentDtoClass());
     }
 
     @Override

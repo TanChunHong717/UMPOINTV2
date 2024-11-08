@@ -60,6 +60,14 @@ public class SpcSpaceController {
         return new Result<PageData<SpcSpaceDTO>>().ok(page);
     }
 
+    @GetMapping("list")
+    @Operation(summary = "List out all space with booking rule")
+    public Result<List<SpcSpaceDTO>> list(){
+        List<SpcSpaceDTO> data = spcSpaceService.listWithBookingRule();
+
+        return new Result<List<SpcSpaceDTO>>().ok(data);
+    }
+
     @GetMapping("{id}")
     @Operation(summary = "Information")
     public Result<SpcSpaceDTO> get(@PathVariable("id") Long id){

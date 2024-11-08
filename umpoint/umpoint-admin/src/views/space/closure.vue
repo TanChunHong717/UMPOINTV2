@@ -15,7 +15,7 @@
         <el-button @click="state.getDataList()">Search</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button v-if="state.hasPermission('space:closure:save')" type="primary">Add</el-button>
+        <el-button v-if="state.hasPermission('space:closure:save')" type="primary" @click="batchUpdateHandle()">Add</el-button>
       </el-form-item>
       <el-form-item>
         <el-button v-if="state.hasPermission('space:closure:delete')" type="danger" @click="state.deleteHandle()">Delete</el-button>
@@ -84,13 +84,15 @@
     <el-pagination :current-page="state.page" :page-sizes="[10, 20, 50, 100]" :page-size="state.limit" :total="state.total" layout="total, sizes, prev, pager, next, jumper" @size-change="state.pageSizeChangeHandle" @current-change="state.pageCurrentChangeHandle"> </el-pagination>
     <!-- Popup, Add / Edit -->
     <update ref="updateRef" @refreshData="state.getDataList">Confirm</update>
+    <closure-batch-add ref="batchUpdateRef" @refreshData="state.getDataList">Confirm</closure-batch-add>
   </div>
 </template>
-
 <script lang="ts" setup>
 import useView from "@/hooks/useView";
-import { reactive, ref, toRefs } from "vue";
-import Update from "./closure-add-or-update.vue";
+import {reactive, ref, toRefs} from "vue";
+import {useAppStore} from "@/store";
+import Update from "@/views/space/closure-add-or-update.vue";
+import ClosureBatchAdd from "@/views/space/closure-batch-add.vue";
 
 const view = reactive({
   deleteIsBatch: true,
@@ -108,4 +110,9 @@ const updateRef = ref();
 const updateHandle = (id: number, spaceId: number) => {
   updateRef.value.init(id, {}, spaceId);
 };
+
+const batchUpdateRef = ref();
+const batchUpdateHandle = () => {
+  batchUpdateRef.value.init();
+}
 </script>

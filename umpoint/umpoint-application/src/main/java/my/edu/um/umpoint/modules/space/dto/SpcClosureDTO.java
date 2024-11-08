@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import lombok.Data;
 import my.edu.um.umpoint.common.validator.group.AddGroup;
+import my.edu.um.umpoint.common.validator.group.BatchUpdateGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 
@@ -27,12 +28,13 @@ public class SpcClosureDTO implements Serializable {
     private static final long serialVersionUID = -2702607703982735056L;
 
 	@Schema(title = "ID")
-	@Null(groups = {AddGroup.class})
+	@Null(groups = {AddGroup.class, BatchUpdateGroup.class})
 	@NotNull(groups = {UpdateGroup.class})
 	private Long id;
 
 	@Schema(title = "Space ID")
-	@NotNull(groups = {DefaultGroup.class})
+	@Null(groups = {BatchUpdateGroup.class})
+	@NotNull(groups = {AddGroup.class, UpdateGroup.class})
 	private Long spaceId;
 
 	@Schema(title = "Start day of booking")

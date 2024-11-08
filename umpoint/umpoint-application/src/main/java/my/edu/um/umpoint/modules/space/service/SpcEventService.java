@@ -6,6 +6,8 @@ import my.edu.um.umpoint.modules.space.dto.SpcClosureDTO;
 import my.edu.um.umpoint.modules.space.dto.SpcEventDTO;
 import my.edu.um.umpoint.modules.space.entity.SpcEventEntity;
 
+import java.util.List;
+
 /**
  * Space Occupied Event
  *
@@ -16,6 +18,7 @@ public interface SpcEventService extends CrudService<SpcEventEntity, SpcEventDTO
     void addEvent(SpcBookingDTO bookingDTO, boolean holidayAvailable);
     void addEvent(SpcClosureDTO closureDTO);
     void deleteByBookingId(Long bookingId);
+    void deleteByBookingId(List<Long> bookingIdList);
     void deleteByClosureId(Long closureId);
-    void deleteByClosureId(Long[] closureIds);
+    void deleteByClosureId(List<Long> closureIdList);
 }
