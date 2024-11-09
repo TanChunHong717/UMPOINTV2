@@ -175,7 +175,7 @@ const facilityTimeStep = computed(() => {
 const facilityTimeSelectStep = computed(() => {
     // default step
     if (facilityInfo.value.bookingRule?.bookingMode == 0) return "00:30";
-    let hour = Math.ceil(facilityInfo.value.bookingRule?.bookingUnit / 60);
+    let hour = Math.floor(facilityInfo.value.bookingRule?.bookingUnit / 60);
     let minute = facilityInfo.value.bookingRule?.bookingUnit % 60;
     return `${hour.toString().padStart(2, "0")}:${minute
         .toString()
