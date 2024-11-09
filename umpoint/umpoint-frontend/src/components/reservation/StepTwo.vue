@@ -1,9 +1,8 @@
 <script setup>
 import { mdiToolboxOutline, mdiMessageBulleted, mdiTrayArrowUp } from "@mdi/js";
 import { reactive, useTemplateRef } from "vue";
-import { ElMessage, ElMessageBox } from "element-plus";
 import EventInfo from "./EventInfo.vue";
-import { uploadFile as uploadFileApi } from "@/helpers/api-upload";
+import MultiFileUpload from "./MultiFileUpload.vue";
 
 const props = defineProps(["formData", "facilityInfo"]);
 const emit = defineEmits(["nextStep", "previousStep"]);
@@ -21,31 +20,6 @@ const formData = reactive({
  * STEP 2: ADDITIONAL INFORMATION
  * */
 const formNode = useTemplateRef("formNode");
-
-async function uploadFile(options) {
-    try {
-        return await uploadFileApi(options.file, {
-            onUploadProgress: (progressEvent) => {
-                if (progressEvent.lengthComputable) {
-                    let percentCompleted = Math.round(
-                        (progressEvent.loaded * 100) / progressEvent.total
-                    );
-                    options.onProgress({ percent: percentCompleted });
-                }
-            },
-        });
-    } catch (error) {
-        return options.onError(error);
-    }
-}
-
-// confirm before cancel
-const beforeRemove = (file) => {
-    return ElMessageBox.confirm(`Are you sure to remove ${file.name}?`).then(
-        () => true,
-        () => false
-    );
-};
 
 // form submit
 async function returnFormInfo(formEl) {
@@ -135,36 +109,15 @@ async function returnFormInfo(formEl) {
                         Approval Documents from HEP
                         <el-text size="small">(optional)</el-text>
                     </template>
-                    <el-upload
+                    <MultiFileUpload
                         v-model:file-list="formData.approvalDocuments"
-                        :http-request="uploadFile"
-                        :before-remove="beforeRemove"
-                        multiple
                         :limit="3"
-                        :on-exceed="
-                            (files) => {
-                                files;
-                            }
-                        "
-                        style="width: 100%"
-                    >
-                        <template #trigger>
-                            <el-button plain>
-                                <template #icon>
-                                    <svg-icon
-                                        type="mdi"
-                                        :path="mdiTrayArrowUp"
-                                    ></svg-icon>
-                                </template>
-                                Click to upload
-                            </el-button>
-                        </template>
-                        <template #tip>
-                            <div class="el-upload__tip">
-                                Maximum 3 files, only PDF is allowed
-                            </div>
-                        </template>
-                    </el-upload>
+                        tip-text="Maximum 3 files, only PDF is allowed"
+                        :after-upload="(response) => {
+                            response.type = 'approval;' + response.type;
+                            return response;
+                        }"
+                    />
                 </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12">
@@ -173,37 +126,15 @@ async function returnFormInfo(formEl) {
                         Supporting Documents
                         <el-text size="small">(optional)</el-text>
                     </template>
-                    <el-upload
+                    <MultiFileUpload
                         v-model:file-list="formData.supportingDocuments"
-                        action="#"
-                        multiple
-                        :before-remove="beforeRemove"
-                        :auto-upload="false"
                         :limit="3"
-                        :on-exceed="
-                            (files) => {
-                                files;
-                            }
-                        "
-                        style="width: 100%"
-                    >
-                        <template #trigger>
-                            <el-button plain>
-                                <template #icon>
-                                    <svg-icon
-                                        type="mdi"
-                                        :path="mdiTrayArrowUp"
-                                    ></svg-icon>
-                                </template>
-                                Click to upload
-                            </el-button>
-                        </template>
-                        <template #tip>
-                            <div class="el-upload__tip">
-                                Maximum 3 files, only PDF is allowed
-                            </div>
-                        </template>
-                    </el-upload>
+                        tip-text="Maximum 3 files, only PDF is allowed"
+                        :after-upload="(response) => {
+                            response.type = 'supporting;' + response.type;
+                            return response;
+                        }"
+                    />
                 </el-form-item>
             </el-col>
         </el-row>
