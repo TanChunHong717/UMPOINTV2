@@ -23,7 +23,8 @@ public interface ChatConstant{
         SYSTEN(0),
         BOT(1),
         USER(2),
-        ADMIN(3);
+        ADMIN(3),
+        BOT_REPLY_OPTIONS(4);
 
         private final int value;
 
@@ -57,4 +58,17 @@ public interface ChatConstant{
             return type.name().toLowerCase();
         }
     }
+
+    @Getter
+    enum AutoReply  {
+        DISABLE(0),
+        ENABLED(1);
+
+        private final int value;
+
+        AutoReply (int value) {
+            this.value = value;
+        }
+    }
+
 }

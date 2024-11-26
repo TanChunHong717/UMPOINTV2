@@ -22,6 +22,8 @@ import my.edu.um.umpoint.modules.chat.dto.ChatRoomDTO;
 import my.edu.um.umpoint.modules.chat.excel.ChatRoomExcel;
 import my.edu.um.umpoint.modules.chat.service.ChatMessageService;
 import my.edu.um.umpoint.modules.chat.service.ChatRoomService;
+import my.edu.um.umpoint.modules.security.user.SecurityUser;
+import my.edu.um.umpoint.modules.security.user.UserDetail;
 import my.edu.um.umpoint.modules.service.dto.SvcServiceDTO;
 import my.edu.um.umpoint.modules.service.service.SvcServiceService;
 import my.edu.um.umpoint.modules.space.dto.SpcSpaceDTO;
@@ -108,6 +110,7 @@ public class ChatRoomController{
             )
         }
     )
+
     public Result getRoom(@RequestBody Map<String, Object> request) throws InvalidResourceUsageException{
         // param validation
         if (
@@ -151,6 +154,49 @@ public class ChatRoomController{
         return new Result<Long>().ok(roomId);
     }
 
+    @PostMapping("{id}/assign")
+    @Operation(summary = "Assign room to current admin")
+    @LogOperation("Assign room to current admin")
+    @RequiresPermissions("chat:room:assignAdmin")
+    public Result<ChatRoomDTO> assignAdmin(@PathVariable("id") Long id){
+        UserDetail user = SecurityUser.getUser();
+        if (user.getSuperAdmin() == null) {
+            throw new BadHttpRequestException(401, "Invalid permission");
+        }
+
+        chatRoomService.assignAdminId(id);
+
+        return new Result();
+    }
+
+    @PostMapping("{id}/close")
+    @Operation(summary = "Close room")
+    @LogOperation("Close room")
+    @RequiresPermissions("chat:room:getroom")
+    public Result<ChatRoomDTO> closeRoom(@PathVariable("id") Long id){
+        if (!chatRoomService.canChatInRoom(id)) {
+            throw new BadHttpRequestException(401, "Cannot close already closed room");
+        }
+
+        chatRoomService.closeRoom(id);
+
+        return new Result();
+    }
+
+    @PostMapping("{id}/resolve")
+    @Operation(summary = "Resolve room")
+    @LogOperation("Resolve room")
+    @RequiresPermissions("chat:room:getroom")
+    public Result<ChatRoomDTO> resolveRoom(@PathVariable("id") Long id){
+        if (!chatRoomService.canChatInRoom(id)) {
+            throw new BadHttpRequestException(401, "Cannot resolve already closed room");
+        }
+
+        chatRoomService.resolveRoom(id);
+
+        return new Result();
+    }
+
     @PutMapping
     @Operation(summary = "Update")
     @LogOperation("Update")
@@ -175,4 +221,15 @@ public class ChatRoomController{
         ExcelUtils.exportExcelToTarget(response, null, "Chat room", list, ChatRoomExcel.class);
     }
 
+    public static boolean validateUserInChat(ChatRoomDTO chatRoomDTO, UserDetail user){
+        if (user.getId() == null) return false;
+
+        if (user.getSuperAdmin() == null) {
+            // check user
+            return chatRoomDTO.getInitiateUserId().equals(user.getId());
+        } else {
+            // TODO: check facility department is same as admin department
+            return true; //chatRoomDTO.getFacilityId().equals(user.getDeptId());
+        }
+    }
 }

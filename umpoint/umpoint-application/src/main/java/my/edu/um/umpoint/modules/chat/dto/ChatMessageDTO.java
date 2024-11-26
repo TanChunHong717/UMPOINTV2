@@ -1,12 +1,14 @@
 package my.edu.um.umpoint.modules.chat.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Null;
 import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -47,4 +49,7 @@ public class ChatMessageDTO implements Serializable {
 
 	@Schema(title = "Attachment dto list")
 	private List<ChatMessageAttachmentDTO> chatMessageAttachmentDTOList;
+
+	// for websocket broadcast relay identification
+	private Optional<String> returnMessage;
 }

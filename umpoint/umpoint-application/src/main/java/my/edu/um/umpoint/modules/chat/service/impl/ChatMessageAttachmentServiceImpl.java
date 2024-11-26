@@ -3,6 +3,8 @@ package my.edu.um.umpoint.modules.chat.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
+import my.edu.um.umpoint.common.utils.ConvertUtils;
+import my.edu.um.umpoint.modules.chat.controller.ChatMessageAttachment;
 import my.edu.um.umpoint.modules.chat.dao.ChatMessageAttachmentDao;
 import my.edu.um.umpoint.modules.chat.dto.ChatMessageAttachmentDTO;
 import my.edu.um.umpoint.modules.chat.dto.ChatMessageDTO;
@@ -39,28 +41,29 @@ public class ChatMessageAttachmentServiceImpl extends CrudServiceImpl<ChatMessag
     }
 
     @Override
-    public void save(List attachments, ChatMessageDTO chatMessageDTO){
-        List<ChatMessageAttachmentEntity> attachmentList = new ArrayList<>();
-        for (Object attachment : attachments) {
-            if (attachment instanceof Map<?, ?> attachmentMap) {
-                if (
-                    attachmentMap.containsKey("name") &&
-                    attachmentMap.containsKey("type") &&
-                    attachmentMap.containsKey("url") &&
-                    !attachmentMap.get("name").toString().isEmpty() &&
-                    !attachmentMap.get("type").toString().isEmpty() &&
-                    !attachmentMap.get("url").toString().isEmpty()
-                ) {
-                    ChatMessageAttachmentEntity attachmentEntity = new ChatMessageAttachmentEntity();
-                    attachmentEntity.setName(attachmentMap.get("name").toString());
-                    attachmentEntity.setType(attachmentMap.get("type").toString());
-                    attachmentEntity.setUrl(attachmentMap.get("url").toString());
-                    attachmentEntity.setMessageId(chatMessageDTO.getId());
-                    attachmentList.add(attachmentEntity);
-                }
+    public void save(List<ChatMessageAttachment> attachments, ChatMessageDTO chatMessageDTO){
+        List<ChatMessageAttachmentEntity> attachmentEntityList = new ArrayList<>();
+
+        for (ChatMessageAttachment attachment : attachments) {
+            if (
+                attachment.name != null &&
+                attachment.type != null &&
+                attachment.url != null
+            ) {
+                ChatMessageAttachmentEntity attachmentEntity = new ChatMessageAttachmentEntity();
+                attachmentEntity.setName(attachment.name);
+                attachmentEntity.setType(attachment.type);
+                attachmentEntity.setUrl(attachment.url);
+                attachmentEntity.setMessageId(chatMessageDTO.getId());
+                attachmentEntityList.add(attachmentEntity);
             }
         }
 
-        super.insertBatch(attachmentList);
+        super.insertBatch(attachmentEntityList);
+
+        // for return message
+        chatMessageDTO.setChatMessageAttachmentDTOList(
+            ConvertUtils.sourceToTarget(attachmentEntityList, ChatMessageAttachmentDTO.class)
+        );
     }
 }
