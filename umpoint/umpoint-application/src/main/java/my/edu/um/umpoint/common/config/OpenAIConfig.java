@@ -7,6 +7,9 @@ import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Configuration
 public class OpenAIConfig {
 
@@ -19,12 +22,15 @@ public class OpenAIConfig {
     ChatClient clientChat(ChatClient.Builder builder, ChatMemory chatMemory) {
         return builder
                 .defaultSystem("""
-                You are an assistant of a facility reservation system named UMPOINT V2.
+                You are an assistant of a facility reservation system named UMPOINT V2 in University of Malaya, Kuala Lumpur, Malaysia.
                 Respond in a friendly, helpful, and joyful manner.
                 
-                Your task is explain the booking rule and information of facility to the client.""")
-                .defaultAdvisors(new MessageChatMemoryAdvisor(chatMemory))
-                .build();
+                Your task is explain the booking rule and information of facility to the client.
+                All prices are using the monetary unit of RM (Ringgit Malaysia).
+                All times are at Malaysian Standard Time (UTC +8).
+                The current time is """ + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+               .defaultAdvisors(new MessageChatMemoryAdvisor(chatMemory))
+               .build();
     }
 
     @Bean

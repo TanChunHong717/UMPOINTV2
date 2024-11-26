@@ -137,7 +137,6 @@ public class SpcBookingController{
 
             spcBookingService.validateBookingHasOverlap(request);
         } catch (DateTimeException e) {
-            System.out.println(e);
             throw new BadHttpRequestException(400, e.getMessage());
         }
 
@@ -248,7 +247,7 @@ public class SpcBookingController{
         LocalTime startTime,
         LocalTime endTime
     ) throws DateTimeException{
-        long differenceInDays = ChronoUnit.DAYS.between(startDate, endDate);
+        long differenceInDays = ChronoUnit.DAYS.between(startDate, endDate) + 1; // 01-01 to 01-01 count as 1 day
         if (differenceInDays > spcBookingRule.getMaxReservationDay()) {
             throw new DateTimeException("Selected date range is over the maximum number of reservation days");
         }

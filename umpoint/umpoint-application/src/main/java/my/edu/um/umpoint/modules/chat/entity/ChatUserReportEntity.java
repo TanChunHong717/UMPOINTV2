@@ -10,7 +10,7 @@ import java.util.Date;
  * Report user in chat
  *
  * @author NKSL2001 s2116593@siswa.um.edu.my
- * @since 1.0.0 2024-10-29
+ * @since 1.0.0 2024-11-25
  */
 @Data
 @TableName("chat_user_report")
@@ -21,10 +21,6 @@ public class ChatUserReportEntity {
      */
 		@TableId
 		private Long id;
-    /**
-     * User ID that is reported
-     */
-		private Long reportedUserId;
     /**
      * Reported chat room ID
      */
@@ -41,6 +37,10 @@ public class ChatUserReportEntity {
      * User ID that send this report
      */
 		private Long reportedBy;
+    /**
+     * User Type for Id that send this report
+     */
+		private Integer reportedByType;
     /**
      * Creation Date
      */

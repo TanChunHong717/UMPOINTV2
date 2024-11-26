@@ -24,7 +24,8 @@ CREATE TABLE `chat_message` (
     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation Date',
     PRIMARY KEY (`id`),
     FOREIGN KEY (`chat_room_id`) REFERENCES `chat_room` (`id`),
-    FOREIGN KEY (`reply_message_id`) REFERENCES `chat_message` (`id`)
+    FOREIGN KEY (`reply_message_id`) REFERENCES `chat_message` (`id`),
+    INDEX (`chat_room_id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'Chat message';
 
 CREATE TABLE `chat_message_attachment` (
@@ -39,11 +40,11 @@ CREATE TABLE `chat_message_attachment` (
 
 CREATE TABLE `chat_user_report` (
     `id` bigint(20) NOT NULL COMMENT 'ID',
-    `reported_user_id` bigint(20) NOT NULL COMMENT 'User ID that is reported',
     `chat_room_id` bigint(20) NOT NULL COMMENT 'Reported chat room ID',
     `message_id` bigint(20) NULL COMMENT 'Reported message ID',
     `reason` text NOT NULL COMMENT 'Reason',
     `reported_by` bigint(20) NOT NULL COMMENT 'User ID that send this report',
+    `reported_by_type` tinyint NOT NULL COMMENT 'User Type for Id that send this report',
     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation Date',
     PRIMARY KEY (`id`),
     FOREIGN KEY (`chat_room_id`) REFERENCES `chat_room` (`id`)
