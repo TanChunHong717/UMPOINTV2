@@ -12,14 +12,12 @@ import java.util.Date;
  * Report user in chat
  *
  * @author NKSL2001 s2116593@siswa.um.edu.my
- * @since 1.0.0 2024-10-29
+ * @since 1.0.0 2024-11-25
  */
 @Data
 public class ChatUserReportExcel {
     @ExcelProperty(value = "ID")
     private Long id;
-    @ExcelProperty(value = "User ID that is reported")
-    private Long reportedUserId;
     @ExcelProperty(value = "Reported chat room ID")
     private Long chatRoomId;
     @ExcelProperty(value = "Reported message ID")
@@ -28,6 +26,8 @@ public class ChatUserReportExcel {
     private String reason;
     @ExcelProperty(value = "User ID that send this report")
     private Long reportedBy;
+    @ExcelProperty(value = "User Type for Id that send this report")
+    private Integer reportedByType;
     @ExcelProperty(value = "Creation Date")
     private Date createdAt;
 

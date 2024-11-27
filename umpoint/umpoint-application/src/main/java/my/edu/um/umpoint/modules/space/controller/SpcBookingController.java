@@ -17,6 +17,7 @@ import my.edu.um.umpoint.common.utils.Result;
 import my.edu.um.umpoint.common.validator.ValidatorUtils;
 import my.edu.um.umpoint.common.validator.group.AddGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
+import my.edu.um.umpoint.common.validator.group.InsertGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import my.edu.um.umpoint.modules.security.user.SecurityUser;
 import my.edu.um.umpoint.modules.security.user.UserDetail;
@@ -146,6 +147,9 @@ public class SpcBookingController{
             throw new BadHttpRequestException(400, "Number of technicians exceeded limit");
         }
 
+        // attachment check
+        validateBookingAttachmentDTO(request);
+
         // prepare to save
         SpcBookingDTO bookingDto = makeSpcBookingDTO(request, space);
 
@@ -243,7 +247,7 @@ public class SpcBookingController{
         LocalTime startTime,
         LocalTime endTime
     ) throws DateTimeException{
-        long differenceInDays = ChronoUnit.DAYS.between(startDate, endDate);
+        long differenceInDays = ChronoUnit.DAYS.between(startDate, endDate) + 1; // 01-01 to 01-01 count as 1 day
         if (differenceInDays > spcBookingRule.getMaxReservationDay()) {
             throw new DateTimeException("Selected date range is over the maximum number of reservation days");
         }
@@ -296,6 +300,18 @@ public class SpcBookingController{
         bookingDto.setStartTime(request.getStartTime());
         bookingDto.setEndTime(request.getEndTime());
         bookingDto.setTechnicianNumber(request.getTechnicianNumber());
+        bookingDto.setSpcBookingAttachmentDTOList(request.getAttachments());
         return bookingDto;
+    }
+
+    private void validateBookingAttachmentDTO(SpcClientBookingDTO dto) {
+        if (dto.getAttachments() != null && !dto.getAttachments().isEmpty()) {
+            dto.getAttachments().forEach(attachmentDTO -> {
+                ValidatorUtils.validateEntity(
+                    attachmentDTO,
+                    InsertGroup.class
+                );
+            });
+        }
     }
 }

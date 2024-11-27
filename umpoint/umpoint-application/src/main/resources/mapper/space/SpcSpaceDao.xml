@@ -199,6 +199,7 @@
             m.username AS manager_name,
             cr.username AS creator_name,
             u.username AS updater_name,
+            b.contact_required,
             b.approval_required,
             b.open_for_staff,
             b.open_for_student,

@@ -4,6 +4,9 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +16,28 @@ public class JsonUtils {
 
     public static String toJsonString(Object object) {
         try {
+            return objectMapper.writeValueAsString(object);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String toJsonStringWithStringId(Object object) {
+        try {
+            // Create a custom ObjectMapper
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            // Serialise Optional correctly
+            objectMapper.registerModule(new Jdk8Module());
+
+            // Customize Long values serialise to String
+            SimpleModule module = new SimpleModule();
+            module.addSerializer(Long.class, ToStringSerializer.instance);
+
+            // Register the module with the ObjectMapper
+            objectMapper.registerModule(module);
+
+            // Serialize the object to JSON
             return objectMapper.writeValueAsString(object);
         } catch (Exception e) {
             throw new RuntimeException(e);

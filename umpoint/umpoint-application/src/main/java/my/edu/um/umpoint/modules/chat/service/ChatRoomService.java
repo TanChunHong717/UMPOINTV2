@@ -16,4 +16,11 @@ import java.util.List;
  */
 public interface ChatRoomService extends CrudService<ChatRoomEntity, ChatRoomDTO>{
     Long getRoomByFacilityId(ChatConstant.FacilityType facilityType, Long facilityId);
+    void assignAdminId(Long roomId);
+    boolean stopRoomAutoReply(Long roomId);
+    boolean closeRoom(Long roomId);
+    boolean resolveRoom(Long roomId);
+    boolean reportRoom(Long roomId);
+    boolean canChatInRoom(ChatRoomDTO chatRoomDTO);
+    boolean canChatInRoom(Long roomId);
 }

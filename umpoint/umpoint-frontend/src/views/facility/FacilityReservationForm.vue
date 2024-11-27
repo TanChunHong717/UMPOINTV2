@@ -6,7 +6,12 @@
             {{ facilityInfo.deptName }}
         </template>
 
-        <el-steps class="form-steps" :active="currentStep" align-center>
+        <el-steps
+            class="form-steps"
+            :active="currentStep"
+            align-center
+            v-show="!lastStep"
+        >
             <el-step title="Event Details">
                 <template #icon>
                     <svg-icon type="mdi" :path="mdiCalendarTextOutline" />
@@ -48,7 +53,11 @@ import {
 } from "@mdi/js";
 import { ref, reactive, computed, watch, shallowRef } from "vue";
 import { useRoute } from "vue-router";
-import { getFacilityInformation, createBooking } from "@/helpers/api-facility.js";
+import {
+    getFacilityInformation,
+    createBooking,
+} from "@/helpers/api-facility.js";
+import { uploadFile } from "@/helpers/api-upload.js";
 import {
     formatDateToTimezoneDateStr,
     formatDateToTimezoneTimeStr,
@@ -64,6 +73,7 @@ const currentStep = ref(0);
 const route = useRoute();
 
 const isLoading = ref(true);
+const lastStep = computed(() => currentStep.value === formsPage.length - 1);
 
 // first init
 const facilityInfo = shallowRef({});
@@ -106,8 +116,10 @@ function nextStep(componentForm) {
 async function submitForm() {
     // submit form
     console.log("Form submitted", form);
-    // TODO: upload files
-
+    let attachments = [].concat(
+        form.approvalDocuments.map((file) => file.response),
+        form.supportingDocuments.map((file) => file.response)
+    );
     let result = await createBooking({
         spaceId: form.facilityId,
         event: form.eventName,
@@ -115,13 +127,24 @@ async function submitForm() {
         endDay: formatDateToTimezoneDateStr(form.endDate),
         startTime: formatDateToTimezoneTimeStr(form.startDate),
         endTime: formatDateToTimezoneTimeStr(form.endDate),
+        attachments,
     });
+
     if (result.status != 200 || result.data.code != 0) {
         console.error("Error submitting form", result);
-        ElMessage({
-            type: "error",
-            message: "Error submitting form",
-        });
+        if (result.data.code == 400 && result.data.message) {
+            ElMessage({
+                type: "error",
+                message: result.data.message,
+                duration: 10000,
+            });
+            currentStep.value = 0;
+        } else {
+            ElMessage({
+                type: "error",
+                message: "Error submitting form",
+            });
+        }
         return;
     }
 }

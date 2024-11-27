@@ -7,7 +7,7 @@ CREATE TABLE spc_category (
 
 CREATE TABLE spc_tag (
     id bigint NOT NULL COMMENT 'ID',
-    tag_name varchar(20) NOT NULL COMMENT 'Tag name',
+    tag_name varchar(50) NOT NULL COMMENT 'Tag name',
     PRIMARY KEY (id),
     UNIQUE INDEX (tag_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space Tag';
@@ -51,9 +51,9 @@ CREATE TABLE spc_space (
     cat_id bigint NOT NULL COMMENT 'Category ID',
     dept_id bigint NOT NULL COMMENT 'Department ID',
     address varchar(250) NOT NULL COMMENT 'Address',
-    description varchar(2500) COMMENT 'Description',
-    facilities varchar(250) COMMENT 'Facilities',
-    capacity decimal(3,0) COMMENT 'Max capacity',
+    description varchar(2500) NULL COMMENT 'Description',
+    facilities varchar(250) NULL COMMENT 'Facilities',
+    capacity decimal(3,0) NOT NULL COMMENT 'Max capacity',
     manager bigint NULL COMMENT 'Manager ID',
     hour_price decimal(10, 2) NULL COMMENT 'Price for book an hour',
     four_hours_price decimal(10, 2) NULL COMMENT 'Price for book four hours',
@@ -108,6 +108,16 @@ CREATE TABLE spc_booking (
     FOREIGN KEY (admin_id) REFERENCES sys_user(id),
     FOREIGN KEY (user_id) REFERENCES cli_user(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space Booking';
+
+CREATE TABLE spc_booking_attachment (
+    id bigint(20) NOT NULL COMMENT 'Attachment ID',
+    booking_id bigint(20) NOT NULL COMMENT 'Booking ID',
+    name varchar(250) NOT NULL COMMENT 'Attachment name',
+    type varchar(20) NOT NULL COMMENT 'Attachment type',
+    url varchar(250) NOT NULL COMMENT 'Image url',
+    PRIMARY KEY (id),
+    FOREIGN KEY (booking_id) REFERENCES spc_booking (id)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'Space Booking Attachment';
 
 CREATE TABLE spc_booking_technician (
     id bigint NOT NULL COMMENT 'ID',

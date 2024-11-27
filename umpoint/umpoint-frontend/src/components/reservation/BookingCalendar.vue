@@ -19,6 +19,8 @@ import {
     diffDays,
     sameDay,
     formatDateToTimezoneDateTimeStr,
+    diffHours,
+    listTimesBetween,
 } from "@/utils/date";
 import baseService from "@/utils/api.js";
 import { getFacilityBookings } from "@/helpers/api-facility.js";
@@ -164,6 +166,20 @@ const facilityEndTimeMinutes = computed(() => {
         Number(facilityEndTime.value.split(":")[0]) * 60 +
         Number(facilityEndTime.value.split(":")[1])
     );
+});
+const facilityTimeStep = computed(() => {
+    // default step
+    if (facilityInfo.value.bookingRule?.bookingMode == 0) return 30;
+    return facilityInfo.value.bookingRule?.bookingUnit ?? 30;
+});
+const facilityTimeSelectStep = computed(() => {
+    // default step
+    if (facilityInfo.value.bookingRule?.bookingMode == 0) return "00:30";
+    let hour = Math.floor(facilityInfo.value.bookingRule?.bookingUnit / 60);
+    let minute = facilityInfo.value.bookingRule?.bookingUnit % 60;
+    return `${hour.toString().padStart(2, "0")}:${minute
+        .toString()
+        .padStart(2, "0")}`;
 });
 const weekendDays = [6, 7];
 
@@ -377,7 +393,13 @@ const validateDate = (formData, callback: Function) => {
     );
     let bookingLength = events.length;
     if (
-        facilityInfo.value.bookingRule?.maxReservationDays &&
+        bookingLength < facilityInfo.value.bookingRule?.minReservationDays
+    ) {
+        throw new Error(
+            `Booking length is less than ${facilityInfo.value.bookingRule?.minReservationDays} day(s)`
+        );
+    }
+    if (
         bookingLength > facilityInfo.value.bookingRule?.maxReservationDays
     ) {
         throw new Error(
@@ -412,6 +434,59 @@ const validateTime = (formData, callback: Function) => {
         callback(new Error("End time must be after start time"));
         return;
     }
+    if (
+        diffHours(formData.startTime, formData.endTime) <
+        facilityInfo.value.bookingRule?.minBookingHour
+    ) {
+        callback(
+            new Error(
+                `Booking time length is less than ${facilityInfo.value.bookingRule?.minBookingHour} hour(s)`
+            )
+        );
+        return;
+    }
+    if (
+        diffHours(formData.startTime, formData.endTime) >
+        facilityInfo.value.bookingRule?.maxBookingHour
+    ) {
+        callback(
+            new Error(
+                `Booking time length is more than ${facilityInfo.value.bookingRule?.maxBookingHours} hour(s)`
+            )
+        );
+        return;
+    }
+    if (facilityInfo.value.bookingRule?.bookingMode == 1) {
+        let availableHours = listTimesBetween(
+            facilityStartTime.value,
+            facilityEndTime.value,
+            facilityInfo.value.bookingRule?.bookingUnit
+        );
+        if (!availableHours.includes(formData.startTime)) {
+            callback(
+                new Error(`Start time does not match predefined slot time`)
+            );
+            return;
+        }
+        if (!availableHours.includes(formData.endTime)) {
+            callback(new Error(`End time does not match predefined slot time`));
+            return;
+        }
+        if (
+            (diffHours(formData.startTime, formData.endTime) * 60) %
+                facilityInfo.value.bookingRule?.bookingUnit !==
+            0
+        ){
+            callback(
+                new Error(
+                    `Booking length must be in multiple of ${
+                        facilityInfo.value.bookingRule?.bookingUnit / 60
+                    } hour(s)`
+                )
+            );
+            return;
+        }
+    }
     callback();
 };
 /**
@@ -431,16 +506,6 @@ const validateEventInTimeRange = (startDateTime: Date, endDateTime: Date) => {
                 throw new Error("Booking on holiday is not allowed");
             }
         }
-    }
-    // check if time reach minimum length
-    if (
-        facilityInfo.value.bookingRule?.minBookingHours &&
-        endDateTime.getTime() - startDateTime.getTime() <
-            facilityInfo.value.bookingRule?.minBookingHours * 60 * 60 * 1000
-    ) {
-        throw new Error(
-            `Booking length is less than ${facilityInfo.value.bookingRule?.minBookingHours} hour(s)`
-        );
     }
     // check if booking on weekend
     if (!facilityInfo.value.bookingRule?.holidayAvailable) {
@@ -541,7 +606,7 @@ onActivated(() => {
                     v-model="formData.startTime"
                     placeholder="Start time"
                     :start="facilityStartTime"
-                    step="00:30"
+                    :step="facilityTimeSelectStep"
                     :end="facilityEndTime"
                     :max-time="startTimeMaxTime()"
                     :editable="!!formData.startDate"
@@ -551,7 +616,7 @@ onActivated(() => {
                     v-model="formData.endTime"
                     placeholder="End time"
                     :start="facilityStartTime"
-                    step="00:30"
+                    :step="facilityTimeSelectStep"
                     :end="facilityEndTime"
                     :min-time="endTimeMinTime()"
                     :editable="!!formData.endDate"
@@ -570,8 +635,8 @@ onActivated(() => {
         v-model:events="displayedEvents"
         :time-from="facilityStartTimeMinutes"
         :time-to="facilityEndTimeMinutes"
-        :time-step="30"
-        :snap-to-time="30"
+        :time-step="facilityInfo.bookingRule?.bookingUnit ?? 30"
+        :snap-to-time="facilityTimeStep"
         :editable-events="{
             title: false,
             drag: true,

@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BadHttpRequestException.class)
-    public Result handleBadHttpRequestException(RenException ex) {
+    public Result handleBadHttpRequestException(BadHttpRequestException ex) {
         Result result = new Result();
         result.error(ErrorCode.BAD_REQUEST, ex.getMsg());
 

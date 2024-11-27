@@ -16,16 +16,14 @@ import my.edu.um.umpoint.modules.security.user.SecurityUser;
 import my.edu.um.umpoint.modules.security.user.UserDetail;
 import my.edu.um.umpoint.modules.space.dao.SpcBookingDao;
 import my.edu.um.umpoint.modules.space.dao.SpcEventDao;
+import my.edu.um.umpoint.modules.space.dto.SpcBookingAttachmentDTO;
 import my.edu.um.umpoint.modules.space.dto.SpcBookingDTO;
 import my.edu.um.umpoint.modules.space.dto.SpcClientBookingDTO;
 import my.edu.um.umpoint.modules.space.dto.SpcSpaceDTO;
 import my.edu.um.umpoint.modules.space.entity.SpcBookingEntity;
 import my.edu.um.umpoint.modules.space.entity.SpcBookingTechnicianEntity;
 import my.edu.um.umpoint.modules.space.entity.SpcEventEntity;
-import my.edu.um.umpoint.modules.space.service.SpcBookingService;
-import my.edu.um.umpoint.modules.space.service.SpcBookingTechnicianService;
-import my.edu.um.umpoint.modules.space.service.SpcEventService;
-import my.edu.um.umpoint.modules.space.service.SpcSpaceService;
+import my.edu.um.umpoint.modules.space.service.*;
 import my.edu.um.umpoint.modules.utils.EventEntity;
 import my.edu.um.umpoint.modules.utils.SpaceBookingUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +54,9 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
 
     @Autowired
     private SpcSpaceService spcSpaceService;
+
+    @Autowired
+    private SpcBookingAttachmentService spcBookingAttachmentService;
 
     @Autowired
     private SpcPaymentService spcPaymentService;
@@ -125,6 +126,14 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
         // daily event breakdown
         spcEventService.addEvent(spcBookingDTO, space.getSpcBookingRuleDTO().getHolidayAvailable() ==
                                                 BookingConstant.Holiday.AVAILABLE.getValue());
+
+        // add attachments if required
+        if (spcBookingDTO.getSpcBookingAttachmentDTOList() != null && !spcBookingDTO.getSpcBookingAttachmentDTOList().isEmpty()) {
+            for (SpcBookingAttachmentDTO item : spcBookingDTO.getSpcBookingAttachmentDTOList()){
+                item.setBookingId(spcBookingDTO.getId());
+                spcBookingAttachmentService.save(item);
+            }
+        }
 
         // add payment if required
         if (total.compareTo(BigDecimal.ZERO) > 0) {

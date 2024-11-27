@@ -12,19 +12,16 @@ import java.util.Date;
  * Report user in chat
  *
  * @author NKSL2001 s2116593@siswa.um.edu.my
- * @since 1.0.0 2024-10-29
+ * @since 1.0.0 2024-11-25
  */
 @Data
 @Schema(title = "Report user in chat")
 public class ChatUserReportDTO implements Serializable {
 	@Serial
-    private static final long serialVersionUID = 669L;
+    private static final long serialVersionUID = 1L;
 
 	@Schema(title = "ID")
 	private Long id;
-
-	@Schema(title = "User ID that is reported")
-	private Long reportedUserId;
 
 	@Schema(title = "Reported chat room ID")
 	private Long chatRoomId;
@@ -37,6 +34,9 @@ public class ChatUserReportDTO implements Serializable {
 
 	@Schema(title = "User ID that send this report")
 	private Long reportedBy;
+
+	@Schema(title = "User Type for Id that send this report")
+	private Integer reportedByType;
 
 	@Schema(title = "Creation Date")
 	private Date createdAt;

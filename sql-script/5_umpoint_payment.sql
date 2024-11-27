@@ -18,12 +18,12 @@ CREATE TABLE spc_payment (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space Payment';
 
 CREATE TABLE spc_payment_item (
-    `id` BIGINT NOT NULL COMMENT 'ID',
-    `payment_id` BIGINT NOT NULL COMMENT 'Payment ID',
-    `item_name` VARCHAR(255) NOT NULL COMMENT 'Payment Item Name',
-    `item_amount` INT NOT NULL COMMENT 'Payment Item Count',
-    `item_price` DECIMAL(10,2) NOT NULL COMMENT 'Price per item (total = amount * price)' ,
-    PRIMARY KEY (`id`),
+    id BIGINT NOT NULL COMMENT 'ID',
+    payment_id BIGINT NOT NULL COMMENT 'Payment ID',
+    item_name VARCHAR(255) NOT NULL COMMENT 'Payment Item Name',
+    item_amount INT NOT NULL COMMENT 'Payment Item Count',
+    item_price DECIMAL(10,2) NOT NULL COMMENT 'Price per item (total = amount * price)' ,
+    PRIMARY KEY (id),
     FOREIGN KEY (payment_id) REFERENCES spc_payment(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Space Payment Itemized';
 
@@ -40,12 +40,12 @@ CREATE TABLE svc_payment (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Service Payment';
 
 CREATE TABLE svc_payment_item (
-    `id` BIGINT NOT NULL COMMENT 'ID',
-    `payment_id` BIGINT NOT NULL COMMENT 'Payment ID',
-    `item_name` VARCHAR(255) NOT NULL COMMENT 'Payment Item Name',
-    `item_amount` INT NOT NULL COMMENT 'Payment Item Count',
-    `item_price` DECIMAL(10,2) NOT NULL COMMENT 'Price per item (total = amount * price)' ,
-    PRIMARY KEY (`id`),
+    id BIGINT NOT NULL COMMENT 'ID',
+    payment_id BIGINT NOT NULL COMMENT 'Payment ID',
+    item_name VARCHAR(255) NOT NULL COMMENT 'Payment Item Name',
+    item_amount INT NOT NULL COMMENT 'Payment Item Count',
+    item_price DECIMAL(10,2) NOT NULL COMMENT 'Price per item (total = amount * price)' ,
+    PRIMARY KEY (id),
     FOREIGN KEY (payment_id) REFERENCES svc_payment(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Service Payment Itemized';
 
@@ -62,11 +62,11 @@ CREATE TABLE acc_payment (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Accommodation Payment';
 
 CREATE TABLE acc_payment_item (
-    `id` BIGINT NOT NULL COMMENT 'ID',
-    `payment_id` BIGINT NOT NULL COMMENT 'Payment ID',
-    `item_name` VARCHAR(255) NOT NULL COMMENT 'Payment Item Name',
-    `item_amount` INT NOT NULL COMMENT 'Payment Item Count',
-    `item_price` DECIMAL(10,2) NOT NULL COMMENT 'Price per item (total = amount * price)' ,
-    PRIMARY KEY (`id`),
+    id BIGINT NOT NULL COMMENT 'ID',
+    payment_id BIGINT NOT NULL COMMENT 'Payment ID',
+    item_name VARCHAR(255) NOT NULL COMMENT 'Payment Item Name',
+    item_amount INT NOT NULL COMMENT 'Payment Item Count',
+    item_price DECIMAL(10,2) NOT NULL COMMENT 'Price per item (total = amount * price)' ,
+    PRIMARY KEY (id),
     FOREIGN KEY (payment_id) REFERENCES acc_payment(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Accommodation Payment Itemized';

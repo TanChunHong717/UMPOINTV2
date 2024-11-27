@@ -6,17 +6,19 @@ const headers = {
 };
 const containerName = "upload";
 
-async function uploadFile(file) {
-    console.log("uploading file", file);
-
-    let newFileName = generateNewFileName(file);
+// upload file to azure blob storage
+async function uploadFile(file, config = {}) {
+    // file: File object
+    // {name, type, item}
+    let newFileName = generateNewFileName(file.name);
     let url = await buildSasUrl(newFileName);
 
     const formData = new FormData();
     formData.append("file", file);
 
-    await api.put(url, file.blob, {
+    await api.put(url, file.item, {
         headers,
+        ...config,
     });
     return {
         name: newFileName,
@@ -27,18 +29,21 @@ async function uploadFile(file) {
 
 async function buildSasUrl(fileName) {
     let sasToken = await getSasToken();
-    console.log("sasToken", sasToken);
     return `https://mallstore.blob.core.windows.net/${containerName}/${fileName}?${sasToken}`;
 }
 
 async function getSasToken() {
     let response = await api.get("sas");
-    console.log("response sas", response);
     return response.data;
 }
 
-function generateNewFileName(file) {
-    return `${getUuid()}-${file.name}.${file.extension}`;
+function generateNewFileName(filename) {
+    return `${getUuid()}-${filename}`;
 }
 
-export { uploadFile, getSasToken, buildSasUrl, generateNewFileName };
+export {
+    uploadFile,
+    getSasToken,
+    buildSasUrl,
+    generateNewFileName,
+};
