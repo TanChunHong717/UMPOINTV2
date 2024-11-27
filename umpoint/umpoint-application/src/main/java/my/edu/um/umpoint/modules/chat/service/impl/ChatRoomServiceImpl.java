@@ -185,7 +185,7 @@ public class ChatRoomServiceImpl extends CrudServiceImpl<ChatRoomDao, ChatRoomEn
 
     @Override
     public boolean canChatInRoom(ChatRoomDTO chatRoomDTO) {
-        return !(
+        return (
             chatRoomDTO.getStatus() == ChatConstant.RoomStatus.CREATED.getValue() ||
             chatRoomDTO.getStatus() == ChatConstant.RoomStatus.OPEN.getValue()
         );
