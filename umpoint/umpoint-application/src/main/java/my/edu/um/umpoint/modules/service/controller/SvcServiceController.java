@@ -60,7 +60,6 @@ public class SvcServiceController {
 
     @GetMapping("{id}")
     @Operation(summary = "Information")
-    @RequiresPermissions("service:service:info")
     public Result<SvcServiceDTO> get(@PathVariable("id") Long id){
         SvcServiceDTO data = svcServiceService.get(id);
 

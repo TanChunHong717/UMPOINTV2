@@ -1,5 +1,6 @@
 package my.edu.um.umpoint.modules.security.config;
 
+import jakarta.servlet.Filter;
 import my.edu.um.umpoint.modules.security.oauth2.Oauth2Filter;
 import my.edu.um.umpoint.modules.security.oauth2.Oauth2Realm;
 import org.apache.shiro.mgt.SecurityManager;
@@ -11,7 +12,7 @@ import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import jakarta.servlet.Filter;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class ShiroConfig {
         ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
         shiroFilter.setSecurityManager(securityManager);
 
-        //oauth过滤
+        //oauth filter
         Map<String, Filter> filters = new HashMap<>();
         filters.put("oauth2", new Oauth2Filter());
         shiroFilter.setFilters(filters);
@@ -62,11 +63,11 @@ public class ShiroConfig {
         filterMap.put("/", "anon");
 
         // public api
-        filterMap.put("/space/space/**", "anon");
+        filterMap.put("/space/space/?*", "anon");
         filterMap.put("/space/category/list/filter", "anon");
-        filterMap.put("/service/service/**", "anon");
+        filterMap.put("/service/service/?*", "anon");
         filterMap.put("/service/category/list/filter", "anon");
-        filterMap.put("/accommodation/accommodation/**", "anon");
+        filterMap.put("/accommodation/accommodation/?*", "anon");
         filterMap.put("/accommodation/category/list/filter", "anon");
 
         filterMap.put("/**", "oauth2");

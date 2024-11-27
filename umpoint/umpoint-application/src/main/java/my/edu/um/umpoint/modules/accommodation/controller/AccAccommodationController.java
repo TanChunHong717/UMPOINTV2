@@ -52,7 +52,6 @@ public class AccAccommodationController {
         @Parameter(name = Constant.CAT_ID, description = "Category ID", in = ParameterIn.QUERY, ref="int") ,
         @Parameter(name = Constant.TAG_ID, description = "Tag ID", in = ParameterIn.QUERY, ref="int")
     })
-    @RequiresPermissions("accommodation:accommodation:page")
     public Result<PageData<AccAccommodationDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
         PageData<AccAccommodationDTO> page = accAccommodationService.accommodationPage(params);
 
@@ -61,7 +60,6 @@ public class AccAccommodationController {
 
     @GetMapping("{id}")
     @Operation(summary = "Information")
-    @RequiresPermissions("accommodation:accommodation:info")
     public Result<AccAccommodationDTO> get(@PathVariable("id") Long id){
         AccAccommodationDTO data = accAccommodationService.get(id);
 
