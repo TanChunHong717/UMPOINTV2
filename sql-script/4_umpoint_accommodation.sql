@@ -7,7 +7,7 @@ CREATE TABLE acc_category (
 
 CREATE TABLE acc_tag (
     id bigint NOT NULL COMMENT 'ID',
-    tag_name varchar(20) NOT NULL COMMENT 'Tag name',
+    tag_name varchar(50) NOT NULL COMMENT 'Tag name',
     PRIMARY KEY (id),
     UNIQUE INDEX (tag_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Accommodation Tag';
@@ -24,20 +24,20 @@ CREATE TABLE acc_booking_rule (
     max_reservation_day decimal(3, 0) NOT NULL COMMENT 'Maximum reservation day',
     min_reservation_day decimal(3, 0) NOT NULL COMMENT 'Minimum reservation day',
     max_technician_number decimal(3, 0) NOT NULL COMMENT 'Maximum number of technician',
-    technician_price decimal(3, 0) NOT NULL COMMENT 'Price per technician',
+    technician_price decimal(10, 2) NOT NULL COMMENT 'Price per technician',
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Accommodation Booking Rule';
 
 CREATE TABLE acc_accommodation (
     id bigint NOT NULL COMMENT 'ID',
-    status tinyint COMMENT 'Status 0:Suspend 1:Normal',
+    status tinyint NOT NULL COMMENT 'Status 0:Suspend 1:Normal',
     name varchar(250) NOT NULL COMMENT 'Name',
     cat_id bigint NOT NULL COMMENT 'Category ID',
     dept_id bigint NOT NULL COMMENT 'Department ID',
     address varchar(250) NOT NULL COMMENT 'Address',
-    description varchar(2500) COMMENT 'Description',
-    facilities varchar(250) COMMENT 'Facilities',
-    capacity decimal(3,0) COMMENT 'Max capacity',
+    description varchar(2500) NULL COMMENT 'Description',
+    facilities varchar(250) NULL COMMENT 'Facilities',
+    capacity decimal(3,0) NOT NULL COMMENT 'Max capacity',
     manager bigint NULL COMMENT 'Manager ID',
     day_price decimal(10, 2) NULL COMMENT 'Price for book a day',
     week_price decimal(10, 2) NULL COMMENT 'Price for book a week',

@@ -7,7 +7,7 @@ CREATE TABLE svc_category (
 
 CREATE TABLE svc_tag (
     id bigint NOT NULL COMMENT 'ID',
-    tag_name varchar(20) NOT NULL COMMENT 'Tag name',
+    tag_name varchar(50) NOT NULL COMMENT 'Tag name',
     PRIMARY KEY (id),
     UNIQUE INDEX (tag_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Service Tag';
@@ -27,7 +27,7 @@ CREATE TABLE svc_service (
     name varchar(250) NOT NULL COMMENT 'Name',
     cat_id bigint NOT NULL COMMENT 'Category ID',
     dept_id bigint NOT NULL COMMENT 'Department ID',
-    description varchar(2500) COMMENT 'Description',
+    description varchar(2500) NULL COMMENT 'Description',
     manager bigint NULL COMMENT 'Manager ID',
     price decimal(10, 2) NULL COMMENT 'Price',
     booking_rule_id bigint NULL COMMENT 'Booking Rule ID',
