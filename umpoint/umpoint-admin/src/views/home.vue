@@ -1,6 +1,6 @@
 <template>
-  <el-row>
-    <el-col :span="24">
+  <el-row justify="space-between">
+    <el-col :span="8">
       <el-date-picker
         v-model="dateRange"
         type="daterange"
@@ -12,6 +12,9 @@
         size="small"
         @change="getData"
       />
+    </el-col>
+    <el-col :span="2">
+      <el-button size="small" type="primary" @click="downloadFile">Download File</el-button>
     </el-col>
   </el-row>
   <el-row>
@@ -305,6 +308,14 @@ const getData = () => {
   // Remove code below in production
   dataList.value = data.value.spaceList;
   dataListLoading.value = false;
+}
+
+const downloadFile = () => {
+  const fileUrl = 'https://mallstore.blob.core.windows.net/upload/DataAnalyticsReport.pdf';
+  const link = document.createElement('a');
+  link.href = fileUrl;
+  link.download = 'Data Analytics Report.pdf';
+  link.click();
 }
 
 onMounted(() => {
