@@ -1,14 +1,12 @@
 import api from "@/utils/api";
 import { facilityTypes } from "@/constants/app";
+import { JavaId } from "@/types/interface";
 
-function getFacilities(type) {
-    if (facilityTypes[type] === undefined) {
-        throw new Error("Invalid facility type");
-    }
-    return api.get("/space/space/page");
+function getFacilities(type: keyof typeof facilityTypes) {
+    return api.get(`/${type}/${type}/page`);
 }
 
-function getFacilityInformation(facilityID) {
+function getFacilityInformation(facilityType: keyof typeof facilityTypes, facilityID: JavaId) {
     // TODO: PLACEHOLDER
     if (Number(facilityID) == 2) {
         return {
@@ -87,10 +85,10 @@ the space used`,
         };
     }
 
-    return api.get(`/space/space/${facilityID}`);
+    return api.get(`/${facilityType}/${facilityType}/${facilityID}`);
 }
 
-function getFacilityBookings(facilityID, startTime, endTime) {
+function getFacilityBookings(facilityType: keyof typeof facilityTypes, facilityID: JavaId, startTime: string, endTime: string) {
     // TODO: PLACEHOLDER
     if (Number(facilityID) == 2) {
         return {
@@ -116,21 +114,26 @@ function getFacilityBookings(facilityID, startTime, endTime) {
         endTime && { endTime }
     );
 
-    return api.get(`/space/event`, {
+    return api.get(`/${facilityType}/event`, {
         params,
     });
 }
 
-function getCurrentUserBookings() {
-    return api.get(`/space/booking/page`);
+async function getCurrentUserBookings() {
+    let res = await Promise.all(
+        facilityTypes.forEach((facilityType: keyof typeof facilityTypes) =>
+            api.get(`/${facilityType}/booking/page`)
+        )
+    );
+    return res[0] + res[1] + res[2];
 }
 
-function createBooking(formData) {
-    return api.post(`/space/booking`, formData);
+function createBooking(facilityType: keyof typeof facilityTypes, formData: any) {
+    return api.post(`/${facilityType}/booking`, formData);
 }
 
-function cancelBooking(id) {
-    return api.put(`/space/booking/cancel/${id}`);
+function cancelBooking(facilityType: keyof typeof facilityTypes, bookingID: JavaId) {
+    return api.put(`/${facilityType}/booking/cancel/${bookingID}`);
 }
 
 export {

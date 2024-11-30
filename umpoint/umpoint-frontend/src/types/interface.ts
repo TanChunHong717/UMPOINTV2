@@ -12,6 +12,8 @@ export interface IHttpResponse {
     data: any;
 }
 
+export type JavaId = `${number}` | number;
+
 export interface VueCalEvent {
     start: Date,
     end: Date,

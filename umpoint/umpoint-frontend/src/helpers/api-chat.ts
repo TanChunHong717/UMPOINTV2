@@ -4,8 +4,8 @@ import { chatUserTypes } from "@/constants/chat";
 import sockjs from "sockjs-client/dist/sockjs";
 import { Client as StompClient } from "@stomp/stompjs";
 import { Message } from "vue-advanced-chat";
+import { JavaId } from "@/types/interface";
 
-type JavaId = `${number}` | number;
 const OPTION_KEY = "options";
 
 export function createWebSocketClient() {
