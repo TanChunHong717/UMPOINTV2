@@ -23,7 +23,7 @@ import {
     listTimesBetween,
 } from "@/utils/date";
 import baseService from "@/utils/api.js";
-import { getFacilityBookings } from "@/helpers/api-facility.js";
+import { getFacilityBookings } from "@/helpers/api-facility";
 import { breakBookingByDays } from "@/helpers/pricing";
 
 const isCalendarLoading = ref(true);
@@ -300,6 +300,7 @@ const generateWeekendAndHoliday = (startDate: Date, endDate: Date) => {
 
 const updateEvents = async (startDate: Date, endDate: Date) => {
     const facilityEvents = await getFacilityBookings(
+        facilityInfo.value.type,
         facilityInfo.value.id,
         formatDateToTimezoneDateTimeStr(startDate),
         formatDateToTimezoneDateTimeStr(endDate)

@@ -66,7 +66,6 @@ const props = defineProps(["userId", "userToken"]);
 const wsClient = chatApi.createWebSocketClient();
 var wsCurrentRoom = null;
 function changeWsClientRoom(client, roomId) {
-    console.log("Change Room", roomId);
     if (wsCurrentRoom) {
         wsCurrentRoom.unsubscribe();
     }
@@ -106,9 +105,6 @@ function updateNewMessage(message) {
     }
 }
 
-// current route
-const currentRoute = useRoute();
-
 // full list of rooms
 const rooms = ref();
 const loadFirstRoom = ref(false); // don't load first room by default
@@ -129,6 +125,8 @@ const canTalkInChat = computed(() => {
     );
 });
 
+// current route
+const currentRoute = useRoute();
 async function getFacilityChatRoom(facilityType, facilityId) {
     let roomId = await chatApi.getChatRoomIdByFacility(
         facilityType,

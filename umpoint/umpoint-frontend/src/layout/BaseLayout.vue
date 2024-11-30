@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 
 // background image for the header
@@ -50,7 +50,21 @@ defineSlots<{
 // breadcrumbs
 const route = useRoute();
 const name = ref(route.name);
-const breadList = ref(route.matched);
+const breadList = computed(() => {
+    let breadcrumb = [];
+    for (let path of route.matched) {
+        // skip paths without meta title
+        if (!path.meta.title) {
+            continue;
+        }
+        // resolve breadcrumb title dynamically
+        if (typeof path.meta.title === "function") {
+            path.meta.title = path.meta.title(route);
+        }
+        breadcrumb.push(path);
+    }
+    return breadcrumb;
+});
 </script>
 
 <style scoped>

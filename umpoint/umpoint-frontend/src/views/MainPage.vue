@@ -58,7 +58,7 @@
                 <div>
                     <p>{{ facility.category }} - {{ facility.deptName }}</p>
                 </div>
-                <RouterLink :to="`/facility/${facility.id}`"
+                <RouterLink :to="`/space/${facility.id}`"
                     >Visit location</RouterLink
                 >
             </el-card>
@@ -68,7 +68,7 @@
 
 <script setup>
 import { mdiMagnify } from "@mdi/js";
-import { getFacilities } from "@/helpers/api-facility.js";
+import { getFacilities } from "@/helpers/api-facility";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 

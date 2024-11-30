@@ -53,10 +53,7 @@ import {
 } from "@mdi/js";
 import { ref, reactive, computed, watch, shallowRef } from "vue";
 import { useRoute } from "vue-router";
-import {
-    getFacilityInformation,
-    createBooking,
-} from "@/helpers/api-facility.js";
+import { getFacilityInformation, createBooking } from "@/helpers/api-facility";
 import { uploadFile } from "@/helpers/api-upload.js";
 import {
     formatDateToTimezoneDateStr,
@@ -80,21 +77,31 @@ const facilityInfo = shallowRef({});
 const form = reactive({});
 
 // change when route facility id change
-watch(() => route.params.id, getFacilityInfo, { immediate: true });
+watch(() => [route.params.type, route.params.id], getFacilityInfo, {
+    immediate: true,
+});
 
-function transformSpaceInfo(data) {
-    // transform data here
-    data.bookingRule = data.spcBookingRuleDTO ?? {};
+function transformBookingRule(facilityType, data) {
+    // transform data based on facility type
+    switch (facilityType) {
+        case "space":
+            data.bookingRule = data.spcBookingRuleDTO ?? {};
+            break;
+        default:
+            break;
+    }
     return data;
 }
-async function getFacilityInfo(facilityId) {
+async function getFacilityInfo([facilityType, facilityId]) {
     isLoading.value = true;
-
-    let response = await getFacilityInformation(facilityId);
+    // call api to get facility information and parse information
+    let response = await getFacilityInformation(facilityType, facilityId);
     if (response.data.code !== 0) {
         throw new Error(response.data.message);
     }
-    facilityInfo.value = transformSpaceInfo(response.data.data);
+    facilityInfo.value = transformBookingRule(facilityType, response.data.data);
+    facilityInfo.value.type = facilityType;
+    // save id
     form.facilityId = facilityId;
     // reset form to step 0
     currentStep.value = 0;
@@ -115,12 +122,11 @@ function nextStep(componentForm) {
 }
 async function submitForm() {
     // submit form
-    console.log("Form submitted", form);
     let attachments = [].concat(
         form.approvalDocuments.map((file) => file.response),
         form.supportingDocuments.map((file) => file.response)
     );
-    let result = await createBooking({
+    let result = await createBooking(route.params.type, {
         spaceId: form.facilityId,
         event: form.eventName,
         startDay: formatDateToTimezoneDateStr(form.startDate),

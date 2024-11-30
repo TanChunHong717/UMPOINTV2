@@ -290,7 +290,7 @@ import { mdiCurrencyUsd, mdiForum, mdiCancel } from "@mdi/js";
 import { ref, computed, h } from "vue";
 import { bookingStatus, paymentStatus } from "@/constants/app";
 import { ElMessage } from "element-plus";
-import { cancelBooking } from "@/helpers/api-facility.js";
+import { cancelBooking } from "@/helpers/api-facility";
 
 const activeStatus = defineModel("activeStatus");
 const emit = defineEmits(["changeStatus", "refreshBookings"]);
