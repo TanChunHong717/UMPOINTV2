@@ -25,6 +25,17 @@ import java.util.List;
 public class SysDeptController {
     private final SysDeptService sysDeptService;
 
+    @GetMapping("public/list")
+    @Operation(summary = "list")
+    public Result<List<SysDeptDTO>> publicList() {
+        HashMap<String, Object> map = new HashMap<>(1);
+        map.put("public", true);
+
+        List<SysDeptDTO> list = sysDeptService.list(map);
+
+        return new Result<List<SysDeptDTO>>().ok(list);
+    }
+
     @GetMapping("list")
     @Operation(summary = "list")
     @RequiresPermissions("sys:dept:list")
