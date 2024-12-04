@@ -255,7 +255,7 @@ import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
 import { ref, watch, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getFacilityInformation } from "@/helpers/api-facility";
+import { getFacilityInformation, transformGallery } from "@/helpers/api-facility";
 
 const router = useRouter();
 const route = useRoute();
@@ -269,17 +269,6 @@ watch(() => [route.params.type, route.params.id], fetchData, {
     immediate: true,
 });
 
-function transformGallery(facilityType, data) {
-    // transform data based on facility type
-    switch (facilityType) {
-        case "space":
-            data.gallery = data.spcImageDTOList ?? {};
-            break;
-        default:
-            break;
-    }
-    return data;
-}
 async function fetchData([facilityType, facilityId]) {
     loading.value = true;
 

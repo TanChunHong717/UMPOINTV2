@@ -52,9 +52,12 @@ import {
     mdiFormatListChecks,
 } from "@mdi/js";
 import { ref, reactive, computed, watch, shallowRef } from "vue";
-import { useRoute } from "vue-router";
-import { getFacilityInformation, createBooking } from "@/helpers/api-facility";
-import { uploadFile } from "@/helpers/api-upload.js";
+import { useRoute, useRouter } from "vue-router";
+import {
+    getFacilityInformation,
+    createBooking,
+    transformBookingRule,
+} from "@/helpers/api-facility";
 import {
     formatDateToTimezoneDateStr,
     formatDateToTimezoneTimeStr,
@@ -67,6 +70,7 @@ import { ElMessage } from "element-plus";
 const formsPage = [StepOne, StepTwo, StepThree];
 
 const currentStep = ref(0);
+const router = useRouter();
 const route = useRoute();
 
 const isLoading = ref(true);
@@ -81,17 +85,6 @@ watch(() => [route.params.type, route.params.id], getFacilityInfo, {
     immediate: true,
 });
 
-function transformBookingRule(facilityType, data) {
-    // transform data based on facility type
-    switch (facilityType) {
-        case "space":
-            data.bookingRule = data.spcBookingRuleDTO ?? {};
-            break;
-        default:
-            break;
-    }
-    return data;
-}
 async function getFacilityInfo([facilityType, facilityId]) {
     isLoading.value = true;
     // call api to get facility information and parse information
@@ -136,8 +129,18 @@ async function submitForm() {
         attachments,
     });
 
-    if (result.status != 200 || result.data.code != 0) {
-        console.error("Error submitting form", result);
+    if (result.status == 200 && result.data.code == 0) {
+        ElMessage({
+            type: "success",
+            message: "Form submitted successfully",
+        });
+        // redirect to all bookings page
+        setTimeout(() => {
+            // redirect to success page
+            router.push({ name: "bookings" });
+        }, 2000);
+    } else {
+        //handle error
         if (result.data.code == 400 && result.data.message) {
             ElMessage({
                 type: "error",
@@ -146,12 +149,12 @@ async function submitForm() {
             });
             currentStep.value = 0;
         } else {
+            console.error("Error submitting form", result);
             ElMessage({
                 type: "error",
                 message: "Error submitting form",
             });
         }
-        return;
     }
 }
 </script>

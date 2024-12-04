@@ -289,11 +289,15 @@
 import { mdiCurrencyUsd, mdiForum, mdiCancel } from "@mdi/js";
 import { ref, computed, h } from "vue";
 import { bookingStatus, paymentStatus } from "@/constants/app";
-import { ElMessage } from "element-plus";
-import { cancelBooking } from "@/helpers/api-facility";
+
+const emit = defineEmits([
+    "changeStatus",
+    "startChat",
+    "payForBooking",
+    "cancelBooking",
+]);
 
 const activeStatus = defineModel("activeStatus");
-const emit = defineEmits(["changeStatus", "refreshBookings"]);
 const bookings = defineModel("bookings");
 
 const handleChangeStatus = (tab) => {
@@ -314,19 +318,23 @@ const spaceDisplayBookings = computed(() => {
 });
 const statusFormatter = (row, column) => {
     if (activeStatus.value == "all") {
-        return h('span', {class:"status-"+row.status}, bookingStatus[row.status]);
+        return h(
+            "span",
+            { class: "status-" + row.status },
+            bookingStatus[row.status]
+        );
     }
     return bookingStatus[row.status];
 };
 
 // *** pending actions ***
-const payForBooking = (row) => {
-    console.log("Pay for booking", row);
+const payForBooking = ({ row }) => {
+    emit("payForBooking", row.id);
 };
-const startChat = (row) => {
-    console.log("Start chat", row);
+const startChat = ({ row }) => {
+    emit("startChat", row);
 };
-
+// cancel booking confirmation dialog
 const deleteDialogVisible = ref(false);
 const selectedCancelBooking = ref(null);
 const showCancelBookingDialog = ({ row }) => {
@@ -335,16 +343,9 @@ const showCancelBookingDialog = ({ row }) => {
 };
 const confirmCancelBooking = async () => {
     deleteDialogVisible.value = false;
-    let response = await cancelBooking(selectedCancelBooking.value);
-    if (response.status != 200 || response.data.code != 0) {
-        ElMessage.error("Error cancelling booking");
-        return;
-    }
-    ElMessage({ type: "success", message: "Booking cancelled successfully" });
-    emit("refreshBookings");
+    emit("cancelBooking", selectedCancelBooking.value);
 };
 </script>
-
 
 <style>
 /* Sync with constants/app.js:bookingStatus */

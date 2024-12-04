@@ -2,11 +2,14 @@ import api from "@/utils/api";
 import { facilityTypes } from "@/constants/app";
 import { JavaId } from "@/types/interface";
 
-function getFacilities(type: keyof typeof facilityTypes) {
-    return api.get(`/${type}/${type}/page`);
+export function getFacilities(type: keyof typeof facilityTypes, params: any) {
+    console.log(params);
+    return api.get(`/${type}/${type}/page`, {
+        params
+    });
 }
 
-function getFacilityInformation(facilityType: keyof typeof facilityTypes, facilityID: JavaId) {
+export function getFacilityInformation(facilityType: keyof typeof facilityTypes, facilityID: JavaId) {
     // TODO: PLACEHOLDER
     if (Number(facilityID) == 2) {
         return {
@@ -88,7 +91,17 @@ the space used`,
     return api.get(`/${facilityType}/${facilityType}/${facilityID}`);
 }
 
-function getFacilityBookings(facilityType: keyof typeof facilityTypes, facilityID: JavaId, startTime: string, endTime: string) {
+export function getFacilityCategories(type: keyof typeof facilityTypes) {
+    return api.get(`/${type}/category/list/filter`)
+}
+
+export function getDepartments() {
+    return api.get(`/sys/dept/public/list`);
+}
+
+// Bookings
+
+export function getFacilityBookings(facilityType: keyof typeof facilityTypes, facilityID: JavaId, startTime: string, endTime: string) {
     // TODO: PLACEHOLDER
     if (Number(facilityID) == 2) {
         return {
@@ -119,28 +132,40 @@ function getFacilityBookings(facilityType: keyof typeof facilityTypes, facilityI
     });
 }
 
-async function getCurrentUserBookings() {
-    let res = await Promise.all(
-        facilityTypes.forEach((facilityType: keyof typeof facilityTypes) =>
-            api.get(`/${facilityType}/booking/page`)
-        )
-    );
-    return res[0] + res[1] + res[2];
+export function getCurrentUserBookings(facilityType: keyof typeof facilityTypes) {
+    return api.get(`/${facilityType}/booking/page`)
 }
 
-function createBooking(facilityType: keyof typeof facilityTypes, formData: any) {
+export function createBooking(facilityType: keyof typeof facilityTypes, formData: any) {
     return api.post(`/${facilityType}/booking`, formData);
 }
 
-function cancelBooking(facilityType: keyof typeof facilityTypes, bookingID: JavaId) {
+export function cancelBooking(facilityType: keyof typeof facilityTypes, bookingID: JavaId) {
     return api.put(`/${facilityType}/booking/cancel/${bookingID}`);
 }
 
-export {
-    getFacilities,
-    getFacilityInformation,
-    getFacilityBookings,
-    getCurrentUserBookings,
-    createBooking,
-    cancelBooking,
-};
+// helpers
+
+export function transformGallery(facilityType, data) {
+    // transform data based on facility type
+    switch (facilityType) {
+        case "space":
+            data.gallery = data.spcImageDTOList ?? {};
+            break;
+        default:
+            break;
+    }
+    return data;
+}
+
+export function transformBookingRule(facilityType, data) {
+    // transform data based on facility type
+    switch (facilityType) {
+        case "space":
+            data.bookingRule = data.spcBookingRuleDTO ?? {};
+            break;
+        default:
+            break;
+    }
+    return data;
+}
