@@ -154,7 +154,7 @@ public class AccBookingController{
     @Operation(summary = "Approve")
     @LogOperation("Approve")
     @RequiresPermissions("accommodation:booking:approve")
-    public Result approve(@PathVariable("id") Long id, @RequestBody List<Long> technicianIdList){
+    public Result approve(@PathVariable("id") Long id, @RequestBody(required = false) List<Long> technicianIdList){
         accBookingService.approve(id, technicianIdList);
 
         return new Result();

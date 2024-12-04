@@ -69,6 +69,7 @@ public class ShiroConfig {
         filterMap.put("/service/category/list/filter", "anon");
         filterMap.put("/accommodation/accommodation/?*", "anon");
         filterMap.put("/accommodation/category/list/filter", "anon");
+        filterMap.put("/sys/dept/public/list", "anon");
 
         filterMap.put("/**", "oauth2");
         shiroFilter.setFilterChainDefinitionMap(filterMap);

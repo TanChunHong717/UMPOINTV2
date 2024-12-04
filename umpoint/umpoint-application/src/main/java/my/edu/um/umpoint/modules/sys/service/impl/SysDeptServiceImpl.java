@@ -32,7 +32,7 @@ public class SysDeptServiceImpl extends BaseServiceImpl<SysDeptDao, SysDeptEntit
     @Override
     public List<SysDeptDTO> list(Map<String, Object> params) {
         UserDetail user = SecurityUser.getUser();
-        if (user.getSuperAdmin() == SuperAdminEnum.NO.value()) {
+        if (!params.containsKey("public") && user.getSuperAdmin() == SuperAdminEnum.NO.value()) {
             params.put("deptIdList", getSubDeptIdList(user.getDeptId()));
         }
 
