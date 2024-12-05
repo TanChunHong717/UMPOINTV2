@@ -18,6 +18,6 @@ export function getUserInformation() {
     return api.get(`/client/user/info`);
 }
 
-export function saveUserInformation(data) {
-    return api.put(`/client/user`, data);
+export function saveUserInformation(userId, data) {
+    return api.put(`/client/user/${userId}`, data);
 }

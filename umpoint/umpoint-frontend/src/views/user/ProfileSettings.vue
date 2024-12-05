@@ -5,7 +5,9 @@
         <el-card>
             <!-- <el-avatar size="large" :src="circleUrl" /> -->
             <div>
-                <el-text style="font-weight: bold; font-size: 1.5em;">{{ formData.name }}</el-text
+                <el-text style="font-weight: bold; font-size: 1.5em">{{
+                    formData.name
+                }}</el-text
                 ><br />
                 <el-text>{{ formData.type }}</el-text
                 ><br />
@@ -20,8 +22,8 @@
         <el-form ref="formNode" label-position="top" :model="formData" :rules>
             <el-divider content-position="left">User Information</el-divider>
             <div class="grid">
-                <el-form-item label="Mobile Phone" prop="mobilePhone">
-                    <el-input v-model="formData.mobilePhone" />
+                <el-form-item label="Mobile Phone" prop="mobile">
+                    <el-input v-model="formData.mobile" />
                 </el-form-item>
                 <!-- <el-form-item label="Address" prop="address">
                     <el-input v-model="formData.address" />
@@ -86,7 +88,7 @@ const formData = reactive({
     name: null,
     type: null,
     email: null,
-    mobilePhone: null,
+    mobile: null,
     address: null,
     password: null,
     newPassword: null,
@@ -104,7 +106,7 @@ onMounted(async () => {
     formData.id = userData.id;
     formData.name = userData.username;
     formData.email = userData.email;
-    formData.mobilePhone = userData.mobile;
+    formData.mobile = userData.mobile;
     formData.type = userData.type[0].toUpperCase() + userData.type.slice(1);
 });
 
@@ -125,6 +127,13 @@ onMounted(async () => {
 
 // submit
 const rules = reactive({
+    mobile: [
+        {
+            required: true,
+            message: "Please input your mobile phone",
+            trigger: "blur",
+        },
+    ],
     password: [
         {
             required: true,
@@ -146,9 +155,26 @@ const rules = reactive({
 });
 function submitForm() {
     console.log(formNode);
-    // saveUserInformation({
-    //     id: formData.id,
-    // })
+    formNode.value.validate((valid) => {
+        if (valid) {
+            saveFormData();
+        }
+    });
+}
+async function saveFormData() {
+    let submitData = {
+        password: formData.password,
+        mobile: formData.mobile,
+    };
+    if (formData.newPassword) {
+        submitData.newPassword = formData.newPassword;
+    }
+    try {
+        await saveUserInformation(formData.id, submitData);
+        ElMessage.success("Profile updated successfully");
+    } catch (e) {
+        ElMessage.error(e.response.data.msg);
+    }
 }
 </script>
 
