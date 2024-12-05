@@ -1,4 +1,4 @@
-import { CacheToken } from "@/constants/app";
+import { CacheRememberMeToken, CacheToken } from "@/constants/app";
 import { isNullOrUndefined } from "./utils";
 
 const fix = "v1@";
@@ -65,6 +65,20 @@ export const removeCache = (key: string, isSessionStorage?: boolean): void => {
     cacheAdapter(isSessionStorage).removeItem(key);
 };
 
+export const setToken = (cache: {}, rememberMe: boolean): void => {
+    return setCache(
+        CacheToken,
+        cache,
+        !rememberMe // use session storage if rememberMe is false
+    );
+};
 export const getToken = (rememberMe: boolean): string => {
-    return getCache(CacheToken, { isSessionStorage: !rememberMe }, {token: null})["token"];
+    return getCache(CacheToken, { isSessionStorage: !rememberMe }, { token: null })["token"];
+};
+
+export const setRememberMe = (rememberMe: boolean): void => {
+    return setCache(CacheRememberMeToken, { 'a': rememberMe }, false);
+};
+export const getRememberMe = (): boolean => {
+    return getCache(CacheRememberMeToken, { isSessionStorage: false }, { 'a': false })["a"];
 };

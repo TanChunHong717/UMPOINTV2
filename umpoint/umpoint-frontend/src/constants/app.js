@@ -4,6 +4,7 @@ export default {
     requestTimeout: 30000,
 };
 export const CacheToken = "cache";
+export const CacheRememberMeToken = "rememberMe";
 export const facilityTypes = {
     space: "space",
     service: "service",

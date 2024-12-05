@@ -3,8 +3,15 @@ import {
     logout as logoutApi,
     getUserInformation,
 } from "@/helpers/api-credentials";
-import { setCache, getCache, removeCache } from "@/utils/cache";
-import { CacheToken } from "@/constants/app";
+import {
+    setCache,
+    getCache,
+    removeCache,
+    setRememberMe,
+    setToken,
+    getRememberMe,
+} from "@/utils/cache";
+import { CacheRememberMeToken, CacheToken } from "@/constants/app";
 import router from "../router";
 
 const auth = {
@@ -15,16 +22,12 @@ const auth = {
             username: null,
             permissions: {},
             token: null,
-            isRememberMe: false,
         };
     },
     getters: {
         isAuthenticated(state) {
             return state.token !== null;
         },
-        isRememberMe(state) {
-            return state.isRememberMe;
-        }
     },
     mutations: {
         setUserId(state, userId) {
@@ -39,15 +42,12 @@ const auth = {
         setToken(state, token) {
             state.token = token;
         },
-        setRememberMe(state, isRememberMe) {
-            state.isRememberMe = isRememberMe;
-        }
     },
     actions: {
-        async loginRememberMe({ commit, dispatch }) {
+        async loginRememberMe({ commit, dispatch, state }) {
             let tokenInfo = getCache(
                 CacheToken,
-                { isSessionStorage: false },
+                { isSessionStorage: !getRememberMe() },
                 null
             );
 
@@ -55,57 +55,45 @@ const auth = {
                 return;
             }
             if (new Date(tokenInfo.expiry) < Date.now()) {
-                dispatch("logout");
-                return;
+                return await dispatch("logout");
             }
 
             // store in vuex
             commit("setToken", tokenInfo.token);
 
-            // get user info
-            const userInfo = await getUserInformation();
-            if (userInfo.status !== 200 || userInfo.data.code !== 0) {
-                if (userInfo.data.code === 401) {
-                    dispatch("logout");
-                    return;
-                }
-                throw new Error("Server error");
-            }
-            commit("setUserId", userInfo.data.data.id);
-            commit("setPermissions", {
-                space: !!userInfo.data.data.spacePermission,
-                service: !!userInfo.data.data.servicePermission,
-                accommodation: !!userInfo.data.data.accommodationPermission,
-            });
+            return await dispatch("getUserPermission");
         },
-        async login({ commit }, { username, password, rememberMe }) {
+        async login({ commit, dispatch }, { username, password, rememberMe }) {
             // login logic
             const response = await loginApi(username, password);
             if (response.status !== 200 || response.data.code !== 0) {
                 throw new Error("Invalid credentials");
             }
 
-            commit("setUsername", response.data.username);
             commit("setToken", response.data.token);
+
+            // store if remember me (permanently in localstorage) to check use localstorage or sessionstorage
+            setRememberMe(rememberMe);
+
             let expiryDate = new Date();
             expiryDate.setSeconds(
                 expiryDate.getSeconds() + response.data.data.expire
             );
-            setCache(
-                CacheToken,
-                {
-                    token: response.data.data.token,
-                    expiry: expiryDate,
-                },
-                !rememberMe // use session storage if rememberMe is false
-            );
-            commit("setRememberMe", rememberMe);
+            setToken({
+                token: response.data.data.token,
+                expiry: expiryDate,
+            }, rememberMe);
 
+            return await dispatch("getUserPermission");
+        },
+        async getUserPermission({ commit }) {
             // get user info
             const userInfo = await getUserInformation();
             if (userInfo.status !== 200 || userInfo.data.code !== 0) {
                 throw new Error("Server error");
             }
+
+            commit("setUsername", userInfo.data.username);
             commit("setUserId", userInfo.data.id);
             commit("setPermissions", {
                 space: !!userInfo.data.spacePermission,
@@ -126,7 +114,10 @@ const auth = {
             commit("setUserId", null);
             commit("setUsername", null);
             commit("setPermissions", {});
+
+            // clear both cache for remember me (local) and session
             removeCache(CacheToken, false);
+            removeCache(CacheToken, true);
 
             // redirect to home page if user is on a page that requires login
             if (router.currentRoute.value.meta.requiresAuth) {
