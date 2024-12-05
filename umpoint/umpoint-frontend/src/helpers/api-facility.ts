@@ -3,7 +3,6 @@ import { facilityTypes } from "@/constants/app";
 import { JavaId } from "@/types/interface";
 
 export function getFacilities(type: keyof typeof facilityTypes, params: any) {
-    console.log(params);
     return api.get(`/${type}/${type}/page`, {
         params
     });

@@ -50,9 +50,9 @@
                 </el-dropdown>
             </div>
             <div v-else>
-                <!-- <router-link to="/login"> -->
-                    <el-button type="primary" @click.prevent="loginUser">Login</el-button>
-                <!-- </router-link> -->
+                <router-link to="/login">
+                    <el-button type="primary">Login</el-button>
+                </router-link>
             </div>
         </div>
     </div>
@@ -71,21 +71,14 @@ import { ref, watch } from "vue";
 
 const store = useStore();
 
-const isLoggedIn = ref(store.getters["auth/isLoggedIn"]);
+const isLoggedIn = ref(store.getters["auth/isAuthenticated"]);
 
 watch(
-    () => store.getters["auth/isLoggedIn"],
+    () => store.getters["auth/isAuthenticated"],
     (value) => {
         isLoggedIn.value = value;
     }
 );
-
-const loginUser = () => {
-    store.dispatch("auth/login", {
-        username: "test",
-        password: "",
-    });
-};
 
 const logoutUser = () => {
     store.dispatch("auth/logout");

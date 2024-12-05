@@ -1,3 +1,5 @@
+import store from "./store";
+
 export default [
     {
         path: "/",
@@ -70,6 +72,21 @@ export default [
         meta: {
             title: "Chat History",
             requiresAuth: true,
+        },
+    },
+    {
+        path: "/login",
+        name: "login",
+        component: () => import("@/views/user/Login.vue"),
+        meta: {
+            title: "Login",
+        },
+        beforeEnter: (to, from) => {
+            // redirect to home if already logged in
+            if (store.getters["auth/isAuthenticated"]) {
+                return { name: "home" };
+            }
+            return true;
         },
     },
 

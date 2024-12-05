@@ -1,6 +1,6 @@
 import api from "@/utils/api";
 
-function login(email, password) {
+export function login(email, password) {
     // login logic
     return api.post(`/cli/login`, {
         username: email,
@@ -10,12 +10,14 @@ function login(email, password) {
     });
 }
 
-function logout() {
+export function logout() {
     return api.post(`/cli/logout`);
 }
 
-function getUserInformation() {
+export function getUserInformation() {
     return api.get(`/client/user/info`);
 }
 
-export { login, logout, getUserInformation };
+export function saveUserInformation(data) {
+    return api.put(`/client/user`, data);
+}

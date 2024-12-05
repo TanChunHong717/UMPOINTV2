@@ -65,6 +65,6 @@ export const removeCache = (key: string, isSessionStorage?: boolean): void => {
     cacheAdapter(isSessionStorage).removeItem(key);
 };
 
-export const getToken = (): string => {
-    return getCache(CacheToken, { isSessionStorage: false }, {token: null})["token"];
+export const getToken = (rememberMe: boolean): string => {
+    return getCache(CacheToken, { isSessionStorage: !rememberMe }, {token: null})["token"];
 };

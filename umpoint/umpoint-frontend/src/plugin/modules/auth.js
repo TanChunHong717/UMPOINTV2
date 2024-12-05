@@ -2,9 +2,10 @@ import {
     login as loginApi,
     logout as logoutApi,
     getUserInformation,
-} from "@/helpers/api-credentials.js";
+} from "@/helpers/api-credentials";
 import { setCache, getCache, removeCache } from "@/utils/cache";
 import { CacheToken } from "@/constants/app";
+import router from "../router";
 
 const auth = {
     namespaced: true,
@@ -14,12 +15,16 @@ const auth = {
             username: null,
             permissions: {},
             token: null,
+            isRememberMe: false,
         };
     },
     getters: {
-        isLoggedIn(state) {
+        isAuthenticated(state) {
             return state.token !== null;
         },
+        isRememberMe(state) {
+            return state.isRememberMe;
+        }
     },
     mutations: {
         setUserId(state, userId) {
@@ -34,6 +39,9 @@ const auth = {
         setToken(state, token) {
             state.token = token;
         },
+        setRememberMe(state, isRememberMe) {
+            state.isRememberMe = isRememberMe;
+        }
     },
     actions: {
         async loginRememberMe({ commit, dispatch }) {
@@ -70,7 +78,7 @@ const auth = {
                 accommodation: !!userInfo.data.data.accommodationPermission,
             });
         },
-        async login({ commit }, { username, password }) {
+        async login({ commit }, { username, password, rememberMe }) {
             // login logic
             const response = await loginApi(username, password);
             if (response.status !== 200 || response.data.code !== 0) {
@@ -79,7 +87,6 @@ const auth = {
 
             commit("setUsername", response.data.username);
             commit("setToken", response.data.token);
-            // store in browser
             let expiryDate = new Date();
             expiryDate.setSeconds(
                 expiryDate.getSeconds() + response.data.data.expire
@@ -90,12 +97,12 @@ const auth = {
                     token: response.data.data.token,
                     expiry: expiryDate,
                 },
-                false
+                !rememberMe // use session storage if rememberMe is false
             );
+            commit("setRememberMe", rememberMe);
 
             // get user info
             const userInfo = await getUserInformation();
-            console.log(userInfo);
             if (userInfo.status !== 200 || userInfo.data.code !== 0) {
                 throw new Error("Server error");
             }
@@ -105,14 +112,26 @@ const auth = {
                 service: !!userInfo.data.servicePermission,
                 accommodation: !!userInfo.data.accommodationPermission,
             });
+
+            return true;
         },
         async logout({ commit }) {
-            logoutApi();
+            try {
+                await logoutApi();
+            } catch (error) {
+                // do nothing
+                console.error(error);
+            }
             commit("setToken", null);
             commit("setUserId", null);
             commit("setUsername", null);
             commit("setPermissions", {});
             removeCache(CacheToken, false);
+
+            // redirect to home page if user is on a page that requires login
+            if (router.currentRoute.value.meta.requiresAuth) {
+                router.push({ name: "home" });
+            }
         },
     },
 };

@@ -49,7 +49,7 @@
 
 <script setup>
 import { mdiMenuOpen } from "@mdi/js";
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onBeforeUnmount } from "vue";
 import { useRoute } from "vue-router";
 import * as chatApi from "@/helpers/api-chat";
 import { uploadFile } from "@/helpers/api-upload.js";
@@ -104,6 +104,13 @@ function updateNewMessage(message) {
         );
     }
 }
+onBeforeUnmount(() => {
+    if (wsCurrentRoom) {
+        wsCurrentRoom.unsubscribe();
+    }
+    wsClient.deactivate();
+    console.log("Chat component unmounted");
+});
 
 // full list of rooms
 const rooms = ref();

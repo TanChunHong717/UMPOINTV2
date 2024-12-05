@@ -290,6 +290,9 @@ export function parseMessageFromApi(
 }
 export function parseFilesFromApi(messageAttachmentDto: Array<any>) {
     let files = [];
+    if (!messageAttachmentDto || messageAttachmentDto.length === 0) {
+        return files;
+    }
     for (let file of messageAttachmentDto) {
         files.push({
             name: file.name,

@@ -1,8 +1,9 @@
-import constants from "@/constants/app";
 import axios from "axios";
-import { getToken } from "./cache";
 import qs from "qs";
-import { ElMessage } from "element-plus";
+
+import constants from "@/constants/app";
+import { getToken } from "./cache";
+import store from '@/plugin/store';
 
 const api = axios.create({
     baseURL: constants.apiUrl,
@@ -13,7 +14,7 @@ api.interceptors.request.use(
     function (config) {
         config.headers["X-Requested-With"] = "XMLHttpRequest";
         config.headers["Request-Start"] = new Date().getTime();
-        const token = getToken();
+        const token = getToken(store.getters['auth/rememberMe']);
         if (token) {
             config.headers["token"] = token;
         }
@@ -38,11 +39,10 @@ api.interceptors.response.use(
     function (response) {
         if (response.data.code && response.data.code !== 0) {
             console.log(response);
-            throw new Error(response.data.message);
+            throw new Error(response.data);
         }
         return response;
     }, function (error) {
-        ElMessage.error(error.message);
         return Promise.reject(error);
     }
 )
