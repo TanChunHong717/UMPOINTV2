@@ -70,6 +70,7 @@ const auth = {
                 throw new Error("Invalid credentials");
             }
 
+            // store in vuex
             commit("setToken", response.data.token);
 
             // store if remember me (permanently in localstorage) to check use localstorage or sessionstorage
@@ -88,17 +89,18 @@ const auth = {
         },
         async getUserPermission({ commit }) {
             // get user info
-            const userInfo = await getUserInformation();
-            if (userInfo.status !== 200 || userInfo.data.code !== 0) {
+            const response = await getUserInformation();
+            if (response.status !== 200 || response.data.code !== 0) {
                 throw new Error("Server error");
             }
+            let userInfo = response.data.data;
 
-            commit("setUsername", userInfo.data.username);
-            commit("setUserId", userInfo.data.id);
+            commit("setUsername", userInfo.username);
+            commit("setUserId", userInfo.id);
             commit("setPermissions", {
-                space: !!userInfo.data.spacePermission,
-                service: !!userInfo.data.servicePermission,
-                accommodation: !!userInfo.data.accommodationPermission,
+                space: !!userInfo.spacePermission,
+                service: !!userInfo.servicePermission,
+                accommodation: !!userInfo.accommodationPermission,
             });
 
             return true;
