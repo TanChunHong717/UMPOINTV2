@@ -12,3 +12,8 @@ export const chatRoomTypes = {
     RESOLVED: 3,
     REPORTED: 4,
 };
+export const chatFacilityTypes = {
+    0: "space",
+    1: "service",
+    2: "accommodation",
+};

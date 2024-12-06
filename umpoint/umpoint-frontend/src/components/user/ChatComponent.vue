@@ -14,7 +14,7 @@
         :rooms="JSON.stringify(rooms)"
         :rooms-loaded="true"
         room-info-enabled="true"
-        @room-info="viewFacilityInfo"
+        @room-info="viewFacilityInfo(currentRoomId)"
         :room-actions="JSON.stringify(roomActions)"
         :menu-actions="JSON.stringify(roomActions)"
         @room-action-handler="roomActionHandler"
@@ -50,7 +50,7 @@
 <script setup>
 import { mdiMenuOpen } from "@mdi/js";
 import { ref, computed, watch, onBeforeUnmount } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import * as chatApi from "@/helpers/api-chat";
 import { uploadFile } from "@/helpers/api-upload.js";
 
@@ -58,6 +58,7 @@ import { uploadFile } from "@/helpers/api-upload.js";
 import { register } from "vue-advanced-chat";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { chatRoomTypes, chatUserTypes } from "@/constants/chat";
+import { chatFacilityTypes } from "@/constants/chat";
 register();
 
 const props = defineProps(["userId", "userToken"]);
@@ -109,20 +110,24 @@ onBeforeUnmount(() => {
         wsCurrentRoom.unsubscribe();
     }
     wsClient.deactivate();
-    console.log("Chat component unmounted");
 });
 
 // full list of rooms
 const rooms = ref();
 const loadFirstRoom = ref(false); // don't load first room by default
 
+// helper function
+const getRoom = (roomId) => {
+    if (!rooms.value) {
+        return null;
+    }
+    return rooms.value.find((r) => r.roomId === roomId);
+};
+
 // current chat setup
 const currentRoomId = ref();
 const canTalkInChat = computed(() => {
-    if (!rooms.value) {
-        return false;
-    }
-    let room = rooms.value.find((r) => r.roomId === currentRoomId.value);
+    let room = getRoom(currentRoomId.value);
     if (!room) {
         return false;
     }
@@ -132,17 +137,15 @@ const canTalkInChat = computed(() => {
     );
 });
 
-// current route
+// first time check for query params to load room based on facility ID
 const currentRoute = useRoute();
 async function getFacilityChatRoom(facilityType, facilityId) {
     let roomId = await chatApi.getChatRoomIdByFacility(
         facilityType,
         facilityId
     );
-    console.log(roomId);
     return roomId;
 }
-// first time check for query params to load room
 watch(
     () => currentRoute.query,
     async (query) => {
@@ -158,9 +161,15 @@ watch(
     { immediate: true }
 );
 
+// load all rooms
 async function fetchRooms() {
-    let apiRooms = await chatApi.getChatRooms();
-    rooms.value = apiRooms;
+    try {
+        let apiRooms = await chatApi.getChatRooms();
+        // reverse chronological order
+        rooms.value = apiRooms.toReversed();
+    } catch (error) {
+        ElMessage.error("Error fetching chat rooms");
+    }
 }
 fetchRooms();
 
@@ -176,9 +185,18 @@ async function fetchMessages(event) {
 
     if (options && options.reset) {
         // room is opened for first time
+        // change websocket subscribe channel
         changeWsClientRoom(wsClient, room.roomId);
-        let messagesRes = await chatApi.getMessages(room.roomId, props.userId);
-        messages.value = messagesRes;
+        // fetch messages
+        try {
+            let messagesRes = await chatApi.getMessages(
+                room.roomId,
+                props.userId
+            );
+            messages.value = messagesRes;
+        } catch (error) {
+            ElMessage.error("Error fetching messages");
+        }
     }
     messagesFullyLoaded.value = true;
 }
@@ -290,8 +308,18 @@ const roomActions = ref([
     { name: "reportChat", title: "Report Chat" },
 ]);
 /* Action events */
+const router = useRouter();
 const viewFacilityInfo = (roomId) => {
-    console.log("Room Info", roomId);
+    console.log(roomId);
+    let room = getRoom(roomId);
+    console.log(room)
+    router.push({
+        name: "facility-information",
+        params: {
+            type: chatFacilityTypes[room.facilityType],
+            id: room.facilityId,
+        },
+    });
 };
 function roomActionHandler(event) {
     let {
