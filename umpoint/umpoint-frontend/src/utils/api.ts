@@ -2,8 +2,7 @@ import axios from "axios";
 import qs from "qs";
 
 import constants from "@/constants/app";
-import { getToken } from "./cache";
-import store from '@/plugin/store';
+import { getToken, getRememberMe } from "./cache";
 
 const api = axios.create({
     baseURL: constants.apiUrl,
@@ -14,7 +13,7 @@ api.interceptors.request.use(
     function (config) {
         config.headers["X-Requested-With"] = "XMLHttpRequest";
         config.headers["Request-Start"] = new Date().getTime();
-        const token = getToken(store.getters['auth/rememberMe']);
+        const token = getToken(getRememberMe())
         if (token) {
             config.headers["token"] = token;
         }
