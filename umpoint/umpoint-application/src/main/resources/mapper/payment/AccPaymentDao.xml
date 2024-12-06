@@ -10,6 +10,7 @@
         <result property="methodId" column="method_id"/>
         <result property="amount" column="amount"/>
         <result property="date" column="date"/>
+        <result property="createdAt" column="created_at"/>
     </resultMap>
 
     <resultMap type="my.edu.um.umpoint.modules.payment.entity.AccPaymentEntity" id="accPaymentSelectMap">
@@ -19,6 +20,7 @@
         <result property="methodId" column="method_id"/>
         <result property="amount" column="amount"/>
         <result property="date" column="date"/>
+        <result property="createdAt" column="created_at"/>
         <result property="method" column="method"/>
     </resultMap>
 
@@ -30,6 +32,7 @@
             p.method_id,
             p.amount,
             p.date,
+            p.created_at,
             pm.method
         FROM acc_payment p
         LEFT JOIN payment_method pm ON p.method_id = pm.id
@@ -50,6 +53,7 @@
             p.method_id,
             p.amount,
             p.date,
+            p.created_at,
             pm.method
         FROM acc_payment p
         LEFT JOIN payment_method pm ON p.method_id = pm.id

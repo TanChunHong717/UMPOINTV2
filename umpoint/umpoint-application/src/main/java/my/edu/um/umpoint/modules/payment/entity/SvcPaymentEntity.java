@@ -33,10 +33,6 @@ public class SvcPaymentEntity {
 	 */
 	private Long bookingId;
 	/**
-	* User ID
-	*/
-	private Long userId;
-	/**
 	 * Payment Method ID
 	 */
 	private Long methodId;
@@ -49,6 +45,10 @@ public class SvcPaymentEntity {
 	*/
 	@TableField(fill = FieldFill.INSERT)
 	private Date date;
+	/**
+	 * Creation Date
+	 */
+	private Date createdAt;
 	/**
 	 * Payment Method Name
 	 */

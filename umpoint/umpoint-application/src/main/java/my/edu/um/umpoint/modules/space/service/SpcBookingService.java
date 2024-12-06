@@ -18,6 +18,7 @@ public interface SpcBookingService extends CrudService<SpcBookingEntity, SpcBook
     void reject(Long id);
     void reject(List<Long> idList);
     void cancel(Long id);
+    void pay(Long id);
     Long getUserId(Long id);
     void validateBookingHasOverlap(SpcClientBookingDTO request);
 }

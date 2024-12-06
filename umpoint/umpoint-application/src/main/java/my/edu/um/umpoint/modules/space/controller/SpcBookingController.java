@@ -208,6 +208,20 @@ public class SpcBookingController{
         return new Result();
     }
 
+    @PutMapping("pay/{id}")
+    @Operation(summary = "Pay")
+    @LogOperation("Pay")
+    @RequiresPermissions("space:booking:save")
+    public Result pay(@PathVariable("id") Long id){
+        UserDetail user = SecurityUser.getUser();
+        if (!Objects.equals(user.getId(), spcBookingService.getUserId(id)))
+            throw new UnauthorizedException();
+
+        spcBookingService.pay(id);
+
+        return new Result();
+    }
+
     @GetMapping("export")
     @Operation(summary = "Export")
     @LogOperation("Export")

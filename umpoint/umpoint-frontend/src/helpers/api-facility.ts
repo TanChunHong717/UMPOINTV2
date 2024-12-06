@@ -143,6 +143,10 @@ export function cancelBooking(facilityType: keyof typeof facilityTypes, bookingI
     return api.put(`/${facilityType}/booking/cancel/${bookingID}`);
 }
 
+export function payBooking(facilityType: keyof typeof facilityTypes, bookingID: JavaId) {
+    return api.put(`/${facilityType}/booking/pay/${bookingID}`);
+}
+
 // helpers
 
 export function transformGallery(facilityType, data) {

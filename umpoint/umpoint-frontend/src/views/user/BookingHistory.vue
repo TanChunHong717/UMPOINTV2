@@ -27,12 +27,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onActivated } from "vue";
+import { ref, onMounted, onActivated, h } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 import BookingList from "@/components/booking-table/BookingList.vue";
 import { bookingStatus, paymentStatus } from "@/constants/app.js";
-import { getCurrentUserBookings, cancelBooking } from "@/helpers/api-facility";
+import {
+    getCurrentUserBookings,
+    cancelBooking,
+    payBooking,
+} from "@/helpers/api-facility";
 
 const router = useRouter();
 const route = useRoute();
@@ -83,17 +87,22 @@ const getBookings = async () => {
         return;
     }
     bookings.value = response.data.data.list.map((booking) => {
+        let bookingDateStr = `${booking.startDay}`;
+        if (booking.startDay != booking.endDay) {
+            bookingDateStr += ` to ${booking.endDay}`;
+        }
+        bookingDateStr += `, ${formatResponseTimeWithoutSeconds(
+            booking.startTime
+        )} to ${formatResponseTimeWithoutSeconds(booking.endTime)}`;
+
         return {
             id: booking.id,
             invoiceno: booking.id,
-            name: booking.space + " <br> " + booking.event,
+            eventName: booking.event,
+            facility: booking[activeType.value],
             status: booking.status,
             bookingDate: booking.createDate.split(" ")[0],
-            eventDate: `${booking.startDay} to ${
-                booking.endDay
-            }, ${formatResponseTimeWithoutSeconds(
-                booking.startTime
-            )} to ${formatResponseTimeWithoutSeconds(booking.endTime)}`,
+            eventDate: bookingDateStr,
             // payment
             paymentAmount: booking.paymentAmount,
             paymentStatus: booking.spcPaymentDTOList[0]?.status ?? -1,
@@ -133,9 +142,6 @@ const startChatAction = (booking) => {
         },
     });
 };
-const payForBookingAction = (bookingId) => {
-    console.log(bookingId);
-};
 const cancelBookingAction = async (bookingId) => {
     let response = await cancelBooking(activeType.value, bookingId);
     if (response.status != 200 || response.data.code != 0) {
@@ -143,6 +149,19 @@ const cancelBookingAction = async (bookingId) => {
         return;
     }
     ElMessage({ type: "success", message: "Booking cancelled successfully" });
+    // refresh bookings
+    getBookings();
+};
+const payForBookingAction = async (bookingId) => {
+    let response = await payBooking(activeType.value, bookingId);
+    if (response.status != 200 || response.data.code != 0) {
+        ElMessage.error("Error paying for booking");
+        return;
+    }
+    ElMessage({
+        type: "success",
+        message: "Booking paid for successfully",
+    });
     // refresh bookings
     getBookings();
 };

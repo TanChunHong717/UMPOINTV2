@@ -10,6 +10,7 @@ import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
 import my.edu.um.umpoint.common.utils.DateUtils;
 import my.edu.um.umpoint.modules.payment.dto.SpcPaymentDTO;
 import my.edu.um.umpoint.modules.payment.dto.SpcPaymentItemDTO;
+import my.edu.um.umpoint.modules.payment.entity.SpcPaymentEntity;
 import my.edu.um.umpoint.modules.payment.service.SpcPaymentItemService;
 import my.edu.um.umpoint.modules.payment.service.SpcPaymentService;
 import my.edu.um.umpoint.modules.security.user.SecurityUser;
@@ -34,6 +35,7 @@ import java.math.BigDecimal;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -141,6 +143,7 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
             payment.setBookingId(spcBookingDTO.getId());
             payment.setStatus(BookingConstant.PaymentStatus.PENDING.getValue());
             payment.setAmount(total);
+            payment.setCreatedAt(new Date());
             spcPaymentService.save(payment);
 
             // payment item breakdown
@@ -206,6 +209,19 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
         baseDao.update(entity, new QueryWrapper<SpcBookingEntity>().eq("id", id));
         spcEventService.deleteByBookingId(id);
         spcBookingTechnicianService.deleteByBookingId(id);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void pay(Long id){
+        // update main booking
+        SpcBookingEntity entity = new SpcBookingEntity();
+        entity.setStatus(BookingConstant.BookingStatus.COMPLETED.getValue());
+        baseDao.update(entity, new QueryWrapper<SpcBookingEntity>().eq("id", id));
+
+        SpcPaymentEntity payment = spcPaymentService.getLatestPayment(id);
+        // update payment done
+        spcPaymentService.pay(payment.getId());
     }
 
     @Override
