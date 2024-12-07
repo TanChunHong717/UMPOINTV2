@@ -26,8 +26,7 @@ import java.util.Map;
  * @since 1.0.0 2024-11-25
  */
 @Service
-public class ChatUserReportServiceImpl extends CrudServiceImpl<ChatUserReportDao, ChatUserReportEntity,
-    ChatUserReportDTO> implements ChatUserReportService{
+public class ChatUserReportServiceImpl extends CrudServiceImpl<ChatUserReportDao, ChatUserReportEntity, ChatUserReportDTO> implements ChatUserReportService{
 
     @Autowired
     ChatRoomService chatRoomService;

@@ -15,34 +15,33 @@ import java.util.Date;
 @Data
 @TableName("chat_user_report")
 public class ChatUserReportEntity {
-
-    /**
-     * ID
-     */
-		@TableId
-		private Long id;
-    /**
-     * Reported chat room ID
-     */
-		private Long chatRoomId;
-    /**
-     * Reported message ID
-     */
-		private Long messageId;
-    /**
-     * Reason
-     */
-		private String reason;
-    /**
-     * User ID that send this report
-     */
-		private Long reportedBy;
-    /**
-     * User Type for Id that send this report
-     */
-		private Integer reportedByType;
-    /**
-     * Creation Date
-     */
-		private Date createdAt;
+	/**
+	* ID
+	*/
+	@TableId
+	private Long id;
+	/**
+	* Reported chat room ID
+	*/
+	private Long chatRoomId;
+	/**
+	* Reported message ID
+	*/
+	private Long messageId;
+	/**
+	* Reason
+	*/
+	private String reason;
+	/**
+	* User ID that send this report
+	*/
+	private Long reportedBy;
+	/**
+	* User Type for Id that send this report
+	*/
+	private Integer reportedByType;
+	/**
+	* Creation Date
+	*/
+	private Date createdAt;
 }

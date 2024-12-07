@@ -21,7 +21,7 @@ import java.util.Optional;
 @Schema(title = "Chat message")
 public class ChatMessageDTO implements Serializable {
 	@Serial
-    private static final long serialVersionUID = 667L;
+    private static final long serialVersionUID = -7024323846349708595L;
 
 	@Schema(title = "Message ID")
 	private Long id;
@@ -50,6 +50,6 @@ public class ChatMessageDTO implements Serializable {
 	@Schema(title = "Attachment dto list")
 	private List<ChatMessageAttachmentDTO> chatMessageAttachmentDTOList;
 
-	// for websocket broadcast relay identification
+	@Schema(title = "For websocket broadcast relay identification")
 	private Optional<String> returnMessage;
 }

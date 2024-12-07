@@ -14,7 +14,7 @@ import java.util.List;
  * @author NKSL2001 s2116593@siswa.um.edu.my
  * @since 1.0.0 2024-10-28
  */
-public interface ChatRoomService extends CrudService<ChatRoomEntity, ChatRoomDTO>{
+public interface ChatRoomService extends CrudService<ChatRoomEntity, ChatRoomDTO> {
     Long getRoomByFacilityId(ChatConstant.FacilityType facilityType, Long facilityId);
     void assignAdminId(Long roomId);
     boolean stopRoomAutoReply(Long roomId);

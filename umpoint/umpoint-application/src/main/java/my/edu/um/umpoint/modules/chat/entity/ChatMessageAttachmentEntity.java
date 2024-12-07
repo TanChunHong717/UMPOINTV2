@@ -15,26 +15,25 @@ import java.util.Date;
 @Data
 @TableName("chat_message_attachment")
 public class ChatMessageAttachmentEntity {
-
-    /**
-     * Attachment ID
-     */
-		@TableId
-		private Long id;
-    /**
-     * Message ID
-     */
-		private Long messageId;
 	/**
-	 * Attachment name
-	 */
+	* Attachment ID
+	*/
+	@TableId
+	private Long id;
+	/**
+	* Message ID
+	*/
+	private Long messageId;
+	/**
+	* Attachment name
+	*/
 	private String name;
-    /**
-     * Attachment type
-     */
-		private String type;
-    /**
-     * Image url
-     */
-		private String url;
+	/**
+	* Attachment type
+	*/
+	private String type;
+	/**
+	* Image url
+	*/
+	private String url;
 }

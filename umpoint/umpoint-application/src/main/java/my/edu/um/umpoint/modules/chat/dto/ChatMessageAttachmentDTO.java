@@ -18,7 +18,7 @@ import java.util.Date;
 @Schema(title = "Chat message attachment")
 public class ChatMessageAttachmentDTO implements Serializable {
 	@Serial
-    private static final long serialVersionUID = 666L;
+    private static final long serialVersionUID = -185363434095746059L;
 
 	@Schema(title = "Attachment ID")
 	private Long id;
@@ -34,6 +34,4 @@ public class ChatMessageAttachmentDTO implements Serializable {
 
 	@Schema(title = "Image url")
 	private String url;
-
-
 }

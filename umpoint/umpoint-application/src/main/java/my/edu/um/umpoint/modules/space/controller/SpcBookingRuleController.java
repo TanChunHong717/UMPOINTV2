@@ -12,7 +12,6 @@ import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.utils.Result;
 import my.edu.um.umpoint.common.validator.ValidatorUtils;
 import my.edu.um.umpoint.common.validator.group.BatchUpdateGroup;
-import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import my.edu.um.umpoint.modules.space.dto.SpcBookingRuleDTO;
 import my.edu.um.umpoint.modules.space.dto.SpcSpaceDTO;
 import my.edu.um.umpoint.modules.space.service.SpcBookingRuleService;

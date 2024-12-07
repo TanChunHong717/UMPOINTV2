@@ -18,7 +18,7 @@ import java.util.Date;
 @Schema(title = "Report user in chat")
 public class ChatUserReportDTO implements Serializable {
 	@Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1362746937523177165L;
 
 	@Schema(title = "ID")
 	private Long id;
@@ -40,6 +40,4 @@ public class ChatUserReportDTO implements Serializable {
 
 	@Schema(title = "Creation Date")
 	private Date createdAt;
-
-
 }

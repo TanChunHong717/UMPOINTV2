@@ -5,13 +5,11 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
 import my.edu.um.umpoint.common.annotation.LogOperation;
 import my.edu.um.umpoint.common.constant.ChatConstant;
 import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.exception.BadHttpRequestException;
 import my.edu.um.umpoint.common.page.PageData;
-import my.edu.um.umpoint.common.utils.ExcelUtils;
 import my.edu.um.umpoint.common.utils.Result;
 import my.edu.um.umpoint.common.validator.ValidatorUtils;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
@@ -19,8 +17,6 @@ import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import my.edu.um.umpoint.modules.accommodation.dto.AccAccommodationDTO;
 import my.edu.um.umpoint.modules.accommodation.service.AccAccommodationService;
 import my.edu.um.umpoint.modules.chat.dto.ChatRoomDTO;
-import my.edu.um.umpoint.modules.chat.excel.ChatRoomExcel;
-import my.edu.um.umpoint.modules.chat.service.ChatMessageService;
 import my.edu.um.umpoint.modules.chat.service.ChatRoomService;
 import my.edu.um.umpoint.modules.security.user.SecurityUser;
 import my.edu.um.umpoint.modules.security.user.UserDetail;
@@ -34,9 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
-
 
 /**
  * Chat room
@@ -47,15 +41,16 @@ import java.util.Map;
 @RestController
 @RequestMapping("chat/room")
 @Tag(name = "Chat room")
-public class ChatRoomController{
+public class ChatRoomController {
     @Autowired
     private ChatRoomService chatRoomService;
-    @Autowired
-    private ChatMessageService chatMessageService;
+
     @Autowired
     private SpcSpaceService spcSpaceService;
+
     @Autowired
     private SvcServiceService svcServiceService;
+
     @Autowired
     private AccAccommodationService accAccommodationService;
 
@@ -110,7 +105,6 @@ public class ChatRoomController{
             )
         }
     )
-
     public Result getRoom(@RequestBody Map<String, Object> request) throws InvalidResourceUsageException{
         // param validation
         if (
@@ -207,18 +201,6 @@ public class ChatRoomController{
         chatRoomService.update(dto);
 
         return new Result();
-    }
-
-    @GetMapping("export")
-    @Operation(summary = "Export")
-    @LogOperation("Export")
-    @RequiresPermissions("chat:room:export")
-    public void export(
-        @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletResponse response
-    ) throws Exception{
-        List<ChatRoomDTO> list = chatRoomService.list(params);
-
-        ExcelUtils.exportExcelToTarget(response, null, "Chat room", list, ChatRoomExcel.class);
     }
 
     public static boolean validateUserInChat(ChatRoomDTO chatRoomDTO, UserDetail user){

@@ -13,7 +13,7 @@ import java.util.List;
  * @author NKSL2001 s2116593@siswa.um.edu.my
  * @since 1.0.0 2024-10-28
  */
-public interface ChatMessageService extends CrudService<ChatMessageEntity, ChatMessageDTO>{
+public interface ChatMessageService extends CrudService<ChatMessageEntity, ChatMessageDTO> {
     List<ChatMessageEntity> getRoomMessages(Long roomId);
     String generateAiChatResponse(ChatRoomDTO chatRoomDTO, ChatMessageDTO chatMessageDTO);
     List<String> generateAiChatResponseOptions(ChatRoomDTO chatRoomDTO, ChatMessageDTO chatMessageDTO, ChatMessageDTO botMessageDTO);

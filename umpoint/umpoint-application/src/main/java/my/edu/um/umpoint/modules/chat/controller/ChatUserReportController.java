@@ -19,7 +19,6 @@ import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import my.edu.um.umpoint.modules.chat.dto.ChatUserReportDTO;
 import my.edu.um.umpoint.modules.chat.excel.ChatUserReportExcel;
-import my.edu.um.umpoint.modules.chat.service.ChatMessageService;
 import my.edu.um.umpoint.modules.chat.service.ChatUserReportService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-
 
 /**
  * Report user in chat
@@ -39,8 +37,10 @@ import java.util.Map;
 @RequestMapping("chat/report")
 @Tag(name = "Report user in chat")
 public class ChatUserReportController{
+
     @Autowired
     private ChatUserReportService chatUserReportService;
+
     @Autowired
     private ChatMessageController chatMessageController;
 
@@ -119,17 +119,4 @@ public class ChatUserReportController{
 
         return new Result();
     }
-
-    @GetMapping("export")
-    @Operation(summary = "Export")
-    @LogOperation("Export")
-    @RequiresPermissions("chat:report:export")
-    public void export(
-        @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletResponse response
-    ) throws Exception{
-        List<ChatUserReportDTO> list = chatUserReportService.list(params);
-
-        ExcelUtils.exportExcelToTarget(response, null, "Report user in chat", list, ChatUserReportExcel.class);
-    }
-
 }

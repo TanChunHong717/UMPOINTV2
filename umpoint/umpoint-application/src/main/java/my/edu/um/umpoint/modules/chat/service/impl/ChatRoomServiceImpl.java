@@ -42,8 +42,6 @@ import java.util.Map;
 public class ChatRoomServiceImpl extends CrudServiceImpl<ChatRoomDao, ChatRoomEntity, ChatRoomDTO> implements ChatRoomService{
 
     @Autowired
-    private ChatMessageDao chatMessageDao;
-    @Autowired
     private SpcSpaceService spcSpaceService;
     @Autowired
     private SvcServiceService svcServiceService;
