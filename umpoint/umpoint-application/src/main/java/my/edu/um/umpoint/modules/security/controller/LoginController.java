@@ -134,16 +134,11 @@ public class LoginController {
     @PostMapping("cli/login")
     @Operation(summary = "Login")
     public Result clientLogin(@RequestBody LoginDTO login) {
-//        ValidatorUtils.validateEntity(login);
-
-//        boolean flag = captchaService.validate(login.getUuid(), login.getCaptcha());
-//        if (!flag) {
-//            return new Result().error(ErrorCode.CAPTCHA_ERROR);
-//        }
-
         CliUserDTO user = cliUserService.getByUsername(login.getUsername());
-        if (user == null)
-            throw new RenException(ErrorCode.ACCOUNT_PASSWORD_ERROR, "User not found");
+        if (user == null || !PasswordUtils.matches(login.getPassword(), user.getPassword()))
+            throw new RenException(ErrorCode.ACCOUNT_PASSWORD_ERROR);
+        if (user.getStatus() == UserStatusEnum.DISABLE.value())
+            throw new RenException(ErrorCode.ACCOUNT_DISABLE);
 
         return cliTokenService.createToken(user.getId());
     }

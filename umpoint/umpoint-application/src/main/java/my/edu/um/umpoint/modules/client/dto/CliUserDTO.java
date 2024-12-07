@@ -30,6 +30,9 @@ public class CliUserDTO implements Serializable {
 	@NotNull(groups = UpdateGroup.class)
 	private Long id;
 
+	@Schema(title = "Status, 0:Disable, 1:Enabled")
+	private Integer status;
+
 	@Schema(title = "Username")
 	@NotEmpty(groups = DefaultGroup.class)
 	private String username;

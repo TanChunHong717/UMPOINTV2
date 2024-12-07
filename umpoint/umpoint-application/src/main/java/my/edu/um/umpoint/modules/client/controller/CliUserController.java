@@ -40,7 +40,6 @@ import java.util.Map;
 @RequestMapping("client/user")
 @Tag(name="Client management")
 public class CliUserController {
-    private static final Logger log = LoggerFactory.getLogger(CliUserController.class);
     @Autowired
     private CliUserService cliUserService;
 

@@ -25,8 +25,13 @@
     <el-table v-loading="state.dataListLoading" :data="state.dataList" border @sort-change="state.dataListSortChangeHandle" style="width: 100%">
       <el-table-column prop="id" label="ID" header-align="center" align="center" sortable="custom"></el-table-column>
       <el-table-column prop="username" label="Username" header-align="center" align="center" sortable="custom"></el-table-column>
+      <el-table-column label="Status" header-align="center" align="center">
+        <template v-slot="scope">
+          <el-tag v-if="scope.row.status == 0" type="danger">Disabled</el-tag>
+          <el-tag v-if="scope.row.status == 1" type="primary">Enabled</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column prop="mobile" label="Mobile" header-align="center" align="center" sortable="custom"></el-table-column>
-      <el-table-column prop="password" label="Password" header-align="center" align="center" sortable="custom"></el-table-column>
       <el-table-column prop="email" label="Email" header-align="center" align="center" sortable="custom"></el-table-column>
       <el-table-column prop="type" label="Type" header-align="center" align="center" sortable="custom"></el-table-column>
       <el-table-column label="Permission" header-align="center" align="center" width="275">

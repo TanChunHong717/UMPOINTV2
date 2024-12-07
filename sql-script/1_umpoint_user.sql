@@ -1,5 +1,6 @@
 CREATE TABLE cli_user (
     id bigint NOT NULL COMMENT 'ID',
+    status tinyint NOT NULL COMMENT 'Status, 0:Disable, 1:Enabled',
     username varchar(50) NOT NULL COMMENT 'Username',
     real_name varchar(255) NOT NULL COMMENT 'Real name',
     password varchar(64) NOT NULL COMMENT 'Password',
