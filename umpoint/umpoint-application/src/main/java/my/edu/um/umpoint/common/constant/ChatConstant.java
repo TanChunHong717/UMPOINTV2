@@ -20,7 +20,7 @@ public interface ChatConstant{
 
     @Getter
     enum UserType{
-        SYSTEN(0),
+        SYSTEM(0),
         BOT(1),
         USER(2),
         ADMIN(3),
@@ -67,6 +67,18 @@ public interface ChatConstant{
         private final int value;
 
         AutoReply (int value) {
+            this.value = value;
+        }
+    }
+
+    @Getter
+    enum ReportStatus  {
+        UNRESOLVED(0),
+        RESOLVED(1);
+
+        private final int value;
+
+        ReportStatus (int value) {
             this.value = value;
         }
     }

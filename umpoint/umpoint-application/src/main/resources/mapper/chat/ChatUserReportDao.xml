@@ -4,14 +4,62 @@
 <mapper namespace="my.edu.um.umpoint.modules.chat.dao.ChatUserReportDao">
 
     <resultMap type="my.edu.um.umpoint.modules.chat.entity.ChatUserReportEntity" id="chatUserReportMap">
-        <result property="id" column="id"/>
+        <id property="id" column="id"/>
+        <result property="status" column="status"/>
         <result property="chatRoomId" column="chat_room_id"/>
         <result property="messageId" column="message_id"/>
         <result property="reason" column="reason"/>
+        <result property="reportedUser" column="reported_user"/>
+        <result property="reportedUserType" column="reported_user_type"/>
         <result property="reportedBy" column="reported_by"/>
         <result property="reportedByType" column="reported_by_type"/>
         <result property="createdAt" column="created_at"/>
     </resultMap>
 
+    <resultMap type="my.edu.um.umpoint.modules.chat.entity.ChatUserReportEntity" id="chatUserReportSelectMap">
+        <id property="id" column="id"/>
+        <result property="status" column="status"/>
+        <result property="chatRoomId" column="chat_room_id"/>
+        <result property="messageId" column="message_id"/>
+        <result property="reason" column="reason"/>
+        <result property="reportedUser" column="reported_user"/>
+        <result property="reportedUserType" column="reported_user_type"/>
+        <result property="reportedBy" column="reported_by"/>
+        <result property="reportedByType" column="reported_by_type"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="reportedUsername" column="reported_username"/>
+        <result property="reportedByUsername" column="reported_by_username"/>
+    </resultMap>
 
+    <select id="getList" resultMap="chatUserReportSelectMap">
+        SELECT
+            cur.id,
+            cur.status,
+            cur.chat_room_id,
+            cur.message_id,
+            cur.reason,
+            cur.reported_user,
+            cur.reported_user_type,
+            cur.reported_by,
+            cur.reported_by_type,
+            cur.created_at,
+            CASE
+                WHEN cur.reported_user_type = 2 THEN c1.username
+                WHEN cur.reported_user_type = 3 THEN s1.username
+            END AS reported_username,
+            CASE
+                WHEN cur.reported_by_type = 2 THEN c2.username
+                WHEN cur.reported_by_type = 3 THEN s2.username
+            END AS reported_by_username
+        FROM chat_user_report cur
+        LEFT JOIN cli_user c1 ON cur.reported_user = c1.id
+        LEFT JOIN cli_user c2 ON cur.reported_by = c2.id
+        LEFT JOIN sys_user s1 ON cur.reported_user = s1.id
+        LEFT JOIN sys_user s2 ON cur.reported_by = s2.id
+        <where>
+            <if test="status != null">
+                AND cur.status = #{status}
+            </if>
+        </where>
+    </select>
 </mapper>

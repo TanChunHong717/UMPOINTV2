@@ -1,5 +1,6 @@
 package my.edu.um.umpoint.modules.chat.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -21,6 +22,10 @@ public class ChatUserReportEntity {
 	@TableId
 	private Long id;
 	/**
+	 * Status, 0:Unresolved, 1:Resolved
+	 */
+	private Integer status;
+	/**
 	* Reported chat room ID
 	*/
 	private Long chatRoomId;
@@ -33,6 +38,14 @@ public class ChatUserReportEntity {
 	*/
 	private String reason;
 	/**
+	 * User ID that being report
+	 */
+	private Long reportedUser;
+	/**
+	 * User Type for ID that being report
+	 */
+	private Integer reportedUserType;
+	/**
 	* User ID that send this report
 	*/
 	private Long reportedBy;
@@ -44,4 +57,14 @@ public class ChatUserReportEntity {
 	* Creation Date
 	*/
 	private Date createdAt;
+	/**
+	 * Name of user being report
+	 */
+	@TableField(exist = false)
+	private String reportedUsername;
+	/**
+	 * Name of user that send this report
+	 */
+	@TableField(exist = false)
+	private String reportedByUsername;
 }

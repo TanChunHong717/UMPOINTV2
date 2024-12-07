@@ -263,7 +263,7 @@ public class ChatMessageController{
     private ChatMessageDTO buildSystemMessage(Long chatRoomId, String message){
         ChatMessageDTO chatMessageDTO = new ChatMessageDTO();
         chatMessageDTO.setChatRoomId(chatRoomId);
-        chatMessageDTO.setSenderType(ChatConstant.UserType.SYSTEN.getValue());
+        chatMessageDTO.setSenderType(ChatConstant.UserType.SYSTEM.getValue());
         chatMessageDTO.setMessage(message);
         chatMessageDTO.setCreatedAt(new Date());
         return chatMessageDTO;

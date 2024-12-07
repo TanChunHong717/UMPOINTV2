@@ -40,9 +40,12 @@ CREATE TABLE chat_message_attachment (
 
 CREATE TABLE chat_user_report (
     id bigint(20) NOT NULL COMMENT 'ID',
+    status tinyint NOT NULL COMMENT 'Status, 0:Unresolved, 1:Resolved',
     chat_room_id bigint(20) NOT NULL COMMENT 'Reported chat room ID',
     message_id bigint(20) NULL COMMENT 'Reported message ID',
     reason text NOT NULL COMMENT 'Reason',
+    reported_user bigint(20) NOT NULL COMMENT 'User ID that being report',
+    reported_user_type tinyint(20) NOT NULL COMMENT 'User Type for ID that being report',
     reported_by bigint(20) NOT NULL COMMENT 'User ID that send this report',
     reported_by_type tinyint NOT NULL COMMENT 'User Type for Id that send this report',
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation Date',

@@ -7,7 +7,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
-
 /**
  * Report user in chat
  *
@@ -23,6 +22,9 @@ public class ChatUserReportDTO implements Serializable {
 	@Schema(title = "ID")
 	private Long id;
 
+	@Schema(title = "Status, 0:Unresolved, 1:Resolved")
+	private Integer status;
+
 	@Schema(title = "Reported chat room ID")
 	private Long chatRoomId;
 
@@ -32,6 +34,12 @@ public class ChatUserReportDTO implements Serializable {
 	@Schema(title = "Reason")
 	private String reason;
 
+	@Schema(title = "User ID that being report")
+	private Long reportedUser;
+
+	@Schema(title = "User Type for ID that being report")
+	private Integer reportedUserType;
+
 	@Schema(title = "User ID that send this report")
 	private Long reportedBy;
 
@@ -40,4 +48,10 @@ public class ChatUserReportDTO implements Serializable {
 
 	@Schema(title = "Creation Date")
 	private Date createdAt;
+
+	@Schema(title = "Name of user being report")
+	private String reportedUsername;
+
+	@Schema(title = "Name of user that send this report")
+	private String reportedByUsername;
 }

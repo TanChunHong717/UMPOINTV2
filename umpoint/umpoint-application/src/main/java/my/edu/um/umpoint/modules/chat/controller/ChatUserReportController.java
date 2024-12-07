@@ -56,7 +56,8 @@ public class ChatUserReportController{
             @Parameter(
                 name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY,
                 ref = "String"
-            )
+            ),
+            @Parameter(name = "status", in = ParameterIn.QUERY, ref = "int")
         }
     )
     @RequiresPermissions("chat:report:page")
@@ -100,6 +101,16 @@ public class ChatUserReportController{
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
 
         chatUserReportService.update(dto);
+
+        return new Result();
+    }
+
+    @PutMapping("resolve/{id}")
+    @Operation(summary = "Update")
+    @LogOperation("Update")
+    @RequiresPermissions("chat:report:update")
+    public Result resolve(@PathVariable("id") Long id){
+        chatUserReportService.resolve(id);
 
         return new Result();
     }

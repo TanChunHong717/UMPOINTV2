@@ -11,5 +11,5 @@ import my.edu.um.umpoint.modules.chat.entity.ChatUserReportEntity;
  * @since 1.0.0 2024-11-25
  */
 public interface ChatUserReportService extends CrudService<ChatUserReportEntity, ChatUserReportDTO> {
-
+    void resolve(Long id);
 }
