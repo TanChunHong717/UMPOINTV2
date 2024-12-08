@@ -51,14 +51,14 @@
 import { mdiMenuOpen } from "@mdi/js";
 import { ref, computed, watch, onBeforeUnmount } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { ElMessage, ElMessageBox } from "element-plus";
+
 import * as chatApi from "@/helpers/api-chat";
 import { uploadFile } from "@/helpers/api-upload.js";
+import { chatRoomTypes, chatUserTypes, chatFacilityTypes } from "@/constants/chat";
 
 // chat component
 import { register } from "vue-advanced-chat";
-import { ElMessage, ElMessageBox } from "element-plus";
-import { chatRoomTypes, chatUserTypes } from "@/constants/chat";
-import { chatFacilityTypes } from "@/constants/chat";
 register();
 
 const props = defineProps(["userId", "userToken"]);
