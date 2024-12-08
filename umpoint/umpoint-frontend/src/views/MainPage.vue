@@ -48,9 +48,13 @@
             </el-card> -->
             <el-card v-for="facility in facilities" :key="facility.id">
                 <el-image
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAeAXCYHdm1-SXe-evCVF1VlhelqfXEG8TGw&s"
+                    :src="
+                        facility.gallery.length > 0
+                            ? facility.gallery[0].imageUrl
+                            : 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png'
+                    "
                     fit="cover"
-                    style="width: 100%"
+                    style="width: 100%; aspect-ratio: 16/9"
                 ></el-image>
                 <div slot="header" class="clearfix">
                     <h4>{{ facility.name }}</h4>
@@ -58,8 +62,8 @@
                 <div>
                     <p>{{ facility.category }} - {{ facility.deptName }}</p>
                 </div>
-                <RouterLink :to="`/space/${facility.id}`"
-                    >Visit location</RouterLink
+                <RouterLink :to="`/space/${facility.id}`">
+                    <el-button>Visit location</el-button></RouterLink
                 >
             </el-card>
         </div>
@@ -68,7 +72,7 @@
 
 <script setup>
 import { mdiMagnify } from "@mdi/js";
-import { getFacilities } from "@/helpers/api-facility";
+import { getFacilities, transformGallery } from "@/helpers/api-facility";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
@@ -80,7 +84,10 @@ getFacilities("space").then((response) => {
         console.error("Failed to get facilities");
         return;
     }
-    facilities.value = response.data.data.list;
+    console.log(response.data);
+    facilities.value = response.data.data.list.map((facility) =>
+        transformGallery("space", facility)
+    );
 });
 
 // search feature
