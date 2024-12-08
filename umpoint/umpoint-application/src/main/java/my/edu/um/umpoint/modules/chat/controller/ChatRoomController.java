@@ -166,7 +166,7 @@ public class ChatRoomController {
     @PostMapping("{id}/close")
     @Operation(summary = "Close room")
     @LogOperation("Close room")
-    @RequiresPermissions("chat:room:getroom")
+    @RequiresPermissions("chat:room:info")
     public Result<ChatRoomDTO> closeRoom(@PathVariable("id") Long id){
         if (!chatRoomService.canChatInRoom(id)) {
             throw new BadHttpRequestException(401, "Cannot close already closed room");
@@ -180,7 +180,7 @@ public class ChatRoomController {
     @PostMapping("{id}/resolve")
     @Operation(summary = "Resolve room")
     @LogOperation("Resolve room")
-    @RequiresPermissions("chat:room:getroom")
+    @RequiresPermissions("chat:room:info")
     public Result<ChatRoomDTO> resolveRoom(@PathVariable("id") Long id){
         if (!chatRoomService.canChatInRoom(id)) {
             throw new BadHttpRequestException(401, "Cannot resolve already closed room");

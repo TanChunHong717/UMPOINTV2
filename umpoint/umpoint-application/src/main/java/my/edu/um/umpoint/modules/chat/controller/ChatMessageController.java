@@ -99,6 +99,7 @@ public class ChatMessageController{
         }
 
         ChatMessageDTO chatMessageDTO = new ChatMessageDTO();
+        chatMessageDTO.setCreatedAt(new Date());
         if (user.getSuperAdmin() == null) {
             chatMessageDTO.setUserId(user.getId());
             chatMessageDTO.setSenderType(
@@ -150,10 +151,13 @@ public class ChatMessageController{
             chatMessageAttachmentService.save(request.attachments, chatMessageDTO);
         }
 
-        // finished saving, refetch to broadcast to ws channel
-        // set return message
+        // set return message from frontend for identification
         chatMessageDTO.setReturnMessage(Optional.ofNullable(request.returnMessage));
-        messagingTemplate.convertAndSend(destination, JsonUtils.toJsonStringWithStringId(chatMessageDTO));
+        // finished saving, broadcast content to ws channel
+        messagingTemplate.convertAndSend(
+            destination,
+            JsonUtils.toJsonStringWithStringId(chatMessageDTO)
+        );
 
         // check automatic response
         if (chatRoomDTO.getAutoChatbotReply() == ChatConstant.AutoReply.ENABLED.getValue()) {
