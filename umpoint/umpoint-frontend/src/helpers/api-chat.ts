@@ -3,7 +3,7 @@ import app, { facilityTypes } from "@/constants/app";
 import { chatUserTypes } from "@/constants/chat";
 import sockjs from "sockjs-client/dist/sockjs";
 import { Client as StompClient } from "@stomp/stompjs";
-import { Message } from "vue-advanced-chat";
+import { Message, MessageFile } from "vue-advanced-chat";
 import { JavaId } from "@/types/interface";
 
 const OPTION_KEY = "options";
@@ -92,17 +92,6 @@ export async function getChatRooms() {
     return rooms;
 }
 
-export async function getChatRoomIdByFacility(
-    facilityType: keyof typeof facilityTypes,
-    facilityId: JavaId
-) {
-    let response = await api.post(`/chat/room`, {
-        facilityType,
-        facilityId,
-    });
-    return response.data.data;
-}
-
 export async function getMessages(
     roomId: JavaId,
     userId: JavaId,
@@ -115,7 +104,7 @@ export async function getMessages(
         },
     });
     let messages = response.data.data.map(
-        (message) => { return parseMessageFromApi(message, userId) }
+        (message: any) => { return parseMessageFromApi(message, userId) }
     );
     return messages;
 }
@@ -172,7 +161,7 @@ export function parseMessageFromApi(
         senderId:
             optionsChangeToUserId && parseUsername(messageDto) === OPTION_KEY
                 ? optionsChangeToUserId.toString()
-                : parseUsername(messageDto),
+                : (parseUsername(messageDto) ?? ""),
         date: new Date(messageDto.createdAt).toLocaleDateString("en-MY", {
             day: "numeric",
             month: "long",
@@ -196,20 +185,22 @@ export function parseMessageFromApi(
         disableReactions: true,
         senderType: messageDto.senderType,
     };
-    if (messageDto.chatMessageAttachmentEntityList) {
+    messageDto.attachments = messageDto.chatMessageAttachmentEntityList ?? messageDto.chatMessageAttachmentDTOList;
+    if (messageDto.attachments) {
         message.files = parseFilesFromApi(
-            messageDto.chatMessageAttachmentEntityList
+            messageDto.attachments
         );
     }
     if (messageDto.replyMessageId) {
         message.replyMessage = {
             _id: messageDto.replyMessageId,
             content: messageDto.replyMessage.message,
-            senderId: parseUsername(messageDto.replyMessage),
+            senderId: parseUsername(messageDto.replyMessage) ?? "",
         };
-        if (messageDto.replyMessage.chatMessageAttachmentEntityList) {
+        messageDto.replyMessage.attachments = messageDto.replyMessage.chatMessageAttachmentEntityList ?? messageDto.replyMessage.chatMessageAttachmentDTOList;
+        if (messageDto.replyMessage.attachments) {
             message.replyMessage.files = parseFilesFromApi(
-                messageDto.replyMessage.chatMessageAttachmentEntityList
+                messageDto.replyMessage.attachments
             );
         }
     }
@@ -272,7 +263,7 @@ export function parseMessageFromApi(
     //     "message": null,
     //     "replyMessageId": null,
     //     "createdAt": "2024-11-03 00:21:54",
-    //     "chatMessageAttachmentEntityList": [
+    //     "chatMessageAttachmentEntityList": [ // or chatMessageAttachmentDTOList
     //         {
     //             "id": null,
     //             "messageId": null,
@@ -289,7 +280,7 @@ export function parseMessageFromApi(
     // }
 }
 export function parseFilesFromApi(messageAttachmentDto: Array<any>) {
-    let files = [];
+    let files: Array<MessageFile> = [];
     if (!messageAttachmentDto || messageAttachmentDto.length === 0) {
         return files;
     }
@@ -297,7 +288,7 @@ export function parseFilesFromApi(messageAttachmentDto: Array<any>) {
         files.push({
             name: file.name,
             type: file.type,
-            extension: null,
+            extension: "",
             url: file.url,
         });
     }
@@ -307,7 +298,7 @@ export function parseUsername(messageDto: {
     senderType: number;
     userId: string | null;
     adminId: string | null;
-}): string {
+}): string | null {
     switch (messageDto.senderType) {
         case chatUserTypes.SYSTEM:
             return "system";
@@ -322,4 +313,16 @@ export function parseUsername(messageDto: {
         default:
             return null;
     }
+}
+
+// client only
+export async function getChatRoomIdByFacility(
+    facilityType: keyof typeof facilityTypes,
+    facilityId: JavaId
+) {
+    let response = await api.post(`/chat/room`, {
+        facilityType,
+        facilityId,
+    });
+    return response.data.data;
 }
