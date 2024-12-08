@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import my.edu.um.umpoint.common.annotation.LogOperation;
+import my.edu.um.umpoint.common.constant.ChatConstant;
 import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.exception.BadHttpRequestException;
 import my.edu.um.umpoint.common.page.PageData;
@@ -15,7 +16,9 @@ import my.edu.um.umpoint.common.validator.ValidatorUtils;
 import my.edu.um.umpoint.common.validator.group.AddGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
+import my.edu.um.umpoint.modules.chat.dto.ChatMessageDTO;
 import my.edu.um.umpoint.modules.chat.dto.ChatUserReportDTO;
+import my.edu.um.umpoint.modules.chat.service.ChatMessageService;
 import my.edu.um.umpoint.modules.chat.service.ChatUserReportService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +42,9 @@ public class ChatUserReportController{
 
     @Autowired
     private ChatMessageController chatMessageController;
+
+    @Autowired
+    private ChatMessageService chatMessageService;
 
     @GetMapping("page")
     @Operation(summary = "Pagination")
@@ -83,9 +89,18 @@ public class ChatUserReportController{
     public Result save(@RequestBody ChatUserReportDTO dto){
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
 
-        if (dto.getMessageId() != null &&
-            !chatMessageController.validateChatMessageId(dto.getChatRoomId(), dto.getMessageId())) {
-            throw new BadHttpRequestException(400, "Message is not in chat room");
+        if (dto.getMessageId() != null) {
+            if (!chatMessageController.validateChatMessageId(dto.getChatRoomId(), dto.getMessageId())) {
+                throw new BadHttpRequestException(400, "Message is not in chat room");
+            }
+            ChatMessageDTO messageDTO = chatMessageService.get(dto.getMessageId());
+            dto.setReportedUserType(messageDTO.getSenderType());
+
+            switch (ChatConstant.UserType.values()[messageDTO.getSenderType()]) {
+                case USER -> dto.setReportedUser(messageDTO.getUserId());
+                case ADMIN -> dto.setReportedUser(messageDTO.getAdminId());
+                case BOT -> dto.setReportedUser(0L);
+            }
         }
 
         chatUserReportService.save(dto);

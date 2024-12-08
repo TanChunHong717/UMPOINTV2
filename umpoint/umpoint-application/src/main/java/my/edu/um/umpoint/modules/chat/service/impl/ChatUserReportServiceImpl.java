@@ -9,11 +9,15 @@ import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
 import my.edu.um.umpoint.common.utils.JsonUtils;
 import my.edu.um.umpoint.modules.chat.dao.ChatUserReportDao;
 import my.edu.um.umpoint.modules.chat.dto.ChatMessageDTO;
+import my.edu.um.umpoint.modules.chat.dto.ChatRoomDTO;
 import my.edu.um.umpoint.modules.chat.dto.ChatUserReportDTO;
+import my.edu.um.umpoint.modules.chat.entity.ChatRoomEntity;
 import my.edu.um.umpoint.modules.chat.entity.ChatUserReportEntity;
 import my.edu.um.umpoint.modules.chat.service.ChatMessageService;
 import my.edu.um.umpoint.modules.chat.service.ChatRoomService;
 import my.edu.um.umpoint.modules.chat.service.ChatUserReportService;
+import my.edu.um.umpoint.modules.security.user.SecurityUser;
+import my.edu.um.umpoint.modules.security.user.UserDetail;
 import my.edu.um.umpoint.modules.space.entity.SpcBookingEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -56,6 +60,27 @@ public class ChatUserReportServiceImpl extends CrudServiceImpl<ChatUserReportDao
     @Override
     public void save(ChatUserReportDTO dto){
         dto.setStatus(ChatConstant.ReportStatus.UNRESOLVED.getValue());
+
+        ChatRoomDTO chatRoom = chatRoomService.get(dto.getChatRoomId());
+        UserDetail user = SecurityUser.getUser();
+        if (user.getSuperAdmin() != null) {
+            dto.setReportedBy(user.getId());
+            dto.setReportedByType(ChatConstant.UserType.ADMIN.getValue());
+
+            if (dto.getReportedUser() == null) {
+                dto.setReportedUser(chatRoom.getInitiateUserId());
+                dto.setReportedUserType(ChatConstant.UserType.USER.getValue());
+            }
+        } else {
+            dto.setReportedBy(user.getId());
+            dto.setReportedByType(ChatConstant.UserType.USER.getValue());
+
+            if (dto.getReportedUser() == null) {
+                dto.setReportedUser(chatRoom.getAssignedAdminId());
+                dto.setReportedUserType(ChatConstant.UserType.ADMIN.getValue());
+            }
+        }
+
         super.save(dto);
 
         // set room to reported
