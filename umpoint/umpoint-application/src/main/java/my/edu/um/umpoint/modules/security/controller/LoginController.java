@@ -142,12 +142,10 @@ public class LoginController{
 //        }
 
         CliUserDTO user = cliUserService.getByUsername(login.getUsername());
-        if (user == null)
-            throw new BadHttpRequestException(ErrorCode.ACCOUNT_PASSWORD_ERROR, "User not found");
-
-        if (!PasswordUtils.matches(login.getPassword(), user.getPassword())) {
-            throw new BadHttpRequestException(ErrorCode.ACCOUNT_PASSWORD_ERROR);
-        }
+        if (user == null || !PasswordUtils.matches(login.getPassword(), user.getPassword()))
+            throw new RenException(ErrorCode.ACCOUNT_PASSWORD_ERROR);
+        if (user.getStatus() == UserStatusEnum.DISABLE.value())
+            throw new RenException(ErrorCode.ACCOUNT_DISABLE);
 
         return cliTokenService.createToken(user.getId());
     }

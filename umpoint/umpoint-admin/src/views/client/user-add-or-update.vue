@@ -10,6 +10,15 @@
         <el-form-item label="Email" prop="email">
           <el-input v-model="dataForm.email" placeholder="Email" disabled></el-input>
         </el-form-item>
+        <el-form-item label="Status" prop="status">
+          <el-select
+            v-model="dataForm.status"
+            placeholder="Select"
+          >
+            <el-option label="Enabled" :value="1"/>
+            <el-option label="Disabled" :value="0"/>
+          </el-select>
+        </el-form-item>
         <el-form-item label="Type" prop="type">
           <el-select
             v-model="dataForm.type"
@@ -45,6 +54,7 @@ const dataFormRef = ref();
 
 const dataForm = reactive({
   id: '',
+  status: '',
   username: '',
   mobile: '',
   password: '',
@@ -57,6 +67,9 @@ const dataForm = reactive({
 });
 
 const rules = ref({
+  status: [
+    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
+  ],
   type: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ]

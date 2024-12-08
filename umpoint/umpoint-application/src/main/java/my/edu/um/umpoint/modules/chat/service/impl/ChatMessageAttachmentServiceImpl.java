@@ -4,7 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
 import my.edu.um.umpoint.common.utils.ConvertUtils;
-import my.edu.um.umpoint.modules.chat.controller.ChatMessageAttachment;
+import my.edu.um.umpoint.modules.chat.dto.ChatMessageAttachment;
 import my.edu.um.umpoint.modules.chat.dao.ChatMessageAttachmentDao;
 import my.edu.um.umpoint.modules.chat.dto.ChatMessageAttachmentDTO;
 import my.edu.um.umpoint.modules.chat.dto.ChatMessageDTO;
@@ -23,15 +23,10 @@ import java.util.Map;
  * @since 1.0.0 2024-10-28
  */
 @Service
-public class ChatMessageAttachmentServiceImpl extends CrudServiceImpl<ChatMessageAttachmentDao,
-    ChatMessageAttachmentEntity, ChatMessageAttachmentDTO> implements ChatMessageAttachmentService{
-
+public class ChatMessageAttachmentServiceImpl extends CrudServiceImpl<ChatMessageAttachmentDao, ChatMessageAttachmentEntity, ChatMessageAttachmentDTO> implements ChatMessageAttachmentService {
 
     @Override
-    public QueryWrapper<ChatMessageAttachmentEntity> getWrapper(
-        Map<String,
-            Object> params
-    ){
+    public QueryWrapper<ChatMessageAttachmentEntity> getWrapper(Map<String, Object> params){
         String id = (String) params.get("id");
 
         QueryWrapper<ChatMessageAttachmentEntity> wrapper = new QueryWrapper<>();

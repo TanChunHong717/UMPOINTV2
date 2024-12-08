@@ -5,12 +5,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
 import my.edu.um.umpoint.common.annotation.LogOperation;
 import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.exception.BadHttpRequestException;
 import my.edu.um.umpoint.common.page.PageData;
-import my.edu.um.umpoint.common.utils.ExcelUtils;
 import my.edu.um.umpoint.common.utils.Result;
 import my.edu.um.umpoint.common.validator.AssertUtils;
 import my.edu.um.umpoint.common.validator.ValidatorUtils;
@@ -18,16 +16,12 @@ import my.edu.um.umpoint.common.validator.group.AddGroup;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import my.edu.um.umpoint.modules.chat.dto.ChatUserReportDTO;
-import my.edu.um.umpoint.modules.chat.excel.ChatUserReportExcel;
-import my.edu.um.umpoint.modules.chat.service.ChatMessageService;
 import my.edu.um.umpoint.modules.chat.service.ChatUserReportService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
-
 
 /**
  * Report user in chat
@@ -39,8 +33,10 @@ import java.util.Map;
 @RequestMapping("chat/report")
 @Tag(name = "Report user in chat")
 public class ChatUserReportController{
+
     @Autowired
     private ChatUserReportService chatUserReportService;
+
     @Autowired
     private ChatMessageController chatMessageController;
 
@@ -60,7 +56,8 @@ public class ChatUserReportController{
             @Parameter(
                 name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY,
                 ref = "String"
-            )
+            ),
+            @Parameter(name = "status", in = ParameterIn.QUERY, ref = "int")
         }
     )
     @RequiresPermissions("chat:report:page")
@@ -108,6 +105,16 @@ public class ChatUserReportController{
         return new Result();
     }
 
+    @PutMapping("resolve/{id}")
+    @Operation(summary = "Update")
+    @LogOperation("Update")
+    @RequiresPermissions("chat:report:update")
+    public Result resolve(@PathVariable("id") Long id){
+        chatUserReportService.resolve(id);
+
+        return new Result();
+    }
+
     @DeleteMapping
     @Operation(summary = "Delete")
     @LogOperation("Delete")
@@ -119,17 +126,4 @@ public class ChatUserReportController{
 
         return new Result();
     }
-
-    @GetMapping("export")
-    @Operation(summary = "Export")
-    @LogOperation("Export")
-    @RequiresPermissions("chat:report:export")
-    public void export(
-        @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletResponse response
-    ) throws Exception{
-        List<ChatUserReportDTO> list = chatUserReportService.list(params);
-
-        ExcelUtils.exportExcelToTarget(response, null, "Report user in chat", list, ChatUserReportExcel.class);
-    }
-
 }

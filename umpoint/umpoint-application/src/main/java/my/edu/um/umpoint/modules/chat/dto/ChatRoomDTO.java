@@ -7,7 +7,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
-
 /**
  * Chat room
  *
@@ -18,7 +17,7 @@ import java.util.Date;
 @Schema(title = "Chat room")
 public class ChatRoomDTO implements Serializable {
 	@Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1357621191487633196L;
 
 	@Schema(title = "Room ID")
 	private Long id;
@@ -46,6 +45,4 @@ public class ChatRoomDTO implements Serializable {
 
 	@Schema(title = "Creation Date")
 	private Date createdAt;
-
-
 }

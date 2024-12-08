@@ -15,12 +15,15 @@ import java.util.Date;
 @Data
 @TableName("cli_user")
 public class CliUserEntity {
-
     /**
      * ID
      */
 	@TableId
 	private Long id;
+	/**
+	 * Status, 0:Disable, 1:Enabled
+	 */
+	private Integer status;
 	/**
 	* Username
 	*/

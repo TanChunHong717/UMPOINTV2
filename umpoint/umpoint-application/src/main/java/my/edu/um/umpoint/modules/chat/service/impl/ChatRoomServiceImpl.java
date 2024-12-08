@@ -42,8 +42,6 @@ import java.util.Map;
 public class ChatRoomServiceImpl extends CrudServiceImpl<ChatRoomDao, ChatRoomEntity, ChatRoomDTO> implements ChatRoomService{
 
     @Autowired
-    private ChatMessageDao chatMessageDao;
-    @Autowired
     private SpcSpaceService spcSpaceService;
     @Autowired
     private SvcServiceService svcServiceService;
@@ -171,7 +169,7 @@ public class ChatRoomServiceImpl extends CrudServiceImpl<ChatRoomDao, ChatRoomEn
         // send message
         ChatMessageDTO chatMessageDTO = new ChatMessageDTO();
         chatMessageDTO.setChatRoomId(roomId);
-        chatMessageDTO.setSenderType(ChatConstant.UserType.SYSTEN.getValue());
+        chatMessageDTO.setSenderType(ChatConstant.UserType.SYSTEM.getValue());
         chatMessageDTO.setMessage(message);
         chatMessageDTO.setCreatedAt(new Date());
         chatMessageService.save(chatMessageDTO);

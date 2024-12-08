@@ -18,43 +18,42 @@ import java.util.List;
 @Data
 @TableName("chat_message")
 public class ChatMessageEntity {
-
-    /**
-     * Message ID
-     */
-		@TableId
-		private Long id;
-    /**
-     * Chat room ID
-     */
-		private Long chatRoomId;
-    /**
-     * Sender user type: 0:System, 1:Bot, 2:User, 3:Admin
-     */
-		private Integer senderType;
-    /**
-     * Sender user ID
-     */
-		private Long userId;
-    /**
-     * Sender admin ID
-     */
-		private Long adminId;
-    /**
-     * Message body
-     */
-		private String message;
-    /**
-     * Message ID that is responding to
-     */
-		private Long replyMessageId;
-    /**
-     * Creation Date
-     */
-		private Date createdAt;
 	/**
-	 * Attachment entity list
-	 */
+	* Message ID
+	*/
+	@TableId
+	private Long id;
+	/**
+	* Chat room ID
+	*/
+	private Long chatRoomId;
+	/**
+	* Sender user type: 0:System, 1:Bot, 2:User, 3:Admin
+	*/
+	private Integer senderType;
+	/**
+	* Sender user ID
+	*/
+	private Long userId;
+	/**
+	* Sender admin ID
+	*/
+	private Long adminId;
+	/**
+	* Message body
+	*/
+	private String message;
+	/**
+	* Message ID that is responding to
+	*/
+	private Long replyMessageId;
+	/**
+	* Creation Date
+	*/
+	private Date createdAt;
+	/**
+	* Attachment entity list
+	*/
 	@TableField(exist = false)
 	private List<ChatMessageAttachmentEntity> chatMessageAttachmentEntityList;
 }

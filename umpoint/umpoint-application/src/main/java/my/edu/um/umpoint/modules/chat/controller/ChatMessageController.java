@@ -10,6 +10,7 @@ import my.edu.um.umpoint.common.utils.MessageUtils;
 import my.edu.um.umpoint.common.utils.Result;
 import my.edu.um.umpoint.modules.chat.dto.ChatMessageDTO;
 import my.edu.um.umpoint.modules.chat.dto.ChatRoomDTO;
+import my.edu.um.umpoint.modules.chat.dto.ChatMessage;
 import my.edu.um.umpoint.modules.chat.entity.ChatMessageEntity;
 import my.edu.um.umpoint.modules.chat.service.ChatMessageAttachmentService;
 import my.edu.um.umpoint.modules.chat.service.ChatMessageService;
@@ -39,7 +40,6 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-
 /**
  * Chat message
  *
@@ -49,10 +49,13 @@ import java.util.concurrent.ExecutionException;
 @RestController
 @Tag(name = "Chat message")
 public class ChatMessageController{
+
     @Autowired
     private ChatRoomService chatRoomService;
+
     @Autowired
     private ChatMessageService chatMessageService;
+
     @Autowired
     private ChatMessageAttachmentService chatMessageAttachmentService;
 
@@ -260,7 +263,7 @@ public class ChatMessageController{
     private ChatMessageDTO buildSystemMessage(Long chatRoomId, String message){
         ChatMessageDTO chatMessageDTO = new ChatMessageDTO();
         chatMessageDTO.setChatRoomId(chatRoomId);
-        chatMessageDTO.setSenderType(ChatConstant.UserType.SYSTEN.getValue());
+        chatMessageDTO.setSenderType(ChatConstant.UserType.SYSTEM.getValue());
         chatMessageDTO.setMessage(message);
         chatMessageDTO.setCreatedAt(new Date());
         return chatMessageDTO;
