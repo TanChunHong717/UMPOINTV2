@@ -7,7 +7,8 @@ import { Message, MessageFile } from "vue-advanced-chat";
 
 type JavaId = `${number}` | number | null;
 
-const OPTION_KEY = "options";
+const OPTION_KEY = "options_chat_name";
+const BOT_KEY = "bot_chat_name";
 
 export function createWebSocketClient() {
     const socketUrl = app.api + "/ws";
@@ -58,7 +59,7 @@ export async function getChatRooms() {
         let users = [
             {
                 // default bot
-                _id: "bot",
+                _id: BOT_KEY,
                 username: "Friendly Bot",
             },
             {
@@ -95,7 +96,7 @@ export async function getChatRooms() {
 
 export async function getMessages(
     roomId: JavaId,
-    userId: JavaId,
+    currentUserId: JavaId,
     page: number = 1,
 ) {
     let response = await api.get(`/chat/messages/${roomId}`, {
@@ -103,7 +104,7 @@ export async function getMessages(
         limit: 100,
     });
     let messages = response.data.map(
-        (message: any) => { return parseMessageFromApi(message, userId) }
+        (message: any) => { return parseMessageFromApi(message, currentUserId) }
     );
     return messages;
 }
@@ -151,16 +152,13 @@ export function markAsResolved(roomId: JavaId) {
  */
 export function parseMessageFromApi(
     messageDto: any,
-    optionsChangeToUserId: JavaId = null
+    currentUserId: JavaId = null,
 ): Message {
     let message: Message & Record<string, unknown> = {
         _id: messageDto.id,
         indexId: messageDto.id,
         content: messageDto.message ?? "",
-        senderId:
-            optionsChangeToUserId && parseUsername(messageDto) === OPTION_KEY
-                ? optionsChangeToUserId.toString()
-                : (parseUsername(messageDto) ?? ""),
+        senderId: convertSenderId(messageDto, currentUserId),
         date: new Date(messageDto.createdAt).toLocaleDateString("en-MY", {
             day: "numeric",
             month: "long",
@@ -302,7 +300,7 @@ export function parseUsername(messageDto: {
         case chatUserTypes.SYSTEM:
             return "system";
         case chatUserTypes.BOT:
-            return "bot";
+            return BOT_KEY;
         case chatUserTypes.USER:
             return messageDto.userId;
         case chatUserTypes.ADMIN:
@@ -313,3 +311,18 @@ export function parseUsername(messageDto: {
             return null;
     }
 }
+
+// different per user type
+export function convertSenderId(messageDto: any, currentUserId: JavaId): string {
+    let senderId = parseUsername(messageDto);
+    if (senderId == null) {
+        return "";
+    }
+    // convert bot message to own message
+    if (senderId === BOT_KEY && currentUserId) {
+        return currentUserId.toString();
+    }
+    return senderId;
+}
+
+// admin only
