@@ -310,9 +310,7 @@ const roomActions = ref([
 /* Action events */
 const router = useRouter();
 const viewFacilityInfo = (roomId) => {
-    console.log(roomId);
     let room = getRoom(roomId);
-    console.log(room)
     router.push({
         name: "facility-information",
         params: {
@@ -342,7 +340,7 @@ function roomActionHandler(event) {
             break;
         case "reportChat":
             showReportChatPopup((reason) => {
-                chatApi.reportChatRoom(roomId, reason, props.userId);
+                chatApi.reportChatRoom(roomId, reason);
                 fetchRooms();
             });
             break;
@@ -380,7 +378,6 @@ function messageActionHandler(event) {
                     roomId,
                     message._id,
                     reason,
-                    props.userId
                 );
                 fetchRooms();
             });
