@@ -175,9 +175,9 @@ function validateForm(field) {
 }
 
 // form submit
-async function returnFormInfo(formEl) {
+ function returnFormInfo(formEl) {
     if (!formEl) return;
-    await formEl.validate((valid, fields) => {
+    formEl.validate((valid, fields) => {
         if (valid) {
             emit("nextStep", formData);
         } else {

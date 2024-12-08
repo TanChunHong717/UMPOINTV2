@@ -119,37 +119,51 @@ async function submitForm() {
         form.approvalDocuments.map((file) => file.response),
         form.supportingDocuments.map((file) => file.response)
     );
-    let result = await createBooking(route.params.type, {
-        spaceId: form.facilityId,
-        event: form.eventName,
-        startDay: formatDateToTimezoneDateStr(form.startDate),
-        endDay: formatDateToTimezoneDateStr(form.endDate),
-        startTime: formatDateToTimezoneTimeStr(form.startDate),
-        endTime: formatDateToTimezoneTimeStr(form.endDate),
-        attachments,
-    });
-
-    if (result.status == 200 && result.data.code == 0) {
-        ElMessage({
-            type: "success",
-            message: "Form submitted successfully",
+    try {
+        let response = await createBooking(route.params.type, {
+            spaceId: form.facilityId,
+            event: form.eventName,
+            startDay: formatDateToTimezoneDateStr(form.startDate),
+            endDay: formatDateToTimezoneDateStr(form.endDate),
+            startTime: form.startTime + ":00",
+            endTime: form.endTime + ":00",
+            attachments,
         });
-        // redirect to all bookings page
-        setTimeout(() => {
-            // redirect to success page
-            router.push({ name: "bookings" });
-        }, 2000);
-    } else {
-        //handle error
-        if (result.data.code == 400 && result.data.message) {
+
+        if (response.data.code == 0) {
+            ElMessage({
+                type: "success",
+                message: "Booking request submitted successfully",
+            });
+            // redirect to all bookings page
+            setTimeout(() => {
+                // redirect to success page
+                router.push({ name: "bookings" });
+            }, 2000);
+        } else {
+            console.error("Error submitting form", response);
             ElMessage({
                 type: "error",
-                message: result.data.message,
+                message: "Error submitting form",
+            });
+        }
+    } catch ({response}) {
+        //handle error
+        if (response.data.message) {
+            ElMessage({
+                type: "error",
+                message: response.data.message,
+                duration: 10000,
+            });
+            currentStep.value = 0;
+        } else if (response.data.msg) {
+            ElMessage({
+                type: "error",
+                message: response.data.msg,
                 duration: 10000,
             });
             currentStep.value = 0;
         } else {
-            console.error("Error submitting form", result);
             ElMessage({
                 type: "error",
                 message: "Error submitting form",
