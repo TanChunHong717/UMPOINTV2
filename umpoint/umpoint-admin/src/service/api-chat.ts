@@ -120,8 +120,6 @@ export function reportChatRoom(
     return api.post(`/chat/report`, {
         chatRoomId,
         reason,
-        reportedBy,
-        reportedByType: chatUserTypes.USER, // this interface used by users only
     });
 }
 
@@ -138,8 +136,6 @@ export function reportMessage(
         chatRoomId,
         messageId,
         reason,
-        reportedBy,
-        reportedByType: chatUserTypes.USER, // this interface used by users only
     });
 }
 
@@ -326,3 +322,6 @@ export function convertSenderId(messageDto: any, currentUserId: JavaId): string 
 }
 
 // admin only
+export function assignToSelf(roomId: JavaId) {
+    return api.post(`/chat/room/${roomId}/assign`);
+}
