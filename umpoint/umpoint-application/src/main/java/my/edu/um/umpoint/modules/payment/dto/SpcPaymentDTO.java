@@ -30,9 +30,6 @@ public class SpcPaymentDTO implements Serializable {
 	@Schema(title = "Space Booking ID")
 	private Long bookingId;
 
-	@Schema(title = "User ID")
-	private Long userId;
-
 	@Schema(title = "Payment Method ID")
 	private String methodId;
 
@@ -41,6 +38,9 @@ public class SpcPaymentDTO implements Serializable {
 
 	@Schema(title = "Payment Date")
 	private Date date;
+
+	@Schema(title = "Creation Date")
+	private Date createdAt;
 
 	@Schema(title = "Payment Method Name")
 	private String method;

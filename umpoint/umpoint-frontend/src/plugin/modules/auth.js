@@ -2,9 +2,17 @@ import {
     login as loginApi,
     logout as logoutApi,
     getUserInformation,
-} from "@/helpers/api-credentials.js";
-import { setCache, getCache, removeCache } from "@/utils/cache";
-import { CacheToken } from "@/constants/app";
+} from "@/helpers/api-credentials";
+import {
+    setCache,
+    getCache,
+    removeCache,
+    setRememberMe,
+    setToken,
+    getRememberMe,
+} from "@/utils/cache";
+import { CacheRememberMeToken, CacheToken } from "@/constants/app";
+import router from "../router";
 
 const auth = {
     namespaced: true,
@@ -17,7 +25,7 @@ const auth = {
         };
     },
     getters: {
-        isLoggedIn(state) {
+        isAuthenticated(state) {
             return state.token !== null;
         },
     },
@@ -36,10 +44,10 @@ const auth = {
         },
     },
     actions: {
-        async loginRememberMe({ commit, dispatch }) {
+        async loginRememberMe({ commit, dispatch, state }) {
             let tokenInfo = getCache(
                 CacheToken,
-                { isSessionStorage: false },
+                { isSessionStorage: !getRememberMe() },
                 null
             );
 
@@ -47,72 +55,76 @@ const auth = {
                 return;
             }
             if (new Date(tokenInfo.expiry) < Date.now()) {
-                dispatch("logout");
-                return;
+                return await dispatch("logout");
             }
 
             // store in vuex
             commit("setToken", tokenInfo.token);
 
-            // get user info
-            const userInfo = await getUserInformation();
-            if (userInfo.status !== 200 || userInfo.data.code !== 0) {
-                if (userInfo.data.code === 401) {
-                    dispatch("logout");
-                    return;
-                }
-                throw new Error("Server error");
-            }
-            commit("setUserId", userInfo.data.data.id);
-            commit("setPermissions", {
-                space: !!userInfo.data.data.spacePermission,
-                service: !!userInfo.data.data.servicePermission,
-                accommodation: !!userInfo.data.data.accommodationPermission,
-            });
+            return await dispatch("getUserPermission");
         },
-        async login({ commit }, { username, password }) {
+        async login({ commit, dispatch }, { username, password, rememberMe }) {
             // login logic
             const response = await loginApi(username, password);
             if (response.status !== 200 || response.data.code !== 0) {
                 throw new Error("Invalid credentials");
             }
 
-            commit("setUsername", response.data.username);
+            // store in vuex
             commit("setToken", response.data.token);
-            // store in browser
+
+            // store if remember me (permanently in localstorage) to check use localstorage or sessionstorage
+            setRememberMe(rememberMe);
+
             let expiryDate = new Date();
             expiryDate.setSeconds(
                 expiryDate.getSeconds() + response.data.data.expire
             );
-            setCache(
-                CacheToken,
-                {
-                    token: response.data.data.token,
-                    expiry: expiryDate,
-                },
-                false
-            );
+            setToken({
+                token: response.data.data.token,
+                expiry: expiryDate,
+            }, rememberMe);
 
+            return await dispatch("getUserPermission");
+        },
+        async getUserPermission({ commit }) {
             // get user info
-            const userInfo = await getUserInformation();
-            console.log(userInfo);
-            if (userInfo.status !== 200 || userInfo.data.code !== 0) {
+            const response = await getUserInformation();
+            if (response.status !== 200 || response.data.code !== 0) {
                 throw new Error("Server error");
             }
-            commit("setUserId", userInfo.data.id);
+            let userInfo = response.data.data;
+
+            commit("setUsername", userInfo.username);
+            commit("setUserId", userInfo.id);
             commit("setPermissions", {
-                space: !!userInfo.data.spacePermission,
-                service: !!userInfo.data.servicePermission,
-                accommodation: !!userInfo.data.accommodationPermission,
+                space: !!userInfo.spacePermission,
+                service: !!userInfo.servicePermission,
+                accommodation: !!userInfo.accommodationPermission,
             });
+
+            return true;
         },
         async logout({ commit }) {
-            logoutApi();
+            try {
+                await logoutApi();
+            } catch (error) {
+                // do nothing
+                console.error(error);
+            }
             commit("setToken", null);
             commit("setUserId", null);
             commit("setUsername", null);
             commit("setPermissions", {});
+
+            // clear both cache for remember me (local) and session
             removeCache(CacheToken, false);
+            removeCache(CacheToken, true);
+
+            // redirect to home page if user is on a page that requires login
+            if (router.currentRoute.value.meta.requiresAuth) {
+                router.push({ name: "home" });
+            }
         },
     },
 };

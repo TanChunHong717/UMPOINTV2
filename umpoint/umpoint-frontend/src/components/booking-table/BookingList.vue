@@ -7,18 +7,8 @@
                 style="width: 100%; height: 100%"
             >
                 <el-table-column type="expand">
-                    <template #default="props">
-                        <el-card>
-                            <p>Booking Details</p>
-                            <p>
-                                Booking Date:
-                                {{ props.row.bookingDate }}
-                            </p>
-                            <p>
-                                Event Date:
-                                {{ props.row.eventDate }}
-                            </p>
-                        </el-card>
+                    <template #default="{ row }">
+                        <BookingInfoCard :booking="row" />
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -26,7 +16,11 @@
                     label="Invoice No."
                     width="160"
                 />
-                <el-table-column prop="name" label="Facilty/Event" />
+                <el-table-column
+                    prop="name"
+                    label="Event/Facilty"
+                    :formatter="eventNameFormatter"
+                />
                 <el-table-column
                     prop="eventDate"
                     label="Event Date"
@@ -48,18 +42,8 @@
                 style="width: 100%; height: 100%"
             >
                 <el-table-column type="expand">
-                    <template #default="props">
-                        <el-card>
-                            <p>Booking Details</p>
-                            <p>
-                                Booking Date:
-                                {{ props.row.bookingDate }}
-                            </p>
-                            <p>
-                                Event Date:
-                                {{ props.row.eventDate }}
-                            </p>
-                        </el-card>
+                    <template #default="{ row }">
+                        <BookingInfoCard :booking="row" />
                     </template>
                 </el-table-column>
 
@@ -68,7 +52,11 @@
                     label="Invoice No."
                     width="160"
                 />
-                <el-table-column prop="name" label="Facilty/Event" />
+                <el-table-column
+                    prop="name"
+                    label="Event/Facilty"
+                    :formatter="eventNameFormatter"
+                />
 
                 <el-table-column
                     prop="bookingDate"
@@ -116,18 +104,8 @@
                 style="width: 100%; height: 100%"
             >
                 <el-table-column type="expand">
-                    <template #default="props">
-                        <el-card>
-                            <p>Booking Details</p>
-                            <p>
-                                Booking Date:
-                                {{ props.row.bookingDate }}
-                            </p>
-                            <p>
-                                Event Date:
-                                {{ props.row.eventDate }}
-                            </p>
-                        </el-card>
+                    <template #default="{ row }">
+                        <BookingInfoCard :booking="row" />
                     </template>
                 </el-table-column>
 
@@ -136,7 +114,11 @@
                     label="Invoice No."
                     width="160"
                 />
-                <el-table-column prop="name" label="Facilty/Event" />
+                <el-table-column
+                    prop="name"
+                    label="Event/Facilty"
+                    :formatter="eventNameFormatter"
+                />
 
                 <el-table-column
                     prop="bookingDate"
@@ -149,9 +131,10 @@
                     width="120"
                 />
                 <el-table-column
-                    prop="paymentStatus"
-                    label="Payment Status"
+                    prop="paymentAmount"
+                    label="Payment Amount"
                     width="100"
+                    :formatter="paymentAmountFormatter"
                 />
                 <el-table-column
                     prop="action"
@@ -199,18 +182,8 @@
                 style="width: 100%; height: 100%"
             >
                 <el-table-column type="expand">
-                    <template #default="props">
-                        <el-card>
-                            <p>Booking Details</p>
-                            <p>
-                                Booking Date:
-                                {{ props.row.bookingDate }}
-                            </p>
-                            <p>
-                                Event Date:
-                                {{ props.row.eventDate }}
-                            </p>
-                        </el-card>
+                    <template #default="{ row }">
+                        <BookingInfoCard :booking="row" />
                     </template>
                 </el-table-column>
 
@@ -219,7 +192,11 @@
                     label="Invoice No."
                     width="160"
                 />
-                <el-table-column prop="name" label="Facilty/Event" />
+                <el-table-column
+                    prop="name"
+                    label="Event/Facilty"
+                    :formatter="eventNameFormatter"
+                />
                 <el-table-column
                     prop="eventDate"
                     label="Event Date"
@@ -234,18 +211,8 @@
                 style="width: 100%; height: 100%"
             >
                 <el-table-column type="expand">
-                    <template #default="props">
-                        <el-card>
-                            <p>Booking Details</p>
-                            <p>
-                                Booking Date:
-                                {{ props.row.bookingDate }}
-                            </p>
-                            <p>
-                                Event Date:
-                                {{ props.row.eventDate }}
-                            </p>
-                        </el-card>
+                    <template #default="{ row }">
+                        <BookingInfoCard :booking="row" />
                     </template>
                 </el-table-column>
 
@@ -254,7 +221,11 @@
                     label="Invoice No."
                     width="160"
                 />
-                <el-table-column prop="name" label="Facilty/Event" />
+                <el-table-column
+                    prop="name"
+                    label="Event/Facilty"
+                    :formatter="eventNameFormatter"
+                />
                 <el-table-column prop="cancelDate" label="Cancelled Date" />
                 <el-table-column
                     prop="refundAmount"
@@ -264,36 +235,22 @@
             </el-table>
         </el-tab-pane>
     </el-tabs>
-
-    <el-dialog
-        v-model="deleteDialogVisible"
-        title="Warning"
-        width="500"
-        align-center
-    >
-        <span>Are you sure you want to cancel this booking?</span>
-        <template #footer>
-            <div class="dialog-footer">
-                <el-button @click="deleteDialogVisible = false">
-                    Take me back
-                </el-button>
-                <el-button type="primary" @click="confirmCancelBooking">
-                    Confirm
-                </el-button>
-            </div>
-        </template>
-    </el-dialog>
 </template>
 
 <script setup>
 import { mdiCurrencyUsd, mdiForum, mdiCancel } from "@mdi/js";
-import { ref, computed, h } from "vue";
-import { bookingStatus, paymentStatus } from "@/constants/app";
-import { ElMessage } from "element-plus";
-import { cancelBooking } from "@/helpers/api-facility.js";
+import { computed, h } from "vue";
+import { bookingStatus } from "@/constants/app";
+import { ElMessageBox } from "element-plus";
+
+const emit = defineEmits([
+    "changeStatus",
+    "startChat",
+    "payForBooking",
+    "cancelBooking",
+]);
 
 const activeStatus = defineModel("activeStatus");
-const emit = defineEmits(["changeStatus", "refreshBookings"]);
 const bookings = defineModel("bookings");
 
 const handleChangeStatus = (tab) => {
@@ -312,39 +269,83 @@ const spaceDisplayBookings = computed(() => {
 
     return displayedBookings;
 });
+// table formatters
+const eventNameFormatter = (row, column) => {
+    return h("div", {}, [
+        h("span", {}, row.eventName),
+        h("br"),
+        h("span", { style: "font-size: 0.85em; color: var(--el-text-color-secondary)" }, row.facility),
+    ]);
+};
 const statusFormatter = (row, column) => {
     if (activeStatus.value == "all") {
-        return h('span', {class:"status-"+row.status}, bookingStatus[row.status]);
+        return h(
+            "span",
+            { class: "status-" + row.status },
+            bookingStatus[row.status]
+        );
     }
     return bookingStatus[row.status];
 };
+const paymentAmountFormatter = (row, column) => {
+    return row.paymentAmount > 0
+        ? `RM ${row.paymentAmount.toFixed(2)}`
+        : "Free";
+};
 
 // *** pending actions ***
-const payForBooking = (row) => {
-    console.log("Pay for booking", row);
+const startChat = ({ row }) => {
+    emit("startChat", row);
 };
-const startChat = (row) => {
-    console.log("Start chat", row);
+const payForBooking = async ({ row }) => {
+    let confirmPay = await confirmPayBooking(row.eventName, row.paymentAmount);
+    if (confirmPay) {
+        emit("payForBooking", row.id);
+    }
+};
+const confirmPayBooking = async (eventName, amount) => {
+    return ElMessageBox.confirm(
+        h("div", null, [
+            h("span", `You are about to pay `),
+            h(
+                "span",
+                { style: "font-weight: bold" },
+                `RM ${amount.toFixed(2)}`
+            ),
+            h("span", ` for "${eventName}".`),
+            h("br"),
+            h("span", `Continue?`),
+        ]),
+        "Payment",
+        { confirmButtonText: "Pay", cancelButtonText: "Cancel" }
+    ).then(
+        () => true,
+        () => false
+    );
 };
 
-const deleteDialogVisible = ref(false);
-const selectedCancelBooking = ref(null);
-const showCancelBookingDialog = ({ row }) => {
-    deleteDialogVisible.value = true;
-    selectedCancelBooking.value = row.id;
-};
-const confirmCancelBooking = async () => {
-    deleteDialogVisible.value = false;
-    let response = await cancelBooking(selectedCancelBooking.value);
-    if (response.status != 200 || response.data.code != 0) {
-        ElMessage.error("Error cancelling booking");
-        return;
+// cancel booking confirmation dialog
+const showCancelBookingDialog = async ({ row }) => {
+    let confirmCancel = await confirmCancelBooking(row.eventName);
+    if (confirmCancel) {
+        emit("cancelBooking", row.id);
     }
-    ElMessage({ type: "success", message: "Booking cancelled successfully" });
-    emit("refreshBookings");
+};
+const confirmCancelBooking = async (eventName) => {
+    return ElMessageBox.confirm(
+        `Are you sure you want to cancel booking "${eventName}"?`,
+        "Warning",
+        {
+            confirmButtonText: "Confirm",
+            cancelButtonText: "Take me back",
+            type: "warning",
+        }
+    ).then(
+        () => true,
+        () => false
+    );
 };
 </script>
-
 
 <style>
 /* Sync with constants/app.js:bookingStatus */

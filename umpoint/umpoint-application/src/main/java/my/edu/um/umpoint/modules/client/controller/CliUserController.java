@@ -1,7 +1,15 @@
 package my.edu.um.umpoint.modules.client.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import my.edu.um.umpoint.common.annotation.LogOperation;
 import my.edu.um.umpoint.common.constant.Constant;
+import my.edu.um.umpoint.common.exception.BadHttpRequestException;
+import my.edu.um.umpoint.common.exception.ErrorCode;
 import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.utils.ConvertUtils;
 import my.edu.um.umpoint.common.utils.ExcelUtils;
@@ -14,18 +22,15 @@ import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import my.edu.um.umpoint.modules.client.dto.CliUserDTO;
 import my.edu.um.umpoint.modules.client.excel.CliUserExcel;
 import my.edu.um.umpoint.modules.client.service.CliUserService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import my.edu.um.umpoint.modules.security.password.PasswordUtils;
 import my.edu.um.umpoint.modules.security.user.SecurityUser;
+import my.edu.um.umpoint.modules.security.user.UserDetail;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import jakarta.servlet.http.HttpServletResponse;
+
 import java.util.List;
 import java.util.Map;
 
@@ -71,7 +76,7 @@ public class CliUserController {
 
     @GetMapping("info")
     @Operation(summary = "login user info")
-    public Result<CliUserDTO> info() {
+    public Result<CliUserDTO> info(){
         CliUserDTO data = ConvertUtils.sourceToTarget(SecurityUser.getUser(), CliUserDTO.class);
         return new Result<CliUserDTO>().ok(data);
     }
@@ -109,6 +114,35 @@ public class CliUserController {
         return new Result();
     }
 
+    @PutMapping("{userId}")
+    @Operation(summary = "Update User profile")
+    @LogOperation("Update")
+    public Result updateUser(@PathVariable("userId") Long userId, @RequestBody Map<String, String> request){
+        ValidatorUtils.validateEntity(request, UpdateGroup.class, DefaultGroup.class);
+
+        UserDetail loggedInUser = SecurityUser.getUser();
+        if (!userId.equals(loggedInUser.getId())) {
+            throw new BadHttpRequestException(ErrorCode.UNAUTHORIZED);
+        }
+        CliUserDTO matchedUserDetail = cliUserService.get(loggedInUser.getId());
+        if (!PasswordUtils.matches(request.getOrDefault("password", ""), matchedUserDetail.getPassword())) {
+            throw new BadHttpRequestException(ErrorCode.UNAUTHORIZED, "Current password is incorrect");
+        }
+        // check if new password empty
+        if (request.containsKey("newPassword") && !request.get("newPassword").isEmpty()) {
+            matchedUserDetail.setPassword(PasswordUtils.encode(request.get("newPassword")));
+        }
+
+        // check if phone empty
+        if (request.containsKey("mobile") && !request.get("mobile").isEmpty()){
+            matchedUserDetail.setMobile(request.get("mobile"));
+        }
+
+        cliUserService.update(matchedUserDetail);
+
+        return new Result();
+    }
+
     @DeleteMapping
     @Operation(summary = "Delete")
     @LogOperation("Delete")
@@ -124,7 +158,9 @@ public class CliUserController {
     @Operation(summary = "Export")
     @LogOperation("Export")
     @RequiresPermissions("client:user:export")
-    public void export(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletResponse response) throws Exception {
+    public void export(
+        @Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletResponse response
+    ) throws Exception{
         List<CliUserDTO> list = cliUserService.list(params);
 
         ExcelUtils.exportExcelToTarget(response, null, "User", list, CliUserExcel.class);

@@ -71,7 +71,7 @@ public class ChatRoomServiceImpl extends CrudServiceImpl<ChatRoomDao, ChatRoomEn
         wrapper.eq("facility_type", facilityType.getValue());
         wrapper.eq("facility_id", facilityId);
         wrapper.eq("initiate_user_id", user.getId());
-        wrapper.notIn("initiate_user_id", List.of(
+        wrapper.notIn("status", List.of(
             ChatConstant.RoomStatus.CLOSED.getValue(),
             ChatConstant.RoomStatus.RESOLVED.getValue(),
             ChatConstant.RoomStatus.REPORTED.getValue()

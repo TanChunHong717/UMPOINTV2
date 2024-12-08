@@ -11,5 +11,7 @@ import my.edu.um.umpoint.modules.payment.entity.SpcPaymentEntity;
  * @since 1.0.0 2024-09-08
  */
 public interface SpcPaymentService extends CrudService<SpcPaymentEntity, SpcPaymentDTO> {
+    SpcPaymentEntity getLatestPayment(Long bookingId);
+    void pay(Long id);
     void refund(Long id);
 }

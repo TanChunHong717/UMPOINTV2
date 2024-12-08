@@ -37,7 +37,6 @@
             </div>
         </template>
 
-        <svg-icon slot="toggle-icon" type="mdi" :path="mdiMenuOpen" />
 
         <!-- hide avatars -->
         <div
@@ -48,13 +47,12 @@
 </template>
 
 <script setup>
-import { mdiMenuOpen } from "@mdi/js";
 import { ref, computed, watch, onBeforeUnmount } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
 
-import * as chatApi from "@/helpers/api-chat";
-import { uploadFile } from "@/helpers/api-upload.js";
+import * as chatApi from "@/service/api-chat";
+import { uploadFile } from "@/service/api-upload.js";
 import { chatRoomTypes, chatUserTypes, chatFacilityTypes } from "@/constants/chat";
 
 // chat component

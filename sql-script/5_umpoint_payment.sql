@@ -12,6 +12,7 @@ CREATE TABLE spc_payment (
     amount decimal(10,2) NOT NULL COMMENT 'Payment Amount',
     method_id bigint NULL COMMENT 'Payment Method ID',
     date datetime NULL COMMENT 'Payment date',
+    created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation Date',
     PRIMARY KEY (id),
     FOREIGN KEY (method_id) REFERENCES payment_method(id),
     FOREIGN KEY (booking_id) REFERENCES spc_booking(id)
@@ -34,6 +35,7 @@ CREATE TABLE svc_payment (
     amount decimal(10,2) NOT NULL COMMENT 'Payment Amount',
     method_id bigint NULL COMMENT 'Payment Method ID',
     date datetime NULL COMMENT 'Payment date',
+    created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation Date',
     PRIMARY KEY (id),
     FOREIGN KEY (method_id) REFERENCES payment_method(id),
     FOREIGN KEY (booking_id) REFERENCES svc_booking(id)
@@ -56,6 +58,7 @@ CREATE TABLE acc_payment (
     amount decimal(10,2) NOT NULL COMMENT 'Payment Amount',
     method_id bigint NULL COMMENT 'Payment Method ID',
     date datetime NULL COMMENT 'Payment date',
+    created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation Date',
     PRIMARY KEY (id),
     FOREIGN KEY (method_id) REFERENCES payment_method(id),
     FOREIGN KEY (booking_id) REFERENCES acc_booking(id)

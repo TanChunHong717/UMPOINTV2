@@ -1,5 +1,13 @@
 package my.edu.um.umpoint.modules.security.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
+import my.edu.um.umpoint.common.exception.BadHttpRequestException;
 import my.edu.um.umpoint.common.exception.ErrorCode;
 import my.edu.um.umpoint.common.exception.RenException;
 import my.edu.um.umpoint.common.utils.IpUtils;
@@ -9,7 +17,6 @@ import my.edu.um.umpoint.common.validator.ValidatorUtils;
 import my.edu.um.umpoint.modules.client.dto.CliUserDTO;
 import my.edu.um.umpoint.modules.client.service.CliTokenService;
 import my.edu.um.umpoint.modules.client.service.CliUserService;
-import my.edu.um.umpoint.modules.client.service.impl.CliUserServiceImpl;
 import my.edu.um.umpoint.modules.log.entity.SysLogLoginEntity;
 import my.edu.um.umpoint.modules.log.enums.LoginOperationEnum;
 import my.edu.um.umpoint.modules.log.enums.LoginStatusEnum;
@@ -23,13 +30,6 @@ import my.edu.um.umpoint.modules.security.user.UserDetail;
 import my.edu.um.umpoint.modules.sys.dto.SysUserDTO;
 import my.edu.um.umpoint.modules.sys.enums.UserStatusEnum;
 import my.edu.um.umpoint.modules.sys.service.SysUserService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,7 +42,7 @@ import java.util.Date;
 @RestController
 @Tag(name = "Login Controller")
 @AllArgsConstructor
-public class LoginController {
+public class LoginController{
     private final SysUserService sysUserService;
     private final SysUserTokenService sysUserTokenService;
     private final CaptchaService captchaService;
@@ -53,14 +53,14 @@ public class LoginController {
     @GetMapping("captcha")
     @Operation(summary = "captcha")
     @Parameter(in = ParameterIn.QUERY, ref = "string", name = "uuid", required = true)
-    public void captcha(HttpServletResponse response, String uuid) throws IOException {
+    public void captcha(HttpServletResponse response, String uuid) throws IOException{
         AssertUtils.isBlank(uuid, ErrorCode.IDENTIFIER_NOT_NULL);
         captchaService.create(response, uuid);
     }
 
     @PostMapping("login")
     @Operation(summary = "Login")
-    public Result login(HttpServletRequest request, @RequestBody LoginDTO login) {
+    public Result login(HttpServletRequest request, @RequestBody LoginDTO login){
         ValidatorUtils.validateEntity(login);
 
         boolean flag = captchaService.validate(login.getUuid(), login.getCaptcha());
@@ -112,7 +112,7 @@ public class LoginController {
 
     @PostMapping("logout")
     @Operation(summary = "logout")
-    public Result logout(HttpServletRequest request) {
+    public Result logout(HttpServletRequest request){
         UserDetail user = SecurityUser.getUser();
 
         sysUserTokenService.logout(user.getId());
@@ -133,7 +133,14 @@ public class LoginController {
 
     @PostMapping("cli/login")
     @Operation(summary = "Login")
-    public Result clientLogin(@RequestBody LoginDTO login) {
+    public Result clientLogin(@RequestBody LoginDTO login){
+//        ValidatorUtils.validateEntity(login);
+
+//        boolean flag = captchaService.validate(login.getUuid(), login.getCaptcha());
+//        if (!flag) {
+//            return new Result().error(ErrorCode.CAPTCHA_ERROR);
+//        }
+
         CliUserDTO user = cliUserService.getByUsername(login.getUsername());
         if (user == null || !PasswordUtils.matches(login.getPassword(), user.getPassword()))
             throw new RenException(ErrorCode.ACCOUNT_PASSWORD_ERROR);
@@ -145,7 +152,7 @@ public class LoginController {
 
     @PostMapping("cli/logout")
     @Operation(summary = "logout")
-    public Result clientLogout() {
+    public Result clientLogout(){
         UserDetail user = SecurityUser.getUser();
 
         cliTokenService.logout(user.getId());

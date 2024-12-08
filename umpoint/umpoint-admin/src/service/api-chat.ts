@@ -1,18 +1,19 @@
-import api from "@/utils/api";
-import app, { facilityTypes } from "@/constants/app";
+import api from "./baseService";
+import app from "@/constants/app";
 import { chatUserTypes } from "@/constants/chat";
-import sockjs from "sockjs-client/dist/sockjs";
+import SockJS from "sockjs-client";
 import { Client as StompClient } from "@stomp/stompjs";
 import { Message, MessageFile } from "vue-advanced-chat";
-import { JavaId } from "@/types/interface";
+
+type JavaId = `${number}` | number | null;
 
 const OPTION_KEY = "options_chat_name";
 const BOT_KEY = "bot_chat_name";
 
 export function createWebSocketClient() {
-    const socketUrl = app.apiUrl + "/ws";
+    const socketUrl = app.api + "/ws";
 
-    const socket = new sockjs(socketUrl);
+    const socket = new SockJS(socketUrl);
     const client = new StompClient({
         webSocketFactory: () => socket,
         debug: function (str) {
@@ -54,7 +55,7 @@ export function stopWebSocketClient(client: StompClient) {
 export async function getChatRooms() {
     let response = await api.get(`/chat/room/page`);
     let rooms = [];
-    for (let room of response.data.data.list) {
+    for (let room of response.data.list) {
         let users = [
             {
                 // default bot
@@ -99,12 +100,10 @@ export async function getMessages(
     page: number = 1,
 ) {
     let response = await api.get(`/chat/messages/${roomId}`, {
-        params: {
-            page,
-            limit: 100,
-        },
+        page,
+        limit: 100,
     });
-    let messages = response.data.data.map(
+    let messages = response.data.map(
         (message: any) => { return parseMessageFromApi(message, currentUserId) }
     );
     return messages;
@@ -319,21 +318,11 @@ export function convertSenderId(messageDto: any, currentUserId: JavaId): string 
     if (senderId == null) {
         return "";
     }
-    // convert option message to own message
-    if (senderId === OPTION_KEY && currentUserId) {
+    // convert bot message to own message
+    if (senderId === BOT_KEY && currentUserId) {
         return currentUserId.toString();
     }
     return senderId;
 }
 
-// client only
-export async function getChatRoomIdByFacility(
-    facilityType: keyof typeof facilityTypes,
-    facilityId: JavaId
-) {
-    let response = await api.post(`/chat/room`, {
-        facilityType,
-        facilityId,
-    });
-    return response.data.data;
-}
+// admin only

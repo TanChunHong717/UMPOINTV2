@@ -12,7 +12,9 @@
                     v-model:activeStatus="activeStatus"
                     v-model:bookings="bookings"
                     @change-status="handleChangeStatus"
-                    @refresh-bookings="getCurrentUserBookings"
+                    @start-chat="startChatAction"
+                    @pay-for-booking="payForBookingAction"
+                    @cancel-booking="cancelBookingAction"
                 />
             </el-tab-pane>
 
@@ -25,11 +27,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onActivated, computed } from "vue";
+import { ref, onMounted, onActivated, h } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { getCurrentUserBookings } from "@/helpers/api-facility.js";
-import { bookingStatus, paymentStatus } from "@/constants/app.js";
+import { ElMessage, ElMessageBox } from "element-plus";
 import BookingList from "@/components/booking-table/BookingList.vue";
+import { bookingStatus, paymentStatus } from "@/constants/app.js";
+import {
+    getCurrentUserBookings,
+    cancelBooking,
+    payBooking,
+} from "@/helpers/api-facility";
 
 const router = useRouter();
 const route = useRoute();
@@ -50,7 +57,6 @@ const handleChangeType = (tab) => {
     });
 };
 const handleChangeStatus = (tabName) => {
-    console.log("status", tabName);
     router.push({
         path: route.path,
         query: {
@@ -75,23 +81,28 @@ const formatResponseTimeWithoutSeconds = (time) => {
 // get all bookings for this user
 const bookings = ref([]);
 const getBookings = async () => {
-    const response = await getCurrentUserBookings();
+    const response = await getCurrentUserBookings(activeType.value);
     if (response.status !== 200 || response.data.code !== 0) {
         console.error("Error fetching bookings", response);
         return;
     }
     bookings.value = response.data.data.list.map((booking) => {
+        let bookingDateStr = `${booking.startDay}`;
+        if (booking.startDay != booking.endDay) {
+            bookingDateStr += ` to ${booking.endDay}`;
+        }
+        bookingDateStr += `, ${formatResponseTimeWithoutSeconds(
+            booking.startTime
+        )} to ${formatResponseTimeWithoutSeconds(booking.endTime)}`;
+
         return {
             id: booking.id,
             invoiceno: booking.id,
-            name: booking.space + " <br> " + booking.event,
+            eventName: booking.event,
+            facility: booking[activeType.value],
             status: booking.status,
             bookingDate: booking.createDate.split(" ")[0],
-            eventDate: `${booking.startDay} to ${
-                booking.endDay
-            }, ${formatResponseTimeWithoutSeconds(
-                booking.startTime
-            )} to ${formatResponseTimeWithoutSeconds(booking.endTime)}`,
+            eventDate: bookingDateStr,
             // payment
             paymentAmount: booking.paymentAmount,
             paymentStatus: booking.spcPaymentDTOList[0]?.status ?? -1,
@@ -105,9 +116,54 @@ const getBookings = async () => {
                 booking.spcPaymentDTOList[0]?.status == paymentStatus.REFUNDED
                     ? booking.spcPaymentDTOList[0]?.amount
                     : undefined,
+            // additional info
+            meta: {
+                facilityId:
+                    activeType.value == "space"
+                        ? booking.spaceId
+                        : activeType.value == "service"
+                        ? booking.serviceId
+                        : activeType.value == "accommodation"
+                        ? booking.accommodationId
+                        : booking.spaceId,
+            },
         };
     });
-    console.log("Bookings", response.data.data);
+};
+
+// handle actions for booking
+const startChatAction = (booking) => {
+    console.log(booking.meta);
+    router.push({
+        name: "chat",
+        query: {
+            facilityType: activeType.value,
+            facilityId: booking.meta.facilityId,
+        },
+    });
+};
+const cancelBookingAction = async (bookingId) => {
+    let response = await cancelBooking(activeType.value, bookingId);
+    if (response.status != 200 || response.data.code != 0) {
+        ElMessage.error("Error cancelling booking");
+        return;
+    }
+    ElMessage({ type: "success", message: "Booking cancelled successfully" });
+    // refresh bookings
+    getBookings();
+};
+const payForBookingAction = async (bookingId) => {
+    let response = await payBooking(activeType.value, bookingId);
+    if (response.status != 200 || response.data.code != 0) {
+        ElMessage.error("Error paying for booking");
+        return;
+    }
+    ElMessage({
+        type: "success",
+        message: "Booking paid for successfully",
+    });
+    // refresh bookings
+    getBookings();
 };
 
 // refresh

@@ -11,10 +11,13 @@
         </div>
 
         <el-carousel arrow="always" trigger="click" :autoplay="false">
-            <el-carousel-item v-for="item in 5" :key="item">
+            <el-carousel-item
+                v-for="item in facilityInfo.gallery"
+                :key="item.id"
+            >
                 <el-image
                     fit="contain"
-                    :src="getImgUrl(item - 1)"
+                    :src="item.imageUrl"
                     style="width: 100%; height: 100%"
                 />
             </el-carousel-item>
@@ -124,15 +127,17 @@
                             >Person In Charge @
                             <strong>{{ facilityInfo.deptName }}</strong></span
                         >
-                        <el-button type="primary" plain>
-                            <template #icon>
-                                <svg-icon
-                                    type="mdi"
-                                    :path="mdiMessageTextOutline"
-                                ></svg-icon>
-                            </template>
-                            Chat
-                        </el-button>
+                        <RouterLink :to="chatUrl">
+                            <el-button type="primary" plain>
+                                <template #icon>
+                                    <svg-icon
+                                        type="mdi"
+                                        :path="mdiMessageTextOutline"
+                                    ></svg-icon>
+                                </template>
+                                Chat
+                            </el-button>
+                        </RouterLink>
                     </div>
                 </template>
                 <el-text type="danger">
@@ -209,7 +214,7 @@
                 ></component>
             </el-card>
         </el-row>
-        <el-row>
+        <!-- <el-row>
             <el-card shadow="never" body-style="padding:0">
                 <template #header>
                     <div class="card-header">
@@ -230,7 +235,7 @@
                     style="height: 580px"
                 ></vue-cal>
             </el-card>
-        </el-row>
+        </el-row> -->
     </BaseLayout>
 </template>
 
@@ -248,9 +253,9 @@ import {
 } from "@mdi/js";
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getFacilityInformation } from "@/helpers/api-facility.js";
+import { getFacilityInformation, transformGallery } from "@/helpers/api-facility";
 
 const router = useRouter();
 const route = useRoute();
@@ -260,17 +265,19 @@ const facilityInfo = ref({});
 
 // watch the params of the route to fetch the data on change
 // must run once
-watch(() => route.params.id, fetchData, { immediate: true });
+watch(() => [route.params.type, route.params.id], fetchData, {
+    immediate: true,
+});
 
-async function fetchData(id) {
+async function fetchData([facilityType, facilityId]) {
     loading.value = true;
 
     try {
-        let response = await getFacilityInformation(id);
+        let response = await getFacilityInformation(facilityType, facilityId);
         if (response.data.code !== 0) {
             throw new Error(response.data.message);
         }
-        facilityInfo.value = response.data.data;
+        facilityInfo.value = transformGallery(facilityType, response.data.data);
     } catch (err) {
         console.error(err);
         router.push({ name: "NotFound" });
@@ -280,16 +287,15 @@ async function fetchData(id) {
 }
 
 // build booking form page url
-const bookingUrl = `/facility/${route.params.id}/reserve`;
+const bookingUrl = computed(
+    () => `/${route.params.type}/${route.params.id}/reserve`
+);
 
-/** temp fetch image url */
-const baseUrl =
-    "https://raw.githubusercontent.com/vueComponent/ant-design-vue/main/components/carousel/demo/";
-const getImgUrl = (i) => {
-    if (i == 0)
-        return "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAeAXCYHdm1-SXe-evCVF1VlhelqfXEG8TGw&s";
-    return `${baseUrl}abstract0${i + 1}.jpg`;
-};
+// build chat url
+const chatUrl = computed(
+    () =>
+        `/chat?facilityType=${route.params.type}&facilityId=${route.params.id}`
+);
 </script>
 
 <style scoped>
