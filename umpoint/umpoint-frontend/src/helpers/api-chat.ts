@@ -113,7 +113,6 @@ export async function getMessages(
 export function reportChatRoom(
     chatRoomId: JavaId,
     reason: string,
-    reportedBy: JavaId
 ) {
     if (reason.trim() === "") {
         return Promise.reject("Reason is required");
@@ -121,8 +120,6 @@ export function reportChatRoom(
     return api.post(`/chat/report`, {
         chatRoomId,
         reason,
-        reportedBy,
-        reportedByType: chatUserTypes.USER, // this interface used by users only
     });
 }
 
@@ -130,7 +127,6 @@ export function reportMessage(
     chatRoomId: JavaId,
     messageId: JavaId,
     reason: string,
-    reportedBy: JavaId
 ) {
     if (reason.trim() === "") {
         return Promise.reject("Reason is required");
@@ -139,8 +135,6 @@ export function reportMessage(
         chatRoomId,
         messageId,
         reason,
-        reportedBy,
-        reportedByType: chatUserTypes.USER, // this interface used by users only
     });
 }
 

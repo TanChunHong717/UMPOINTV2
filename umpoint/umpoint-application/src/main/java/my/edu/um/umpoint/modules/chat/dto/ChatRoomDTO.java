@@ -37,11 +37,17 @@ public class ChatRoomDTO implements Serializable {
 	@Schema(title = "Facility ID")
 	private Long facilityId;
 
+	@Schema(title = "Department ID for the facility")
+	private Long facilityDepartmentId;
+
 	@Schema(title = "User ID that created room")
 	private Long initiateUserId;
 
 	@Schema(title = "Admin user ID")
 	private Long assignedAdminId;
+
+	@Schema(title = "Creator ID")
+	private Long creator;
 
 	@Schema(title = "Creation Date")
 	private Date createdAt;

@@ -16,7 +16,6 @@ import {
     formatDateToTimezoneDateStr,
     formatDateToTimezoneTimeStr,
     addDays,
-    diffDays,
     sameDay,
     formatDateToTimezoneDateTimeStr,
     diffHours,
@@ -213,7 +212,7 @@ const initializeTimeTable = () => {
     if (facilityInfo.value.bookingRule?.minBookingAdvanceDay) {
         minDate.value = addDays(
             today,
-            facilityInfo.value.bookingRule?.minBookingAdvanceDay
+            facilityInfo.value.bookingRule?.minBookingAdvanceDay + 1 // today doesnt count
         );
     } else {
         minDate.value = today;
@@ -363,7 +362,7 @@ const onCalendarEventChange = ({
 const notAllowedDates = (date: Date) => {
     let allow = true;
 
-    if (date <= minDate.value) allow = false;
+    if (date < minDate.value) allow = false;
     if (date > maxDate.value) allow = false;
     if (!facilityInfo.value.bookingRule?.allowWeekend) {
         if (date.getDay() == 0 || date.getDay() == 6) allow = false;

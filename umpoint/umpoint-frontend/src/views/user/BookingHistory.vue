@@ -19,6 +19,10 @@
             </el-tab-pane>
 
             <el-tab-pane
+                label="Service"
+                name="service"
+            ></el-tab-pane>
+            <el-tab-pane
                 label="Accommodation"
                 name="accommodation"
             ></el-tab-pane>
@@ -133,7 +137,6 @@ const getBookings = async () => {
 
 // handle actions for booking
 const startChatAction = (booking) => {
-    console.log(booking.meta);
     router.push({
         name: "chat",
         query: {

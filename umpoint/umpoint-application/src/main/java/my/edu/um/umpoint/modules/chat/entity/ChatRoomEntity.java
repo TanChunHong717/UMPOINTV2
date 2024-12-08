@@ -41,6 +41,10 @@ public class ChatRoomEntity {
 	*/
 	private Long facilityId;
 	/**
+	* Department ID for the facility
+	*/
+	private Long facilityDepartmentId;
+	/**
 	* User ID that created room
 	*/
 	private Long initiateUserId;
@@ -48,6 +52,10 @@ public class ChatRoomEntity {
 	* Admin user ID
 	*/
 	private Long assignedAdminId;
+	/**
+	 * Creator ID
+	 */
+	private Long creator;
 	/**
 	* Creation Date
 	*/

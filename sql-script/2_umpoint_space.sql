@@ -113,7 +113,7 @@ CREATE TABLE spc_booking_attachment (
     id bigint(20) NOT NULL COMMENT 'Attachment ID',
     booking_id bigint(20) NOT NULL COMMENT 'Booking ID',
     name varchar(250) NOT NULL COMMENT 'Attachment name',
-    type varchar(20) NOT NULL COMMENT 'Attachment type',
+    type varchar(100) NOT NULL COMMENT 'Attachment type',
     url varchar(250) NOT NULL COMMENT 'Image url',
     PRIMARY KEY (id),
     FOREIGN KEY (booking_id) REFERENCES spc_booking (id)
