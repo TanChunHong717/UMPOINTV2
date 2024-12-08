@@ -49,6 +49,9 @@ public class ChatMessageDTO implements Serializable {
 	@Schema(title = "Attachment dto list")
 	private List<ChatMessageAttachmentDTO> chatMessageAttachmentDTOList;
 
+	@Schema(title = "Reply message")
+	private ChatMessageDTO replyMessage;
+
 	@Schema(title = "For websocket broadcast relay identification")
 	private Optional<String> returnMessage;
 }
