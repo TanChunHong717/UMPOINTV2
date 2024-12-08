@@ -2,7 +2,7 @@
     <vue-advanced-chat
         :current-user-id="$props.userId"
         show-add-room="false"
-        show-audio="false"
+        show-audio="true"
         :show-footer="canTalkInChat"
         show-reaction-emojis="false"
         capture-files="environment"
