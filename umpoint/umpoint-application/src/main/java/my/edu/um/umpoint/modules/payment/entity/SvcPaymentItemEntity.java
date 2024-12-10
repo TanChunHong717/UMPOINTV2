@@ -39,9 +39,4 @@ public class SvcPaymentItemEntity {
 	* Price per item (total = amount * price)
 	*/
 	private BigDecimal itemPrice;
-	/**
-	 * Payment item entity list
-	 */
-	@TableField(exist = false)
-	private List<SvcPaymentItemEntity> svcPaymentItemEntityList;
 }
