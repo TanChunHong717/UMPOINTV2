@@ -1,16 +1,21 @@
 package my.edu.um.umpoint.modules.chat.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import my.edu.um.umpoint.common.constant.ChatConstant;
+import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.exception.ErrorCode;
+import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.utils.ConvertUtils;
 import my.edu.um.umpoint.common.utils.JsonUtils;
 import my.edu.um.umpoint.common.utils.MessageUtils;
 import my.edu.um.umpoint.common.utils.Result;
+import my.edu.um.umpoint.modules.chat.dto.ChatMessage;
 import my.edu.um.umpoint.modules.chat.dto.ChatMessageDTO;
 import my.edu.um.umpoint.modules.chat.dto.ChatRoomDTO;
-import my.edu.um.umpoint.modules.chat.dto.ChatMessage;
 import my.edu.um.umpoint.modules.chat.entity.ChatMessageEntity;
 import my.edu.um.umpoint.modules.chat.service.ChatMessageAttachmentService;
 import my.edu.um.umpoint.modules.chat.service.ChatMessageService;
@@ -34,6 +39,7 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
@@ -73,6 +79,26 @@ public class ChatMessageController{
         return new Result<List<ChatMessageEntity>>().ok(data);
     }
 
+    @GetMapping("chat/messages/{roomId}/page")
+    @Operation(summary = "Pagination")
+    @Parameters(
+        {
+            @Parameter(
+                name = Constant.PAGE, description = "Current page number, starting from 1", in = ParameterIn.QUERY,
+                required = true, ref = "int"
+            )
+        }
+    )
+    @RequiresPermissions("chat:message:view")
+    public Result<PageData<ChatMessageDTO>> getMessagesPage(
+        @PathVariable("roomId") Long roomId, @Parameter(hidden = true) @RequestParam Map<String, Object> params
+    ){
+        params.put(Constant.LIMIT, "50");
+        params.put("roomId", roomId);
+        PageData<ChatMessageDTO> page = chatMessageService.page(params);
+
+        return new Result<PageData<ChatMessageDTO>>().ok(page);
+    }
 
     @MessageMapping("chat/messages/{roomId}/sendMessage")
     @Operation(summary = "Save")
@@ -143,7 +169,7 @@ public class ChatMessageController{
                 throw new BadWebSocketRequestException(destination, "Invalid reply message ID", request.returnMessage);
             }
             chatMessageDTO.setReplyMessageId(request.replyMessageId);
-            chatMessageDTO.setReplyMessage(chatMessageService.get(request.replyMessageId));
+            chatMessageDTO.setReplyMessageDTO(chatMessageService.get(request.replyMessageId));
         }
 
         chatMessageService.save(chatMessageDTO);

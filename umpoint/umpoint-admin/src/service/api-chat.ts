@@ -99,14 +99,13 @@ export async function getMessages(
     currentUserId: JavaId,
     page: number = 1,
 ) {
-    let response = await api.get(`/chat/messages/${roomId}`, {
+    let response = await api.get(`/chat/messages/${roomId}/page`, {
         page,
-        limit: 100,
     });
-    let messages = response.data.map(
+    let messages = response.data.list.map(
         (message: any) => { return parseMessageFromApi(message, currentUserId) }
     );
-    return messages;
+    return {messages, total: response.data.total};
 }
 
 export function reportChatRoom(

@@ -147,6 +147,7 @@ fetchRooms();
 
 const messages = ref([]);
 const messagesFullyLoaded = ref(false);
+const messageCurrentPage = ref(1);
 
 /* Load messages */
 async function fetchMessages(event) {
@@ -159,15 +160,31 @@ async function fetchMessages(event) {
     // room is opened for first time
     // change websocket subscribe channel
     changeWsClientRoom(wsClient, room.roomId);
+    // reset pages
+    messageCurrentPage.value = 1;
     // fetch messages
     try {
-      let messagesRes = await chatApi.getMessages(room.roomId, props.userId);
-      messages.value = messagesRes;
+      let { messages: messagesRes } = await chatApi.getMessages(room.roomId, props.userId);
+      messages.value = messagesRes.toReversed();
+    } catch (error) {
+      ElMessage.error("Error fetching messages");
+    }
+  } else {
+    // prepare to load next page
+    messageCurrentPage.value++;
+    // fetch more messages
+    try {
+      let { messages: messagesRes } = await chatApi.getMessages(room.roomId, props.userId, messageCurrentPage.value);
+      if (messagesRes.length == 0) {
+        messagesFullyLoaded.value = true;
+        return;
+      }
+      let newMessages = messagesRes.toReversed().concat(messages.value);
+      messages.value = newMessages; // performance issue, build then replace
     } catch (error) {
       ElMessage.error("Error fetching messages");
     }
   }
-  messagesFullyLoaded.value = true;
 }
 
 // Message with buttons for bot reply

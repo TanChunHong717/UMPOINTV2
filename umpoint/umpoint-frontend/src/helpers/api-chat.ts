@@ -98,16 +98,15 @@ export async function getMessages(
     currentUserId: JavaId,
     page: number = 1,
 ) {
-    let response = await api.get(`/chat/messages/${roomId}`, {
+    let response = await api.get(`/chat/messages/${roomId}/page`, {
         params: {
             page,
-            limit: 100,
         },
     });
-    let messages = response.data.data.map(
+    let messages = response.data.data.list.map(
         (message: any) => { return parseMessageFromApi(message, currentUserId) }
     );
-    return messages;
+    return {messages, total: response.data.data.total};
 }
 
 export function reportChatRoom(
@@ -184,9 +183,10 @@ export function parseMessageFromApi(
         );
     }
     if (messageDto.replyMessageId) {
+        messageDto.replyMessage =  messageDto.replyMessageDTO ?? messageDto.replyMessageEntity;
         message.replyMessage = {
             _id: messageDto.replyMessageId,
-            content: messageDto.replyMessage.message,
+            content: messageDto.replyMessage.message ?? "",
             senderId: parseUsername(messageDto.replyMessage) ?? "",
         };
         messageDto.replyMessage.attachments = messageDto.replyMessage.chatMessageAttachmentEntityList ?? messageDto.replyMessage.chatMessageAttachmentDTOList;
