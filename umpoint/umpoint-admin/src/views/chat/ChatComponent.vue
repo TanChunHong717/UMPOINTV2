@@ -160,12 +160,17 @@ async function fetchMessages(event) {
     // room is opened for first time
     // change websocket subscribe channel
     changeWsClientRoom(wsClient, room.roomId);
+    // reset messages
+    messages.value = [];
     // reset pages
     messageCurrentPage.value = 1;
     // fetch messages
     try {
       let { messages: messagesRes } = await chatApi.getMessages(room.roomId, props.userId);
       messages.value = messagesRes.toReversed();
+      if (messagesRes.length == 0) {
+        messagesFullyLoaded.value = true;
+      }
     } catch (error) {
       ElMessage.error("Error fetching messages");
     }
@@ -189,7 +194,7 @@ async function fetchMessages(event) {
 
 // Message with buttons for bot reply
 const messageBotReplyButtons = computed(() => {
-  if (messages.value.length == 0) {
+  if (!messages.value || messages.value.length == 0) {
     return [];
   }
 
@@ -335,7 +340,7 @@ function roomActionHandler(event) {
       });
       break;
     case "assignToSelf":
-      chatApi.assignToSelf(roomId);
+      assignToSelf(roomId);
       break;
   }
 }

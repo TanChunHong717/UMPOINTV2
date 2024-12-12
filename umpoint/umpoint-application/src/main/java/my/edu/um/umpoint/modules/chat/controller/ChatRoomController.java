@@ -10,12 +10,14 @@ import my.edu.um.umpoint.common.constant.ChatConstant;
 import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.exception.BadHttpRequestException;
 import my.edu.um.umpoint.common.page.PageData;
+import my.edu.um.umpoint.common.utils.JsonUtils;
 import my.edu.um.umpoint.common.utils.Result;
 import my.edu.um.umpoint.common.validator.ValidatorUtils;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import my.edu.um.umpoint.modules.accommodation.dto.AccAccommodationDTO;
 import my.edu.um.umpoint.modules.accommodation.service.AccAccommodationService;
+import my.edu.um.umpoint.modules.chat.dto.ChatMessageDTO;
 import my.edu.um.umpoint.modules.chat.dto.ChatRoomDTO;
 import my.edu.um.umpoint.modules.chat.service.ChatRoomService;
 import my.edu.um.umpoint.modules.client.service.CliUserService;
@@ -28,6 +30,7 @@ import my.edu.um.umpoint.modules.space.service.SpcSpaceService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.dao.InvalidResourceUsageException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -57,6 +60,12 @@ public class ChatRoomController{
 
     @Autowired
     private CliUserService cliUserService;
+
+    @Autowired
+    private SimpMessageSendingOperations messagingTemplate;
+
+    @Autowired
+    private ChatMessageController chatMessageController;
 
     @GetMapping("page")
     @Operation(summary = "Pagination")
@@ -175,13 +184,23 @@ public class ChatRoomController{
     @Operation(summary = "Assign room to current admin")
     @LogOperation("Assign room to current admin")
     @RequiresPermissions("chat:room:assignAdmin")
-    public Result<ChatRoomDTO> assignAdmin(@PathVariable("id") Long id){
+    public Result<ChatRoomDTO> assignAdmin(@PathVariable("id") Long roomId){
         UserDetail user = SecurityUser.getUser();
         if (user.getSuperAdmin() == null) {
             throw new BadHttpRequestException(401, "Invalid permission");
         }
 
-        chatRoomService.assignAdminId(id);
+        chatRoomService.assignAdminId(roomId);
+        chatRoomService.stopRoomAutoReply(roomId);
+        messagingTemplate.convertAndSend(
+            "/queue/room/" + roomId,
+            JsonUtils.toJsonStringWithStringId(
+                chatMessageController.buildSystemMessage(
+                    roomId,
+                    "This chat is handed over to human agent."
+                )
+            )
+        );
 
         return new Result();
     }

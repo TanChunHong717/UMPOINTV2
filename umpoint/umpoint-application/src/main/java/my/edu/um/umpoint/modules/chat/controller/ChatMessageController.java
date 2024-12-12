@@ -295,7 +295,7 @@ public class ChatMessageController{
         return chatMessageDTO;
     }
 
-    private ChatMessageDTO buildSystemMessage(Long chatRoomId, String message){
+    public ChatMessageDTO buildSystemMessage(Long chatRoomId, String message){
         ChatMessageDTO chatMessageDTO = new ChatMessageDTO();
         chatMessageDTO.setChatRoomId(chatRoomId);
         chatMessageDTO.setSenderType(ChatConstant.UserType.SYSTEM.getValue());
