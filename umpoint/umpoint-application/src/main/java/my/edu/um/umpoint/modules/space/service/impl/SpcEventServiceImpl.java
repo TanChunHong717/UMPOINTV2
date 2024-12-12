@@ -58,7 +58,31 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
         insertBatch(SpaceBookingUtils.divideBookingToEvents(bookingDTO, holidayAvailable));
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void addEvent(SpcClosureDTO closureDTO){
+        List<SpcEventEntity> eventEntityList = new ArrayList<>();
 
+        LocalDate currentDay = DateUtils.convertDateToLocalDate(closureDTO.getStartDay());
+        LocalDate endDay = DateUtils.convertDateToLocalDate(closureDTO.getEndDay());
+        while (currentDay.isBefore(endDay) || currentDay.isEqual(endDay)) {
+            if (needToAddEvent(closureDTO, currentDay)) {
+                SpcEventEntity eventEntity = new SpcEventEntity();
+
+                eventEntity.setSpaceId(closureDTO.getSpaceId());
+                eventEntity.setClosureId(closureDTO.getId());
+                eventEntity.setType(BookingConstant.EventStatus.CLOSURE.getValue());
+
+                eventEntity.setStartTime(DateUtils.convertLocalDateTimeToDate(currentDay, closureDTO.getStartTime()));
+                eventEntity.setEndTime(DateUtils.convertLocalDateTimeToDate(currentDay, closureDTO.getEndTime()));
+
+                eventEntityList.add(eventEntity);
+            }
+            currentDay = currentDay.plusDays(1);
+        }
+
+        insertBatch(eventEntityList);
+    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
