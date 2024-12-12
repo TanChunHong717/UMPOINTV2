@@ -51,4 +51,7 @@ public class ChatRoomDTO implements Serializable {
 
 	@Schema(title = "Creation Date")
 	private Date createdAt;
+
+	@Schema(title = "Last message in room")
+	private ChatMessageDTO lastMessageDTO;
 }

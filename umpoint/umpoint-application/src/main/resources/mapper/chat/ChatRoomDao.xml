@@ -4,7 +4,7 @@
 <mapper namespace="my.edu.um.umpoint.modules.chat.dao.ChatRoomDao">
 
     <resultMap type="my.edu.um.umpoint.modules.chat.entity.ChatRoomEntity" id="chatRoomMap">
-        <result property="id" column="id"/>
+        <id property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="status" column="status"/>
         <result property="autoChatbotReply" column="auto_chatbot_reply"/>
@@ -16,4 +16,61 @@
         <result property="creator" column="creator"/>
         <result property="createdAt" column="created_at"/>
     </resultMap>
+
+
+    <resultMap type="my.edu.um.umpoint.modules.chat.entity.ChatRoomEntity" id="chatRoomSelectMap">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="status" column="status"/>
+        <result property="autoChatbotReply" column="auto_chatbot_reply"/>
+        <result property="facilityType" column="facility_type"/>
+        <result property="facilityId" column="facility_id"/>
+        <result property="facilityDepartmentId" column="facility_department_id"/>
+        <result property="initiateUserId" column="initiate_user_id"/>
+        <result property="assignedAdminId" column="assigned_admin_id"/>
+        <result property="creator" column="creator"/>
+        <result property="createdAt" column="created_at"/>
+        <association property="lastMessageEntity" javaType="my.edu.um.umpoint.modules.chat.entity.ChatMessageEntity">
+            <result property="id" column="last_message_id"/>
+            <result property="chatRoomId" column="last_message_chat_room_id"/>
+            <result property="senderType" column="last_message_sender_type"/>
+            <result property="userId" column="last_message_user_id"/>
+            <result property="adminId" column="last_message_admin_id"/>
+            <result property="message" column="last_message_content"/>
+            <result property="createdAt" column="last_message_created_at"/>
+        </association>
+    </resultMap>
+
+    <select id="getRoomWithHistory" resultMap="chatRoomSelectMap">
+        SELECT
+        r.*,
+        last_message.id AS last_message_id,
+        last_message.sender_type AS last_message_sender_type,
+        last_message.chat_room_id AS last_message_chat_room_id,
+        last_message.user_id AS last_message_user_id,
+        last_message.admin_id AS last_message_admin_id,
+        last_message.message AS last_message_content,
+        last_message.created_at AS last_message_created_at
+        FROM chat_room r
+        LEFT JOIN (
+            WITH ranked_messages AS (
+                SELECT *,
+                ROW_NUMBER() OVER (PARTITION BY chat_room_id ORDER BY created_at DESC) AS rn
+                FROM chat_message
+                WHERE sender_type NOT IN (4)
+            )
+            SELECT *
+            FROM ranked_messages
+            WHERE rn = 1
+        ) last_message ON r.id = last_message.chat_room_id
+        <where>
+            <if test="userId != null">
+                and r.initiate_user_id like #{userId}
+            </if>
+            <if test="adminId != null">
+                and r.assigned_admin_id like #{adminId}
+            </if>
+        </where>
+        ORDER BY r.created_at DESC
+    </select>
 </mapper>

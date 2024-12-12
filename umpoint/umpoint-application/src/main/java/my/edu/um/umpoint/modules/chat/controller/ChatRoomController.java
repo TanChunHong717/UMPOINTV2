@@ -17,7 +17,6 @@ import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import my.edu.um.umpoint.modules.accommodation.dto.AccAccommodationDTO;
 import my.edu.um.umpoint.modules.accommodation.service.AccAccommodationService;
-import my.edu.um.umpoint.modules.chat.dto.ChatMessageDTO;
 import my.edu.um.umpoint.modules.chat.dto.ChatRoomDTO;
 import my.edu.um.umpoint.modules.chat.service.ChatRoomService;
 import my.edu.um.umpoint.modules.client.service.CliUserService;
@@ -76,19 +75,35 @@ public class ChatRoomController{
                 required = true, ref = "int"
             ),
             @Parameter(
-                name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY,
-                required = true, ref = "int"
-            ),
-            @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(
-                name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY,
-                ref = "String"
+                name = "type", description = "Type of page to use (user/dept), only for admin", in = ParameterIn.QUERY,
+                required = false, ref = "String"
             )
         }
     )
     @RequiresPermissions("chat:room:page")
     public Result<PageData<ChatRoomDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
-        PageData<ChatRoomDTO> page = chatRoomService.page(params);
+        PageData<ChatRoomDTO> page;
+        int pageNum = Integer.parseInt((String) params.get(Constant.PAGE));
+        if (pageNum < 0) pageNum = 1;
+
+        UserDetail user = SecurityUser.getUser();
+        if (user.getSuperAdmin() != null) {
+            // admin
+            if (!params.containsKey("type")) params.put("type", "user");
+            switch (params.get("type").toString()) {
+                case "user":
+                    page = chatRoomService.listAdminUserRoomPage(pageNum, user.getId());
+                    break;
+                case "dept":
+                    page = chatRoomService.listAdminDepartmentRoomPage(pageNum, user.getId());
+                    break;
+                default:
+                    throw new BadHttpRequestException("Invalid search room type");
+            }
+        } else {
+            // user
+            page = chatRoomService.listClientUserRoomPage(pageNum, user.getId());
+        }
 
         return new Result<PageData<ChatRoomDTO>>().ok(page);
     }
@@ -122,7 +137,7 @@ public class ChatRoomController{
             )
         }
     )
-    public Result getRoom(@RequestBody Map<String, Object> request) throws InvalidResourceUsageException{
+    public Result getRoomByFacilityId(@RequestBody Map<String, Object> request) throws InvalidResourceUsageException{
         // param validation
         if (
             request.get("facilityType") == null ||
@@ -172,7 +187,10 @@ public class ChatRoomController{
             )
                 throw new BadHttpRequestException(400, "Missing parameter");
 
-            roomId = chatRoomService.getRoomByFacilityId((Long) request.get("userId"), user.getId(), facilityEnum, facilityId);
+            roomId =
+                chatRoomService.getRoomByFacilityId((Long) request.get("userId"), user.getId(), facilityEnum,
+                    facilityId
+                );
         } else {
             roomId = chatRoomService.getRoomByFacilityId(user.getId(), facilityEnum, facilityId);
         }
