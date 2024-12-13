@@ -81,11 +81,12 @@ public class CliUserController {
         return new Result<CliUserDTO>().ok(data);
     }
 
-    @PostMapping
+    @PostMapping("/register")
     @Operation(summary = "Save")
     @LogOperation("Save")
     public Result save(@RequestBody CliUserDTO dto){
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
+        dto.setStatus(1);
         if (dto.getType().equals("Staff")) {
             dto.setSpacePermission(1);
             dto.setServicePermission(1);

@@ -29,21 +29,33 @@ public class CliUserEntity {
 	*/
 	private String username;
 	/**
+	 * Real Name
+	 */
+	private String realName;
+	/**
+	 * Password
+	 */
+	private String password;
+	/**
+	 * Type
+	 */
+	private String type;
+	/**
 	* Mobile
 	*/
 	private String mobile;
-	/**
-	* Password
-	*/
-	private String password;
 	/**
 	* Email
 	*/
 	private String email;
 	/**
-	 * Type
+	 * Address
 	 */
-	private String type;
+	private String address;
+	/**
+	 * Matric Number
+	 */
+	private String matricNumber;
 	/**
 	 * Have permission to book space
 	 */

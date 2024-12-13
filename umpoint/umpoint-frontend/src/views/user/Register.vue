@@ -202,7 +202,7 @@ async function submitForm() {
     }
 
     // Register
-    api.post("/client/user").then(res => {
+    api.post("/client/user/register").then(res => {
       if (res.status === 200)
           router.push({name: "login"});
       ElMessage.error( "Error register");
