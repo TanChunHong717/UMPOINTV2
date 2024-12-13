@@ -12,7 +12,8 @@ CREATE TABLE chat_room (
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation Date',
     PRIMARY KEY (id),
     FOREIGN KEY (initiate_user_id) REFERENCES cli_user(id),
-    FOREIGN KEY (assigned_admin_id) REFERENCES sys_user(id)
+    FOREIGN KEY (assigned_admin_id) REFERENCES sys_user(id),
+    FOREIGN KEY (facility_department_id) REFERENCES sys_dept(id),
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'Chat room';
 
 CREATE TABLE chat_message (

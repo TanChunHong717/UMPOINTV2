@@ -50,8 +50,11 @@ public class ChatMessageDTO implements Serializable {
 	private List<ChatMessageAttachmentDTO> chatMessageAttachmentDTOList;
 
 	@Schema(title = "Reply message")
-	private ChatMessageDTO replyMessage;
+	private ChatMessageDTO replyMessageDTO;
 
 	@Schema(title = "For websocket broadcast relay identification")
 	private Optional<String> returnMessage;
+
+	@Schema(title = "Message Count (for pagination)")
+	private Long messageCount;
 }

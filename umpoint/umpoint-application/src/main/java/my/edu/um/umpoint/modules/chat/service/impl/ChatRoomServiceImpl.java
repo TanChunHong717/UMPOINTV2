@@ -2,15 +2,17 @@ package my.edu.um.umpoint.modules.chat.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import my.edu.um.umpoint.common.annotation.DataFilter;
 import my.edu.um.umpoint.common.constant.ChatConstant;
+import my.edu.um.umpoint.common.constant.Constant;
+import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
 import my.edu.um.umpoint.common.utils.ConvertUtils;
 import my.edu.um.umpoint.common.utils.DateUtils;
 import my.edu.um.umpoint.common.utils.JsonUtils;
 import my.edu.um.umpoint.modules.accommodation.dto.AccAccommodationDTO;
 import my.edu.um.umpoint.modules.accommodation.service.AccAccommodationService;
-import my.edu.um.umpoint.modules.chat.controller.ChatMessageController;
-import my.edu.um.umpoint.modules.chat.dao.ChatMessageDao;
 import my.edu.um.umpoint.modules.chat.dao.ChatRoomDao;
 import my.edu.um.umpoint.modules.chat.dto.ChatMessageDTO;
 import my.edu.um.umpoint.modules.chat.dto.ChatRoomDTO;
@@ -29,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -64,20 +67,30 @@ public class ChatRoomServiceImpl extends CrudServiceImpl<ChatRoomDao, ChatRoomEn
     }
 
     @Override
+    public PageData<ChatRoomDTO> listUserRoomPage(Map<String, Object> params){
+        IPage<ChatRoomEntity> page = getPage(params, "created_at", false);
+
+        List<ChatRoomEntity> list = baseDao.getClientRooms(params);
+
+        return getPageData(list, page.getTotal(), currentDtoClass());
+    }
+
+    @Override
+    @DataFilter(tableAlias = "r", deptId = "facility_department_id")
+    public PageData<ChatRoomDTO> listAdminDepartmentRoomPage(Map<String, Object> params){
+        IPage<ChatRoomEntity> page = getPage(params, "created_at", false);
+
+        List<ChatRoomEntity> list = baseDao.getClientRooms(params);
+
+        return getPageData(list, page.getTotal(), currentDtoClass());
+    }
+
+    @Override
     public Long getRoomByFacilityId(Long userId, ChatConstant.FacilityType facilityType, Long facilityId){
         UserDetail currentUser = SecurityUser.getUser();
 
-        QueryWrapper<ChatRoomEntity> wrapper = new QueryWrapper<>();
-        wrapper.eq("facility_type", facilityType.getValue());
-        wrapper.eq("facility_id", facilityId);
+        QueryWrapper<ChatRoomEntity> wrapper = getRoomByFacilityIdWrapper(facilityType, facilityId);
         wrapper.eq("initiate_user_id", userId);
-        wrapper.notIn("status", List.of(
-            ChatConstant.RoomStatus.CLOSED.getValue(),
-            ChatConstant.RoomStatus.RESOLVED.getValue(),
-            ChatConstant.RoomStatus.REPORTED.getValue()
-        ));
-        wrapper.orderByDesc("created_at");
-        wrapper.last("LIMIT 1");
 
         ChatRoomEntity chatRoom = baseDao.selectOne(wrapper);
         Long chatRoomId;
@@ -98,18 +111,9 @@ public class ChatRoomServiceImpl extends CrudServiceImpl<ChatRoomDao, ChatRoomEn
     public Long getRoomByFacilityId(Long userId, Long adminId, ChatConstant.FacilityType facilityType, Long facilityId){
         UserDetail currentUser = SecurityUser.getUser();
 
-        QueryWrapper<ChatRoomEntity> wrapper = new QueryWrapper<>();
-        wrapper.eq("facility_type", facilityType.getValue());
-        wrapper.eq("facility_id", facilityId);
+        QueryWrapper<ChatRoomEntity> wrapper = getRoomByFacilityIdWrapper(facilityType, facilityId);
         wrapper.eq("initiate_user_id", userId);
         wrapper.eq("assigned_admin_id", adminId);
-        wrapper.notIn("status", List.of(
-            ChatConstant.RoomStatus.CLOSED.getValue(),
-            ChatConstant.RoomStatus.RESOLVED.getValue(),
-            ChatConstant.RoomStatus.REPORTED.getValue()
-        ));
-        wrapper.orderByDesc("created_at");
-        wrapper.last("LIMIT 1");
 
         ChatRoomEntity chatRoom = baseDao.selectOne(wrapper);
         Long chatRoomId;
@@ -126,11 +130,32 @@ public class ChatRoomServiceImpl extends CrudServiceImpl<ChatRoomDao, ChatRoomEn
         return chatRoomId;
     }
 
+    private QueryWrapper<ChatRoomEntity> getRoomByFacilityIdWrapper(
+        ChatConstant.FacilityType facilityType,
+        Long facilityId
+    ){
+        QueryWrapper<ChatRoomEntity> wrapper = new QueryWrapper<>();
+        wrapper.eq("facility_type", facilityType.getValue());
+        wrapper.eq("facility_id", facilityId);
+        wrapper.notIn("status", List.of(
+            ChatConstant.RoomStatus.CLOSED.getValue(),
+            ChatConstant.RoomStatus.RESOLVED.getValue(),
+            ChatConstant.RoomStatus.REPORTED.getValue()
+        ));
+        wrapper.orderByDesc("created_at");
+        wrapper.last("LIMIT 1");
+
+        return wrapper;
+    }
+
     private ChatRoomDTO createChatRoom(Long clientUserId, ChatConstant.FacilityType facilityType, Long facilityId){
         return createChatRoom(clientUserId, null, facilityType, facilityId);
     }
 
-    private ChatRoomDTO createChatRoom(Long clientUserId, Long adminUserId, ChatConstant.FacilityType facilityType, Long facilityId){
+    private ChatRoomDTO createChatRoom(
+        Long clientUserId, Long adminUserId, ChatConstant.FacilityType facilityType,
+        Long facilityId
+    ){
         String roomName = "";
         Long departmentId = null;
         switch (facilityType) {
@@ -208,7 +233,7 @@ public class ChatRoomServiceImpl extends CrudServiceImpl<ChatRoomDao, ChatRoomEn
         return super.updateById(chatRoom);
     }
 
-    public void saveAndSendSystemMessage(Long roomId, String message) {
+    public void saveAndSendSystemMessage(Long roomId, String message){
         // send message
         ChatMessageDTO chatMessageDTO = new ChatMessageDTO();
         chatMessageDTO.setChatRoomId(roomId);
@@ -225,7 +250,7 @@ public class ChatRoomServiceImpl extends CrudServiceImpl<ChatRoomDao, ChatRoomEn
     }
 
     @Override
-    public boolean canChatInRoom(ChatRoomDTO chatRoomDTO) {
+    public boolean canChatInRoom(ChatRoomDTO chatRoomDTO){
         return (
             chatRoomDTO.getStatus() == ChatConstant.RoomStatus.CREATED.getValue() ||
             chatRoomDTO.getStatus() == ChatConstant.RoomStatus.OPEN.getValue()
@@ -233,7 +258,7 @@ public class ChatRoomServiceImpl extends CrudServiceImpl<ChatRoomDao, ChatRoomEn
     }
 
     @Override
-    public boolean canChatInRoom(Long roomId) {
+    public boolean canChatInRoom(Long roomId){
         return canChatInRoom(ConvertUtils.sourceToTarget(
             baseDao.selectById(roomId),
             ChatRoomDTO.class

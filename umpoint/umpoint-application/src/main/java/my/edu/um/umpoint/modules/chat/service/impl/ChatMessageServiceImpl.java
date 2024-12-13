@@ -2,7 +2,9 @@ package my.edu.um.umpoint.modules.chat.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import my.edu.um.umpoint.common.constant.ChatConstant;
+import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
 import my.edu.um.umpoint.modules.accommodation.service.AccAccommodationService;
 import my.edu.um.umpoint.modules.chat.dao.ChatMessageDao;
@@ -11,6 +13,8 @@ import my.edu.um.umpoint.modules.chat.dto.ChatRoomDTO;
 import my.edu.um.umpoint.modules.chat.entity.ChatMessageEntity;
 import my.edu.um.umpoint.modules.chat.service.ChatMessageService;
 import my.edu.um.umpoint.modules.service.service.SvcServiceService;
+import my.edu.um.umpoint.modules.space.dto.SpcCategoryDTO;
+import my.edu.um.umpoint.modules.space.entity.SpcCategoryEntity;
 import my.edu.um.umpoint.modules.space.service.SpcSpaceService;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,8 +59,17 @@ public class ChatMessageServiceImpl extends CrudServiceImpl<ChatMessageDao, Chat
     }
 
     @Override
+    public PageData<ChatMessageDTO> page(Map<String, Object> params) {
+        IPage<ChatMessageEntity> page = getPage(params, "created_at", false);
+
+        List<ChatMessageEntity> list = baseDao.getRoomMessages(params);
+
+        return getPageData(list, page.getTotal(), currentDtoClass());
+    }
+
+    @Override
     public List<ChatMessageEntity> getRoomMessages(Long roomId){
-        return baseDao.getRoomMessages(roomId);
+        return baseDao.getRoomMessages(Map.of("roomId", roomId));
     }
 
     @Override

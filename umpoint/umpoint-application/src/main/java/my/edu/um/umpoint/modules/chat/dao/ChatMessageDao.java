@@ -16,5 +16,5 @@ import java.util.Map;
  */
 @Mapper
 public interface ChatMessageDao extends BaseDao<ChatMessageEntity> {
-    List<ChatMessageEntity> getRoomMessages(Long roomId);
+    List<ChatMessageEntity> getRoomMessages(Map<String, Object> params);
 }

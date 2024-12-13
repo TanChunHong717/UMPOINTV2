@@ -12,7 +12,7 @@
         :load-first-room="loadFirstRoom"
         @fetch-more-rooms="fetchRooms"
         :rooms="JSON.stringify(rooms)"
-        :rooms-loaded="true"
+        :rooms-loaded="roomsFullyLoaded"
         room-info-enabled="true"
         @room-info="viewFacilityInfo(currentRoomId)"
         :room-actions="JSON.stringify(roomActions)"
@@ -55,7 +55,11 @@ import { ElMessage, ElMessageBox } from "element-plus";
 
 import * as chatApi from "@/helpers/api-chat";
 import { uploadFile } from "@/helpers/api-upload.js";
-import { chatRoomTypes, chatUserTypes, chatFacilityTypes } from "@/constants/chat";
+import {
+    chatRoomTypes,
+    chatUserTypes,
+    chatFacilityTypes,
+} from "@/constants/chat";
 
 // chat component
 import { register } from "vue-advanced-chat";
@@ -114,7 +118,33 @@ onBeforeUnmount(() => {
 
 // full list of rooms
 const rooms = ref();
+const roomsFullyLoaded = ref(false);
 const loadFirstRoom = ref(false); // don't load first room by default
+const roomCurrentPage = ref(1);
+
+// load all rooms
+async function fetchRooms(firstTime = false) {
+    if (firstTime) {
+        roomCurrentPage.value = 1;
+    } else {
+        roomCurrentPage.value++;
+    }
+    roomsFullyLoaded.value = false;
+    try {
+        let { rooms: apiRooms, total } = await chatApi.getChatRooms(
+            roomCurrentPage.value
+        );
+        // reverse chronological order
+        rooms.value = apiRooms.toReversed();
+
+        if (apiRooms.length == 0 || apiRooms.length == total) {
+            roomsFullyLoaded.value = true;
+        }
+    } catch (error) {
+        ElMessage.error("Error fetching chat rooms");
+    }
+}
+fetchRooms(true);
 
 // helper function
 const getRoom = (roomId) => {
@@ -161,20 +191,9 @@ watch(
     { immediate: true }
 );
 
-// load all rooms
-async function fetchRooms() {
-    try {
-        let apiRooms = await chatApi.getChatRooms();
-        // reverse chronological order
-        rooms.value = apiRooms.toReversed();
-    } catch (error) {
-        ElMessage.error("Error fetching chat rooms");
-    }
-}
-fetchRooms();
-
 const messages = ref([]);
 const messagesFullyLoaded = ref(false);
+const messageCurrentPage = ref(1);
 
 /* Load messages */
 async function fetchMessages(event) {
@@ -187,23 +206,48 @@ async function fetchMessages(event) {
         // room is opened for first time
         // change websocket subscribe channel
         changeWsClientRoom(wsClient, room.roomId);
+        // reset messages
+        messages.value = [];
+        // reset pages
+        messageCurrentPage.value = 1;
         // fetch messages
         try {
-            let messagesRes = await chatApi.getMessages(
+            let { messages: messagesRes, total } = await chatApi.getMessages(
                 room.roomId,
                 props.userId
             );
-            messages.value = messagesRes;
+            messages.value = messagesRes.toReversed();
+            if (messagesRes.length == 0 || messagesRes.length == total) {
+                messagesFullyLoaded.value = true;
+            }
+        } catch (error) {
+            ElMessage.error("Error fetching messages");
+        }
+    } else {
+        // prepare to load next page
+        messageCurrentPage.value++;
+        // fetch more messages
+        try {
+            let { messages: messagesRes } = await chatApi.getMessages(
+                room.roomId,
+                props.userId,
+                messageCurrentPage.value
+            );
+            if (messagesRes.length == 0) {
+                messagesFullyLoaded.value = true;
+                return;
+            }
+            let newMessages = messagesRes.toReversed().concat(messages.value);
+            messages.value = newMessages; // performance issue, build then replace
         } catch (error) {
             ElMessage.error("Error fetching messages");
         }
     }
-    messagesFullyLoaded.value = true;
 }
 
 // Message with buttons for bot reply
 const messageBotReplyButtons = computed(() => {
-    if (messages.value.length == 0) {
+    if (!messages.value || messages.value.length == 0) {
         return [];
     }
 
@@ -341,7 +385,7 @@ function roomActionHandler(event) {
         case "reportChat":
             showReportChatPopup((reason) => {
                 chatApi.reportChatRoom(roomId, reason);
-                fetchRooms();
+                fetchRooms(true);
             });
             break;
     }
@@ -374,12 +418,8 @@ function messageActionHandler(event) {
             break;
         case "reportMessage":
             showReportChatPopup((reason) => {
-                chatApi.reportMessage(
-                    roomId,
-                    message._id,
-                    reason,
-                );
-                fetchRooms();
+                chatApi.reportMessage(roomId, message._id, reason);
+                fetchRooms(true);
             });
             break;
     }

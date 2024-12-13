@@ -52,8 +52,11 @@ export function stopWebSocketClient(client: StompClient) {
     return client.deactivate();
 }
 
-export async function getChatRooms() {
-    let response = await api.get(`/chat/room/page`);
+export async function getChatRooms(
+    page: number = 1,
+    searchType: string = "user",
+) {
+    let response = await api.get(`/chat/room/page`, { page, type: searchType });
     let rooms = [];
     for (let room of response.data.list) {
         let users = [
@@ -91,7 +94,7 @@ export async function getChatRooms() {
             status: room.status,
         });
     }
-    return rooms;
+    return { rooms, total: response.data.total };
 }
 
 export async function getMessages(
@@ -99,20 +102,18 @@ export async function getMessages(
     currentUserId: JavaId,
     page: number = 1,
 ) {
-    let response = await api.get(`/chat/messages/${roomId}`, {
+    let response = await api.get(`/chat/messages/${roomId}/page`, {
         page,
-        limit: 100,
     });
-    let messages = response.data.map(
+    let messages = response.data.list.map(
         (message: any) => { return parseMessageFromApi(message, currentUserId) }
     );
-    return messages;
+    return { messages, total: response.data.total };
 }
 
 export function reportChatRoom(
     chatRoomId: JavaId,
     reason: string,
-    reportedBy: JavaId
 ) {
     if (reason.trim() === "") {
         return Promise.reject("Reason is required");
@@ -127,7 +128,6 @@ export function reportMessage(
     chatRoomId: JavaId,
     messageId: JavaId,
     reason: string,
-    reportedBy: JavaId
 ) {
     if (reason.trim() === "") {
         return Promise.reject("Reason is required");
@@ -185,9 +185,10 @@ export function parseMessageFromApi(
         );
     }
     if (messageDto.replyMessageId) {
+        messageDto.replyMessage = messageDto.replyMessageDTO ?? messageDto.replyMessageEntity;
         message.replyMessage = {
             _id: messageDto.replyMessageId,
-            content: messageDto.replyMessage.message,
+            content: messageDto.replyMessage.message ?? "",
             senderId: parseUsername(messageDto.replyMessage) ?? "",
         };
         messageDto.replyMessage.attachments = messageDto.replyMessage.chatMessageAttachmentEntityList ?? messageDto.replyMessage.chatMessageAttachmentDTOList;

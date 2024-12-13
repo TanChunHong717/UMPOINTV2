@@ -1,5 +1,6 @@
 package my.edu.um.umpoint.modules.chat.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -60,4 +61,10 @@ public class ChatRoomEntity {
 	* Creation Date
 	*/
 	private Date createdAt;
+
+	/**
+	 * Last message in room
+	 */
+	@TableField(exist = false)
+	private ChatMessageEntity lastMessageEntity;
 }

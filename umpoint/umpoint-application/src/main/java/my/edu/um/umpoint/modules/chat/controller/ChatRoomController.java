@@ -10,6 +10,7 @@ import my.edu.um.umpoint.common.constant.ChatConstant;
 import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.exception.BadHttpRequestException;
 import my.edu.um.umpoint.common.page.PageData;
+import my.edu.um.umpoint.common.utils.JsonUtils;
 import my.edu.um.umpoint.common.utils.Result;
 import my.edu.um.umpoint.common.validator.ValidatorUtils;
 import my.edu.um.umpoint.common.validator.group.DefaultGroup;
@@ -28,9 +29,11 @@ import my.edu.um.umpoint.modules.space.service.SpcSpaceService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.dao.InvalidResourceUsageException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -58,6 +61,12 @@ public class ChatRoomController{
     @Autowired
     private CliUserService cliUserService;
 
+    @Autowired
+    private SimpMessageSendingOperations messagingTemplate;
+
+    @Autowired
+    private ChatMessageController chatMessageController;
+
     @GetMapping("page")
     @Operation(summary = "Pagination")
     @Parameters(
@@ -67,19 +76,38 @@ public class ChatRoomController{
                 required = true, ref = "int"
             ),
             @Parameter(
-                name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY,
-                required = true, ref = "int"
-            ),
-            @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(
-                name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY,
-                ref = "String"
+                name = "type", description = "Type of page to use (user/dept), only for admin", in = ParameterIn.QUERY,
+                required = false, ref = "String"
             )
         }
     )
     @RequiresPermissions("chat:room:page")
     public Result<PageData<ChatRoomDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
-        PageData<ChatRoomDTO> page = chatRoomService.page(params);
+        PageData<ChatRoomDTO> page;
+        int pageNum = Integer.parseInt((String) params.getOrDefault(Constant.PAGE, "1"));
+        if (pageNum < 0) pageNum = 1;
+
+        Map<String, Object> queryParams = new HashMap<>(Map.of(
+            Constant.PAGE, Integer.toString(pageNum),
+            Constant.LIMIT, "20"
+        ));
+
+        UserDetail user = SecurityUser.getUser();
+        if (user.getSuperAdmin() != null) {
+            // admin
+            page = switch (params.getOrDefault("type", "user").toString()) {
+                case "user" -> {
+                    queryParams.put("adminId", user.getId());
+                    yield chatRoomService.listUserRoomPage(queryParams);
+                }
+                case "dept" -> chatRoomService.listAdminDepartmentRoomPage(queryParams);
+                default -> throw new BadHttpRequestException("Invalid search room type");
+            };
+        } else {
+            // user
+            queryParams.put("userId", user.getId());
+            page = chatRoomService.listUserRoomPage(queryParams);
+        }
 
         return new Result<PageData<ChatRoomDTO>>().ok(page);
     }
@@ -113,7 +141,7 @@ public class ChatRoomController{
             )
         }
     )
-    public Result getRoom(@RequestBody Map<String, Object> request) throws InvalidResourceUsageException{
+    public Result getRoomByFacilityId(@RequestBody Map<String, Object> request) throws InvalidResourceUsageException{
         // param validation
         if (
             request.get("facilityType") == null ||
@@ -163,7 +191,10 @@ public class ChatRoomController{
             )
                 throw new BadHttpRequestException(400, "Missing parameter");
 
-            roomId = chatRoomService.getRoomByFacilityId((Long) request.get("userId"), user.getId(), facilityEnum, facilityId);
+            roomId =
+                chatRoomService.getRoomByFacilityId((Long) request.get("userId"), user.getId(), facilityEnum,
+                    facilityId
+                );
         } else {
             roomId = chatRoomService.getRoomByFacilityId(user.getId(), facilityEnum, facilityId);
         }
@@ -175,13 +206,23 @@ public class ChatRoomController{
     @Operation(summary = "Assign room to current admin")
     @LogOperation("Assign room to current admin")
     @RequiresPermissions("chat:room:assignAdmin")
-    public Result<ChatRoomDTO> assignAdmin(@PathVariable("id") Long id){
+    public Result<ChatRoomDTO> assignAdmin(@PathVariable("id") Long roomId){
         UserDetail user = SecurityUser.getUser();
         if (user.getSuperAdmin() == null) {
             throw new BadHttpRequestException(401, "Invalid permission");
         }
 
-        chatRoomService.assignAdminId(id);
+        chatRoomService.assignAdminId(roomId);
+        chatRoomService.stopRoomAutoReply(roomId);
+        messagingTemplate.convertAndSend(
+            "/queue/room/" + roomId,
+            JsonUtils.toJsonStringWithStringId(
+                chatMessageController.buildSystemMessage(
+                    roomId,
+                    "This chat is handed over to human agent."
+                )
+            )
+        );
 
         return new Result();
     }

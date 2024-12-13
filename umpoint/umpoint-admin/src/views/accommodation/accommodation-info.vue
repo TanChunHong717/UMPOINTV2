@@ -98,9 +98,9 @@
             </el-row>
             <el-row class="content-row">
               <span class="radio-label">Open booking:</span>
-              <el-checkbox v-model="accommodation.spcBookingRuleDTO.openForStaff" :true-value="Number(1)" disabled>Staff</el-checkbox>
-              <el-checkbox v-model="accommodation.spcBookingRuleDTO.openForStudent" :true-value="Number(1)" disabled>Student</el-checkbox>
-              <el-checkbox v-model="accommodation.spcBookingRuleDTO.openForPublic" :true-value="Number(1)" disabled>Public</el-checkbox>
+              <el-checkbox v-model="accommodation.accBookingRuleDTO.openForStaff" :true-value="Number(1)" disabled>Staff</el-checkbox>
+              <el-checkbox v-model="accommodation.accBookingRuleDTO.openForStudent" :true-value="Number(1)" disabled>Student</el-checkbox>
+              <el-checkbox v-model="accommodation.accBookingRuleDTO.openForPublic" :true-value="Number(1)" disabled>Public</el-checkbox>
             </el-row>
             <el-row style="margin-bottom: 10px">
               <el-col :span="24">

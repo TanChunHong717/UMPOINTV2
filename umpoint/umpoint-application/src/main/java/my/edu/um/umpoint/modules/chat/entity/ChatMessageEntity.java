@@ -60,5 +60,12 @@ public class ChatMessageEntity {
 	 * Reply message
 	 */
 	@TableField(exist = false)
-	private ChatMessageEntity replyMessage;
+	private ChatMessageEntity replyMessageEntity;
+
+
+	/**
+	 * Message Count (for pagination)
+	 */
+	@TableField(exist = false)
+	private Long messageCount;
 }

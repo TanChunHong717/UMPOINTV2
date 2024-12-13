@@ -4,6 +4,9 @@ import my.edu.um.umpoint.common.dao.BaseDao;
 import my.edu.um.umpoint.modules.chat.entity.ChatRoomEntity;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Chat room
  *
@@ -12,5 +15,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface ChatRoomDao extends BaseDao<ChatRoomEntity> {
-	
+	public List<ChatRoomEntity> getClientRooms(Map<String, Object> params);
 }
