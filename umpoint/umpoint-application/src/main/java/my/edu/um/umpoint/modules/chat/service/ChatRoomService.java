@@ -18,9 +18,8 @@ public interface ChatRoomService extends CrudService<ChatRoomEntity, ChatRoomDTO
     Long getRoomByFacilityId(Long userId, ChatConstant.FacilityType facilityType, Long facilityId);
     Long getRoomByFacilityId(Long userId, Long adminId, ChatConstant.FacilityType facilityType, Long facilityId);
 
-    PageData<ChatRoomDTO> listClientUserRoomPage(int page, Long userId);
-    PageData<ChatRoomDTO> listAdminUserRoomPage(int page, Long userId);
-    PageData<ChatRoomDTO> listAdminDepartmentRoomPage(int page, Long userId);
+    PageData<ChatRoomDTO> listUserRoomPage(Map<String, Object> params);
+    PageData<ChatRoomDTO> listAdminDepartmentRoomPage(Map<String, Object> params);
 
     void assignAdminId(Long roomId);
     boolean stopRoomAutoReply(Long roomId);

@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -66,29 +67,7 @@ public class ChatRoomServiceImpl extends CrudServiceImpl<ChatRoomDao, ChatRoomEn
     }
 
     @Override
-    public PageData<ChatRoomDTO> listClientUserRoomPage(int pageNum, Long userId){
-        Map<String, Object> params = Map.of(
-            Constant.PAGE, Integer.toString(pageNum),
-            Constant.LIMIT, "20",
-            "userId", userId
-        );
-        System.out.println(params);
-
-        IPage<ChatRoomEntity> page = getPage(params, "created_at", false);
-
-        List<ChatRoomEntity> list = baseDao.getClientRooms(params);
-
-        return getPageData(list, page.getTotal(), currentDtoClass());
-    }
-
-    @Override
-    public PageData<ChatRoomDTO> listAdminUserRoomPage(int pageNum, Long userId){
-        Map<String, Object> params = Map.of(
-            Constant.PAGE, Integer.toString(pageNum),
-            Constant.LIMIT, "20",
-            "adminId", userId
-        );
-
+    public PageData<ChatRoomDTO> listUserRoomPage(Map<String, Object> params){
         IPage<ChatRoomEntity> page = getPage(params, "created_at", false);
 
         List<ChatRoomEntity> list = baseDao.getClientRooms(params);
@@ -98,19 +77,14 @@ public class ChatRoomServiceImpl extends CrudServiceImpl<ChatRoomDao, ChatRoomEn
 
     @Override
     @DataFilter(tableAlias = "r", deptId = "facility_department_id")
-    public PageData<ChatRoomDTO> listAdminDepartmentRoomPage(int pageNum, Long userId){
-        Map<String, Object> params = Map.of(
-            Constant.PAGE, Integer.toString(pageNum),
-            Constant.LIMIT, "20",
-            "adminId", userId
-        );
-
+    public PageData<ChatRoomDTO> listAdminDepartmentRoomPage(Map<String, Object> params){
         IPage<ChatRoomEntity> page = getPage(params, "created_at", false);
 
         List<ChatRoomEntity> list = baseDao.getClientRooms(params);
 
         return getPageData(list, page.getTotal(), currentDtoClass());
     }
+
     @Override
     public Long getRoomByFacilityId(Long userId, ChatConstant.FacilityType facilityType, Long facilityId){
         UserDetail currentUser = SecurityUser.getUser();

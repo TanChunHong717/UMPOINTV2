@@ -12,7 +12,7 @@
         :load-first-room="loadFirstRoom"
         @fetch-more-rooms="fetchRooms"
         :rooms="JSON.stringify(rooms)"
-        :rooms-loaded="true"
+        :rooms-loaded="roomsFullyLoaded"
         room-info-enabled="true"
         @room-info="viewFacilityInfo(currentRoomId)"
         :room-actions="JSON.stringify(roomActions)"
@@ -118,7 +118,33 @@ onBeforeUnmount(() => {
 
 // full list of rooms
 const rooms = ref();
+const roomsFullyLoaded = ref(false);
 const loadFirstRoom = ref(false); // don't load first room by default
+const roomCurrentPage = ref(1);
+
+// load all rooms
+async function fetchRooms(firstTime = false) {
+    if (firstTime) {
+        roomCurrentPage.value = 1;
+    } else {
+        roomCurrentPage.value++;
+    }
+    roomsFullyLoaded.value = false;
+    try {
+        let { rooms: apiRooms, total } = await chatApi.getChatRooms(
+            roomCurrentPage.value
+        );
+        // reverse chronological order
+        rooms.value = apiRooms.toReversed();
+
+        if (apiRooms.length == 0 || apiRooms.length == total) {
+            roomsFullyLoaded.value = true;
+        }
+    } catch (error) {
+        ElMessage.error("Error fetching chat rooms");
+    }
+}
+fetchRooms(true);
 
 // helper function
 const getRoom = (roomId) => {
@@ -165,18 +191,6 @@ watch(
     { immediate: true }
 );
 
-// load all rooms
-async function fetchRooms() {
-    try {
-        let apiRooms = await chatApi.getChatRooms();
-        // reverse chronological order
-        rooms.value = apiRooms.toReversed();
-    } catch (error) {
-        ElMessage.error("Error fetching chat rooms");
-    }
-}
-fetchRooms();
-
 const messages = ref([]);
 const messagesFullyLoaded = ref(false);
 const messageCurrentPage = ref(1);
@@ -198,12 +212,12 @@ async function fetchMessages(event) {
         messageCurrentPage.value = 1;
         // fetch messages
         try {
-            let { messages: messagesRes } = await chatApi.getMessages(
+            let { messages: messagesRes, total } = await chatApi.getMessages(
                 room.roomId,
                 props.userId
             );
             messages.value = messagesRes.toReversed();
-            if (messagesRes.length == 0) {
+            if (messagesRes.length == 0 || messagesRes.length == total) {
                 messagesFullyLoaded.value = true;
             }
         } catch (error) {
@@ -371,7 +385,7 @@ function roomActionHandler(event) {
         case "reportChat":
             showReportChatPopup((reason) => {
                 chatApi.reportChatRoom(roomId, reason);
-                fetchRooms();
+                fetchRooms(true);
             });
             break;
     }
@@ -405,7 +419,7 @@ function messageActionHandler(event) {
         case "reportMessage":
             showReportChatPopup((reason) => {
                 chatApi.reportMessage(roomId, message._id, reason);
-                fetchRooms();
+                fetchRooms(true);
             });
             break;
     }

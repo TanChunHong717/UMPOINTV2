@@ -41,7 +41,7 @@
         </association>
     </resultMap>
 
-    <select id="getRoomWithHistory" resultMap="chatRoomSelectMap">
+    <select id="getClientRooms" resultMap="chatRoomSelectMap">
         SELECT
         r.*,
         last_message.id AS last_message_id,

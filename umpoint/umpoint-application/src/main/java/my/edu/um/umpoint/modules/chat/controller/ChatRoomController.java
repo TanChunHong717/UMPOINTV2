@@ -33,6 +33,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -83,26 +84,29 @@ public class ChatRoomController{
     @RequiresPermissions("chat:room:page")
     public Result<PageData<ChatRoomDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
         PageData<ChatRoomDTO> page;
-        int pageNum = Integer.parseInt((String) params.get(Constant.PAGE));
+        int pageNum = Integer.parseInt((String) params.getOrDefault(Constant.PAGE, "1"));
         if (pageNum < 0) pageNum = 1;
+
+        Map<String, Object> queryParams = new HashMap<>(Map.of(
+            Constant.PAGE, Integer.toString(pageNum),
+            Constant.LIMIT, "20"
+        ));
 
         UserDetail user = SecurityUser.getUser();
         if (user.getSuperAdmin() != null) {
             // admin
-            if (!params.containsKey("type")) params.put("type", "user");
-            switch (params.get("type").toString()) {
-                case "user":
-                    page = chatRoomService.listAdminUserRoomPage(pageNum, user.getId());
-                    break;
-                case "dept":
-                    page = chatRoomService.listAdminDepartmentRoomPage(pageNum, user.getId());
-                    break;
-                default:
-                    throw new BadHttpRequestException("Invalid search room type");
-            }
+            page = switch (params.getOrDefault("type", "user").toString()) {
+                case "user" -> {
+                    queryParams.put("adminId", user.getId());
+                    yield chatRoomService.listUserRoomPage(queryParams);
+                }
+                case "dept" -> chatRoomService.listAdminDepartmentRoomPage(queryParams);
+                default -> throw new BadHttpRequestException("Invalid search room type");
+            };
         } else {
             // user
-            page = chatRoomService.listClientUserRoomPage(pageNum, user.getId());
+            queryParams.put("userId", user.getId());
+            page = chatRoomService.listUserRoomPage(queryParams);
         }
 
         return new Result<PageData<ChatRoomDTO>>().ok(page);
