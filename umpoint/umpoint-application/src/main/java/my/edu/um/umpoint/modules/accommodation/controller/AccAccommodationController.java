@@ -128,7 +128,7 @@ public class AccAccommodationController {
     }
 
     private void validateAccommodationImageDTO(AccAccommodationDTO dto) {
-        if (dto != null && !dto.getAccImageDTOList().isEmpty()) {
+        if (dto != null && dto.getAccImageDTOList() != null && !dto.getAccImageDTOList().isEmpty()) {
             dto.getAccImageDTOList().forEach(imageDTO -> {
                 ValidatorUtils.validateEntity(
                         imageDTO,
@@ -139,7 +139,7 @@ public class AccAccommodationController {
     }
 
     private void validateAccommodationTagDTO(AccAccommodationDTO dto) {
-        if (dto != null && !dto.getAccTagDTOList().isEmpty()){
+        if (dto != null && dto.getAccTagDTOList() != null && !dto.getAccTagDTOList().isEmpty()){
             dto.getAccTagDTOList().forEach(tagDTO -> {
                 ValidatorUtils.validateEntity(
                         tagDTO,

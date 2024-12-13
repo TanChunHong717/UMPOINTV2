@@ -23,9 +23,9 @@
         <result property="message" column="message"/>
         <result property="replyMessageId" column="reply_message_id"/>
         <result property="createdAt" column="created_at"/>
-        <association property="replyMessage" javaType="my.edu.um.umpoint.modules.chat.entity.ChatMessageEntity">
+        <association property="replyMessageEntity" javaType="my.edu.um.umpoint.modules.chat.entity.ChatMessageEntity">
             <result property="id" column="reply_message_id"/>
-            <result property="chatRoomId" column="chat_room_id"/>
+            <result property="chatRoomId" column="reply_chat_room_id"/>
             <result property="senderType" column="reply_sender_type"/>
             <result property="userId" column="reply_user_id"/>
             <result property="adminId" column="reply_admin_id"/>
@@ -50,7 +50,8 @@
             m.created_at,
             a.type,
             a.url,
-            reply.sender_type  AS reply_sender_type,
+            reply.sender_type AS reply_sender_type,
+            reply.chat_room_id AS reply_chat_room_id,
             reply.user_id AS reply_user_id,
             reply.admin_id AS reply_admin_id,
             reply.message AS reply_message,
@@ -60,7 +61,7 @@
         LEFT JOIN chat_message reply ON m.reply_message_id = reply.id
         WHERE
             m.chat_room_id = #{roomId}
-        ORDER BY m.created_at ASC
+        ORDER BY m.created_at DESC
     </select>
 
 </mapper>

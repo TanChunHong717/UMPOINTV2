@@ -215,6 +215,7 @@ const dataFormSubmitHandle = () => {
       accBookingRuleDTO: {
         id: dataForm.bookingRuleId,
         approvalRequired: dataForm.approvalRequired,
+        holidayAvailable: dataForm.holidayAvailable,
         openForStaff: dataForm.openForStaff ?? 0,
         openForStudent: dataForm.openForStudent ?? 0,
         openForPublic: dataForm.openForPublic ?? 0,
