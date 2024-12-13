@@ -64,13 +64,13 @@ public class ChatRoomServiceImpl extends CrudServiceImpl<ChatRoomDao, ChatRoomEn
     }
 
     @Override
-    public Long getRoomByFacilityId(ChatConstant.FacilityType facilityType, Long facilityId){
-        UserDetail user = SecurityUser.getUser();
+    public Long getRoomByFacilityId(Long userId, ChatConstant.FacilityType facilityType, Long facilityId){
+        UserDetail currentUser = SecurityUser.getUser();
 
         QueryWrapper<ChatRoomEntity> wrapper = new QueryWrapper<>();
         wrapper.eq("facility_type", facilityType.getValue());
         wrapper.eq("facility_id", facilityId);
-        wrapper.eq("initiate_user_id", user.getId());
+        wrapper.eq("initiate_user_id", userId);
         wrapper.notIn("status", List.of(
             ChatConstant.RoomStatus.CLOSED.getValue(),
             ChatConstant.RoomStatus.RESOLVED.getValue(),
@@ -82,7 +82,9 @@ public class ChatRoomServiceImpl extends CrudServiceImpl<ChatRoomDao, ChatRoomEn
         ChatRoomEntity chatRoom = baseDao.selectOne(wrapper);
         Long chatRoomId;
         if (chatRoom == null) {
-            ChatRoomDTO chatRoomDTO = createChatRoom(user, facilityType, facilityId);
+            ChatRoomDTO chatRoomDTO = createChatRoom(userId, facilityType, facilityId);
+            chatRoomDTO.setCreator(currentUser.getId());
+            super.save(chatRoomDTO);
 
             chatRoomId = chatRoomDTO.getId();
         } else {
@@ -92,35 +94,76 @@ public class ChatRoomServiceImpl extends CrudServiceImpl<ChatRoomDao, ChatRoomEn
         return chatRoomId;
     }
 
-    private ChatRoomDTO createChatRoom(UserDetail user, ChatConstant.FacilityType facilityType, Long facilityId){
-        // create new room if no room or room was closed/resolved/reported
+    @Override
+    public Long getRoomByFacilityId(Long userId, Long adminId, ChatConstant.FacilityType facilityType, Long facilityId){
+        UserDetail currentUser = SecurityUser.getUser();
+
+        QueryWrapper<ChatRoomEntity> wrapper = new QueryWrapper<>();
+        wrapper.eq("facility_type", facilityType.getValue());
+        wrapper.eq("facility_id", facilityId);
+        wrapper.eq("initiate_user_id", userId);
+        wrapper.eq("assigned_admin_id", adminId);
+        wrapper.notIn("status", List.of(
+            ChatConstant.RoomStatus.CLOSED.getValue(),
+            ChatConstant.RoomStatus.RESOLVED.getValue(),
+            ChatConstant.RoomStatus.REPORTED.getValue()
+        ));
+        wrapper.orderByDesc("created_at");
+        wrapper.last("LIMIT 1");
+
+        ChatRoomEntity chatRoom = baseDao.selectOne(wrapper);
+        Long chatRoomId;
+        if (chatRoom == null) {
+            ChatRoomDTO chatRoomDTO = createChatRoom(userId, adminId, facilityType, facilityId);
+            chatRoomDTO.setCreator(currentUser.getId());
+            super.save(chatRoomDTO);
+
+            chatRoomId = chatRoomDTO.getId();
+        } else {
+            chatRoomId = chatRoom.getId();
+        }
+
+        return chatRoomId;
+    }
+
+    private ChatRoomDTO createChatRoom(Long clientUserId, ChatConstant.FacilityType facilityType, Long facilityId){
+        return createChatRoom(clientUserId, null, facilityType, facilityId);
+    }
+
+    private ChatRoomDTO createChatRoom(Long clientUserId, Long adminUserId, ChatConstant.FacilityType facilityType, Long facilityId){
         String roomName = "";
+        Long departmentId = null;
         switch (facilityType) {
             case SPACE -> {
                 SpcSpaceDTO space = spcSpaceService.get(facilityId);
                 roomName = space.getName() + " (" + space.getDeptName() + ")";
+                departmentId = space.getDeptId();
             }
             case SERVICE -> {
                 SvcServiceDTO service = svcServiceService.get(facilityId);
                 roomName = service.getName() + " (" + service.getDeptName() + ")";
+                departmentId = service.getDeptId();
             }
             case ACCOMMODATION -> {
                 AccAccommodationDTO acco = accAccommodationService.get(facilityId);
                 roomName = acco.getName() + " (" + acco.getDeptName() + ")";
+                departmentId = acco.getDeptId();
             }
         }
 
         ChatRoomDTO chatRoomDTO = new ChatRoomDTO();
         chatRoomDTO.setFacilityType(facilityType.getValue());
         chatRoomDTO.setFacilityId(facilityId);
-        chatRoomDTO.setInitiateUserId(user.getId());
+        chatRoomDTO.setFacilityDepartmentId(departmentId);
+        chatRoomDTO.setInitiateUserId(clientUserId);
+        chatRoomDTO.setAssignedAdminId(adminUserId);
         chatRoomDTO.setStatus(ChatConstant.RoomStatus.CREATED.getValue());
         chatRoomDTO.setAutoChatbotReply(ChatConstant.AutoReply.ENABLED.getValue());
         chatRoomDTO.setName(roomName);
         chatRoomDTO.setCreatedAt(DateUtils.convertLocalDateTimeToDate(LocalDateTime.now()));
-        super.save(chatRoomDTO);
         return chatRoomDTO;
     }
+
 
     @Override
     public void assignAdminId(Long roomId){

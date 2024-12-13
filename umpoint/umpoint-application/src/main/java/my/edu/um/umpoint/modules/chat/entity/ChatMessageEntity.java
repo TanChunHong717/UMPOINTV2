@@ -56,4 +56,9 @@ public class ChatMessageEntity {
 	*/
 	@TableField(exist = false)
 	private List<ChatMessageAttachmentEntity> chatMessageAttachmentEntityList;
+	/**
+	 * Reply message
+	 */
+	@TableField(exist = false)
+	private ChatMessageEntity replyMessage;
 }

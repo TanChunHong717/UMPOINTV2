@@ -143,6 +143,7 @@ public class ChatMessageController{
                 throw new BadWebSocketRequestException(destination, "Invalid reply message ID", request.returnMessage);
             }
             chatMessageDTO.setReplyMessageId(request.replyMessageId);
+            chatMessageDTO.setReplyMessage(chatMessageService.get(request.replyMessageId));
         }
 
         chatMessageService.save(chatMessageDTO);
@@ -159,8 +160,11 @@ public class ChatMessageController{
             JsonUtils.toJsonStringWithStringId(chatMessageDTO)
         );
 
-        // check automatic response
-        if (chatRoomDTO.getAutoChatbotReply() == ChatConstant.AutoReply.ENABLED.getValue()) {
+        // check automatic response and only used by user
+        if (
+            user.getSuperAdmin() == null &&
+            chatRoomDTO.getAutoChatbotReply() == ChatConstant.AutoReply.ENABLED.getValue()
+        ) {
             // check if require response from human
             if (chatMessageDTO.getMessage().toLowerCase().contains("talk to human")) {
                 // convert chat to not auto reply
@@ -250,6 +254,7 @@ public class ChatMessageController{
     }
 
     public boolean validateChatMessageId(Long roomId, Long messageId){
+        if (chatRoomService.get(roomId) == null) return false;
         ChatMessageDTO message = chatMessageService.get(messageId);
         if (message == null) return false;
         return message.getChatRoomId().equals(roomId);

@@ -37,12 +37,12 @@
                                 />
                             </el-select>
                         </el-form-item>
-                        <el-button>Search</el-button>
+                        <el-button @click.prevent="getSearchFacilities">Search</el-button>
                     </el-form>
                 </el-affix>
             </el-col>
             <el-col :sm="24" :md="18">
-                <h2>Showing 1 facility in Universiti Malaya, Kuala Lumpur</h2>
+                <h2>Showing {{ facilitiesRes?.length }} facility in Universiti Malaya, Kuala Lumpur</h2>
                 <el-text>
                     Price shown does not include technician fee and might differ
                     after login.
@@ -261,7 +261,6 @@ function getSearchFacilities() {
     if (searchForm.catId) params.catId = searchForm.catId;
 
     getFacilities(facilityType.value, params).then((res) => {
-        console.log(res.data.data);
         facilitiesRes.value = res.data.data.list;
     });
 }
@@ -304,7 +303,6 @@ onMounted(() => {
 const categoriesOptions = ref([]);
 function updateCategories(facilityType) {
     getFacilityCategories(facilityType).then((res) => {
-        console.log(res.data.data);
         categoriesOptions.value = res.data.data.map((item) => ({
             label: item.name,
             value: item.id,

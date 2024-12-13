@@ -18,6 +18,7 @@ import my.edu.um.umpoint.modules.accommodation.dto.AccAccommodationDTO;
 import my.edu.um.umpoint.modules.accommodation.service.AccAccommodationService;
 import my.edu.um.umpoint.modules.chat.dto.ChatRoomDTO;
 import my.edu.um.umpoint.modules.chat.service.ChatRoomService;
+import my.edu.um.umpoint.modules.client.service.CliUserService;
 import my.edu.um.umpoint.modules.security.user.SecurityUser;
 import my.edu.um.umpoint.modules.security.user.UserDetail;
 import my.edu.um.umpoint.modules.service.dto.SvcServiceDTO;
@@ -41,7 +42,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("chat/room")
 @Tag(name = "Chat room")
-public class ChatRoomController {
+public class ChatRoomController{
     @Autowired
     private ChatRoomService chatRoomService;
 
@@ -53,6 +54,9 @@ public class ChatRoomController {
 
     @Autowired
     private AccAccommodationService accAccommodationService;
+
+    @Autowired
+    private CliUserService cliUserService;
 
     @GetMapping("page")
     @Operation(summary = "Pagination")
@@ -102,6 +106,10 @@ public class ChatRoomController {
             @Parameter(
                 name = "facilityId", description = "Facility ID",
                 in = ParameterIn.QUERY, required = true, ref = "Long"
+            ),
+            @Parameter(
+                name = "userId", description = "User ID",
+                in = ParameterIn.QUERY, required = false, ref = "Long"
             )
         }
     )
@@ -111,7 +119,7 @@ public class ChatRoomController {
             request.get("facilityType") == null ||
             request.get("facilityId") == null
         )
-            throw new InvalidResourceUsageException("Missing parameter");
+            throw new BadHttpRequestException(400, "Missing parameter");
         if (
             !(request.get("facilityType") instanceof String) ||
             Arrays.stream(ChatConstant.FacilityType.values()).noneMatch((type) ->
@@ -138,12 +146,27 @@ public class ChatRoomController {
                     AccAccommodationDTO acco = accAccommodationService.get(facilityId);
                     if (acco == null) throw new IllegalArgumentException();
                 }
+                default -> throw new IllegalArgumentException();
             }
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             throw new BadHttpRequestException(400, "Invalid facility ID");
         }
 
-        Long roomId = chatRoomService.getRoomByFacilityId(facilityEnum, facilityId);
+        UserDetail user = SecurityUser.getUser();
+
+        Long roomId;
+        if (user.getSuperAdmin() != null) {
+            // validate client user ID
+            if (
+                request.get("userId") == null ||
+                cliUserService.get((Long) request.get("userId")) == null
+            )
+                throw new BadHttpRequestException(400, "Missing parameter");
+
+            roomId = chatRoomService.getRoomByFacilityId((Long) request.get("userId"), user.getId(), facilityEnum, facilityId);
+        } else {
+            roomId = chatRoomService.getRoomByFacilityId(user.getId(), facilityEnum, facilityId);
+        }
 
         return new Result<Long>().ok(roomId);
     }

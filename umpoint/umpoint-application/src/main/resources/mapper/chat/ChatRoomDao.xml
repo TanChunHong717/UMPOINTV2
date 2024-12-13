@@ -10,8 +10,10 @@
         <result property="autoChatbotReply" column="auto_chatbot_reply"/>
         <result property="facilityType" column="facility_type"/>
         <result property="facilityId" column="facility_id"/>
+        <result property="facilityDepartmentId" column="facility_department_id"/>
         <result property="initiateUserId" column="initiate_user_id"/>
         <result property="assignedAdminId" column="assigned_admin_id"/>
+        <result property="creator" column="creator"/>
         <result property="createdAt" column="created_at"/>
     </resultMap>
 </mapper>

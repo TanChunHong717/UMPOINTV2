@@ -175,6 +175,74 @@
                 </el-table-column>
             </el-table>
         </el-tab-pane>
+        <el-tab-pane label="Completed" name="completed">
+            <el-table
+                :data="spaceDisplayBookings"
+                stripe
+                style="width: 100%; height: 100%"
+            >
+                <el-table-column type="expand">
+                    <template #default="{ row }">
+                        <BookingInfoCard :booking="row" />
+                    </template>
+                </el-table-column>
+
+                <el-table-column
+                    prop="invoiceno"
+                    label="Invoice No."
+                    width="160"
+                />
+                <el-table-column
+                    prop="name"
+                    label="Event/Facilty"
+                    :formatter="eventNameFormatter"
+                />
+
+                <el-table-column
+                    prop="bookingDate"
+                    label="Booking Date"
+                    width="120"
+                />
+                <el-table-column
+                    prop="eventDate"
+                    label="Event Date"
+                    width="120"
+                />
+                <el-table-column
+                    prop="paymentAmount"
+                    label="Payment Amount"
+                    width="100"
+                    :formatter="paymentAmountFormatter"
+                />
+                <el-table-column
+                    prop="action"
+                    fixed="right"
+                    label="Action"
+                    width="100"
+                >
+                    <template #default="scope">
+                        <el-button
+                            link
+                            title="Start chat"
+                            type="primary"
+                            size="small"
+                            @click.prevent="startChat(scope)"
+                        >
+                            <SvgIcon type="mdi" :path="mdiForum" />
+                        </el-button>
+                        <el-button
+                            link
+                            title="Cancel booking"
+                            type="danger"
+                            size="small"
+                            @click.prevent="showCancelBookingDialog(scope)"
+                        >
+                            <SvgIcon type="mdi" :path="mdiCancel" />
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-tab-pane>
         <el-tab-pane label="Rejected" name="rejected">
             <el-table
                 :data="spaceDisplayBookings"

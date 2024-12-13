@@ -4,7 +4,7 @@
 <mapper namespace="my.edu.um.umpoint.modules.chat.dao.ChatMessageDao">
 
     <resultMap type="my.edu.um.umpoint.modules.chat.entity.ChatMessageEntity" id="chatMessageMap">
-        <result property="id" column="id"/>
+        <id property="id" column="id"/>
         <result property="chatRoomId" column="chat_room_id"/>
         <result property="senderType" column="sender_type"/>
         <result property="userId" column="user_id"/>
@@ -15,7 +15,7 @@
     </resultMap>
 
     <resultMap type="my.edu.um.umpoint.modules.chat.entity.ChatMessageEntity" id="chatMessageSelectMap">
-        <result property="id" column="id"/>
+        <id property="id" column="id"/>
         <result property="chatRoomId" column="chat_room_id"/>
         <result property="senderType" column="sender_type"/>
         <result property="userId" column="user_id"/>
@@ -23,6 +23,15 @@
         <result property="message" column="message"/>
         <result property="replyMessageId" column="reply_message_id"/>
         <result property="createdAt" column="created_at"/>
+        <association property="replyMessage" javaType="my.edu.um.umpoint.modules.chat.entity.ChatMessageEntity">
+            <result property="id" column="reply_message_id"/>
+            <result property="chatRoomId" column="chat_room_id"/>
+            <result property="senderType" column="reply_sender_type"/>
+            <result property="userId" column="reply_user_id"/>
+            <result property="adminId" column="reply_admin_id"/>
+            <result property="message" column="reply_message"/>
+            <result property="createdAt" column="reply_created_at"/>
+        </association>
         <collection property="chatMessageAttachmentEntityList" javaType="java.util.List" ofType="my.edu.um.umpoint.modules.chat.entity.ChatMessageAttachmentEntity">
             <result property="type" column="type"/>
             <result property="url" column="url"/>
@@ -40,9 +49,15 @@
             m.reply_message_id,
             m.created_at,
             a.type,
-            a.url
+            a.url,
+            reply.sender_type  AS reply_sender_type,
+            reply.user_id AS reply_user_id,
+            reply.admin_id AS reply_admin_id,
+            reply.message AS reply_message,
+            reply.created_at AS reply_created_at
         FROM chat_message m
         LEFT JOIN chat_message_attachment a ON m.id = a.message_id
+        LEFT JOIN chat_message reply ON m.reply_message_id = reply.id
         WHERE
             m.chat_room_id = #{roomId}
         ORDER BY m.created_at ASC

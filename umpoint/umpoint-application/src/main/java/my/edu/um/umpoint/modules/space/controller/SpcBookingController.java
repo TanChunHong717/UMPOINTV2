@@ -266,7 +266,7 @@ public class SpcBookingController{
             throw new DateTimeException("Selected date range is over the maximum number of reservation days");
         }
         if (differenceInDays < spcBookingRule.getMinReservationDay()) {
-            throw new DateTimeException("Selected date range does not reach minimum number of reservation days");
+            throw new DateTimeException("Selected time range does not reach minimum number of days");
         }
 
         double differenceInHours = ChronoUnit.MINUTES.between(startTime, endTime) / 60.0; // may have half hour limit
