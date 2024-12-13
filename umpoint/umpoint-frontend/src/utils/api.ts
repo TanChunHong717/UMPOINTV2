@@ -38,7 +38,8 @@ api.interceptors.response.use(
     function (response) {
         if (response.data.code && response.data.code !== 0) {
             console.log(response);
-            throw new Error(response.data);
+            let errorMessage = response.data.data?.msg ?? response.data.msg;
+            throw new Error(errorMessage, { cause: response.data });
         }
         return response;
     }, function (error) {
