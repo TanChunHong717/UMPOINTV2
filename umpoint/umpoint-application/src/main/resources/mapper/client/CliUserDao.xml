@@ -4,12 +4,16 @@
 <mapper namespace="my.edu.um.umpoint.modules.client.dao.CliUserDao">
 
     <resultMap type="my.edu.um.umpoint.modules.client.entity.CliUserEntity" id="cliUserMap">
-        <result property="id" column="id"/>
+        <id property="id" column="id"/>
+        <result property="status" column="status"/>
         <result property="username" column="username"/>
-        <result property="mobile" column="mobile"/>
+        <result property="realName" column="real_name"/>
         <result property="password" column="password"/>
-        <result property="email" column="email"/>
         <result property="type" column="type"/>
+        <result property="mobile" column="mobile"/>
+        <result property="email" column="email"/>
+        <result property="address" column="address"/>
+        <result property="matricNumber" column="matric_number"/>
         <result property="spacePermission" column="space_permission"/>
         <result property="servicePermission" column="service_permission"/>
         <result property="accommodationPermission" column="accommodation_permission"/>

@@ -53,6 +53,9 @@
                 <router-link to="/login">
                     <el-button type="primary">Login</el-button>
                 </router-link>
+                <router-link to="/register">
+                  <el-button type="info" style="margin-left: 10px">Register</el-button>
+                </router-link>
             </div>
         </div>
     </div>
