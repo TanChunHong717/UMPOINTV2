@@ -88,9 +88,7 @@ async function submitForm() {
             router.push({ name: "home" });
         }
     } catch (error) {
-        ElMessage.error(
-            error.response.data?.msg ?? error.response.msg ?? "Error logging in"
-        );
+        ElMessage.error(error.message ?? "Error logging in");
         formNode.value.fields.forEach((element) => {
             console.log(element);
             element.setCustomValidity = "error";

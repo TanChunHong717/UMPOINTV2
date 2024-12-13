@@ -173,7 +173,7 @@ async function saveFormData() {
         await saveUserInformation(formData.id, submitData);
         ElMessage.success("Profile updated successfully");
     } catch (e) {
-        ElMessage.error(e.response.data.msg);
+        ElMessage.error(e.message);
     }
 }
 </script>
