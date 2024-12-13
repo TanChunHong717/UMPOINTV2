@@ -1,5 +1,6 @@
 package my.edu.um.umpoint.modules.service.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import my.edu.um.umpoint.common.annotation.DataFilter;
@@ -15,15 +16,12 @@ import my.edu.um.umpoint.modules.service.entity.SvcServiceTagEntity;
 import my.edu.um.umpoint.modules.service.service.SvcBookingRuleService;
 import my.edu.um.umpoint.modules.service.service.SvcImageService;
 import my.edu.um.umpoint.modules.service.service.SvcServiceService;
-import cn.hutool.core.util.StrUtil;
 import my.edu.um.umpoint.modules.service.service.SvcServiceTagService;
-import my.edu.um.umpoint.modules.space.dto.SpcBookingRuleDTO;
+import my.edu.um.umpoint.modules.sys.service.SysDeptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -45,6 +43,9 @@ public class SvcServiceServiceImpl extends CrudServiceImpl<SvcServiceDao, SvcSer
     @Autowired
     private SvcBookingRuleService svcBookingRuleService;
 
+    @Autowired
+    private SysDeptService sysDeptService;
+
     @Override
     public QueryWrapper<SvcServiceEntity> getWrapper(Map<String, Object> params){
         paramsToLike(params, "name");
@@ -60,6 +61,8 @@ public class SvcServiceServiceImpl extends CrudServiceImpl<SvcServiceDao, SvcSer
     @DataFilter(tableAlias = "s")
     public PageData<SvcServiceDTO> servicePage(Map<String, Object> params) {
         paramsToLike(params, "name");
+        if (params.containsKey(Constant.DEPT_ID))
+            params.put("deptIdList", sysDeptService.getSubDeptIdList(Long.parseLong((String) params.get(Constant.DEPT_ID))));
 
         IPage<SvcServiceEntity> page = getPage(params, Constant.CREATE_DATE, false);
 
