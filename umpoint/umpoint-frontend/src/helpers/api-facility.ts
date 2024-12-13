@@ -149,11 +149,17 @@ export function payBooking(facilityType: keyof typeof facilityTypes, bookingID: 
 
 // helpers
 
-export function transformGallery(facilityType, data) {
+export function transformGallery(facilityType: keyof typeof facilityTypes, data: any) {
     // transform data based on facility type
     switch (facilityType) {
-        case "space":
+        case facilityTypes.space:
             data.gallery = data.spcImageDTOList ?? {};
+            break;
+        case facilityTypes.service:
+            data.gallery = data.svcImageDTOList ?? {};
+            break;
+        case facilityTypes.accommodation:
+            data.gallery = data.accImageDTOList ?? {};
             break;
         default:
             break;
@@ -161,12 +167,17 @@ export function transformGallery(facilityType, data) {
     return data;
 }
 
-export function transformBookingRule(facilityType, data) {
+export function transformBookingRule(facilityType: keyof typeof facilityTypes, data: any) {
     // transform data based on facility type
     switch (facilityType) {
-        case "space":
+        case facilityTypes.space:
             data.bookingRule = data.spcBookingRuleDTO ?? {};
             break;
+            case facilityTypes.service:
+                data.gallery = data.svcBookingRuleDTO ?? {};
+                break;
+            case facilityTypes.accommodation:
+                data.gallery = data.accBookingRuleDTO ?? {};
         default:
             break;
     }
