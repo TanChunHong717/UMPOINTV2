@@ -37,12 +37,17 @@
                                 />
                             </el-select>
                         </el-form-item>
-                        <el-button @click.prevent="getSearchFacilities">Search</el-button>
+                        <el-button @click.prevent="getSearchFacilities"
+                            >Search</el-button
+                        >
                     </el-form>
                 </el-affix>
             </el-col>
             <el-col :sm="24" :md="18">
-                <h2>Showing {{ facilitiesRes?.length }} facility in Universiti Malaya, Kuala Lumpur</h2>
+                <h2>
+                    Showing {{ facilitiesRes?.length }} facility in Universiti
+                    Malaya, Kuala Lumpur
+                </h2>
                 <el-text>
                     Price shown does not include technician fee and might differ
                     after login.
@@ -55,7 +60,12 @@
                             <el-image
                                 :src="
                                     transformGallery(facilityType, facilityInfo)
-                                        .gallery[0].imageUrl
+                                        .gallery.length > 0
+                                        ? transformGallery(
+                                              facilityType,
+                                              facilityInfo
+                                          ).gallery[0].imageUrl
+                                        : 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png'
                                 "
                                 fit="cover"
                             ></el-image>
@@ -174,7 +184,9 @@
                             </el-descriptions>
                         </el-col>
                         <el-col :span="3">
-                            <RouterLink :to="`/${facilityType}/${facilityInfo.id}`">
+                            <RouterLink
+                                :to="`/${facilityType}/${facilityInfo.id}`"
+                            >
                                 <el-button>Details</el-button>
                             </RouterLink>
                         </el-col>

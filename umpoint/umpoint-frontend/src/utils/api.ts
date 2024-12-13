@@ -37,12 +37,15 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     function (response) {
         if (response.data.code && response.data.code !== 0) {
+            // manually throw status 200 but code 400 error
             console.log(response);
-            throw new Error(response.data);
+            let errorMessage = response.data.data?.msg ?? response.data.msg;
+            throw new Error(errorMessage, { cause: response.data });
         }
         return response;
     }, function (error) {
-        return Promise.reject(error);
+        let errorMessage = error.response.data?.msg ?? error.response.data?.data?.msg ?? error.response.data?.data?.message;
+        throw new Error(errorMessage, { cause: error });
     }
 )
 
