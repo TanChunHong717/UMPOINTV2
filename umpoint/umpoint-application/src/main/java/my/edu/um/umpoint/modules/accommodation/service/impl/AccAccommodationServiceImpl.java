@@ -1,5 +1,6 @@
 package my.edu.um.umpoint.modules.accommodation.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import my.edu.um.umpoint.common.annotation.DataFilter;
@@ -13,17 +14,18 @@ import my.edu.um.umpoint.modules.accommodation.entity.AccAccommodationEntity;
 import my.edu.um.umpoint.modules.accommodation.entity.AccAccommodationTagEntity;
 import my.edu.um.umpoint.modules.accommodation.entity.AccImageEntity;
 import my.edu.um.umpoint.modules.accommodation.service.AccAccommodationService;
-import cn.hutool.core.util.StrUtil;
 import my.edu.um.umpoint.modules.accommodation.service.AccAccommodationTagService;
 import my.edu.um.umpoint.modules.accommodation.service.AccBookingRuleService;
 import my.edu.um.umpoint.modules.accommodation.service.AccImageService;
 import my.edu.um.umpoint.modules.security.user.SecurityUser;
-import my.edu.um.umpoint.modules.space.dto.SpcBookingRuleDTO;
+import my.edu.um.umpoint.modules.sys.service.SysDeptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Accommodation
@@ -43,6 +45,9 @@ public class AccAccommodationServiceImpl extends CrudServiceImpl<AccAccommodatio
     @Autowired
     private AccBookingRuleService accBookingRuleService;
 
+    @Autowired
+    private SysDeptService sysDeptService;
+
     @Override
     public QueryWrapper<AccAccommodationEntity> getWrapper(Map<String, Object> params){
         paramsToLike(params, "name");
@@ -58,6 +63,8 @@ public class AccAccommodationServiceImpl extends CrudServiceImpl<AccAccommodatio
     @DataFilter(tableAlias = "a")
     public PageData<AccAccommodationDTO> accommodationPage(Map<String, Object> params) {
         paramsToLike(params, "name");
+        if (params.containsKey(Constant.DEPT_ID))
+            params.put("deptIdList", sysDeptService.getSubDeptIdList(Long.parseLong((String) params.get(Constant.DEPT_ID))));
 
         IPage<AccAccommodationEntity> page = getPage(params, Constant.CREATE_DATE, false);
 
