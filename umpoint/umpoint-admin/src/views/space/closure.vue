@@ -6,13 +6,11 @@
           v-model="state.dataForm.showPast"
           placeholder="Show current"
           clearable
+          @change="state.getDataList()"
         >
           <el-option label="Show current" :value="0"/>
           <el-option label="Show All" :value="1"/>
         </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="state.getDataList()">Search</el-button>
       </el-form-item>
       <el-form-item>
         <el-button v-if="state.hasPermission('space:closure:save')" type="primary" @click="batchUpdateHandle()">Add</el-button>
@@ -76,7 +74,7 @@
       </el-table-column>
       <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="150">
         <template v-slot="scope">
-          <el-button v-if="state.hasPermission('space:closure:update')" type="primary" link @click="updateHandle(scope.row.id, scope.row.spaceId)">Update</el-button>
+          <el-button v-if="state.dataForm.showPast == 0 && state.hasPermission('space:closure:update')" type="primary" link @click="updateHandle(scope.row.id, scope.row.spaceId)">Update</el-button>
           <el-button v-if="state.hasPermission('space:closure:delete')" type="primary" link @click="state.deleteHandle(scope.row.id)">Delete</el-button>
         </template>
       </el-table-column>
@@ -90,7 +88,6 @@
 <script lang="ts" setup>
 import useView from "@/hooks/useView";
 import {reactive, ref, toRefs} from "vue";
-import {useAppStore} from "@/store";
 import Update from "@/views/space/closure-add-or-update.vue";
 import ClosureBatchAdd from "@/views/space/closure-batch-add.vue";
 
