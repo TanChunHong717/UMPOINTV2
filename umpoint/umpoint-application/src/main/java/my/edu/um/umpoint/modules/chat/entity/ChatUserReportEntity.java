@@ -1,5 +1,6 @@
 package my.edu.um.umpoint.modules.chat.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -56,6 +57,7 @@ public class ChatUserReportEntity {
 	/**
 	* Creation Date
 	*/
+	@TableField(fill = FieldFill.INSERT)
 	private Date createdAt;
 	/**
 	 * Name of user being report

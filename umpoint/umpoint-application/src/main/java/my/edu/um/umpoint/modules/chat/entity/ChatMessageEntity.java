@@ -1,5 +1,6 @@
 package my.edu.um.umpoint.modules.chat.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -50,6 +51,7 @@ public class ChatMessageEntity {
 	/**
 	* Creation Date
 	*/
+	@TableField(fill = FieldFill.INSERT)
 	private Date createdAt;
 	/**
 	* Attachment entity list
