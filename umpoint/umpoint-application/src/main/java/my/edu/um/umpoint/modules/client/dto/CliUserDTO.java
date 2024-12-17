@@ -62,7 +62,6 @@ public class CliUserDTO implements Serializable {
 	private String address;
 
 	@Schema(title = "Matric Number")
-	@NotEmpty(groups = DefaultGroup.class)
 	private String matricNumber;
 
 	@Schema(title = "Have permission to book space")

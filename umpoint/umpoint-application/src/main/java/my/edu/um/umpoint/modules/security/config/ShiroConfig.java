@@ -66,10 +66,13 @@ public class ShiroConfig {
         filterMap.put("/*.pdf", "anon");
         filterMap.put("/space/space/?*", "anon");
         filterMap.put("/space/category/list/filter", "anon");
+        filterMap.put("/space/event", "anon");
         filterMap.put("/service/service/?*", "anon");
         filterMap.put("/service/category/list/filter", "anon");
+        filterMap.put("/service/event", "anon");
         filterMap.put("/accommodation/accommodation/?*", "anon");
         filterMap.put("/accommodation/category/list/filter", "anon");
+        filterMap.put("/accommodation/event", "anon");
         filterMap.put("/sys/dept/public/list", "anon");
         filterMap.put("/client/user/register", "anon");
 
