@@ -91,6 +91,8 @@ public class CliUserController {
             throw new BadHttpRequestException(ErrorCode.DB_RECORD_EXISTS, "This username is taken");
         }
 
+        dto.setPassword(PasswordUtils.encode(dto.getPassword()));
+
         dto.setStatus(1);
         if (dto.getType().equals("Staff")) {
             dto.setSpacePermission(1);
