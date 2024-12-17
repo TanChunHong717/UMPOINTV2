@@ -74,35 +74,6 @@ public class CliUserController {
         return new Result<CliUserDTO>().ok(data);
     }
 
-    @GetMapping("info")
-    @Operation(summary = "login user info")
-    public Result<CliUserDTO> info(){
-        CliUserDTO data = ConvertUtils.sourceToTarget(SecurityUser.getUser(), CliUserDTO.class);
-        return new Result<CliUserDTO>().ok(data);
-    }
-
-    @PostMapping
-    @Operation(summary = "Save")
-    @LogOperation("Save")
-    public Result save(@RequestBody CliUserDTO dto){
-        ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
-        if (dto.getType().equals("Staff")) {
-            dto.setSpacePermission(1);
-            dto.setServicePermission(1);
-            dto.setAccommodationPermission(1);
-        } else if (dto.getType().equals("Student")) {
-            dto.setSpacePermission(1);
-            dto.setAccommodationPermission(1);
-        } else {
-            dto.setSpacePermission(1);
-            dto.setServicePermission(1);
-        }
-
-        cliUserService.save(dto);
-
-        return new Result();
-    }
-
     @PutMapping
     @Operation(summary = "Update")
     @LogOperation("Update")
@@ -110,35 +81,6 @@ public class CliUserController {
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
 
         cliUserService.update(dto);
-
-        return new Result();
-    }
-
-    @PutMapping("{userId}")
-    @Operation(summary = "Update User profile")
-    @LogOperation("Update")
-    public Result updateUser(@PathVariable("userId") Long userId, @RequestBody Map<String, String> request){
-        ValidatorUtils.validateEntity(request, UpdateGroup.class, DefaultGroup.class);
-
-        UserDetail loggedInUser = SecurityUser.getUser();
-        if (!userId.equals(loggedInUser.getId())) {
-            throw new BadHttpRequestException(ErrorCode.UNAUTHORIZED);
-        }
-        CliUserDTO matchedUserDetail = cliUserService.get(loggedInUser.getId());
-        if (!PasswordUtils.matches(request.getOrDefault("password", ""), matchedUserDetail.getPassword())) {
-            throw new BadHttpRequestException(ErrorCode.UNAUTHORIZED, "Current password is incorrect");
-        }
-        // check if new password empty
-        if (request.containsKey("newPassword") && !request.get("newPassword").isEmpty()) {
-            matchedUserDetail.setPassword(PasswordUtils.encode(request.get("newPassword")));
-        }
-
-        // check if phone empty
-        if (request.containsKey("mobile") && !request.get("mobile").isEmpty()){
-            matchedUserDetail.setMobile(request.get("mobile"));
-        }
-
-        cliUserService.update(matchedUserDetail);
 
         return new Result();
     }
@@ -165,5 +107,4 @@ public class CliUserController {
 
         ExcelUtils.exportExcelToTarget(response, null, "User", list, CliUserExcel.class);
     }
-
 }
