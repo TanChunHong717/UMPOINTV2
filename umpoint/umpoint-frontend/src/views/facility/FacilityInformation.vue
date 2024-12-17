@@ -62,7 +62,7 @@
                         </el-icon>
                         {{ facilityInfo.capacity }} person(s)
                     </el-text>
-                    <el-text>
+                    <el-text v-if="facilityInfo.facilities.trim()">
                         <el-icon aria-label="Facilities">
                             <svg-icon
                                 type="mdi"
@@ -140,7 +140,10 @@
                         </RouterLink>
                     </div>
                 </template>
-                <el-text type="danger">
+                <el-text
+                    type="danger"
+                    v-if="facilityInfo.bookingRule?.contactRequired == 1"
+                >
                     <el-icon aria-label="Warning">
                         <svg-icon
                             type="mdi"
@@ -160,10 +163,10 @@
                     {{ facilityInfo.managerName }}
                 </el-text>
                 <el-text>
-                    <el-icon aria-label="Phone number">
+                    <el-icon aria-label="Mobile phone number">
                         <svg-icon type="mdi" :path="mdiPhone"></svg-icon>
                     </el-icon>
-                    +6012-3456789
+                    {{ facilityInfo.managerMobile }}
                 </el-text>
                 <el-text>
                     <el-icon aria-label="Email">
@@ -172,7 +175,7 @@
                             :path="mdiEmailArrowRightOutline"
                         ></svg-icon>
                     </el-icon>
-                    sample@test.um.com.my
+                    {{ facilityInfo.managerEmail }}
                 </el-text>
             </el-card>
         </el-row>
@@ -185,7 +188,7 @@
                 </template>
                 <el-text
                     style="white-space: pre-wrap"
-                    v-html="facilityInfo.description"
+                    v-html="facilityDescription"
                 >
                 </el-text>
             </el-card>
@@ -214,28 +217,20 @@
                 ></component>
             </el-card>
         </el-row>
-        <!-- <el-row>
+        <el-row>
             <el-card shadow="never" body-style="padding:0">
                 <template #header>
                     <div class="card-header">
                         <span class="el-descriptions__title">Schedule</span>
                     </div>
                 </template>
-                <vue-cal
-                    small
-                    :disable-views="['years', 'year', 'day']"
-                    :time-from="7 * 60"
-                    :time-to="20 * 60"
-                    :time-step="30"
-                    :snap-to-time="30"
-                    :editable-events="false"
-                    :drag-to-create-event="false"
-                    :min-event-width="100"
-                    @view-change="onViewChange"
-                    style="height: 580px"
-                ></vue-cal>
+                <EventCalendar
+                    :facility-type="route.params.type"
+                    :facility-id="route.params.id"
+                    :booking-rule="facilityInfo.bookingRule"
+                ></EventCalendar>
             </el-card>
-        </el-row> -->
+        </el-row>
     </BaseLayout>
 </template>
 
@@ -251,17 +246,24 @@ import {
     mdiPhone,
     mdiMessageTextOutline,
 } from "@mdi/js";
-import VueCal from "vue-cal";
-import "vue-cal/dist/vuecal.css";
 import { ref, watch, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getFacilityInformation, transformGallery } from "@/helpers/api-facility";
+import {
+    getFacilityInformation,
+    transformGallery,
+    transformBookingRule,
+} from "@/helpers/api-facility";
+import EventCalendar from "@/components/user/EventCalendar.vue";
 
 const router = useRouter();
 const route = useRoute();
 
 const loading = ref(false);
 const facilityInfo = ref({});
+const facilityDescription = computed(() => {
+    if (!facilityInfo.value.description) return "";
+    return facilityInfo.value.description.replace(/^['"]+|['"]+$/g, "").trim();
+});
 
 // watch the params of the route to fetch the data on change
 // must run once
@@ -274,10 +276,10 @@ async function fetchData([facilityType, facilityId]) {
 
     try {
         let response = await getFacilityInformation(facilityType, facilityId);
-        if (response.data.code !== 0) {
-            throw new Error(response.data.message);
-        }
-        facilityInfo.value = transformGallery(facilityType, response.data.data);
+        facilityInfo.value = transformBookingRule(
+            facilityType,
+            transformGallery(facilityType, response.data.data)
+        );
     } catch (err) {
         console.error(err);
         router.push({ name: "NotFound" });

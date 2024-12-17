@@ -60,9 +60,6 @@ const dataForm = reactive({
 });
 
 const rules = ref({
-  deptName: [
-    { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
-  ],
   maxUserDailyBooking: [
     { required: true, message: 'Required fields cannot be empty', trigger: 'blur' }
   ],

@@ -91,6 +91,16 @@ public class SvcServiceEntity extends BaseEntity {
 	@TableField(exist = false)
 	private String updaterName;
 	/**
+	 * Manager mobile
+	 */
+	@TableField(exist = false)
+	private String managerMobile;
+	/**
+	 * Manager email
+	 */
+	@TableField(exist = false)
+	private String managerEmail;
+	/**
 	 * Booking rule entity
 	 */
 	@TableField(exist = false)

@@ -98,9 +98,9 @@
             </el-row>
             <el-row class="content-row">
               <span class="radio-label">Open booking:</span>
-              <el-checkbox v-model="accommodation.spcBookingRuleDTO.openForStaff" :true-value="Number(1)" disabled>Staff</el-checkbox>
-              <el-checkbox v-model="accommodation.spcBookingRuleDTO.openForStudent" :true-value="Number(1)" disabled>Student</el-checkbox>
-              <el-checkbox v-model="accommodation.spcBookingRuleDTO.openForPublic" :true-value="Number(1)" disabled>Public</el-checkbox>
+              <el-checkbox v-model="accommodation.accBookingRuleDTO.openForStaff" :true-value="Number(1)" disabled>Staff</el-checkbox>
+              <el-checkbox v-model="accommodation.accBookingRuleDTO.openForStudent" :true-value="Number(1)" disabled>Student</el-checkbox>
+              <el-checkbox v-model="accommodation.accBookingRuleDTO.openForPublic" :true-value="Number(1)" disabled>Public</el-checkbox>
             </el-row>
             <el-row style="margin-bottom: 10px">
               <el-col :span="24">
@@ -152,13 +152,14 @@ import baseService from "@/service/baseService";
 import {useRoute} from "vue-router";
 import useView from "@/hooks/useView";
 import router from "@/router";
-import {ElMessage} from "element-plus";
+import {ElMessage, ElMessageBox} from "element-plus";
 import 'vue-cal/dist/vuecal.css';
 import VueCal from 'vue-cal';
 import UpdateBookingRule from "@/views/accommodation/booking-rule-add-or-update.vue";
 import UpdateClosure from "@/views/accommodation/closure-add-or-update.vue";
 import {formatDescription, getMondayAndSunday} from "@/utils/custom-utils";
 import {formatDateToDateTimeStr} from "@/utils/date";
+import {IObject} from "@/types/interface";
 
 const route = useRoute()
 const accommodation = ref();
@@ -289,15 +290,25 @@ const updateTimetable = (event: any) => {
 }
 
 const deleteHandle = () => {
-  baseService.delete("/accommodation/accommodation", [accommodation.value.id]).then((res) => {
-    ElMessage.success({
-      message: "Success",
-      duration: 500,
-      onClose: () => {
-        state.closeCurrentTab();
-      }
-    });
+  ElMessageBox.confirm(state.deleteMessage, "Hint", {
+    confirmButtonText: "Confirm",
+    cancelButtonText: "Cancel",
+    type: "warning"
   })
+    .then(() => {
+      baseService.delete("/accommodation/accommodation", [accommodation.value.id]).then((res) => {
+        ElMessage.success({
+          message: "Success",
+          duration: 500,
+          onClose: () => {
+            state.closeCurrentTab();
+          }
+        });
+      })
+    })
+    .catch(() => {
+      //
+    });
 }
 
 onMounted(() => {

@@ -14,7 +14,7 @@
       <el-table-column prop="maxUserDailyBookingHour" label="Maximum booking hour" header-align="center" align="center"></el-table-column>
       <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="150">
         <template v-slot="scope">
-          <el-button v-if="state.hasPermission('space:dept-booking-rule:update')" type="primary" link @click="updateHandle(scope.row.id, scope.row.deptId, scope.row.deptName)">Update</el-button>
+          <el-button v-if="state.hasPermission('space:dept-booking-rule:update')" type="primary" link @click="updateHandle(scope.row.id, scope.row.deptId, scope.row.name)">Update</el-button>
         </template>
       </el-table-column>
     </el-table>

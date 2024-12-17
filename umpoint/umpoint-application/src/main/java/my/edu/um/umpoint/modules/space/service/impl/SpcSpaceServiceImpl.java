@@ -1,10 +1,10 @@
 package my.edu.um.umpoint.modules.space.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import my.edu.um.umpoint.common.annotation.DataFilter;
 import my.edu.um.umpoint.common.constant.Constant;
-import my.edu.um.umpoint.common.exception.RenException;
 import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
 import my.edu.um.umpoint.common.utils.ConvertUtils;
@@ -18,15 +18,15 @@ import my.edu.um.umpoint.modules.space.entity.SpcSpaceTagEntity;
 import my.edu.um.umpoint.modules.space.service.SpcBookingRuleService;
 import my.edu.um.umpoint.modules.space.service.SpcImageService;
 import my.edu.um.umpoint.modules.space.service.SpcSpaceService;
-import cn.hutool.core.util.StrUtil;
 import my.edu.um.umpoint.modules.space.service.SpcSpaceTagService;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authz.UnauthorizedException;
+import my.edu.um.umpoint.modules.sys.service.SysDeptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Space
@@ -46,6 +46,9 @@ public class SpcSpaceServiceImpl extends CrudServiceImpl<SpcSpaceDao, SpcSpaceEn
     @Autowired
     private SpcBookingRuleService spcBookingRuleService;
 
+    @Autowired
+    private SysDeptService sysDeptService;
+
     @Override
     public QueryWrapper<SpcSpaceEntity> getWrapper(Map<String, Object> params){
         paramsToLike(params, "name");
@@ -61,6 +64,8 @@ public class SpcSpaceServiceImpl extends CrudServiceImpl<SpcSpaceDao, SpcSpaceEn
     @DataFilter(tableAlias = "s")
     public PageData<SpcSpaceDTO> spacePage(Map<String, Object> params) {
         paramsToLike(params, "name");
+        if (params.containsKey(Constant.DEPT_ID))
+            params.put("deptIdList", sysDeptService.getSubDeptIdList(Long.parseLong((String) params.get(Constant.DEPT_ID))));
 
         IPage<SpcSpaceEntity> page = getPage(params, Constant.CREATE_DATE, false);
 

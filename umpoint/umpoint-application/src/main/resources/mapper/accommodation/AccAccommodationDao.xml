@@ -48,6 +48,8 @@
         <result column="manager_name" property="managerName" />
         <result column="creator_name" property="creatorName" />
         <result column="updater_name" property="updaterName" />
+        <result column="manager_mobile" property="managerMobile" />
+        <result column="manager_email" property="managerEmail" />
         <association property="accBookingRuleEntity">
             <id property="id" column="booking_rule_id"/>
             <result property="approvalRequired" column="approval_required"/>
@@ -187,6 +189,8 @@
             m.username AS manager_name,
             cr.username AS creator_name,
             u.username AS updater_name,
+            m.mobile AS manager_mobile,
+            m.email AS manager_email,
             b.approval_required,
             b.open_for_staff,
             b.open_for_student,

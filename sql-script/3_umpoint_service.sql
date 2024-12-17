@@ -39,7 +39,7 @@ CREATE TABLE svc_service (
     FOREIGN KEY (cat_id) REFERENCES svc_category(id),
     FOREIGN KEY (dept_id) REFERENCES sys_dept(id),
     FOREIGN KEY (manager) REFERENCES sys_user(id),
-    FOREIGN KEY (booking_rule_id) REFERENCES spc_booking_rule(id),
+    FOREIGN KEY (booking_rule_id) REFERENCES svc_booking_rule(id),
     FOREIGN KEY (creator) REFERENCES sys_user(id),
     FOREIGN KEY (updater) REFERENCES sys_user(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Service';

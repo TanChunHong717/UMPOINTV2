@@ -130,36 +130,21 @@ async function submitForm() {
             attachments,
         });
 
-        if (response.data.code == 0) {
-            ElMessage({
-                type: "success",
-                message: "Booking request submitted successfully",
-            });
+        ElMessage({
+            type: "success",
+            message: "Booking request submitted successfully",
+        }).then(() => {
             // redirect to all bookings page
-            setTimeout(() => {
-                // redirect to success page
-                router.push({ name: "bookings" });
-            }, 2000);
-        } else {
-            console.error("Error submitting form", response);
-            ElMessage({
-                type: "error",
-                message: "Error submitting form",
-            });
-        }
-    } catch ({response}) {
+            router.push({ name: "bookings" });
+        });
+    } catch (error) {
+        console.error("Error submitting form", error);
+
         //handle error
-        if (response.data.message) {
+        if (error.message) {
             ElMessage({
                 type: "error",
-                message: response.data.message,
-                duration: 10000,
-            });
-            currentStep.value = 0;
-        } else if (response.data.msg) {
-            ElMessage({
-                type: "error",
-                message: response.data.msg,
+                message: error.message,
                 duration: 10000,
             });
             currentStep.value = 0;

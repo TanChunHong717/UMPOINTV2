@@ -1,5 +1,7 @@
 package my.edu.um.umpoint.modules.client.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -29,21 +31,33 @@ public class CliUserEntity {
 	*/
 	private String username;
 	/**
+	 * Real Name
+	 */
+	private String realName;
+	/**
+	 * Password
+	 */
+	private String password;
+	/**
+	 * Type
+	 */
+	private String type;
+	/**
 	* Mobile
 	*/
 	private String mobile;
-	/**
-	* Password
-	*/
-	private String password;
 	/**
 	* Email
 	*/
 	private String email;
 	/**
-	 * Type
+	 * Address
 	 */
-	private String type;
+	private String address;
+	/**
+	 * Matric Number
+	 */
+	private String matricNumber;
 	/**
 	 * Have permission to book space
 	 */
@@ -59,6 +73,7 @@ public class CliUserEntity {
 	/**
 	* Create date
 	*/
+	@TableField(fill = FieldFill.INSERT)
 	private Date createDate;
 
 }

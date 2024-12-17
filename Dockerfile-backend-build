@@ -6,7 +6,8 @@ COPY pom.xml /home/app/pom.xml
 COPY umpoint/pom.xml /home/app/umpoint/pom.xml
 COPY umpoint/umpoint-application/pom.xml /home/app/umpoint/umpoint-application/pom.xml
 # Download Maven dependencies (this step will be cached as long as the pom.xml files don't change)
-RUN mvn -f /home/app/umpoint/umpoint-application/pom.xml dependency:go-offline -B
+# updated dependency plugin version to 3.5.0: https://stackoverflow.com/questions/72364129/maven-dependecygo-offline-doesnt-download-transitive-dependencies
+RUN mvn -f /home/app/umpoint/umpoint-application/pom.xml org.apache.maven.plugins:maven-dependency-plugin:3.5.0:go-offline -B
 
 COPY umpoint/umpoint-application /home/app/umpoint/umpoint-application
 RUN mvn -f /home/app/umpoint/umpoint-application/pom.xml clean package

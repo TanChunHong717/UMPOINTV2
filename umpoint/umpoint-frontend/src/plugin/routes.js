@@ -89,7 +89,20 @@ export default [
             return true;
         },
     },
-
+    {
+        path: "/register",
+        name: "register",
+        component: () => import("@/views/user/Register.vue"),
+        meta: {
+            title: "Register",
+        },
+        beforeEnter: (to, from) => {
+            if (store.getters["auth/isAuthenticated"]) {
+                return { name: "home" };
+            }
+            return true;
+        },
+    },
     // catch all at end of page
     {
         path: "/:pathMatch(.*)*",

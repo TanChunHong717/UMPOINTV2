@@ -105,6 +105,12 @@ public class SpcSpaceDTO implements Serializable {
 	@Schema(title = "Last Updater Name")
 	private String updaterName;
 
+	// for user ui
+	@Schema(title = "Manager Mobile")
+	private String managerMobile;
+	@Schema(title = "Manager Email")
+	private String managerEmail;
+
 	@Schema(title = "Booking Rule DTO")
 	private SpcBookingRuleDTO spcBookingRuleDTO;
 

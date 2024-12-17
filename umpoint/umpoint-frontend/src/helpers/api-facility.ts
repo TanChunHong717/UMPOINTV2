@@ -120,6 +120,10 @@ export function getFacilityBookings(facilityType: keyof typeof facilityTypes, fa
         };
     }
 
+    if (facilityType === facilityTypes.service) {
+        return {data: {code: 0, data: []}};
+    }
+
     let params = Object.assign(
         { spaceId: facilityID },
         startTime && { startTime },
@@ -149,26 +153,37 @@ export function payBooking(facilityType: keyof typeof facilityTypes, bookingID: 
 
 // helpers
 
-export function transformGallery(facilityType, data) {
+export function transformGallery(facilityType: keyof typeof facilityTypes, data: any) {
     // transform data based on facility type
     switch (facilityType) {
-        case "space":
+        case facilityTypes.space:
             data.gallery = data.spcImageDTOList ?? {};
             break;
-        default:
+        case facilityTypes.service:
+            data.gallery = data.svcImageDTOList ?? {};
             break;
+        case facilityTypes.accommodation:
+            data.gallery = data.accImageDTOList ?? {};
+            break;
+        default:
+            throw new Error("Invalid facility type");
     }
     return data;
 }
 
-export function transformBookingRule(facilityType, data) {
+export function transformBookingRule(facilityType: keyof typeof facilityTypes, data: any) {
     // transform data based on facility type
     switch (facilityType) {
-        case "space":
+        case facilityTypes.space:
             data.bookingRule = data.spcBookingRuleDTO ?? {};
             break;
-        default:
+        case facilityTypes.service:
+            data.bookingRule = data.svcBookingRuleDTO ?? {};
             break;
+        case facilityTypes.accommodation:
+            data.bookingRule = data.accBookingRuleDTO ?? {};
+        default:
+            throw new Error("Invalid facility type");
     }
     return data;
 }

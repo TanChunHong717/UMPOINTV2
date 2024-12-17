@@ -85,6 +85,7 @@ const dateRange = ref<Date[]>([new Date(), new Date()]);
 const tableType = ref(0);
 const dataListLoading = ref(true);
 const dataList = ref([]);
+
 //Sample data
 const data = ref<any>({
   bookingCount: 100,
@@ -296,9 +297,74 @@ const radioChange = (val: number) => {
   dataListLoading.value = false;
 }
 
+const generateDateTimestamps = (start: Date, end: Date): number[] => {
+  const timestamps: number[] = [];
+  let currentDate = new Date(start);
+
+  while (currentDate <= end) {
+    timestamps.push(currentDate.getTime());
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  return timestamps;
+}
+
 const getData = () => {
   // baseService.get("/dashboard/data", {start:dateRange.value[0], end:dateRange.value[1]}).then((res) => {
   //   data.value = res.data;
+  //   data.value.xAxisData = generateDateTimestamps(dateRange.value[0], dateRange.value[1]);
+  //
+  //   donutChartOptions.series[0].data = [
+  //     { value: data.value.spaceBookingAmount, name: 'Space' },
+  //     { value: data.value.serviceBookingAmount, name: 'Service' },
+  //     { value: data.value.accommodationBookingAmount, name: 'Accommodation' }
+  //   ];
+  //
+  //   barChartOptions.series= [
+  //     {
+  //       name: 'Space',
+  //       type: 'bar',
+  //       data: data.value.xAxisData.map((date:any, i:any) => [new Date(date), data.value.spaceData[i]]),
+  //       markPoint: {
+  //         data: [
+  //           { type: 'max', name: 'Max' },
+  //           { type: 'min', name: 'Min' }
+  //         ]
+  //       },
+  //       markLine: {
+  //         data: [{ type: 'average', name: 'Avg' }]
+  //       }
+  //     },
+  //     {
+  //       name: 'Service',
+  //       type: 'bar',
+  //       data: data.value.xAxisData.map((date:any, i:any) => [new Date(date), data.value.serviceData[i]]),
+  //       markPoint: {
+  //         data: [
+  //           { type: 'max', name: 'Max' },
+  //           { type: 'min', name: 'Min' }
+  //         ]
+  //       },
+  //       markLine: {
+  //         data: [{ type: 'average', name: 'Avg' }]
+  //       }
+  //     },
+  //     {
+  //       name: 'Accommodation',
+  //       type: 'bar',
+  //       data: data.value.xAxisData.map((date:any, i:any) => [new Date(date), data.value.accommodationData[i]]),
+  //       markPoint: {
+  //         data: [
+  //           { type: 'max', name: 'Max' },
+  //           { type: 'min', name: 'Min' }
+  //         ]
+  //       },
+  //       markLine: {
+  //         data: [{ type: 'average', name: 'Avg' }]
+  //       }
+  //     }
+  //   ];
+  //
   //   dataList.value = data.value.spaceList;
   //   dataListLoading.value = false;
   // }).catch((error) => {
@@ -311,11 +377,13 @@ const getData = () => {
 }
 
 const downloadFile = () => {
-  const fileUrl = 'https://mallstore.blob.core.windows.net/upload/DataAnalyticsReport.pdf';
-  const link = document.createElement('a');
-  link.href = fileUrl;
-  link.download = 'Data Analytics Report.pdf';
-  link.click();
+  baseService.get("/dashboard/report").then(res => {
+    const fileUrl = res.data;
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.download = 'Data Analytics Report.pdf';
+    link.click();
+  })
 }
 
 onMounted(() => {

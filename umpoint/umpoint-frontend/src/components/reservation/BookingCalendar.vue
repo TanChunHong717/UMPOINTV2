@@ -148,7 +148,7 @@ const maxDate = ref(null);
 // calendar setup
 // fixed information from system
 const holidays = ref([]);
-const specialHours = ref({});
+const specialHours = ref();
 const bookedEvents: ShallowRef<VueCalEvent[]> = shallowRef([]);
 const facilityStartTime = ref();
 const facilityEndTime = ref();
@@ -252,12 +252,12 @@ const getMondayAndSunday = (currentDate: Date) => {
     return { startDate: monday, endDate: sunday };
 };
 const onViewChange = (object: any) => {
-    if (object.view == "month") return;
-
-    specialHours.value = generateWeekendAndHoliday(
-        object.startDate,
-        object.endDate
-    );
+    if (object.view != "month") {
+        specialHours.value = generateWeekendAndHoliday(
+            object.startDate,
+            object.endDate
+        );
+    }
 
     updateEvents(object.startDate, object.endDate);
 };
@@ -298,39 +298,38 @@ const generateWeekendAndHoliday = (startDate: Date, endDate: Date) => {
 };
 
 const updateEvents = async (startDate: Date, endDate: Date) => {
-    const facilityEvents = await getFacilityBookings(
-        facilityInfo.value.type,
-        facilityInfo.value.id,
-        formatDateToTimezoneDateTimeStr(startDate),
-        formatDateToTimezoneDateTimeStr(endDate)
-    );
+    try {
+        const facilityEvents = await getFacilityBookings(
+            facilityInfo.value.type,
+            facilityInfo.value.id,
+            formatDateToTimezoneDateTimeStr(startDate),
+            formatDateToTimezoneDateTimeStr(endDate)
+        );
+        bookedEvents.value = facilityEvents.data.data.map((event: any) => {
+            return {
+                start: new Date(event.startTime),
+                end: new Date(event.endTime),
+                title: event.title,
+                class:
+                    event.type == "0"
+                        ? "booking"
+                        : event.type == "1"
+                        ? "close"
+                        : "closure",
+                type: event.type,
 
-    if (!facilityEvents || facilityEvents.data.code !== 0) {
+                // default events that came from system are non-editable
+                resizable: false,
+                draggable: false,
+            };
+        });
+    } catch (e) {
         ElMessage({
-            message: "Failed to get facility events",
+            message: e.message ?? "Failed to get facility events",
             type: "error",
         });
         return;
     }
-
-    bookedEvents.value = facilityEvents.data.data.map((event: any) => {
-        return {
-            start: new Date(event.startTime),
-            end: new Date(event.endTime),
-            title: event.title,
-            class:
-                event.type == "0"
-                    ? "booking"
-                    : event.type == "1"
-                    ? "close"
-                    : "closure",
-            type: event.type,
-
-            // default events that came from system are non-editable
-            resizable: false,
-            draggable: false,
-        };
-    });
 };
 
 const onCalendarDragCreate = (event: VueCalEvent) => {
@@ -650,7 +649,7 @@ onActivated(() => {
         @event-drop="onCalendarEventChange"
         @event-duration-change="onCalendarEventChange"
         @view-change="onViewChange"
-        style="height: 580px"
+        style="height: 600px"
     ></vue-cal>
     <small>
         <ul>

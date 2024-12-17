@@ -37,21 +37,32 @@ public class CliUserDTO implements Serializable {
 	@NotEmpty(groups = DefaultGroup.class)
 	private String username;
 
-	@Schema(title = "Mobile")
+	@Schema(title = "Real Name")
 	@NotEmpty(groups = DefaultGroup.class)
-	private String mobile;
+	private String realName;
 
 	@Schema(title = "Password")
 	@NotEmpty(groups = DefaultGroup.class)
 	private String password;
 
+	@Schema(title = "Type")
+	@NotEmpty(groups = DefaultGroup.class)
+	private String type;
+
+	@Schema(title = "Mobile")
+	@NotEmpty(groups = DefaultGroup.class)
+	private String mobile;
+
 	@Schema(title = "Email")
 	@NotEmpty(groups = DefaultGroup.class)
 	private String email;
 
-	@Schema(title = "Type")
+	@Schema(title = "Address")
 	@NotEmpty(groups = DefaultGroup.class)
-	private String type;
+	private String address;
+
+	@Schema(title = "Matric Number")
+	private String matricNumber;
 
 	@Schema(title = "Have permission to book space")
 	private Integer spacePermission;

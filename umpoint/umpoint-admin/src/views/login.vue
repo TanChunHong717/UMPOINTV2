@@ -2,7 +2,7 @@
   <div class="rr-login">
     <div class="rr-login-wrap">
       <div class="rr-login-left hidden-sm-and-down">
-        <p class="rr-login-left-title">UMPOINT V2</p>
+        <p class="rr-login-left-title">UMPoint V2</p>
       </div>
 
       <div class="rr-login-right">
@@ -41,7 +41,6 @@ import { setCache } from "@/utils/cache";
 import { ElMessage } from "element-plus";
 import { getUuid } from "@/utils/utils";
 import app from "@/constants/app";
-import SvgIcon from "@/components/base/svg-icon/index";
 import { useAppStore } from "@/store";
 import { useRouter } from "vue-router";
 
@@ -108,7 +107,7 @@ const onLogin = () => {
 .rr-login {
   width: 100vw;
   height: 100vh;
-  background: #019ec4;
+  background: #17B3A3;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -141,6 +140,10 @@ const onLogin = () => {
     color: #fff;
     float: left;
     width: 50%;
+
+    background-image: url("public/img.png");
+    background-size: cover;
+    background-position: center;
 
     &-title {
       text-align: center;

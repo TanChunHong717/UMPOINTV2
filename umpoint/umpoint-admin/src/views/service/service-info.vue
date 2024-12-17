@@ -103,7 +103,7 @@ import baseService from "@/service/baseService";
 import {useRoute} from "vue-router";
 import useView from "@/hooks/useView";
 import router from "@/router";
-import {ElMessage} from "element-plus";
+import {ElMessage, ElMessageBox} from "element-plus";
 import UpdateBookingRule from "@/views/service/booking-rule-add-or-update.vue";
 import {formatDescription} from "@/utils/custom-utils";
 
@@ -134,15 +134,25 @@ const bookingRuleUpdateHandle = () => {
 };
 
 const deleteHandle = () => {
-  baseService.delete("/service/service", [service.value.id]).then((res) => {
-    ElMessage.success({
-      message: "Success",
-      duration: 500,
-      onClose: () => {
-        state.closeCurrentTab();
-      }
-    });
+  ElMessageBox.confirm(state.deleteMessage, "Hint", {
+    confirmButtonText: "Confirm",
+    cancelButtonText: "Cancel",
+    type: "warning"
   })
+    .then(() => {
+      baseService.delete("/service/service", [service.value.id]).then((res) => {
+        ElMessage.success({
+          message: "Success",
+          duration: 500,
+          onClose: () => {
+            state.closeCurrentTab();
+          }
+        });
+      })
+    })
+    .catch(() => {
+      //
+    });
 }
 
 onMounted(() => {
