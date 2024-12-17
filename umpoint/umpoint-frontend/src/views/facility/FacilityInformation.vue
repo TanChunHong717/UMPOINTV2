@@ -62,7 +62,7 @@
                         </el-icon>
                         {{ facilityInfo.capacity }} person(s)
                     </el-text>
-                    <el-text>
+                    <el-text v-if="facilityInfo.facilities.trim()">
                         <el-icon aria-label="Facilities">
                             <svg-icon
                                 type="mdi"
@@ -163,10 +163,10 @@
                     {{ facilityInfo.managerName }}
                 </el-text>
                 <el-text>
-                    <el-icon aria-label="Phone number">
+                    <el-icon aria-label="Mobile phone number">
                         <svg-icon type="mdi" :path="mdiPhone"></svg-icon>
                     </el-icon>
-                    +6012-3456789
+                    {{ facilityInfo.managerMobile }}
                 </el-text>
                 <el-text>
                     <el-icon aria-label="Email">
@@ -175,7 +175,7 @@
                             :path="mdiEmailArrowRightOutline"
                         ></svg-icon>
                     </el-icon>
-                    sample@test.um.com.my
+                    {{ facilityInfo.managerEmail }}
                 </el-text>
             </el-card>
         </el-row>
