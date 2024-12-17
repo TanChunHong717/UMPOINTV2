@@ -36,7 +36,7 @@ public class CredentialController {
 
     @GetMapping("info")
     @Operation(summary = "login user info")
-    public Result<CliUserDTO> info(){
+    public Result<CliUserDTO> info() {
         CliUserDTO data = ConvertUtils.sourceToTarget(SecurityUser.getUser(), CliUserDTO.class);
         return new Result<CliUserDTO>().ok(data);
     }
@@ -44,8 +44,11 @@ public class CredentialController {
     @PostMapping("register")
     @Operation(summary = "Save")
     @LogOperation("Save")
-    public Result save(@RequestBody CliUserDTO dto){
+    public Result save(@RequestBody CliUserDTO dto) {
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
+        if (validateUsernameExist(dto.getUsername()))
+            throw new BadHttpRequestException(ErrorCode.DB_RECORD_EXISTS, "This username is taken");
+
         dto.setStatus(1);
         if (dto.getType().equals("Staff")) {
             dto.setSpacePermission(1);
@@ -67,7 +70,7 @@ public class CredentialController {
     @PutMapping("profile/{userId}")
     @Operation(summary = "Update User profile")
     @LogOperation("Update")
-    public Result updateUser(@PathVariable("userId") Long userId, @RequestBody Map<String, String> request){
+    public Result updateUser (@PathVariable("userId") Long userId, @RequestBody Map < String, String > request){
         ValidatorUtils.validateEntity(request, UpdateGroup.class, DefaultGroup.class);
 
         UserDetail loggedInUser = SecurityUser.getUser();
@@ -89,5 +92,9 @@ public class CredentialController {
         cliUserService.update(matchedUserDetail);
 
         return new Result();
+    }
+
+    private boolean validateUsernameExist(String username) {
+        return cliUserService.getByUsername(username) != null;
     }
 }

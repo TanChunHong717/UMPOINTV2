@@ -74,45 +74,6 @@ public class CliUserController {
         return new Result<CliUserDTO>().ok(data);
     }
 
-    @GetMapping("info")
-    @Operation(summary = "login user info")
-    public Result<CliUserDTO> info(){
-        CliUserDTO data = ConvertUtils.sourceToTarget(SecurityUser.getUser(), CliUserDTO.class);
-        return new Result<CliUserDTO>().ok(data);
-    }
-
-    @PostMapping("/register")
-    @Operation(summary = "Save")
-    @LogOperation("Save")
-    public Result save(@RequestBody CliUserDTO dto){
-        ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
-
-        if (validateUsernameExist(dto.getUsername())) {
-            throw new BadHttpRequestException(ErrorCode.DB_RECORD_EXISTS, "This username is taken");
-        }
-
-        dto.setPassword(PasswordUtils.encode(dto.getPassword()));
-
-        dto.setStatus(1);
-        if (dto.getType().equals("Staff")) {
-            dto.setSpacePermission(1);
-            dto.setServicePermission(1);
-            dto.setAccommodationPermission(1);
-        } else if (dto.getType().equals("Student")) {
-            dto.setSpacePermission(1);
-            dto.setServicePermission(0);
-            dto.setAccommodationPermission(1);
-        } else {
-            dto.setSpacePermission(1);
-            dto.setServicePermission(1);
-            dto.setAccommodationPermission(0);
-        }
-
-        cliUserService.save(dto);
-
-        return new Result();
-    }
-
     @PutMapping
     @Operation(summary = "Update")
     @LogOperation("Update")
@@ -145,9 +106,5 @@ public class CliUserController {
         List<CliUserDTO> list = cliUserService.list(params);
 
         ExcelUtils.exportExcelToTarget(response, null, "User", list, CliUserExcel.class);
-    }
-
-    public boolean validateUsernameExist(String username) {
-        return cliUserService.getByUsername(username) != null;
     }
 }
