@@ -89,7 +89,6 @@
         </el-col>
         <el-col :span="3" class="button-column">
           <el-button @click="$router.push({name:`service-info`, params: {id:service.id}})" class="action-button" re>Details</el-button>
-          <el-button class="action-button bottom-button">Availability</el-button>
         </el-col>
       </el-row>
     </div>

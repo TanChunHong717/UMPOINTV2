@@ -171,7 +171,7 @@ import {onActivated, onMounted, reactive, ref, toRefs} from 'vue';
 import baseService from "@/service/baseService";
 import {useRoute} from "vue-router";
 import useView from "@/hooks/useView";
-import {ElMessage} from "element-plus";
+import {ElMessage, ElMessageBox} from "element-plus";
 import 'vue-cal/dist/vuecal.css';
 import VueCal from 'vue-cal';
 import UpdateBookingRule from "@/views/space/booking-rule-add-or-update.vue";
@@ -313,15 +313,25 @@ const updateTimetable = (event: any) => {
 }
 
 const deleteHandle = () => {
-  baseService.delete("/space/space", [space.value.id]).then((res) => {
-    ElMessage.success({
-      message: "Success",
-      duration: 500,
-      onClose: () => {
-        state.closeCurrentTab();
-      }
-    });
+  ElMessageBox.confirm(state.deleteMessage, "Hint", {
+    confirmButtonText: "Confirm",
+    cancelButtonText: "Cancel",
+    type: "warning"
   })
+    .then(() => {
+      baseService.delete("/space/space", [space.value.id]).then((res) => {
+        ElMessage.success({
+          message: "Success",
+          duration: 500,
+          onClose: () => {
+            state.closeCurrentTab();
+          }
+        });
+      })
+    })
+    .catch(() => {
+      //
+    });
 }
 
 onMounted(() => {
