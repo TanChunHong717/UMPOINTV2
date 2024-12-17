@@ -86,6 +86,11 @@ public class CliUserController {
     @LogOperation("Save")
     public Result save(@RequestBody CliUserDTO dto){
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
+
+        if (validateUsernameExist(dto.getUsername())) {
+            throw new BadHttpRequestException(ErrorCode.DB_RECORD_EXISTS, "This username is taken");
+        }
+
         dto.setStatus(1);
         if (dto.getType().equals("Staff")) {
             dto.setSpacePermission(1);
@@ -93,10 +98,12 @@ public class CliUserController {
             dto.setAccommodationPermission(1);
         } else if (dto.getType().equals("Student")) {
             dto.setSpacePermission(1);
+            dto.setServicePermission(0);
             dto.setAccommodationPermission(1);
         } else {
             dto.setSpacePermission(1);
             dto.setServicePermission(1);
+            dto.setAccommodationPermission(0);
         }
 
         cliUserService.save(dto);
@@ -167,4 +174,7 @@ public class CliUserController {
         ExcelUtils.exportExcelToTarget(response, null, "User", list, CliUserExcel.class);
     }
 
+    public boolean validateUsernameExist(String username) {
+        return cliUserService.getByUsername(username) != null;
+    }
 }

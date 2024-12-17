@@ -198,10 +198,10 @@ const rules = reactive({
         {
             validator: (rule, value, callback) => {
                 const typeValue = formData.type;
-                if (typeValue !== "Student") {
-                    callback();
-                } else if (!value) {
+                if (typeValue === "Student" && !value) {
                     callback(new Error("Matric number is required"));
+                } else {
+                    callback(); // Validation passed
                 }
             },
             trigger: "blur",
