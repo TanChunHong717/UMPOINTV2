@@ -134,8 +134,7 @@ async function fetchRooms(firstTime = false) {
         let { rooms: apiRooms, total } = await chatApi.getChatRooms(
             roomCurrentPage.value
         );
-        // reverse chronological order
-        rooms.value = apiRooms.toReversed();
+        rooms.value = apiRooms;
 
         if (apiRooms.length == 0 || apiRooms.length == total) {
             roomsFullyLoaded.value = true;
