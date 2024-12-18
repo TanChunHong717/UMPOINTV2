@@ -84,7 +84,6 @@ getFacilities("space").then((response) => {
         console.error("Failed to get facilities");
         return;
     }
-    console.log(response.data);
     facilities.value = response.data.data.list.map((facility) =>
         transformGallery("space", facility)
     );
@@ -93,7 +92,6 @@ getFacilities("space").then((response) => {
 // search feature
 const searchInput = ref("");
 const searchFacility = () => {
-    console.log("Searching for: ", searchInput.value);
     router.push({ path: "/search", query: { q: searchInput.value } });
 };
 </script>
