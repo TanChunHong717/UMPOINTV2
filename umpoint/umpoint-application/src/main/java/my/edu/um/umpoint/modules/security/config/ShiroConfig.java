@@ -51,7 +51,6 @@ public class ShiroConfig {
         Map<String, String> filterMap = new LinkedHashMap<>();
         filterMap.put("/webjars/**", "anon");
         filterMap.put("/druid/**", "anon");
-        filterMap.put("/cli/login", "anon");
         filterMap.put("/login", "anon");
         filterMap.put("/swagger/**", "anon");
         filterMap.put("/v3/api-docs/**", "anon");
@@ -61,8 +60,13 @@ public class ShiroConfig {
         filterMap.put("/favicon.ico", "anon");
         filterMap.put("/ws/**", "anon");
         filterMap.put("/", "anon");
+        filterMap.put("/sys/dept/public/list", "anon");
 
-        // public api
+        // client user access
+        filterMap.put("/cli/login", "anon");
+        filterMap.put("/cli/register", "anon");
+
+        // public facility api
         filterMap.put("/*.pdf", "anon");
         filterMap.put("/space/space/?*", "anon");
         filterMap.put("/space/category/list/filter", "anon");
@@ -73,8 +77,6 @@ public class ShiroConfig {
         filterMap.put("/accommodation/accommodation/?*", "anon");
         filterMap.put("/accommodation/category/list/filter", "anon");
         filterMap.put("/accommodation/event", "anon");
-        filterMap.put("/sys/dept/public/list", "anon");
-        filterMap.put("/client/user/register", "anon");
 
         filterMap.put("/**", "oauth2");
         shiroFilter.setFilterChainDefinitionMap(filterMap);
