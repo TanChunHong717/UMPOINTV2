@@ -2,6 +2,7 @@ export default {
     defaultLang: "en-us",
     apiUrl: import.meta.env.VITE_BOOKING_API_URL,
     requestTimeout: 30000,
+    prod: import.meta.env.PROD,
 };
 export const CacheToken = "cache";
 export const CacheRememberMeToken = "rememberMe";

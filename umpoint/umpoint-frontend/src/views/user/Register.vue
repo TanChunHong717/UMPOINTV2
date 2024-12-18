@@ -2,7 +2,13 @@
     <BaseLayout>
         <template #title>Register</template>
 
-        <el-form ref="formNode" label-position="top" :model="formData" :rules>
+        <el-form
+            ref="formNode"
+            label-position="top"
+            :model="formData"
+            :rules
+            @submit.prevent="submitForm"
+        >
             <div class="grid">
                 <el-form-item label="Username" prop="username">
                     <el-input v-model="formData.username" />
@@ -65,6 +71,7 @@
                         @click="submitForm"
                     >
                         Register
+                        <input type="submit" hidden />
                     </el-button>
                 </el-col>
             </el-form-item>
@@ -111,9 +118,16 @@ const rules = reactive({
         },
         {
             validator: (rule, value, callback) => {
-                const passwordRegex =
-                    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-                if (!passwordRegex.test(value)) {
+                const letterRegex = /[a-zA-Z]/; // Checks for at least one letter
+                const numberRegex = /\d/; // Checks for at least one digit
+                const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/; // Checks for at least one special character
+
+                if (
+                    value.length < 8 ||
+                    ![letterRegex, numberRegex, specialCharRegex].every(
+                        (regex) => regex.test(value)
+                    )
+                ) {
                     callback(
                         new Error(
                             "Password must be at least 8 characters long, include at least one letter, one number, and one special character"
@@ -198,10 +212,10 @@ const rules = reactive({
         {
             validator: (rule, value, callback) => {
                 const typeValue = formData.type;
-                if (typeValue !== "Student") {
-                    callback();
-                } else if (!value) {
+                if (typeValue === "Student" && !value) {
                     callback(new Error("Matric number is required"));
+                } else {
+                    callback(); // Validation passed
                 }
             },
             trigger: "blur",
@@ -216,7 +230,7 @@ async function submitForm() {
     } catch (error) {
         return;
     }
-    
+
     try {
         await registerUser(formData);
         ElMessage.success("Register success");

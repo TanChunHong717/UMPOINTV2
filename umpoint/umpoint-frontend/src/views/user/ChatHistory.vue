@@ -12,10 +12,12 @@
 
 <script setup lang="ts">
 import ChatComponent from '@/components/user/ChatComponent.vue';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
 
 let store = useStore();
 
-const userId = store.state.auth.userId;
-const userToken = store.state.auth.token;
+// Using computed to ensure reactivity with Vuex store
+const userId = computed(() => store.state.auth.userId);
+const userToken = computed(() => store.state.auth.token);
 </script>

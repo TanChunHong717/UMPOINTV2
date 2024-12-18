@@ -16,7 +16,7 @@ export function createWebSocketClient() {
     const client = new StompClient({
         webSocketFactory: () => socket,
         debug: function (str) {
-            console.log("debugging in client", str);
+            if (!app.prod) console.log("debugging in client", str);
         },
     });
 

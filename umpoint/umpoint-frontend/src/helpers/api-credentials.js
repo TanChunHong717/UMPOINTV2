@@ -15,13 +15,13 @@ export function logout() {
 }
 
 export function register(data) {
-    return api.post("/client/user/register", data);
+    return api.post("/cli/register", data);
 }
 
 export function getUserInformation() {
-    return api.get(`/client/user/info`);
+    return api.get(`/cli/info`);
 }
 
 export function saveUserInformation(userId, data) {
-    return api.put(`/client/user/${userId}`, data);
+    return api.put(`/cli/profile/${userId}`, data);
 }

@@ -17,25 +17,14 @@ services:
         networks:
             - umpoint-network
 
-    # frontend-admin:
-    #     build:
-    #         context: ./umpoint/umpoint-admin
-    #         dockerfile: ./Dockerfile
-    #     ports:
-    #         - "8001:8001"
-    #     restart: always
-    #     environment:
-    #         VITE_APP_API: ${DEPLOY_DOMAIN}/api
-    #     networks:
-    #         - umpoint-network
-
     frontend-admin:
-        image: chunhong717/umpoint-admin:latest
-        # ports:
-        #     - "8001:8001"
-        #     - "8002:80"
-        environment:
-            VITE_APP_API: ${DEPLOY_DOMAIN}/api
+        build:
+            context: ./umpoint/umpoint-admin
+            dockerfile: ./Dockerfile
+            args:
+                VITE_APP_API: ${DEPLOY_DOMAIN}/api
+        ports:
+            - "8001:80"
         restart: always
         networks:
             - umpoint-network
@@ -44,20 +33,21 @@ services:
         build:
             context: ./umpoint/umpoint-frontend
             dockerfile: ./Dockerfile.prod
-            args:
+            args: # during build process for production
                 VITE_BOOKING_API_URL: ${DEPLOY_DOMAIN}/api
                 VITE_BASE_URL: ${DEPLOY_DOMAIN}/user/
         # ports:
         #     - "5173:5173"
-        environment:
+        environment: # during runtime for dev
             VITE_BOOKING_API_URL: ${DEPLOY_DOMAIN}/api
             VITE_BASE_URL: ${DEPLOY_DOMAIN}/user/
         command: [nginx-debug, "-g", "daemon off;"]
+        restart: always
         networks:
             - umpoint-network
 
     mysql:
-        image: mysql:5.7
+        image: mysql:8
         environment:
             MYSQL_ROOT_PASSWORD: password1234
             MYSQL_DATABASE: ${DB_NAME:-umpoint}

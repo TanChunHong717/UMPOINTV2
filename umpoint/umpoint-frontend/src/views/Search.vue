@@ -8,9 +8,11 @@
         <el-row :gutter="12" style="margin-block-start: 1em">
             <el-col :sm="24" :md="6">
                 <el-anchor>
-                    <el-anchor-link href="#space"> Space </el-anchor-link>
-                    <el-anchor-link href="#service"> Service </el-anchor-link>
-                    <el-anchor-link href="#accommodation">
+                    <el-anchor-link href="search#space"> Space </el-anchor-link>
+                    <el-anchor-link href="search#service">
+                        Service
+                    </el-anchor-link>
+                    <el-anchor-link href="search#accommodation">
                         Accommodation
                     </el-anchor-link>
                 </el-anchor>
@@ -25,10 +27,14 @@
                                 :data="departmentsOptions"
                                 check-strictly
                                 :render-after-expand="false"
+                                :clearable="true"
                             />
                         </el-form-item>
                         <el-form-item label="Category">
-                            <el-select v-model="searchForm.catId">
+                            <el-select
+                                v-model="searchForm.catId"
+                                :clearable="true"
+                            >
                                 <el-option
                                     v-for="item in categoriesOptions"
                                     :key="item.value"

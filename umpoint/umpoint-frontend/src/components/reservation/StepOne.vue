@@ -116,7 +116,7 @@ const pricingDetails = computed(() => {
         formData.startDate,
         formData.endDate,
         formData.startTime,
-        formData.endTime,
+        formData.endTime
     );
     if (showDefaultTechnicianSelect.value) {
         let technicianCount = (formData.additionalTechnicians ?? 0) + 1;
@@ -175,7 +175,7 @@ function validateForm(field) {
 }
 
 // form submit
- function returnFormInfo(formEl) {
+function returnFormInfo(formEl) {
     if (!formEl) return;
     formEl.validate((valid, fields) => {
         if (valid) {
@@ -198,6 +198,7 @@ function validateForm(field) {
         label-position="top"
         :model="formData"
         :rules="rulesMessage"
+        @submit.prevent="returnFormInfo(formNode)"
     >
         <el-divider content-position="left">
             <h2>Event Information</h2>
@@ -304,7 +305,7 @@ function validateForm(field) {
                 <li>
                     Minimum duration for booking is
                     <b>{{ props.facilityInfo.bookingRule?.minBookingHours }}</b>
-                    hour(s) per day; maximum duration is 
+                    hour(s) per day; maximum duration is
                     <b>{{ props.facilityInfo.bookingRule?.maxBookingHours }}</b>
                     hour(s) per day.
                 </li>
@@ -334,7 +335,7 @@ function validateForm(field) {
 
         <div class="end-buttons">
             <el-button type="primary" @click="returnFormInfo(formNode)">
-                Next
+                Next <input type="submit" hidden />
             </el-button>
         </div>
     </el-form>

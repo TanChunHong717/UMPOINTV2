@@ -62,14 +62,14 @@
                         </el-icon>
                         {{ facilityInfo.capacity }} person(s)
                     </el-text>
-                    <el-text v-if="facilityInfo.facilities.trim()">
+                    <el-text v-if="facilityInfo.facilities?.trim()">
                         <el-icon aria-label="Facilities">
                             <svg-icon
                                 type="mdi"
                                 :path="mdiToolboxOutline"
                             ></svg-icon>
                         </el-icon>
-                        {{ facilityInfo.facilities }}
+                        {{ facilityInfo.facilities?.trim() }}
                     </el-text>
                 </el-card>
             </el-col>
