@@ -133,10 +133,12 @@ async function submitForm() {
         ElMessage({
             type: "success",
             message: "Booking request submitted successfully",
-        }).then(() => {
+        })
+        
+        setTimeout(() => {
             // redirect to all bookings page
             router.push({ name: "bookings" });
-        });
+        }, 2000);
     } catch (error) {
         console.error("Error submitting form", error);
 
