@@ -2,7 +2,13 @@
     <BaseLayout>
         <template #title>Register</template>
 
-        <el-form ref="formNode" label-position="top" :model="formData" :rules>
+        <el-form
+            ref="formNode"
+            label-position="top"
+            :model="formData"
+            :rules
+            @submit.prevent="submitForm"
+        >
             <div class="grid">
                 <el-form-item label="Username" prop="username">
                     <el-input v-model="formData.username" />
@@ -65,6 +71,7 @@
                         @click="submitForm"
                     >
                         Register
+                        <input type="submit" hidden />
                     </el-button>
                 </el-col>
             </el-form-item>

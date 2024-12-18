@@ -2,7 +2,13 @@
     <BaseLayout>
         <template #title>Login</template>
 
-        <el-form ref="formNode" label-position="top" :model="formData" :rules>
+        <el-form
+            ref="formNode"
+            label-position="top"
+            :model="formData"
+            :rules
+            @submit.prevent="submitForm"
+        >
             <el-form-item label="Username" prop="username">
                 <el-input v-model="formData.username" />
             </el-form-item>
@@ -24,6 +30,7 @@
                         @click="submitForm"
                     >
                         Login
+                        <input type="submit" hidden />
                     </el-button>
                 </el-col>
             </el-form-item>
@@ -71,6 +78,7 @@ const rules = reactive({
     ],
 });
 async function submitForm() {
+    console.log("submitting");
     // validate form
     try {
         await formNode.value.validate();
