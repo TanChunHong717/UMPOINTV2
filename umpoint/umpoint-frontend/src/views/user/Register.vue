@@ -111,9 +111,16 @@ const rules = reactive({
         },
         {
             validator: (rule, value, callback) => {
-                const passwordRegex =
-                    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-                if (!passwordRegex.test(value)) {
+                const letterRegex = /[a-zA-Z]/; // Checks for at least one letter
+                const numberRegex = /\d/; // Checks for at least one digit
+                const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/; // Checks for at least one special character
+
+                if (
+                    value.length < 8 ||
+                    ![letterRegex, numberRegex, specialCharRegex].every(
+                        (regex) => regex.test(value)
+                    )
+                ) {
                     callback(
                         new Error(
                             "Password must be at least 8 characters long, include at least one letter, one number, and one special character"
@@ -216,7 +223,7 @@ async function submitForm() {
     } catch (error) {
         return;
     }
-    
+
     try {
         await registerUser(formData);
         ElMessage.success("Register success");
