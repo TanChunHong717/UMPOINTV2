@@ -14,6 +14,7 @@ services:
             spring.datasource.druid.password: ${DB_PASSWORD:-umpoint}
             spring.ai.azure.openai.api-key: ${AZURE_GPT_API_KEY?Azure GPT API Key not set}
             azure.storage.connection-string: ${AZURE_STORAGE_CONNECTION_STRING?Azure Storage Key not set}
+            TZ: Asia/Kuala_Lumpur
         networks:
             - umpoint-network
 
@@ -53,6 +54,7 @@ services:
             MYSQL_DATABASE: ${DB_NAME:-umpoint}
             MYSQL_USER: ${DB_USERNAME:-umpoint}
             MYSQL_PASSWORD: ${DB_PASSWORD:-umpoint}
+            TZ: Asia/Kuala_Lumpur
         # ports:
         #     - "23306:3306"
         restart: always
