@@ -121,11 +121,11 @@ export function getFacilityBookings(facilityType: keyof typeof facilityTypes, fa
     }
 
     if (facilityType === facilityTypes.service) {
-        return {data: {code: 0, data: []}};
+        return { data: { code: 0, data: [] } };
     }
 
     let params = Object.assign(
-        { spaceId: facilityID },
+        { [`${facilityType}Id`]: facilityID },
         startTime && { startTime },
         endTime && { endTime }
     );
@@ -182,6 +182,7 @@ export function transformBookingRule(facilityType: keyof typeof facilityTypes, d
             break;
         case facilityTypes.accommodation:
             data.bookingRule = data.accBookingRuleDTO ?? {};
+            break;
         default:
             throw new Error("Invalid facility type");
     }
