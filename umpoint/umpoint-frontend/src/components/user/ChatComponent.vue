@@ -45,13 +45,18 @@
             :slot="'message-avatar_' + message._id"
         ></div>
     </vue-advanced-chat>
+    <ChatReportPopup
+        v-model:visible="isDialogVisible"
+        @close="closeDialog"
+        @submit="submitReport"
+    ></ChatReportPopup>
 </template>
 
 <script setup>
 import { mdiMenuOpen } from "@mdi/js";
 import { ref, computed, watch, onBeforeUnmount } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { ElMessage } from "element-plus";
 
 import * as chatApi from "@/helpers/api-chat";
 import { uploadFile } from "@/helpers/api-upload.js";
@@ -60,6 +65,8 @@ import {
     chatUserTypes,
     chatFacilityTypes,
 } from "@/constants/chat";
+
+import ChatReportPopup from "./ChatReportPopup.vue";
 
 // chat component
 import { register } from "vue-advanced-chat";
@@ -425,19 +432,18 @@ function messageActionHandler(event) {
 }
 
 /* Report chat, prompt reason from user */
+const isDialogVisible = ref(false);
+let submitReport = null;
+const closeDialog = () => {
+    isDialogVisible.value = false;
+};
 function showReportChatPopup(callback) {
-    ElMessageBox.prompt(
-        "Please provide a reason for reporting user. The room will be closed after reporting.",
-        "Report User",
-        {
-            confirmButtonText: "OK",
-            cancelButtonText: "Cancel",
-            inputPattern: /\S+/,
-            inputErrorMessage: "Please provide a reason",
-        }
-    ).then(({ value }) => {
-        callback(value);
-    });
+    submitReport = (reason) => {
+        console.log("Reported Chat: ", reason);
+        isDialogVisible.value = false;
+        callback(reason);
+    };
+    isDialogVisible.value = true;
 }
 </script>
 

@@ -24,6 +24,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -102,6 +103,7 @@ public class ChatUserReportController{
                 case BOT -> dto.setReportedUser(0L);
             }
         }
+        dto.setCreatedAt(new Date());
 
         chatUserReportService.save(dto);
 
