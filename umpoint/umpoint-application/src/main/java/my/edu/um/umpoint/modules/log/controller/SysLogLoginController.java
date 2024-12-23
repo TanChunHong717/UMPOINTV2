@@ -1,5 +1,6 @@
 package my.edu.um.umpoint.modules.log.controller;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import my.edu.um.umpoint.common.annotation.LogOperation;
 import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.page.PageData;
@@ -34,12 +35,12 @@ public class SysLogLoginController {
     @GetMapping("page")
     @Operation(summary = "page")
     @Parameters({
-            @Parameter(name = Constant.PAGE, description = "Current page number, starting from 1", in = ParameterIn.QUERY, required = true, ref="int") ,
-            @Parameter(name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY,required = true, ref="int") ,
-            @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, ref="String") ,
-            @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String"),
-            @Parameter(name = "status", description = "Status 0:Failed 1:Success 2:Account lock", in = ParameterIn.QUERY, ref = "int"),
-            @Parameter(name = "creatorName", description = "Username", in = ParameterIn.QUERY, ref = "String")
+            @Parameter(name = Constant.PAGE, description = "Current page number, starting from 1", in = ParameterIn.QUERY, required = true, schema = @Schema(type = "integer")) ,
+            @Parameter(name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY,required = true, schema = @Schema(type = "integer")) ,
+            @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, schema = @Schema(type = "string")) ,
+            @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, schema = @Schema(type = "string")),
+            @Parameter(name = "status", description = "Status 0:Failed 1:Success 2:Account lock", in = ParameterIn.QUERY, schema = @Schema(type = "int")),
+            @Parameter(name = "creatorName", description = "Username", in = ParameterIn.QUERY, schema = @Schema(type = "string"))
     })
     @RequiresPermissions("sys:log:login")
     public Result<PageData<SysLogLoginDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params) {
@@ -52,8 +53,8 @@ public class SysLogLoginController {
     @Operation(summary = "export")
     @LogOperation("export")
     @Parameters({
-            @Parameter(name = "status", description = "Status 0:Failed 1:Success 2:Account lock", in = ParameterIn.QUERY, ref = "int"),
-            @Parameter(name = "creatorName", description = "Username", in = ParameterIn.QUERY, ref = "String")
+            @Parameter(name = "status", description = "Status 0:Failed 1:Success 2:Account lock", in = ParameterIn.QUERY, schema = @Schema(type = "int")),
+            @Parameter(name = "creatorName", description = "Username", in = ParameterIn.QUERY, schema = @Schema(type = "string"))
     })
     @RequiresPermissions("sys:log:login")
     public void export(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletResponse response) throws Exception {

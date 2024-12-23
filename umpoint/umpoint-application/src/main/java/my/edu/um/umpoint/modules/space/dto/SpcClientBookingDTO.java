@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Data
-@Schema(name = "Space Booking")
+@Schema(title = "Space Client Booking")
 public class SpcClientBookingDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = -2657852531901294966L;

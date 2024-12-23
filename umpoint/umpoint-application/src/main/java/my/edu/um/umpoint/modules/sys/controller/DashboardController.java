@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import my.edu.um.umpoint.common.constant.Constant;
@@ -32,8 +33,8 @@ public class DashboardController {
     @GetMapping("data")
     @Operation(summary = "Dashboard Data")
     @Parameters({
-        @Parameter(name = Constant.START_TIME, description = "Start Date Time", in = ParameterIn.QUERY),
-        @Parameter(name = Constant.END_TIME, description = "End Date Time", in = ParameterIn.QUERY),
+        @Parameter(name = Constant.START_TIME, description = "Start Date Time", in = ParameterIn.QUERY, schema = @Schema(type = "string", format = "date-time")),
+        @Parameter(name = Constant.END_TIME, description = "End Date Time", in = ParameterIn.QUERY, schema = @Schema(type = "string", format = "date-time")),
     })
     public Result<Map<String, Object>> data(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
         return new Result<Map<String, Object>>().ok(dashboardService.getData(params));

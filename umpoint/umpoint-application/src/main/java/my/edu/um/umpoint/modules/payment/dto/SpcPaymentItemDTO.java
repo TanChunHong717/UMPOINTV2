@@ -14,7 +14,7 @@ import java.math.BigDecimal;
  * @since 1.0.0 2024-10-15
  */
 @Data
-@Schema(name = "Space Payment Itemized")
+@Schema(title = "Space Payment Itemized")
 public class SpcPaymentItemDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = 2354434705777956413L;

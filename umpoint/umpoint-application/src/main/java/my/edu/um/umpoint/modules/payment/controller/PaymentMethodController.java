@@ -1,5 +1,6 @@
 package my.edu.um.umpoint.modules.payment.controller;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import my.edu.um.umpoint.common.annotation.LogOperation;
 import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.page.PageData;
@@ -38,11 +39,11 @@ public class PaymentMethodController {
     @GetMapping("page")
     @Operation(summary = "Pagination")
     @Parameters({
-        @Parameter(name = Constant.PAGE, description = "Current page number, starting from 1", in = ParameterIn.QUERY, required = true, ref="int") ,
-        @Parameter(name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY,required = true, ref="int") ,
-        @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, ref="String") ,
-        @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String") ,
-        @Parameter(name = "method", description = "Payment method", in = ParameterIn.QUERY, ref="String")
+        @Parameter(name = Constant.PAGE, description = "Current page number, starting from 1", in = ParameterIn.QUERY, required = true, schema = @Schema(type = "integer")) ,
+        @Parameter(name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY,required = true, schema = @Schema(type = "integer")) ,
+        @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, schema = @Schema(type = "string")) ,
+        @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, schema = @Schema(type = "string")) ,
+        @Parameter(name = "method", description = "Payment method", in = ParameterIn.QUERY, schema = @Schema(type = "string"))
     })
     @RequiresPermissions("payment:method:page")
     public Result<PageData<PaymentMethodDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){

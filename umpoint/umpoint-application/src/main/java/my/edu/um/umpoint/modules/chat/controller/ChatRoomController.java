@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import my.edu.um.umpoint.common.annotation.LogOperation;
 import my.edu.um.umpoint.common.constant.ChatConstant;
@@ -73,11 +74,11 @@ public class ChatRoomController{
         {
             @Parameter(
                 name = Constant.PAGE, description = "Current page number, starting from 1", in = ParameterIn.QUERY,
-                required = true, ref = "int"
+                schema = @Schema(type = "int")
             ),
             @Parameter(
                 name = "type", description = "Type of page to use (user/dept), only for admin", in = ParameterIn.QUERY,
-                required = false, ref = "String"
+                required = false, schema = @Schema(type = "string")
             )
         }
     )
@@ -129,15 +130,15 @@ public class ChatRoomController{
         {
             @Parameter(
                 name = "facilityType", description = "Facility type, one of space/accommodation/service",
-                in = ParameterIn.QUERY, required = true, ref = "String"
+                in = ParameterIn.QUERY, required = true, schema = @Schema(type = "string")
             ),
             @Parameter(
                 name = "facilityId", description = "Facility ID",
-                in = ParameterIn.QUERY, required = true, ref = "Long"
+                in = ParameterIn.QUERY, required = true, schema = @Schema(type = "int")
             ),
             @Parameter(
                 name = "userId", description = "User ID",
-                in = ParameterIn.QUERY, required = false, ref = "Long"
+                in = ParameterIn.QUERY, schema = @Schema(type = "int")
             )
         }
     )

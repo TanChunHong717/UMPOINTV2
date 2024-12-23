@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.exception.BadHttpRequestException;
@@ -33,9 +34,9 @@ public class SpcEventController {
     @GetMapping
     @Operation(summary = "List")
     @Parameters({
-        @Parameter(name = Constant.SPACE_ID, description = "Space ID", in = ParameterIn.QUERY),
-        @Parameter(name = Constant.START_TIME, description = "Start Date Time", in = ParameterIn.QUERY),
-        @Parameter(name = Constant.END_TIME, description = "End Date Time", in = ParameterIn.QUERY),
+        @Parameter(name = Constant.SPACE_ID, description = "Space ID", in = ParameterIn.QUERY, schema = @Schema(type = "string", format = "date-time")),
+        @Parameter(name = Constant.START_TIME, description = "Start Date Time", in = ParameterIn.QUERY, schema = @Schema(type = "string", format = "date-time")),
+        @Parameter(name = Constant.END_TIME, description = "End Date Time", in = ParameterIn.QUERY, schema = @Schema(type = "string", format = "date-time")),
     })
     public Result<List<SpcEventDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @RequestBody(required = false) Long[] ids){
         if (ArrayUtil.isNotEmpty(ids))

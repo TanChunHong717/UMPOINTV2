@@ -17,7 +17,7 @@ import java.math.BigDecimal;
  * @since 1.0.0 2024-10-16
  */
 @Data
-@Schema(name = "Accommodation Payment Itemized")
+@Schema(title = "Accommodation Payment Itemized")
 public class AccPaymentItemDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = -3998467780270441429L;
