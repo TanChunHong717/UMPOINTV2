@@ -1,5 +1,6 @@
 package my.edu.um.umpoint.modules.accommodation.controller;
 
+import cn.hutool.core.util.ArrayUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -9,12 +10,10 @@ import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.utils.Result;
 import my.edu.um.umpoint.modules.accommodation.dto.AccEventDTO;
 import my.edu.um.umpoint.modules.accommodation.service.AccEventService;
+import my.edu.um.umpoint.modules.space.dto.SpcEventDTO;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -39,9 +38,9 @@ public class AccEventController {
         @Parameter(name = Constant.START_TIME, description = "Start Date Time", in = ParameterIn.QUERY, required = true),
         @Parameter(name = Constant.END_TIME, description = "End Date Time", in = ParameterIn.QUERY,required = true),
     })
-    public Result<List<AccEventDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
-        List<AccEventDTO> list = accEventService.list(params);
-
-        return new Result<List<AccEventDTO>>().ok(list);
+    public Result<List<AccEventDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @RequestBody(required = false) Long[] ids){
+        if (ArrayUtil.isNotEmpty(ids))
+            params.put(Constant.ACCOMMODATION_ID_LIST, ids);
+        return new Result<List<AccEventDTO>>().ok(accEventService.list(params));
     }
 }

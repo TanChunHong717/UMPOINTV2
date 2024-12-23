@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script type="module" src="/@vite/client"></script>
+
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UMPOINT V2</title>
+    <script>
+      //全局钩子
+      window.SITE_CONFIG = {
+        //api
+        apiURL: "http://localhost:8080/api"
+      };
+    </script>
+  </head>
+  <body>
+    <div id="tag"></div>
+
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -2,6 +2,7 @@ package my.edu.um.umpoint.modules.space.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import my.edu.um.umpoint.common.constant.BookingConstant;
+import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
 import my.edu.um.umpoint.common.utils.DateUtils;
 import my.edu.um.umpoint.modules.space.dao.SpcEventDao;
@@ -28,23 +29,23 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
 
     @Override
     public QueryWrapper<SpcEventEntity> getWrapper(Map<String, Object> params){
-        Long spaceId = Long.parseLong((String) params.get("spaceId"));
-        Date startTime = null,
-            endTime = null;
-        if (params.get("startTime") != null) {
-            startTime = DateUtils.parse((String) params.get("startTime"), DateUtils.DATE_TIME_PATTERN);
-        }
-        if (params.get("endTime") != null) {
-            endTime = DateUtils.parse((String) params.get("endTime"), DateUtils.DATE_TIME_PATTERN);
-        }
-
         QueryWrapper<SpcEventEntity> wrapper = new QueryWrapper<>();
-        wrapper.eq("space_id", spaceId);
-        if (startTime != null) {
+
+        if (params.containsKey(Constant.SPACE_ID_LIST)) {
+            Long[] ids = (Long[]) params.get(Constant.SPACE_ID_LIST);
+            wrapper.in("space_id", Arrays.asList(ids));
+        } else if (params.get(Constant.SPACE_ID) != null) {
+            Long spaceId = Long.parseLong((String) params.get(Constant.SPACE_ID));
+            wrapper.eq("space_id", spaceId);
+        }
+        if (params.get("startTime") != null) {
+            Date startTime = DateUtils.parse((String) params.get("startTime"), DateUtils.DATE_TIME_PATTERN);
             wrapper.ge("start_time", startTime);
             wrapper.ge("end_time", startTime);
         }
-        if (endTime != null) {
+
+        if (params.get("endTime") != null) {
+            Date endTime = DateUtils.parse((String) params.get("endTime"), DateUtils.DATE_TIME_PATTERN);
             wrapper.le("start_time", endTime);
             wrapper.le("end_time", endTime);
         }
