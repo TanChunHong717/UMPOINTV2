@@ -38,6 +38,7 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
             Long spaceId = Long.parseLong((String) params.get(Constant.SPACE_ID));
             wrapper.eq("space_id", spaceId);
         }
+
         if (params.get("startTime") != null) {
             Date startTime = DateUtils.parse((String) params.get("startTime"), DateUtils.DATE_TIME_PATTERN);
             wrapper.ge("start_time", startTime);

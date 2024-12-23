@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import my.edu.um.umpoint.common.constant.Constant;
+import my.edu.um.umpoint.common.exception.BadHttpRequestException;
 import my.edu.um.umpoint.common.utils.Result;
 import my.edu.um.umpoint.modules.accommodation.dto.AccEventDTO;
 import my.edu.um.umpoint.modules.accommodation.service.AccEventService;
@@ -34,9 +35,9 @@ public class AccEventController {
     @GetMapping
     @Operation(summary = "List")
     @Parameters({
-        @Parameter(name = Constant.ACCOMMODATION_ID, description = "Accommodation ID", in = ParameterIn.QUERY, required = true),
-        @Parameter(name = Constant.START_TIME, description = "Start Date Time", in = ParameterIn.QUERY, required = true),
-        @Parameter(name = Constant.END_TIME, description = "End Date Time", in = ParameterIn.QUERY,required = true),
+        @Parameter(name = Constant.ACCOMMODATION_ID, description = "Accommodation ID", in = ParameterIn.QUERY),
+        @Parameter(name = Constant.START_TIME, description = "Start Date Time", in = ParameterIn.QUERY),
+        @Parameter(name = Constant.END_TIME, description = "End Date Time", in = ParameterIn.QUERY),
     })
     public Result<List<AccEventDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params, @RequestBody(required = false) Long[] ids){
         if (ArrayUtil.isNotEmpty(ids))
