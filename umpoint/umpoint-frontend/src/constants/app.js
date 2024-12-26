@@ -38,4 +38,6 @@ export const paymentStatus = {
 export const eventStatus = {
     0: "Booking",
     1: "Closure",
+    BOOKING: 0,
+    CLOSURE: 1,
 };

@@ -30,7 +30,7 @@ import {
 } from "@/utils/date";
 import baseService from "@/utils/api.js";
 import { JavaId } from "@/types/interface";
-import { facilityTypes } from "@/constants/app";
+import { eventStatus, facilityTypes } from "@/constants/app";
 import { getFacilityBookings } from "@/helpers/api-facility";
 
 const props = defineProps<{
@@ -174,11 +174,9 @@ const updateEvents = async (startDate: Date, endDate: Date) => {
                 end: new Date(event.endTime),
                 title: event.title,
                 class:
-                    event.type == "0"
-                        ? "booking"
-                        : event.type == "1"
-                        ? "close"
-                        : "closure",
+                    event.type == eventStatus.CLOSURE
+                        ? "closure"
+                        : "booking",
                 type: event.type,
 
                 // default events that came from system are non-editable
@@ -256,11 +254,6 @@ onMounted(() => {
         &.booking {
             background-color: var(--el-color-info); /* Blue */
             border: 1px solid #192f59;
-            color: #fff;
-        }
-        &.close {
-            background-color: rgba(108, 117, 125, 0.9); /* Gray */
-            border: 1px solid rgb(88, 97, 104);
             color: #fff;
         }
         &.closure {
