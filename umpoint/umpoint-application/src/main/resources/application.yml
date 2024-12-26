@@ -134,3 +134,4 @@ umpoint:
         - chat:room:getroom
         - chat:message:view
         - chat:message:save
+        - chat:report:save
