@@ -6,12 +6,12 @@ import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
 import my.edu.um.umpoint.common.utils.DateUtils;
 import my.edu.um.umpoint.modules.space.dao.SpcEventDao;
-import my.edu.um.umpoint.modules.space.dto.*;
+import my.edu.um.umpoint.modules.space.dto.SpcBookingDTO;
+import my.edu.um.umpoint.modules.space.dto.SpcClosureDTO;
+import my.edu.um.umpoint.modules.space.dto.SpcEventDTO;
 import my.edu.um.umpoint.modules.space.entity.SpcEventEntity;
 import my.edu.um.umpoint.modules.space.service.SpcEventService;
-import my.edu.um.umpoint.modules.space.service.SpcSpaceService;
 import my.edu.um.umpoint.modules.utils.SpaceBookingUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,8 +32,11 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
         QueryWrapper<SpcEventEntity> wrapper = new QueryWrapper<>();
 
         if (params.containsKey(Constant.SPACE_ID_LIST)) {
-            Long[] ids = (Long[]) params.get(Constant.SPACE_ID_LIST);
-            wrapper.in("space_id", Arrays.asList(ids));
+            List<Long> ids = Arrays.stream((Object[]) params.get(Constant.SPACE_ID_LIST))
+                                   .map((Object id) -> Long.parseLong(id.toString()))
+                                   .toList();
+
+            wrapper.in("space_id", ids);
         } else if (params.get(Constant.SPACE_ID) != null) {
             Long spaceId = Long.parseLong((String) params.get(Constant.SPACE_ID));
             wrapper.eq("space_id", spaceId);

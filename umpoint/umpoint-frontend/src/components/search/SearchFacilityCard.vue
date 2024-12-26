@@ -1,5 +1,9 @@
 <template>
-    <el-card @click="">
+    <el-card
+        @click="handleCardClick"
+        shadow="hover"
+        :body-class="isSelected ? 'selected' : ''"
+    >
         <el-row :gutter="12">
             <el-col :span="8">
                 <el-image
@@ -12,12 +16,16 @@
                 ></el-image>
             </el-col>
             <el-col :span="16">
-                <RouterLink
-                    :to="`/${facilityType}/${facilityInfo.id}`"
-                    class="action-button"
-                >
-                    <el-button>Details </el-button>
-                </RouterLink>
+                <div class="action-button">
+                    <el-checkbox
+                        v-if="selectionMode == 'select'"
+                        v-model="isSelected"
+                        size="large"
+                    />
+                    <RouterLink v-else :to="facilityDetailUrl">
+                        <el-button>Details </el-button>
+                    </RouterLink>
+                </div>
 
                 <h4>{{ facilityInfo.name }}</h4>
                 <li class="info-item">
@@ -137,8 +145,12 @@ import {
     mdiClockOutline,
 } from "@mdi/js";
 import { transformGallery } from "@/helpers/api-facility";
-import { reactive, watch, ref } from "vue";
+import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
+
+// facility information
 const props = defineProps({
     facilityInfo: Object,
     facilityType: String,
@@ -146,10 +158,45 @@ const props = defineProps({
 const facilityInfo = ref(
     transformGallery(props.facilityType, props.facilityInfo)
 );
+const facilityDetailUrl = computed(
+    () => `/${props.facilityType}/${facilityInfo.value.id}`
+);
+
+const emit = defineEmits(["change"]);
+
+// selection mode
+const selectionMode = defineModel("selectionMode", {
+    event: "change",
+    default: "redirect",
+});
+const isSelected = defineModel("isSelected", {
+    event: "change",
+    default: false,
+});
+
+function handleCardClick() {
+    if (selectionMode.value === "select") {
+        isSelected.value = !isSelected.value;
+        emit("change", {
+            isSelected: isSelected.value,
+            facilityId: facilityInfo.value.id,
+        });
+    } else {
+        router.push(facilityDetailUrl.value);
+    }
+}
 </script>
 
 <style scoped>
-.action-button{
-    float:inline-end
+.action-button {
+    float: inline-end;
+    height: auto;
+}
+</style>
+
+<style>
+.selected {
+    border-color: var(--el-color-primary-light-6);
+    background-color: var(--el-color-primary-light-9);
 }
 </style>

@@ -56,12 +56,8 @@
                     fit="cover"
                     style="width: 100%; aspect-ratio: 16/9"
                 ></el-image>
-                <div slot="header" class="clearfix">
-                    <h4>{{ facility.name }}</h4>
-                </div>
-                <div>
-                    <p>{{ facility.category }} - {{ facility.deptName }}</p>
-                </div>
+                <h4>{{ facility.name }}</h4>
+                <p>{{ facility.category }} - {{ facility.deptName }}</p>
                 <RouterLink :to="`/space/${facility.id}`">
                     <el-button>Visit location</el-button></RouterLink
                 >

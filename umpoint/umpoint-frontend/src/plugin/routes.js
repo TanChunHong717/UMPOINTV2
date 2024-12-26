@@ -25,6 +25,16 @@ export default [
         },
         children: [
             {
+                path: "compare",
+                name: "schedule-comparison",
+                component: () =>
+                    import("@/views/facility/ScheduleComparison.vue"),
+                meta: {
+                    title: "Comparison",
+                },
+                props: true,
+            },
+            {
                 path: ":id",
                 name: "facility-information",
                 component: () =>

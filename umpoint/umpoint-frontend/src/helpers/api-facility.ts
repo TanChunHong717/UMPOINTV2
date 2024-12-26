@@ -100,7 +100,7 @@ export function getDepartments() {
 
 // Bookings
 
-export function getFacilityBookings(facilityType: keyof typeof facilityTypes, facilityID: JavaId, startTime: string, endTime: string) {
+export function getFacilityBookings(facilityType: keyof typeof facilityTypes, facilityID: JavaId | JavaId[], startTime: string, endTime: string) {
     // TODO: PLACEHOLDER
     if (Number(facilityID) == 2) {
         return {
@@ -124,11 +124,14 @@ export function getFacilityBookings(facilityType: keyof typeof facilityTypes, fa
         return { data: { code: 0, data: [] } };
     }
 
-    let params = Object.assign(
-        { [`${facilityType}Id`]: facilityID },
-        startTime && { startTime },
-        endTime && { endTime }
-    );
+    let params = {}
+    if (Array.isArray(facilityID)) {
+        params = { [`${facilityType}Id`]: facilityID.join(",") }
+    } else {
+        params = { [`${facilityType}Id`]: facilityID }
+    }
+    if (startTime) params = { ...params, startTime }
+    if (endTime) params = { ...params, endTime }
 
     return api.get(`/${facilityType}/event`, {
         params,

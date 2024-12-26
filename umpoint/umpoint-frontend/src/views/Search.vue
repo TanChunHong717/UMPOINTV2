@@ -53,6 +53,9 @@
                     :facilityInfo="facilityInfo"
                     :facilityType="facilityType"
                     style="margin-bottom: 8px"
+                    v-model:selectionMode="selectionMode"
+                    :isSelected="selectedFacilities.includes(facilityInfo.id)"
+                    @change="handleCardClick"
                 />
                 <el-pagination
                     v-model:current-page="currentPage"
@@ -62,7 +65,34 @@
                     layout="prev, pager, next, jumper,->,slot"
                     :page-size="pageSize"
                 >
-                    <el-button>Compare timetable mode</el-button>
+                    <el-button
+                        v-if="selectionMode == 'select'"
+                        @click="navigateToComparisonPage"
+                        aria-label="Compare schedules for selected facilities"
+                        title="Compare schedules for selected facilities"
+                    >
+                        Compare schedules
+                    </el-button>
+
+                    <el-button
+                        v-if="selectionMode == 'redirect'"
+                        @click="changeSelectionMode"
+                        aria-label="Switch to select facilities for comparison"
+                        title="Switch to select facilities for comparison"
+                    >
+                        <svg-icon
+                            type="mdi"
+                            :path="mdiCheckboxMarkedCirclePlusOutline"
+                        />
+                    </el-button>
+                    <el-button
+                        v-else
+                        @click="changeSelectionMode"
+                        aria-label="Switch to view facility information mode"
+                        title="Switch to view facility information mode"
+                    >
+                        <svg-icon type="mdi" :path="mdiViewCarouselOutline" />
+                    </el-button>
                 </el-pagination>
             </el-col>
         </el-row>
@@ -70,9 +100,15 @@
 </template>
 
 <script setup>
+import {
+    mdiCheckboxMarkedCirclePlusOutline,
+    mdiViewCarouselOutline,
+} from "@mdi/js";
 import { reactive, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { ElMessage } from "element-plus";
 import { getFacilities as getFacilitiesAPI } from "@/helpers/api-facility";
+
 import DepartmentDropdown from "@/components/search/DepartmentDropdown.vue";
 import SearchFacilityCard from "@/components/search/SearchFacilityCard.vue";
 import CategoriesDropdown from "@/components/search/CategoriesDropdown.vue";
@@ -91,6 +127,7 @@ watch(
             }
             // change facility type, clear search term
             clearSearchFormCatId();
+            clearSelectedFacilities();
         }
 
         if (hash === "#space") {
@@ -158,6 +195,50 @@ watch(
     },
     { immediate: true }
 );
+
+// list or select mode
+const selectionMode = ref("redirect");
+const selectedFacilities = ref([]);
+function clearSelectedFacilities() {
+    selectedFacilities.value = [];
+}
+function changeSelectionMode() {
+    selectionMode.value =
+        selectionMode.value === "redirect" ? "select" : "redirect";
+}
+function handleCardClick(changeOption) {
+    if (selectionMode.value === "select") {
+        if (changeOption.isSelected) {
+            selectedFacilities.value.push(changeOption.facilityId);
+        } else {
+            selectedFacilities.value = selectedFacilities.value.filter(
+                (id) => id !== changeOption.facilityId
+            );
+        }
+    }
+}
+function navigateToComparisonPage() {
+    if (selectedFacilities.value.length < 2) {
+        ElMessage({
+            title: "Error",
+            type: "error",
+            message: "Please select at least 2 facilities to compare",
+        });
+        return;
+    } else if (selectedFacilities.value.length > 5) {
+        ElMessage({
+            title: "Error",
+            type: "error",
+            message: "Please select at most 5 facilities to compare",
+        });
+        return;
+    }
+    router.push({
+        name: "schedule-comparison",
+        params: { type: facilityType.value },
+        query: { ids: selectedFacilities.value.join(",") },
+    });
+}
 </script>
 
 <style>
