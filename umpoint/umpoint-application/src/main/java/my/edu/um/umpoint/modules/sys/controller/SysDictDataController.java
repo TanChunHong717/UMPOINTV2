@@ -1,5 +1,6 @@
 package my.edu.um.umpoint.modules.sys.controller;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import my.edu.um.umpoint.common.annotation.LogOperation;
 import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.page.PageData;
@@ -31,12 +32,12 @@ public class SysDictDataController {
     @GetMapping("page")
     @Operation(summary = "dictionary data")
     @Parameters({
-            @Parameter(name = Constant.PAGE, description = "Current page number, starting from 1", in = ParameterIn.QUERY, required = true, ref="int") ,
-            @Parameter(name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY,required = true, ref="int") ,
-            @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, ref="String") ,
-            @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String"),
-            @Parameter(name = "dictLabel", description = "dict label", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(name = "dictValue", description = "dict value", in = ParameterIn.QUERY, ref = "String")
+            @Parameter(name = Constant.PAGE, description = "Current page number, starting from 1", in = ParameterIn.QUERY, required = true, schema = @Schema(type = "integer")) ,
+            @Parameter(name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY,required = true, schema = @Schema(type = "integer")) ,
+            @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, schema = @Schema(type = "string")) ,
+            @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, schema = @Schema(type = "string")),
+            @Parameter(name = "dictLabel", description = "dict label", in = ParameterIn.QUERY, schema = @Schema(type = "string")),
+            @Parameter(name = "dictValue", description = "dict value", in = ParameterIn.QUERY, schema = @Schema(type = "string"))
     })
     @RequiresPermissions("sys:dict:page")
     public Result<PageData<SysDictDataDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params) {

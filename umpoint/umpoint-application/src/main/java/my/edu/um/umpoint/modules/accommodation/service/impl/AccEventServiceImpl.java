@@ -2,6 +2,7 @@ package my.edu.um.umpoint.modules.accommodation.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import my.edu.um.umpoint.common.constant.BookingConstant;
+import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
 import my.edu.um.umpoint.common.utils.DateUtils;
 import my.edu.um.umpoint.modules.accommodation.dao.AccEventDao;
@@ -9,6 +10,7 @@ import my.edu.um.umpoint.modules.accommodation.dto.*;
 import my.edu.um.umpoint.modules.accommodation.entity.AccEventEntity;
 import my.edu.um.umpoint.modules.accommodation.service.AccAccommodationService;
 import my.edu.um.umpoint.modules.accommodation.service.AccEventService;
+import my.edu.um.umpoint.modules.space.entity.SpcEventEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,19 +29,29 @@ import java.util.Map;
 @Service
 public class AccEventServiceImpl extends CrudServiceImpl<AccEventDao, AccEventEntity, AccEventDTO> implements AccEventService {
 
-    @Autowired
-    private AccAccommodationService accAccommodationService;
-
     @Override
     public QueryWrapper<AccEventEntity> getWrapper(Map<String, Object> params){
-        Long accommodationId = Long.parseLong((String)params.get("accommodationId"));
-        Date startTime =  DateUtils.parse((String) params.get("startTime"), DateUtils.DATE_PATTERN);
-        Date endTime = DateUtils.parse((String) params.get("endTime"), DateUtils.DATE_PATTERN);
-
         QueryWrapper<AccEventEntity> wrapper = new QueryWrapper<>();
-        wrapper.eq("accommodation_id", accommodationId);
-        wrapper.between("start_time", startTime, endTime);
-        wrapper.between("end_time", startTime, endTime);
+
+        if (params.containsKey(Constant.ACCOMMODATION_ID_LIST)) {
+            Long[] ids = (Long[]) params.get(Constant.ACCOMMODATION_ID_LIST);
+            wrapper.in("accommodation_id", Arrays.asList(ids));
+        } else if (params.get(Constant.ACCOMMODATION_ID) != null) {
+            Long spaceId = Long.parseLong((String) params.get(Constant.ACCOMMODATION_ID));
+            wrapper.eq("space_id", spaceId);
+        }
+
+        if (params.get("startTime") != null) {
+            Date startTime = DateUtils.parse((String) params.get("startTime"), DateUtils.DATE_TIME_PATTERN);
+            wrapper.ge("start_time", startTime);
+            wrapper.ge("end_time", startTime);
+        }
+
+        if (params.get("endTime") != null) {
+            Date endTime = DateUtils.parse((String) params.get("endTime"), DateUtils.DATE_TIME_PATTERN);
+            wrapper.le("start_time", endTime);
+            wrapper.le("end_time", endTime);
+        }
 
         return wrapper;
     }

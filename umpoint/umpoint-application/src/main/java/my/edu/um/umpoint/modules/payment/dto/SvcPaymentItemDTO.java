@@ -17,7 +17,7 @@ import java.math.BigDecimal;
  * @since 1.0.0 2024-10-16
  */
 @Data
-@Schema(name = "Service Payment Itemized")
+@Schema(title = "Service Payment Itemized")
 public class SvcPaymentItemDTO implements Serializable {
 	@Serial
     private static final long serialVersionUID = 220973959925029187L;

@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import my.edu.um.umpoint.common.constant.ChatConstant;
 import my.edu.um.umpoint.common.constant.Constant;
@@ -85,7 +86,7 @@ public class ChatMessageController{
         {
             @Parameter(
                 name = Constant.PAGE, description = "Current page number, starting from 1", in = ParameterIn.QUERY,
-                required = true, ref = "int"
+                schema = @Schema(type = "int")
             )
         }
     )

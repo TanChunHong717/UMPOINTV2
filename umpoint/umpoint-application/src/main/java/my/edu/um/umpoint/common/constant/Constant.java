@@ -22,10 +22,12 @@ public interface Constant {
     String ID = "id";
     String SPACE = "space";
     String SPACE_ID = "spaceId";
+    String SPACE_ID_LIST = "spaceIdList";
     String SERVICE = "service";
     String SERVICE_ID = "serviceId";
     String ACCOMMODATION = "accommodation";
     String ACCOMMODATION_ID = "accommodationId";
+    String ACCOMMODATION_ID_LIST = "accommodationIdList";
     String DEPT_ID = "deptId";
     String CAT_ID = "catId";
     String TAG_ID = "tagId";

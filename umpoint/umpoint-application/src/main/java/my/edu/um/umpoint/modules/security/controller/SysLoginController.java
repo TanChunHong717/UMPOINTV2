@@ -3,6 +3,7 @@ package my.edu.um.umpoint.modules.security.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -46,7 +47,7 @@ public class SysLoginController {
 
     @GetMapping("captcha")
     @Operation(summary = "captcha")
-    @Parameter(in = ParameterIn.QUERY, ref = "string", name = "uuid", required = true)
+    @Parameter(in = ParameterIn.QUERY, schema = @Schema(type = "string"), name = "uuid", required = true)
     public void captcha(HttpServletResponse response, String uuid) throws IOException{
         AssertUtils.isBlank(uuid, ErrorCode.IDENTIFIER_NOT_NULL);
         captchaService.create(response, uuid);

@@ -1,5 +1,6 @@
 package my.edu.um.umpoint.modules.sys.controller;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import my.edu.um.umpoint.common.annotation.LogOperation;
 import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.exception.ErrorCode;
@@ -45,13 +46,13 @@ public class SysUserController {
     @GetMapping("page")
     @Operation(summary = "page")
     @Parameters({
-            @Parameter(name = Constant.PAGE, description = "Current page number, starting from 1", in = ParameterIn.QUERY, required = true, ref="int") ,
-            @Parameter(name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY,required = true, ref="int") ,
-            @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, ref="String") ,
-            @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, ref="String"),
-            @Parameter(name = "username", description = "Username", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(name = "gender", description = "Gender", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(name = "deptId", description = "Department ID", in = ParameterIn.QUERY, ref = "String")
+            @Parameter(name = Constant.PAGE, description = "Current page number, starting from 1", in = ParameterIn.QUERY, required = true, schema = @Schema(type = "integer")) ,
+            @Parameter(name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY,required = true, schema = @Schema(type = "integer")) ,
+            @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, schema = @Schema(type = "string")) ,
+            @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, schema = @Schema(type = "string")),
+            @Parameter(name = "username", description = "Username", in = ParameterIn.QUERY, schema = @Schema(type = "string")),
+            @Parameter(name = "gender", description = "Gender", in = ParameterIn.QUERY, schema = @Schema(type = "string")),
+            @Parameter(name = "deptId", description = "Department ID", in = ParameterIn.QUERY, schema = @Schema(type = "string"))
     })
     @RequiresPermissions("sys:user:page")
     public Result<PageData<SysUserDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params) {
@@ -63,9 +64,9 @@ public class SysUserController {
     @GetMapping("list")
     @Operation(summary = "list")
     @Parameters({
-            @Parameter(name = "username", description = "Username", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(name = "gender", description = "Gender", in = ParameterIn.QUERY, ref = "String"),
-            @Parameter(name = "deptId", description = "Department ID", in = ParameterIn.QUERY, ref = "String")
+            @Parameter(name = "username", description = "Username", in = ParameterIn.QUERY, schema = @Schema(type = "string")),
+            @Parameter(name = "gender", description = "Gender", in = ParameterIn.QUERY, schema = @Schema(type = "string")),
+            @Parameter(name = "deptId", description = "Department ID", in = ParameterIn.QUERY, schema = @Schema(type = "string"))
     })
     @RequiresPermissions("sys:user:list")
     public Result<List<SysUserDTO>> list(@Parameter(hidden = true) @RequestParam Map<String, Object> params) {
@@ -150,7 +151,7 @@ public class SysUserController {
     @Operation(summary = "export")
     @LogOperation("export")
     @RequiresPermissions("sys:user:export")
-    @Parameter(name = "username", description = "username", in = ParameterIn.QUERY, ref = "String")
+    @Parameter(name = "username", description = "username", in = ParameterIn.QUERY, schema = @Schema(type = "string"))
     public void export(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletResponse response) throws Exception {
         List<SysUserDTO> list = sysUserService.list(params);
 

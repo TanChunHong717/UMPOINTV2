@@ -1,5 +1,6 @@
 package my.edu.um.umpoint.modules.sys.controller;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import my.edu.um.umpoint.common.annotation.LogOperation;
 import my.edu.um.umpoint.common.exception.ErrorCode;
 import my.edu.um.umpoint.common.utils.Result;
@@ -51,7 +52,7 @@ public class SysMenuController {
 
     @GetMapping("list")
     @Operation(summary = "list")
-    @Parameter(name = "type", description = "type 0:menu 1:button", in = ParameterIn.QUERY, ref = "int")
+    @Parameter(name = "type", description = "type 0:menu 1:button", in = ParameterIn.QUERY, schema = @Schema(type = "int"))
     @RequiresPermissions("sys:menu:list")
     public Result<List<SysMenuDTO>> list(Integer type) {
         List<SysMenuDTO> list = sysMenuService.getAllMenuList(type);
