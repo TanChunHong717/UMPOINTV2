@@ -71,8 +71,6 @@ const today = new Date(
 today.setHours(0, 0, 0, 0); // reset to start of day
 
 // default value
-const minDate = ref(null);
-const maxDate = ref(null);
 const weekendDays = [6, 7];
 
 // Initialise calendar
@@ -93,21 +91,6 @@ const getHoliday = (year: number) => {
 };
 const initializeTimeTable = () => {
     isCalendarLoading.value = true;
-
-    // set allowed start and end date
-    if (props.bookingRule?.minBookingAdvanceDay) {
-        minDate.value = addDays(
-            today,
-            props.bookingRule?.minBookingAdvanceDay + 1 // today doesnt count
-        );
-    } else {
-        minDate.value = today;
-    }
-    if (props.bookingRule?.maxBookingAdvanceDay) {
-        maxDate.value = addDays(today, props.bookingRule?.maxBookingAdvanceDay);
-    } else {
-        maxDate.value = addDays(today, 30);
-    }
 
     // set allowed start and end time
     const startTimeArray = props.bookingRule?.startTime.split(":") ?? [
