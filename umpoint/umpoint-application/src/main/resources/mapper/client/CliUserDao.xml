@@ -17,6 +17,8 @@
         <result property="spacePermission" column="space_permission"/>
         <result property="servicePermission" column="service_permission"/>
         <result property="accommodationPermission" column="accommodation_permission"/>
+        <result property="emailValidated" column="email_validated"/>
+        <result property="receiveEmail" column="receive_email"/>
         <result property="createDate" column="create_date"/>
     </resultMap>
 

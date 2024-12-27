@@ -71,6 +71,14 @@ public class CliUserEntity {
 	 */
 	private Integer accommodationPermission;
 	/**
+	 * Is email validated
+	 */
+	private Integer emailValidated;
+	/**
+	 * Receive email (user preference)
+	 */
+	private Integer receiveEmail;
+	/**
 	* Create date
 	*/
 	@TableField(fill = FieldFill.INSERT)

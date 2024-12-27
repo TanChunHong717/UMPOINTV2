@@ -73,6 +73,12 @@ public class CliUserDTO implements Serializable {
 	@Schema(title = "Have permission to book accommodation")
 	private Integer accommodationPermission;
 
+	@Schema(title = "Is email validated")
+	private Integer emailValidated;
+
+	@Schema(title = "Receive email (user preference)")
+	private Integer receiveEmail;
+
 	@Schema(title = "Create date")
 	private Date createDate;
 }

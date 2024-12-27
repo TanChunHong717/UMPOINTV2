@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import my.edu.um.umpoint.common.annotation.DataFilter;
 import my.edu.um.umpoint.common.constant.BookingConstant;
+import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
 import my.edu.um.umpoint.common.utils.DateUtils;
@@ -25,6 +26,8 @@ import my.edu.um.umpoint.modules.space.entity.SpcBookingEntity;
 import my.edu.um.umpoint.modules.space.entity.SpcBookingTechnicianEntity;
 import my.edu.um.umpoint.modules.space.entity.SpcEventEntity;
 import my.edu.um.umpoint.modules.space.service.*;
+import my.edu.um.umpoint.modules.thirdparty.entity.EmailDetails;
+import my.edu.um.umpoint.modules.thirdparty.service.EmailService;
 import my.edu.um.umpoint.modules.utils.EventEntity;
 import my.edu.um.umpoint.modules.utils.SpaceBookingUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -68,6 +72,9 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
 
     @Autowired
     private SpcEventDao spcEventDao;
+
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public QueryWrapper<SpcBookingEntity> getWrapper(Map<String, Object> params){
@@ -130,8 +137,9 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
                                                 BookingConstant.Holiday.AVAILABLE.getValue());
 
         // add attachments if required
-        if (spcBookingDTO.getSpcBookingAttachmentDTOList() != null && !spcBookingDTO.getSpcBookingAttachmentDTOList().isEmpty()) {
-            for (SpcBookingAttachmentDTO item : spcBookingDTO.getSpcBookingAttachmentDTOList()){
+        if (spcBookingDTO.getSpcBookingAttachmentDTOList() != null &&
+            !spcBookingDTO.getSpcBookingAttachmentDTOList().isEmpty()) {
+            for (SpcBookingAttachmentDTO item : spcBookingDTO.getSpcBookingAttachmentDTOList()) {
                 item.setBookingId(spcBookingDTO.getId());
                 spcBookingAttachmentService.save(item);
             }
@@ -151,6 +159,36 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
                 item.setPaymentId(payment.getId());
                 spcPaymentItemService.save(item);
             }
+        }
+
+        // send mail notification
+        emailService.sendSimpleMail(
+            new EmailDetails(
+                space.getManagerEmail(),
+                String.format(
+                    "A new booking has been created for %s at %s. Please visit the panel to take further action. \n\n" +
+                    spcBookingDTO.toString(),
+                    space.getName(),
+                    (new SimpleDateFormat("dd MMM yyyy, HH:mm:ss z")).format(spcBookingDTO.getCreateDate())
+                ),
+                "New Booking For " + space.getName()
+            )
+        );
+        if (
+            user.getReceiveEmail() == Constant.EmailNotification.RECEIVE.getValue()
+        ) {
+            emailService.sendSimpleMail(
+                new EmailDetails(
+                    user.getEmail(),
+                    String.format(
+                        "Your new booking of %s has been created at %s. Please wait whileSee booking details below. \n\n" +
+                        spcBookingDTO.toString(),
+                        space.getName(),
+                        (new SimpleDateFormat("dd MMM yyyy, HH:mm:ss z")).format(spcBookingDTO.getCreateDate())
+                    ),
+                    "New Booking For " + space.getName()
+                )
+            );
         }
     }
 
@@ -190,7 +228,7 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
     }
 
     @Override
-    public void reject(List<Long> idList) {
+    public void reject(List<Long> idList){
         UserDetail user = SecurityUser.getUser();
         SpcBookingEntity entity = new SpcBookingEntity();
         entity.setAdminId(user.getId());

@@ -8,13 +8,20 @@ services:
             - mysql
         restart: always
         environment:
+            TZ: Asia/Kuala_Lumpur
             spring.profiles.active: dev
+            # Database
             spring.datasource.druid.url: jdbc:mysql://mysql:3306/${DB_NAME:-umpoint}?useUnicode=true&characterEncoding=UTF-8&nullCatalogMeansCurrent=true
             spring.datasource.druid.username: ${DB_USERNAME:-umpoint}
             spring.datasource.druid.password: ${DB_PASSWORD:-umpoint}
+            # Azure services
             spring.ai.azure.openai.api-key: ${AZURE_GPT_API_KEY?Azure GPT API Key not set}
             azure.storage.connection-string: ${AZURE_STORAGE_CONNECTION_STRING?Azure Storage Key not set}
-            TZ: Asia/Kuala_Lumpur
+            # SMTP mail
+            spring.mail.host: ${SMTP_SERVER:-smtp.gmail.com}
+            spring.mail.port: ${SMTP_PORT:-587}
+            spring.mail.username: ${SMTP_USERNAME?SMTP Username not set}
+            spring.mail.password: ${SMTP_PASSWORD?SMTP Password not set}
         networks:
             - umpoint-network
 
