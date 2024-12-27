@@ -252,7 +252,7 @@ function returnFormInfo(formEl) {
                     prop="termsAndConditions"
                 >
                     <el-checkbox v-model="formData.termsAndConditions">
-                        Yes, I agree with Faculty of Law's terms and conditions.
+                        Yes, I agree with {{ props.facilityInfo.deptName }}'s terms and conditions.
                     </el-checkbox>
                 </el-form-item>
             </el-col>
