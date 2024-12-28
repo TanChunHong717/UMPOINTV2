@@ -30,8 +30,8 @@
                         @click="submitForm"
                     >
                         Login
-                        <input type="submit" hidden />
                     </el-button>
+                    <input type="submit" hidden />
                 </el-col>
             </el-form-item>
         </el-form>

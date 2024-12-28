@@ -335,8 +335,9 @@ function returnFormInfo(formEl) {
 
         <div class="end-buttons">
             <el-button type="primary" @click="returnFormInfo(formNode)">
-                Next <input type="submit" hidden />
+                Next 
             </el-button>
+            <input type="submit" hidden />
         </div>
     </el-form>
 </template>
