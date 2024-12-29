@@ -25,11 +25,8 @@
                 <el-form-item label="Mobile Phone" prop="mobile">
                     <el-input v-model="formData.mobile" />
                 </el-form-item>
-                <!-- <el-form-item label="Address" prop="address">
+                <el-form-item label="Address" prop="address">
                     <el-input v-model="formData.address" />
-                </el-form-item> -->
-                <el-form-item label="Current Password" prop="password">
-                    <el-input type="password" v-model="formData.password" />
                 </el-form-item>
                 <el-form-item label="New Password" prop="newPassword">
                     <el-input type="password" v-model="formData.newPassword" />
@@ -43,25 +40,30 @@
                         v-model="formData.newPasswordConfirm"
                     />
                 </el-form-item>
-                <!-- <el-form-item label="Profile Picture">
-                    <el-upload
-                        class="avatar-uploader"
-                        action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-                        :show-file-list="false"
-                        :on-success="handleAvatarSuccess"
-                        :before-upload="beforeAvatarUpload"
-                    >
-                        <img
-                            v-if="formData.profilePicture"
-                            :src="formData.profilePicture"
-                            class="avatar"
-                        />
-                        <el-icon v-else class="avatar-uploader-icon">
-                            <svg-icon type="mdi" :path="mdiPlus" />
-                        </el-icon>
-                    </el-upload>
-                </el-form-item> -->
             </div>
+
+            <el-divider content-position="left">Notification</el-divider>
+            <el-form-item
+                label="Receive email"
+                label-position="left"
+                prop="receiveEmail"
+            >
+                <el-switch
+                    v-model="formData.receiveEmail"
+                    :active-value="1"
+                    :inactive-value="0"
+                />
+            </el-form-item>
+
+            <el-divider content-position="left">Security</el-divider>
+            <el-form-item
+                label="Current Password"
+                label-position="left"
+                prop="password"
+            >
+                <el-input type="password" v-model="formData.password" />
+            </el-form-item>
+
             <el-button
                 type="primary"
                 style="float: inline-end"
@@ -93,6 +95,7 @@ const formData = reactive({
     password: null,
     newPassword: null,
     newPasswordConfirm: null,
+    receiveEmail: 1,
 
     // student/personnel info
     matricNumber: null,
@@ -107,7 +110,10 @@ onMounted(async () => {
     formData.name = userData.username;
     formData.email = userData.email;
     formData.mobile = userData.mobile;
+    formData.address = userData.address;
     formData.type = userData.type[0].toUpperCase() + userData.type.slice(1);
+    formData.receiveEmail = userData.receiveEmail;
+    console.log(formData);
 });
 
 // // avatar
@@ -131,6 +137,13 @@ const rules = reactive({
         {
             required: true,
             message: "Please input your mobile phone",
+            trigger: "blur",
+        },
+    ],
+    address: [
+        {
+            required: true,
+            message: "Please input your address",
             trigger: "blur",
         },
     ],
@@ -165,6 +178,8 @@ async function saveFormData() {
     let submitData = {
         password: formData.password,
         mobile: formData.mobile,
+        address: formData.address,
+        receiveEmail: formData.receiveEmail,
     };
     if (formData.newPassword) {
         submitData.newPassword = formData.newPassword;
@@ -172,6 +187,7 @@ async function saveFormData() {
     try {
         await saveUserInformation(formData.id, submitData);
         ElMessage.success("Profile updated successfully");
+        formData.password = ""; // clear password field
     } catch (e) {
         ElMessage.error(e.message);
     }

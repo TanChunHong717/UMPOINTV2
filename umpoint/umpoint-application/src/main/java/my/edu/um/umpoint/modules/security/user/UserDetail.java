@@ -18,6 +18,7 @@ public class UserDetail implements Serializable{
     private String password;
     private String mobile;
     private String email;
+    private String address;
 
     //Admin
     private String realName;
