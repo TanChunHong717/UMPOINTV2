@@ -10,6 +10,7 @@ import my.edu.um.umpoint.modules.payment.dao.SpcPaymentDao;
 import my.edu.um.umpoint.modules.payment.dto.SpcPaymentDTO;
 import my.edu.um.umpoint.modules.payment.entity.SpcPaymentEntity;
 import my.edu.um.umpoint.modules.payment.service.SpcPaymentService;
+import my.edu.um.umpoint.modules.space.dto.SpcBookingDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
