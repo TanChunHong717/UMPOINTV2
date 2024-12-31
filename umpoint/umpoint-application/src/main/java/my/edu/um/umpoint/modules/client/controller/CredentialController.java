@@ -61,10 +61,12 @@ public class CredentialController{
             dto.setAccommodationPermission(1);
         } else if (dto.getType().equals("Student")) {
             dto.setSpacePermission(1);
+            dto.setServicePermission(0);
             dto.setAccommodationPermission(1);
         } else {
             dto.setSpacePermission(1);
             dto.setServicePermission(1);
+            dto.setAccommodationPermission(0);
         }
 
         cliUserService.save(dto);
