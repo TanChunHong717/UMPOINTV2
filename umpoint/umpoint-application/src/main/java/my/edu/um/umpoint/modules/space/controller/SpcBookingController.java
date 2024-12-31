@@ -243,10 +243,13 @@ public class SpcBookingController{
         LocalTime currentAllowTime = spcBookingRule.getStartTime().toLocalTime();
         long slotDiffMinutes = spcBookingRule.getBookingUnit().longValue();
 
+        System.out.println("current time" + currentAllowTime);
         while (!currentAllowTime.isAfter(spcBookingRule.getEndTime().toLocalTime())) {
             allowedTimeSlots.add(currentAllowTime);
+            System.out.println("allowedTimeSlots" + allowedTimeSlots);
             currentAllowTime = currentAllowTime.plusMinutes(slotDiffMinutes);
         }
+        System.out.println("end");
 
         if (!allowedTimeSlots.contains(startTime)) {
             throw new DateTimeException("Selected start time is not in allowed time slot");
