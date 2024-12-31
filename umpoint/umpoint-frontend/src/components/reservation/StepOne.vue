@@ -252,7 +252,8 @@ function returnFormInfo(formEl) {
                     prop="termsAndConditions"
                 >
                     <el-checkbox v-model="formData.termsAndConditions">
-                        Yes, I agree with {{ props.facilityInfo.deptName }}'s terms and conditions.
+                        Yes, I agree with {{ props.facilityInfo.deptName }}'s
+                        terms and conditions.
                     </el-checkbox>
                 </el-form-item>
             </el-col>
@@ -334,11 +335,13 @@ function returnFormInfo(formEl) {
         ></booking-calendar>
 
         <div class="end-buttons">
+            <div> <!-- force button to right with enter submit button -->
+                <input type="submit" hidden />
+            </div>
             <el-button type="primary" @click="returnFormInfo(formNode)">
-                Next 
+                Next
             </el-button>
         </div>
-        <input type="submit" hidden />
     </el-form>
 </template>
 
