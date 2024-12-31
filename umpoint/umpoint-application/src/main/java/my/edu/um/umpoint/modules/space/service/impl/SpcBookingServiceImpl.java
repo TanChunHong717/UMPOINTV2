@@ -172,18 +172,23 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
         }
 
         // send mail notification
-        emailService.sendSimpleMail(
-            new EmailDetails(
-                space.getManagerEmail(),
-                String.format(
-                    "A new booking has been created for %s at %s. Please visit the panel to take further action. \n\n" +
-                    spcBookingDTO.toString(),
-                    space.getName(),
-                    (new SimpleDateFormat("dd MMM yyyy, HH:mm:ss z")).format(spcBookingDTO.getCreateDate())
-                ),
-                "New Booking For " + space.getName()
-            )
-        );
+        FutureTask<Void> futureTask = new FutureTask<Void>(() -> {
+            emailService.sendSimpleMail(
+                new EmailDetails(
+                    space.getManagerEmail(),
+                    String.format(
+                        "A new booking has been created for %s at %s. Please visit the panel to take further action. \n\n" +
+                        spcBookingDTO.toString(),
+                        space.getName(),
+                        (new SimpleDateFormat("dd MMM yyyy, HH:mm:ss z")).format(spcBookingDTO.getCreateDate())
+                    ),
+                    "New Booking For " + space.getName()
+                )
+            );
+            return null;
+        });
+        // Start the task in a new thread
+        new Thread(futureTask).start();
 
         this.sendEmailToCustomer(
             ConvertUtils.sourceToTarget(user, CliUserEntity.class),
