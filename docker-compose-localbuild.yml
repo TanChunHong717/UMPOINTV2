@@ -22,6 +22,9 @@ services:
             spring.mail.port: ${SMTP_PORT:-587}
             spring.mail.username: ${SMTP_USERNAME?SMTP Username not set}
             spring.mail.password: ${SMTP_PASSWORD?SMTP Password not set}
+            # JVM Options for memory and garbage collection
+            JAVA_OPTS: "-Xms512m -Xmx2g -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
+        mem_limit: 2g  # Set maximum memory for the container
         networks:
             - umpoint-network
 
