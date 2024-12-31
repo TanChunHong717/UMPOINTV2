@@ -193,7 +193,7 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
         this.sendEmailToCustomer(
             ConvertUtils.sourceToTarget(user, CliUserEntity.class),
             "New booking for ${spaceName}",
-            "Your booking for ${spaceName} has been created at ${bookingDate}. Please see details below.",
+            "Your booking for ${spaceName} has been created at ${currentTime}. Please see details below.",
             spcBookingDTO,
             space
         );
@@ -390,7 +390,7 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
                 emailService.sendSimpleMail(
                     new EmailDetails(
                         user.getEmail(),
-                        StrSubstitutor.replace(messageFormat + "\n\n" + booking.toString(), replacementMap),
+                        StrSubstitutor.replace(messageFormat, replacementMap) + "\n\n" + booking.toString(),
                         StrSubstitutor.replace(title, replacementMap)
                     )
                 );
