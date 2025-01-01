@@ -1,14 +1,17 @@
 package my.edu.um.umpoint.modules.sys.service.impl;
 
+import my.edu.um.umpoint.common.constant.Constant;
+import my.edu.um.umpoint.common.exception.RenException;
 import my.edu.um.umpoint.modules.sys.dao.DashboardDao;
 import my.edu.um.umpoint.modules.sys.service.DashboardService;
-import org.apache.ibatis.annotations.Mapper;
+import my.edu.um.umpoint.modules.utils.PdfGenerator;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -17,8 +20,25 @@ public class DashboardServiceImpl implements DashboardService {
     private static final String BOOKING_COUNT = "bookingCount";
     private static final String BOOKING_AMOUNT = "bookingAmount";
 
+    private static final String contextText = """
+        Context information is below, surrounded by ---------------------
+    
+        ---------------------
+        %s
+        ---------------------
+    
+        Write a short description to describe and summarise the data.
+        Your response should no contain "you" and without markdown syntax.
+    """;
+
+    private final ChatClient chatClient;
+
     @Autowired
     private DashboardDao dashboardDao;
+
+    public DashboardServiceImpl(@Qualifier("clientChat") ChatClient chatClient) {
+        this.chatClient = chatClient;
+    }
 
     @Override
     public Map<String, Object> getData(Map<String, Object> params) {
@@ -53,5 +73,20 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public void generateReport(Map<String, Object> params) {
+        Map<String, Object> data = getData(params);
+        data.put(Constant.START_TIME, params.get(Constant.START_TIME));
+        data.put(Constant.END_TIME, params.get(Constant.END_TIME));
+
+        String response = chatClient
+                .prompt()
+                .user(String.format(contextText, data.toString()))
+                .call()
+                .content();
+
+        try {
+            PdfGenerator.generateDashboardReport(data, response);
+        } catch (Exception e) {
+            throw new RenException("Failed to generated report");
+        }
     }
 }

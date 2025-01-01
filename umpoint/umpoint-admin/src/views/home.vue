@@ -310,7 +310,7 @@ const generateDateTimestamps = (start: Date, end: Date): number[] => {
 }
 
 const getData = () => {
-  // baseService.get("/dashboard/data", {start:dateRange.value[0], end:dateRange.value[1]}).then((res) => {
+  // baseService.get("/dashboard/data", {startTime:dateRange.value[0], endTime:dateRange.value[1]}).then((res) => {
   //   data.value = res.data;
   //   data.value.xAxisData = generateDateTimestamps(dateRange.value[0], dateRange.value[1]);
   //
@@ -377,7 +377,7 @@ const getData = () => {
 }
 
 const downloadFile = () => {
-  baseService.get("/dashboard/report").then(res => {
+  baseService.get("/dashboard/report", {startTime:dateRange.value[0], endTime:dateRange.value[1]}).then(res => {
     const fileUrl = res.data;
     const link = document.createElement('a');
     link.href = fileUrl;

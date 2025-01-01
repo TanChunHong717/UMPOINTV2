@@ -42,8 +42,7 @@ public class DashboardController {
 
     @GetMapping("report")
     @Operation(summary = "Dashboard Report")
-    public Result<String> report(HttpServletRequest request){
-        Map<String, Object> params = new HashMap<>();
+    public Result<String> report(HttpServletRequest request, @Parameter(hidden = true) @RequestParam Map<String, Object> params){
         UserDetail userDetail = SecurityUser.getUser();
         if (userDetail.getSuperAdmin() == SuperAdminEnum.NO.value())
             params.put(Constant.DEPT_ID, userDetail.getDeptIdList());
@@ -51,7 +50,7 @@ public class DashboardController {
 
         String fullUrl = request.getRequestURL().toString();
         String baseUrl = fullUrl.substring(0, fullUrl.indexOf("/api") + 4);
-        // return new Result<String>().ok(fullUrl + "/report.pdf");
+        // return new Result<String>().ok(baseUrl + "/report.pdf");
         return new Result<String>().ok("https://mallstore.blob.core.windows.net/upload/DataAnalyticsReport.pdf");
     }
 }
