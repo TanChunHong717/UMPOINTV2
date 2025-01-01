@@ -29,10 +29,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RenException.class)
     public Result handleRenException(RenException ex) {
-        Result result = new Result();
-        result.error(ex.getCode(), ex.getMsg());
+        log.error(ex.getMessage(), ex);
 
-        return result;
+        saveLog(ex);
+
+        return new Result().error(ex.getCode(), ex.getMsg());
     }
 
     @ExceptionHandler(DuplicateKeyException.class)
