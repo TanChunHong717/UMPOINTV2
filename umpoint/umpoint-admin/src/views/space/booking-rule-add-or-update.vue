@@ -336,7 +336,6 @@ const init = (space?: any) => {
 
   if (space.spcBookingRuleDTO) {
     Object.assign(dataForm, space.spcBookingRuleDTO);
-    spaceId.value = space.id;
     dataForm.manager = space.manager;
     dataForm.startTime = removeSecond(dataForm.startTime);
     dataForm.endTime = removeSecond(dataForm.endTime);
@@ -345,6 +344,7 @@ const init = (space?: any) => {
     dataForm.dayPrice = space.dayPrice;
     dataForm.technicianPrice = space.technicianPrice;
   }
+  spaceId.value = space.id;
 };
 
 // Form submission

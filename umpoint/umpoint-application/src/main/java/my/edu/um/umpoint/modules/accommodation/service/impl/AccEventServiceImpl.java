@@ -38,7 +38,7 @@ public class AccEventServiceImpl extends CrudServiceImpl<AccEventDao, AccEventEn
             wrapper.in("accommodation_id", Arrays.asList(ids));
         } else if (params.get(Constant.ACCOMMODATION_ID) != null) {
             Long spaceId = Long.parseLong((String) params.get(Constant.ACCOMMODATION_ID));
-            wrapper.eq("space_id", spaceId);
+            wrapper.eq("accommodation_id", spaceId);
         }
 
         if (params.get("startTime") != null) {
