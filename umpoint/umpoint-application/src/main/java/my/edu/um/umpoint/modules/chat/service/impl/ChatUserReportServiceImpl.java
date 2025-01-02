@@ -76,7 +76,10 @@ public class ChatUserReportServiceImpl extends CrudServiceImpl<ChatUserReportDao
             dto.setReportedByType(ChatConstant.UserType.USER.getValue());
 
             if (dto.getReportedUser() == null) {
-                dto.setReportedUser(chatRoom.getAssignedAdminId());
+                if (chatRoom.getAssignedAdminId() != null)
+                    dto.setReportedUser(chatRoom.getAssignedAdminId());
+                else
+                    dto.setReportedUser(0L);
                 dto.setReportedUserType(ChatConstant.UserType.ADMIN.getValue());
             }
         }
