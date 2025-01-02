@@ -107,7 +107,6 @@ const dataFormSubmitHandle = () => {
     if (!valid) {
       return false;
     }
-    console.log(dataForm);
     const service = {
       id: serviceId.value,
       bookingRuleId: dataForm.bookingRuleId,
