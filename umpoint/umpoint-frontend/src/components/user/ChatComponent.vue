@@ -54,8 +54,8 @@
 
 <script setup>
 import { mdiMenuOpen } from "@mdi/js";
-import { ref, computed, watch, onBeforeUnmount } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { ref, computed, watch, onBeforeUnmount, onBeforeMount } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import { ElMessage } from "element-plus";
 
 import * as chatApi from "@/helpers/api-chat";
@@ -73,16 +73,21 @@ import { register } from "vue-advanced-chat";
 register();
 
 const props = defineProps(["userId", "userToken"]);
+const router = useRouter();
 
 // websocket client
-const wsClient = chatApi.createWebSocketClient();
+var wsClient = chatApi.createWebSocketClient();
 var wsCurrentRoom = null;
-function changeWsClientRoom(client, roomId) {
+function onChangeRoom(roomId) {
     if (wsCurrentRoom) {
         wsCurrentRoom.unsubscribe();
     }
     currentRoomId.value = roomId;
-    wsCurrentRoom = chatApi.subscribeToRoom(client, roomId, updateNewMessage);
+    // change route
+    router.replace({
+        query: { roomId },
+    });
+    wsCurrentRoom = chatApi.subscribeToRoom(wsClient, roomId, updateNewMessage);
 }
 function updateNewMessage(message) {
     let response = JSON.parse(message.body);
@@ -117,10 +122,15 @@ function updateNewMessage(message) {
     }
 }
 onBeforeUnmount(() => {
+    // when destroyed, stop websocket
     if (wsCurrentRoom) {
         wsCurrentRoom.unsubscribe();
     }
     wsClient.deactivate();
+});
+onBeforeMount(() => {
+    // activate websocket
+    if (!wsClient) wsClient = chatApi.createWebSocketClient();
 });
 
 // full list of rooms
@@ -190,8 +200,11 @@ watch(
                 query.facilityType,
                 query.facilityId
             );
-            changeWsClientRoom(wsClient, roomId);
             loadFirstRoom.value = true;
+            onChangeRoom(roomId);
+        } else if (query.roomId) {
+            loadFirstRoom.value = true;
+            onChangeRoom(query.roomId);
         }
     },
     { immediate: true }
@@ -211,7 +224,7 @@ async function fetchMessages(event) {
     if (options && options.reset) {
         // room is opened for first time
         // change websocket subscribe channel
-        changeWsClientRoom(wsClient, room.roomId);
+        onChangeRoom(room.roomId);
         // reset messages
         messages.value = [];
         // reset pages
@@ -358,7 +371,6 @@ const roomActions = ref([
     { name: "reportChat", title: "Report Chat" },
 ]);
 /* Action events */
-const router = useRouter();
 const viewFacilityInfo = (roomId) => {
     let room = getRoom(roomId);
     router.push({
