@@ -70,11 +70,11 @@ const auth = {
                 throw new Error("Invalid credentials");
             }
 
-            // store in vuex
-            commit("setToken", response.data.token);
-
             // store if remember me (permanently in localstorage) to check use localstorage or sessionstorage
             setRememberMe(rememberMe);
+
+            // store in vuex
+            commit("setToken", response.data.data.token);
 
             let expiryDate = new Date();
             expiryDate.setSeconds(
