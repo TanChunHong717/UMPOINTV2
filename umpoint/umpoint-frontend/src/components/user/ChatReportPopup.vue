@@ -16,12 +16,8 @@
                     prop="selectedReason"
                     placeholder="Select a reason"
                 >
-                    <ElOption
-                        value="Inappropriate behaviour"
-                        label="Inappropriate behaviour"
-                    />
-                    <ElOption value="Harassment" label="Harassment" />
-                    <ElOption value="Other" label="Other" />
+                    <ElOption v-for="reason in reportReasons" :value="reason" />
+                    <ElOption value="Other" />
                 </ElSelect>
             </ElFormItem>
 
@@ -66,6 +62,15 @@ const formRules = {
     typedReason: [{ required: true, message: "Please specify a reason" }],
 };
 const emit = defineEmits(["close", "submit"]);
+
+const reportReasons = [
+    "Spam",
+    "Harassment",
+    "Impersonation",
+    "Scamming or fraud",
+    "Inappropriate behaviour",
+    "Privacy violation",
+];
 
 const resetForm = () => {
     form.selectedReason = null;
