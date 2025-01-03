@@ -3,6 +3,7 @@ package my.edu.um.umpoint.modules.client.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import my.edu.um.umpoint.common.annotation.LogOperation;
+import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.exception.BadHttpRequestException;
 import my.edu.um.umpoint.common.exception.ErrorCode;
 import my.edu.um.umpoint.common.utils.ConvertUtils;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Client Credential
@@ -29,14 +31,14 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("cli")
-@Tag(name="Client credential")
-public class CredentialController {
+@Tag(name = "Client credential")
+public class CredentialController{
     @Autowired
     private CliUserService cliUserService;
 
     @GetMapping("info")
     @Operation(summary = "login user info")
-    public Result<CliUserDTO> info() {
+    public Result<CliUserDTO> info(){
         CliUserDTO data = ConvertUtils.sourceToTarget(SecurityUser.getUser(), CliUserDTO.class);
         return new Result<CliUserDTO>().ok(data);
     }
@@ -44,7 +46,7 @@ public class CredentialController {
     @PostMapping("register")
     @Operation(summary = "Save")
     @LogOperation("Save")
-    public Result save(@RequestBody CliUserDTO dto) {
+    public Result save(@RequestBody CliUserDTO dto){
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
         if (validateUsernameExist(dto.getUsername()))
             throw new BadHttpRequestException(ErrorCode.DB_RECORD_EXISTS, "This username is taken");
@@ -59,10 +61,12 @@ public class CredentialController {
             dto.setAccommodationPermission(1);
         } else if (dto.getType().equals("Student")) {
             dto.setSpacePermission(1);
+            dto.setServicePermission(0);
             dto.setAccommodationPermission(1);
         } else {
             dto.setSpacePermission(1);
             dto.setServicePermission(1);
+            dto.setAccommodationPermission(0);
         }
 
         cliUserService.save(dto);
@@ -73,7 +77,7 @@ public class CredentialController {
     @PutMapping("profile/{userId}")
     @Operation(summary = "Update User profile")
     @LogOperation("Update")
-    public Result updateUser (@PathVariable("userId") Long userId, @RequestBody Map < String, String > request){
+    public Result updateUser(@PathVariable("userId") Long userId, @RequestBody Map<String, String> request){
         ValidatorUtils.validateEntity(request, UpdateGroup.class, DefaultGroup.class);
 
         UserDetail loggedInUser = SecurityUser.getUser();
@@ -92,12 +96,27 @@ public class CredentialController {
         if (request.containsKey("mobile") && !request.get("mobile").isEmpty())
             matchedUserDetail.setMobile(request.get("mobile"));
 
+        // check if address empty
+        if (request.containsKey("address") && !request.get("address").isEmpty())
+            matchedUserDetail.setAddress(request.get("address"));
+
+        // check if receive email
+        if (
+            request.containsKey("receiveEmail") &&
+            !request.get("receiveEmail").isEmpty() &&
+            Set.of(Constant.EmailNotification.values()).contains(
+                Integer.parseInt(request.get("receiveEmail"))
+            )
+        )
+            matchedUserDetail.setReceiveEmail(Integer.parseInt(request.get("receiveEmail")));
+
+
         cliUserService.update(matchedUserDetail);
 
         return new Result();
     }
 
-    private boolean validateUsernameExist(String username) {
+    private boolean validateUsernameExist(String username){
         return cliUserService.getByUsername(username) != null;
     }
 }

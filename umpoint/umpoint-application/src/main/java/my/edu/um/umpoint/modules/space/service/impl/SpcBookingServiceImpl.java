@@ -5,14 +5,18 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import my.edu.um.umpoint.common.annotation.DataFilter;
 import my.edu.um.umpoint.common.constant.BookingConstant;
+import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.service.impl.CrudServiceImpl;
+import my.edu.um.umpoint.common.utils.ConvertUtils;
 import my.edu.um.umpoint.common.utils.DateUtils;
+import my.edu.um.umpoint.modules.client.entity.CliUserEntity;
 import my.edu.um.umpoint.modules.payment.dto.SpcPaymentDTO;
 import my.edu.um.umpoint.modules.payment.dto.SpcPaymentItemDTO;
 import my.edu.um.umpoint.modules.payment.entity.SpcPaymentEntity;
 import my.edu.um.umpoint.modules.payment.service.SpcPaymentItemService;
 import my.edu.um.umpoint.modules.payment.service.SpcPaymentService;
+import my.edu.um.umpoint.modules.security.service.ShiroService;
 import my.edu.um.umpoint.modules.security.user.SecurityUser;
 import my.edu.um.umpoint.modules.security.user.UserDetail;
 import my.edu.um.umpoint.modules.space.dao.SpcBookingDao;
@@ -24,20 +28,27 @@ import my.edu.um.umpoint.modules.space.dto.SpcSpaceDTO;
 import my.edu.um.umpoint.modules.space.entity.SpcBookingEntity;
 import my.edu.um.umpoint.modules.space.entity.SpcBookingTechnicianEntity;
 import my.edu.um.umpoint.modules.space.entity.SpcEventEntity;
+import my.edu.um.umpoint.modules.space.entity.SpcSpaceEntity;
 import my.edu.um.umpoint.modules.space.service.*;
+import my.edu.um.umpoint.modules.thirdparty.entity.EmailDetails;
+import my.edu.um.umpoint.modules.thirdparty.service.EmailService;
 import my.edu.um.umpoint.modules.utils.EventEntity;
 import my.edu.um.umpoint.modules.utils.SpaceBookingUtils;
+import org.apache.commons.lang3.text.StrSubstitutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 /**
  * Space Booking
@@ -68,6 +79,12 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
 
     @Autowired
     private SpcEventDao spcEventDao;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private ShiroService userInformationService;
 
     @Override
     public QueryWrapper<SpcBookingEntity> getWrapper(Map<String, Object> params){
@@ -130,8 +147,9 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
                                                 BookingConstant.Holiday.AVAILABLE.getValue());
 
         // add attachments if required
-        if (spcBookingDTO.getSpcBookingAttachmentDTOList() != null && !spcBookingDTO.getSpcBookingAttachmentDTOList().isEmpty()) {
-            for (SpcBookingAttachmentDTO item : spcBookingDTO.getSpcBookingAttachmentDTOList()){
+        if (spcBookingDTO.getSpcBookingAttachmentDTOList() != null &&
+            !spcBookingDTO.getSpcBookingAttachmentDTOList().isEmpty()) {
+            for (SpcBookingAttachmentDTO item : spcBookingDTO.getSpcBookingAttachmentDTOList()) {
                 item.setBookingId(spcBookingDTO.getId());
                 spcBookingAttachmentService.save(item);
             }
@@ -152,6 +170,33 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
                 spcPaymentItemService.save(item);
             }
         }
+
+        // send mail notification
+        FutureTask<Void> futureTask = new FutureTask<Void>(() -> {
+            emailService.sendSimpleMail(
+                new EmailDetails(
+                    space.getManagerEmail(),
+                    String.format(
+                        "A new booking has been created for %s at %s. Please visit the panel to take further action. \n\n" +
+                        spcBookingDTO.toString(),
+                        space.getName(),
+                        (new SimpleDateFormat("dd MMM yyyy, HH:mm:ss z")).format(spcBookingDTO.getCreateDate())
+                    ),
+                    "New Booking For " + space.getName()
+                )
+            );
+            return null;
+        });
+        // Start the task in a new thread
+        new Thread(futureTask).start();
+
+        this.sendEmailToCustomer(
+            ConvertUtils.sourceToTarget(user, CliUserEntity.class),
+            "New booking for ${spaceName}",
+            "Your booking for ${spaceName} has been created at ${currentTime}. Please see details below.",
+            spcBookingDTO,
+            space
+        );
     }
 
     @Override
@@ -175,6 +220,12 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
                 }).toList();
             spcBookingTechnicianService.insertBatch(technicianEntityList);
         }
+
+        this.sendEmailToCustomer(
+            "Booking ${eventName} is approved",
+            "Your following booking for ${spaceName} has been approved at ${currentTime}.",
+            id
+        );
     }
 
     @Override
@@ -187,10 +238,17 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
 
         baseDao.update(entity, new QueryWrapper<SpcBookingEntity>().eq("id", id));
         spcEventService.deleteByBookingId(id);
+
+        this.sendEmailToCustomer(
+            "Booking ${eventName} is rejected",
+            "Your following booking for ${spaceName} has been rejected at ${currentTime}. Payment will be refunded " +
+            "shortly.",
+            id
+        );
     }
 
     @Override
-    public void reject(List<Long> idList) {
+    public void reject(List<Long> idList){
         UserDetail user = SecurityUser.getUser();
         SpcBookingEntity entity = new SpcBookingEntity();
         entity.setAdminId(user.getId());
@@ -198,6 +256,15 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
 
         baseDao.update(entity, new QueryWrapper<SpcBookingEntity>().in("id", idList));
         spcEventService.deleteByBookingId(idList);
+
+        for (Long id : idList) {
+            this.sendEmailToCustomer(
+                "Booking ${eventName} is rejected",
+                "Your following booking for ${spaceName} has been rejected at ${currentTime}. Payment will be " +
+                "refunded shortly.",
+                id
+            );
+        }
     }
 
     @Override
@@ -209,6 +276,20 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
         baseDao.update(entity, new QueryWrapper<SpcBookingEntity>().eq("id", id));
         spcEventService.deleteByBookingId(id);
         spcBookingTechnicianService.deleteByBookingId(id);
+
+        if (entity.getPaymentAmount() != null && entity.getPaymentAmount().compareTo(BigDecimal.ZERO) > 0) {
+            spcPaymentService.refund(
+                spcPaymentService.getLatestPayment(entity.getId())
+                                 .getId()
+            );
+        }
+
+        this.sendEmailToCustomer(
+            "Booking ${eventName} is cancelled",
+            "Your following booking for ${spaceName} has been cancelled at ${currentTime}. Payment will be refunded " +
+            "shortly.",
+            id
+        );
     }
 
     @Override
@@ -222,6 +303,13 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
         SpcPaymentEntity payment = spcPaymentService.getLatestPayment(id);
         // update payment done
         spcPaymentService.pay(payment.getId());
+
+
+        this.sendEmailToCustomer(
+            "Payment for booking ${eventName}",
+            "Your following booking for ${spaceName} has been paid at ${currentTime}.",
+            id
+        );
     }
 
     @Override
@@ -262,6 +350,55 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
             if (!overlappedEvents.isEmpty()) {
                 throw new DateTimeException("Booking overlapped");
             }
+        }
+    }
+
+    public void sendEmailToCustomer(
+        String title, String messageFormat, Long bookingId
+    ){
+        SpcBookingEntity bookingEntity = baseDao.selectById(bookingId);
+        SpcSpaceEntity spaceEntity = spcSpaceService.selectById(bookingEntity.getSpaceId());
+
+        CliUserEntity user = userInformationService.getCliUser(bookingEntity.getUserId());
+        sendEmailToCustomer(
+            user,
+            title,
+            messageFormat,
+            ConvertUtils.sourceToTarget(bookingEntity, SpcBookingDTO.class),
+            ConvertUtils.sourceToTarget(spaceEntity, SpcSpaceDTO.class)
+        );
+    }
+
+    public void sendEmailToCustomer(
+        CliUserEntity user, String title, String messageFormat,
+        SpcBookingDTO booking, SpcSpaceDTO space
+    ){
+        if (
+            user.getReceiveEmail() == Constant.EmailNotification.RECEIVE.getValue()
+        ) {
+            // prebuild message info
+            Map<String, Object> replacementMap = Map.of(
+                "spaceName", space.getName(),
+                "bookingId", booking.getId(),
+                "eventName", booking.getEvent(),
+                "date", DateUtils.format(booking.getCreateDate(), DateUtils.TEXT_DATE_TIME_PATTERN),
+                "amount", booking.getPaymentAmount(),
+                "currentTime", DateUtils.format(new Date(), DateUtils.TEXT_DATE_TIME_PATTERN)
+            );
+
+            FutureTask<Void> futureTask = new FutureTask<Void>(() -> {
+                emailService.sendSimpleMail(
+                    new EmailDetails(
+                        user.getEmail(),
+                        StrSubstitutor.replace(messageFormat, replacementMap) + "\n\n" + booking.toString(),
+                        StrSubstitutor.replace(title, replacementMap)
+                    )
+                );
+                return null;
+            });
+
+            // Start the task in a new thread
+            new Thread(futureTask).start();
         }
     }
 }

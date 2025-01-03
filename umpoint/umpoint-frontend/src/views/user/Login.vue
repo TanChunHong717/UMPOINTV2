@@ -30,8 +30,8 @@
                         @click="submitForm"
                     >
                         Login
-                        <input type="submit" hidden />
                     </el-button>
+                    <input type="submit" hidden />
                 </el-col>
             </el-form-item>
         </el-form>
@@ -78,7 +78,6 @@ const rules = reactive({
     ],
 });
 async function submitForm() {
-    console.log("submitting");
     // validate form
     try {
         await formNode.value.validate();
@@ -98,7 +97,6 @@ async function submitForm() {
     } catch (error) {
         ElMessage.error(error.message ?? "Error logging in");
         formNode.value.fields.forEach((element) => {
-            console.log(element);
             element.setCustomValidity = "error";
         });
     }

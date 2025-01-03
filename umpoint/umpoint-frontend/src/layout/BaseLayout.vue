@@ -1,6 +1,6 @@
 <template>
     <section v-if="$slots.title" id="page-title" class="page-title-pattern">
-        <div class="container clearfix">
+        <div class="container">
             <h1 class="section-title">
                 <slot name="title"></slot>
             </h1>

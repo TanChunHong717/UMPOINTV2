@@ -34,7 +34,10 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.*;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,14 +72,25 @@ public class SpcBookingController{
                 name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY,
                 schema = @Schema(type = "int")
             ),
-            @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, schema = @Schema(type = "string")),
+            @Parameter(
+                name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY,
+                schema = @Schema(type = "string")
+            ),
             @Parameter(
                 name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY,
                 schema = @Schema(type = "string")
             ),
-            @Parameter(name = Constant.ID, description = "Booking ID", in = ParameterIn.QUERY, schema = @Schema(type = "int")),
-            @Parameter(name = Constant.STATUS, description = "Booking status", in = ParameterIn.QUERY, schema = @Schema(type = "int")),
-            @Parameter(name = Constant.SPACE, description = "Space name", in = ParameterIn.QUERY, schema = @Schema(type = "string")),
+            @Parameter(
+                name = Constant.ID, description = "Booking ID", in = ParameterIn.QUERY, schema = @Schema(type = "int")
+            ),
+            @Parameter(
+                name = Constant.STATUS, description = "Booking status", in = ParameterIn.QUERY,
+                schema = @Schema(type = "int")
+            ),
+            @Parameter(
+                name = Constant.SPACE, description = "Space name", in = ParameterIn.QUERY,
+                schema = @Schema(type = "string")
+            ),
             @Parameter(
                 name = Constant.EVENT, description = "Booking purpose description", in = ParameterIn.QUERY,
                 schema = @Schema(type = "string")
@@ -144,7 +158,7 @@ public class SpcBookingController{
         // technician available check
         // might be null so coerce to 0
         if (request.getTechnicianNumber() == null) request.setTechnicianNumber(0);
-        if (request.getTechnicianNumber() > spcBookingRule.getMaxTechnicianNumber()){
+        if (request.getTechnicianNumber() > spcBookingRule.getMaxTechnicianNumber()) {
             throw new BadHttpRequestException(400, "Number of technicians exceeded limit");
         }
 
@@ -243,14 +257,32 @@ public class SpcBookingController{
         LocalTime currentAllowTime = spcBookingRule.getStartTime().toLocalTime();
         long slotDiffMinutes = spcBookingRule.getBookingUnit().longValue();
 
-        while (!currentAllowTime.isAfter(spcBookingRule.getEndTime().toLocalTime())) {
+        LocalTime beforeTime;
+        // build allowed time slots excluding end time (start time cannot be end time)
+        while (currentAllowTime.isBefore(spcBookingRule.getEndTime().toLocalTime())) {
             allowedTimeSlots.add(currentAllowTime);
+
+            beforeTime = currentAllowTime; // make check copy
             currentAllowTime = currentAllowTime.plusMinutes(slotDiffMinutes);
+            // check overflow to next day
+            if (currentAllowTime.isBefore(beforeTime)) break;
+
+            // if time equal just break without check
+            if (currentAllowTime == spcBookingRule.getEndTime().toLocalTime()) {
+                break;
+            }
         }
 
         if (!allowedTimeSlots.contains(startTime)) {
             throw new DateTimeException("Selected start time is not in allowed time slot");
-        } else if (!allowedTimeSlots.contains(endTime)) {
+        }
+
+        if (
+            !(
+                spcBookingRule.getEndTime().toLocalTime() == endTime ||
+                allowedTimeSlots.contains(endTime)
+            )
+        ) {
             throw new DateTimeException("Selected end time is not in allowed time slot");
         }
     }
@@ -319,7 +351,7 @@ public class SpcBookingController{
         return bookingDto;
     }
 
-    private void validateBookingAttachmentDTO(SpcClientBookingDTO dto) {
+    private void validateBookingAttachmentDTO(SpcClientBookingDTO dto){
         if (dto.getAttachments() != null && !dto.getAttachments().isEmpty()) {
             dto.getAttachments().forEach(attachmentDTO -> {
                 ValidatorUtils.validateEntity(

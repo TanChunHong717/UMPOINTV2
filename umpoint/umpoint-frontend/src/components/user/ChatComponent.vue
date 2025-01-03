@@ -45,13 +45,18 @@
             :slot="'message-avatar_' + message._id"
         ></div>
     </vue-advanced-chat>
+    <ChatReportPopup
+        v-model:visible="isDialogVisible"
+        @close="closeDialog"
+        @submit="submitReport"
+    ></ChatReportPopup>
 </template>
 
 <script setup>
 import { mdiMenuOpen } from "@mdi/js";
-import { ref, computed, watch, onBeforeUnmount } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { ref, computed, watch, onBeforeUnmount, onBeforeMount } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import { ElMessage } from "element-plus";
 
 import * as chatApi from "@/helpers/api-chat";
 import { uploadFile } from "@/helpers/api-upload.js";
@@ -61,21 +66,28 @@ import {
     chatFacilityTypes,
 } from "@/constants/chat";
 
+import ChatReportPopup from "./ChatReportPopup.vue";
+
 // chat component
 import { register } from "vue-advanced-chat";
 register();
 
 const props = defineProps(["userId", "userToken"]);
+const router = useRouter();
 
 // websocket client
-const wsClient = chatApi.createWebSocketClient();
+var wsClient = chatApi.createWebSocketClient();
 var wsCurrentRoom = null;
-function changeWsClientRoom(client, roomId) {
+function onChangeRoom(roomId) {
     if (wsCurrentRoom) {
         wsCurrentRoom.unsubscribe();
     }
     currentRoomId.value = roomId;
-    wsCurrentRoom = chatApi.subscribeToRoom(client, roomId, updateNewMessage);
+    // change route
+    router.replace({
+        query: { roomId },
+    });
+    wsCurrentRoom = chatApi.subscribeToRoom(wsClient, roomId, updateNewMessage);
 }
 function updateNewMessage(message) {
     let response = JSON.parse(message.body);
@@ -110,10 +122,15 @@ function updateNewMessage(message) {
     }
 }
 onBeforeUnmount(() => {
+    // when destroyed, stop websocket
     if (wsCurrentRoom) {
         wsCurrentRoom.unsubscribe();
     }
     wsClient.deactivate();
+});
+onBeforeMount(() => {
+    // activate websocket
+    if (!wsClient) wsClient = chatApi.createWebSocketClient();
 });
 
 // full list of rooms
@@ -183,8 +200,11 @@ watch(
                 query.facilityType,
                 query.facilityId
             );
-            changeWsClientRoom(wsClient, roomId);
             loadFirstRoom.value = true;
+            onChangeRoom(roomId);
+        } else if (query.roomId) {
+            loadFirstRoom.value = true;
+            onChangeRoom(query.roomId);
         }
     },
     { immediate: true }
@@ -204,7 +224,7 @@ async function fetchMessages(event) {
     if (options && options.reset) {
         // room is opened for first time
         // change websocket subscribe channel
-        changeWsClientRoom(wsClient, room.roomId);
+        onChangeRoom(room.roomId);
         // reset messages
         messages.value = [];
         // reset pages
@@ -351,7 +371,6 @@ const roomActions = ref([
     { name: "reportChat", title: "Report Chat" },
 ]);
 /* Action events */
-const router = useRouter();
 const viewFacilityInfo = (roomId) => {
     let room = getRoom(roomId);
     router.push({
@@ -425,19 +444,18 @@ function messageActionHandler(event) {
 }
 
 /* Report chat, prompt reason from user */
+const isDialogVisible = ref(false);
+let submitReport = null;
+const closeDialog = () => {
+    isDialogVisible.value = false;
+};
 function showReportChatPopup(callback) {
-    ElMessageBox.prompt(
-        "Please provide a reason for reporting user. The room will be closed after reporting.",
-        "Report User",
-        {
-            confirmButtonText: "OK",
-            cancelButtonText: "Cancel",
-            inputPattern: /\S+/,
-            inputErrorMessage: "Please provide a reason",
-        }
-    ).then(({ value }) => {
-        callback(value);
-    });
+    submitReport = (reason) => {
+        console.log("Reported Chat: ", reason);
+        isDialogVisible.value = false;
+        callback(reason);
+    };
+    isDialogVisible.value = true;
 }
 </script>
 

@@ -1,5 +1,7 @@
 package my.edu.um.umpoint.common.constant;
 
+import lombok.Getter;
+
 public interface Constant {
     int SUCCESS = 1;
     int FAIL = 0;
@@ -71,6 +73,31 @@ public interface Constant {
 
         public int getValue() {
             return value;
+        }
+    }
+
+
+    @Getter
+    enum EmailStatus{
+        NOT_VALIDATED(0),
+        VALIDATED(1);
+
+        private final int value;
+
+        EmailStatus(int value){
+            this.value = value;
+        }
+    }
+
+    @Getter
+    enum EmailNotification{
+        DO_NOT_RECEIVE(0),
+        RECEIVE(1);
+
+        private final int value;
+
+        EmailNotification(int value){
+            this.value = value;
         }
     }
 }

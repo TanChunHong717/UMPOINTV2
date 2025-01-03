@@ -12,6 +12,8 @@ CREATE TABLE cli_user (
     space_permission tinyint NOT NULL COMMENT 'Have permission to book space',
     service_permission tinyint NOT NULL COMMENT 'Have permission to book service',
     accommodation_permission tinyint NOT NULL COMMENT 'Have permission to book accommodation',
+    email_validated tinyint NOT NULL DEFAULT 0 COMMENT 'Is email validated',
+    receive_email tinyint NOT NULL DEFAULT 1 COMMENT 'Receive email (user preference)',
     create_date datetime NOT NULL COMMENT 'Create date',
     PRIMARY KEY (id),
     UNIQUE INDEX (username),

@@ -5,8 +5,8 @@
         <!-- fake element to highlight anchor -->
         <template :id="facilityType"></template>
 
-        <el-row :gutter="12" style="margin-block-start: 1em">
-            <el-col :sm="24" :md="6">
+        <el-row :gutter="12">
+            <el-col :sm="24" :md="6" style="margin-block-end: 1em">
                 <el-anchor>
                     <el-anchor-link href="search#space"> Space </el-anchor-link>
                     <el-anchor-link href="search#service">
@@ -22,26 +22,13 @@
                             <el-input v-model="searchForm.name" />
                         </el-form-item>
                         <el-form-item label="Department">
-                            <el-tree-select
-                                v-model="searchForm.deptId"
-                                :data="departmentsOptions"
-                                check-strictly
-                                :render-after-expand="false"
-                                :clearable="true"
-                            />
+                            <DepartmentDropdown v-model="searchForm.deptId" />
                         </el-form-item>
                         <el-form-item label="Category">
-                            <el-select
+                            <CategoriesDropdown
                                 v-model="searchForm.catId"
-                                :clearable="true"
-                            >
-                                <el-option
-                                    v-for="item in categoriesOptions"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value"
-                                />
-                            </el-select>
+                                :facilityType="facilityType"
+                            />
                         </el-form-item>
                         <el-button @click.prevent="getSearchFacilities"
                             >Search</el-button
@@ -51,7 +38,7 @@
             </el-col>
             <el-col :sm="24" :md="18">
                 <h2>
-                    Showing {{ facilitiesRes?.length }} facility in Universiti
+                    Showing {{ totalFacilitiesRes }} facility in Universiti
                     Malaya, Kuala Lumpur
                 </h2>
                 <el-text>
@@ -60,144 +47,53 @@
                 </el-text>
                 <br />
                 <br />
-                <el-card v-for="facilityInfo of facilitiesRes">
-                    <el-row :gutter="12">
-                        <el-col :span="6">
-                            <el-image
-                                :src="
-                                    transformGallery(facilityType, facilityInfo)
-                                        .gallery.length > 0
-                                        ? transformGallery(
-                                              facilityType,
-                                              facilityInfo
-                                          ).gallery[0].imageUrl
-                                        : 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/240px-No_image_available.svg.png'
-                                "
-                                fit="cover"
-                            ></el-image>
-                        </el-col>
-                        <el-col :span="15">
-                            <h4>{{ facilityInfo.name }}</h4>
-                            <li class="info-item">
-                                <svg-icon
-                                    class="info-icon"
-                                    type="mdi"
-                                    :path="mdiMapMarkerOutline"
-                                ></svg-icon>
-                                {{ facilityInfo.deptName }}
-                            </li>
-                            <li class="info-item">
-                                <svg-icon
-                                    class="info-icon"
-                                    type="mdi"
-                                    :path="mdiOfficeBuildingOutline"
-                                ></svg-icon>
-                                {{ facilityInfo.category }}
-                                <div class="tags">
-                                    <el-tag
-                                        type="info"
-                                        v-for="tag in facilityInfo.spcTagDTOList"
-                                    >
-                                        {{ tag.tagName }}
-                                    </el-tag>
-                                </div>
-                            </li>
-                            <li class="info-item">
-                                <svg-icon
-                                    class="info-icon"
-                                    type="mdi"
-                                    :path="mdiAccountGroup"
-                                ></svg-icon>
-                                {{ facilityInfo.capacity }} person(s)
-                            </li>
-                            <li class="info-item">
-                                <svg-icon
-                                    class="info-icon"
-                                    type="mdi"
-                                    :path="mdiToolboxOutline"
-                                ></svg-icon>
-                                {{ facilityInfo.facilities }}
-                            </li>
-                            <li
-                                class="info-item"
-                                v-if="facilityInfo.spcBookingRuleDTO"
-                            >
-                                <svg-icon
-                                    class="info-icon"
-                                    type="mdi"
-                                    :path="mdiClockOutline"
-                                ></svg-icon>
-                                Open from
-                                {{
-                                    `${
-                                        facilityInfo.spcBookingRuleDTO.startTime.split(
-                                            ":"
-                                        )[0]
-                                    }:${
-                                        facilityInfo.spcBookingRuleDTO.startTime.split(
-                                            ":"
-                                        )[1]
-                                    }`
-                                }}
-                                to
-                                {{
-                                    `${
-                                        facilityInfo.spcBookingRuleDTO.endTime.split(
-                                            ":"
-                                        )[0]
-                                    }:${
-                                        facilityInfo.spcBookingRuleDTO.endTime.split(
-                                            ":"
-                                        )[1]
-                                    }`
-                                }}
-                            </li>
-                            <br />
+                <SearchFacilityCard
+                    v-for="facilityInfo in facilitiesRes"
+                    :key="facilityInfo.id"
+                    :facilityInfo="facilityInfo"
+                    :facilityType="facilityType"
+                    style="margin-bottom: 8px"
+                    v-model:selectionMode="selectionMode"
+                    :isSelected="selectedFacilities.includes(facilityInfo.id)"
+                    @change="handleCardClick"
+                />
+                <el-pagination
+                    v-model:current-page="currentPage"
+                    @current-change="getSearchFacilities"
+                    :hide-on-single-page="false"
+                    :total="totalFacilitiesRes"
+                    layout="prev, pager, next, jumper,->,slot"
+                    :page-size="pageSize"
+                >
+                    <el-button
+                        v-if="selectionMode == 'select'"
+                        @click="navigateToComparisonPage"
+                        aria-label="Compare schedules for selected facilities"
+                        title="Compare schedules for selected facilities"
+                    >
+                        Compare schedules
+                    </el-button>
 
-                            <el-descriptions
-                                border
-                                size="small"
-                                direction="vertical"
-                                :column="3"
-                            >
-                                <el-descriptions-item
-                                    label="Per hour"
-                                    v-if="facilityInfo.hourPrice"
-                                >
-                                    <el-text size="large" tag="b">
-                                        RM
-                                        {{ facilityInfo.hourPrice }}
-                                    </el-text>
-                                </el-descriptions-item>
-                                <el-descriptions-item
-                                    label="Per 4 hour"
-                                    v-if="facilityInfo.fourHoursPrice"
-                                >
-                                    <el-text size="large" tag="b">
-                                        RM
-                                        {{ facilityInfo.fourHoursPrice }}
-                                    </el-text>
-                                </el-descriptions-item>
-                                <el-descriptions-item
-                                    label="Per day"
-                                    v-if="facilityInfo.dayPrice"
-                                >
-                                    <el-text size="large" tag="b">
-                                        RM
-                                        {{ facilityInfo.dayPrice }}
-                                    </el-text>
-                                </el-descriptions-item>
-                            </el-descriptions>
-                        </el-col>
-                        <el-col :span="3">
-                            <RouterLink
-                                :to="`/${facilityType}/${facilityInfo.id}`"
-                            >
-                                <el-button>Details</el-button>
-                            </RouterLink>
-                        </el-col>
-                    </el-row>
-                </el-card>
+                    <el-button
+                        v-if="selectionMode == 'redirect'"
+                        @click="changeSelectionMode"
+                        aria-label="Switch to select facilities for comparison"
+                        title="Switch to select facilities for comparison"
+                    >
+                        <svg-icon
+                            type="mdi"
+                            :path="mdiCheckboxMarkedCirclePlusOutline"
+                        />
+                    </el-button>
+                    <el-button
+                        v-else
+                        @click="changeSelectionMode"
+                        aria-label="Switch to view facility information mode"
+                        title="Switch to view facility information mode"
+                    >
+                        <svg-icon type="mdi" :path="mdiViewCarouselOutline" />
+                    </el-button>
+                </el-pagination>
             </el-col>
         </el-row>
     </BaseLayout>
@@ -205,20 +101,17 @@
 
 <script setup>
 import {
-    mdiMapMarkerOutline,
-    mdiOfficeBuildingOutline,
-    mdiAccountGroup,
-    mdiToolboxOutline,
-    mdiClockOutline,
+    mdiCheckboxMarkedCirclePlusOutline,
+    mdiViewCarouselOutline,
 } from "@mdi/js";
-import { onMounted, reactive, ref, watch } from "vue";
+import { reactive, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import {
-    getFacilityCategories,
-    getDepartments,
-    getFacilities,
-    transformGallery,
-} from "@/helpers/api-facility";
+import { ElMessage } from "element-plus";
+import { getFacilities as getFacilitiesAPI } from "@/helpers/api-facility";
+
+import DepartmentDropdown from "@/components/search/DepartmentDropdown.vue";
+import SearchFacilityCard from "@/components/search/SearchFacilityCard.vue";
+import CategoriesDropdown from "@/components/search/CategoriesDropdown.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -229,8 +122,12 @@ watch(
     () => route.hash,
     (hash, oldhash) => {
         if (oldhash && oldhash !== hash) {
+            function clearSearchFormCatId() {
+                searchForm.catId = "";
+            }
             // change facility type, clear search term
             clearSearchFormCatId();
+            clearSelectedFacilities();
         }
 
         if (hash === "#space") {
@@ -242,10 +139,43 @@ watch(
         } else {
             router.replace({ query: route.query, hash: "#space" });
         }
-        updateCategories(facilityType.value);
     },
     { immediate: true }
 );
+
+// search result
+const facilitiesRes = ref();
+const totalFacilitiesRes = ref();
+const pageSize = 10;
+const currentPage = ref(1);
+async function getSearchFacilities() {
+    if (!facilityType || !facilityType.value) return;
+
+    let params = {};
+    if (searchForm.name && searchForm.name.trim() != "")
+        params.name = searchForm.name;
+    if (searchForm.deptId && searchForm.deptId.trim() != "")
+        params.deptId = searchForm.deptId;
+    if (searchForm.catId && searchForm.catId.trim() != "")
+        params.catId = searchForm.catId;
+    if (currentPage.value) params.page = currentPage.value;
+
+    // update url
+    router.push({ query: params, hash: "#" + facilityType.value });
+
+    // update items
+    let {
+        data: {
+            data: { list, total },
+        },
+    } = await getFacilitiesAPI(facilityType.value, {
+        ...params,
+        limit: pageSize,
+    });
+
+    facilitiesRes.value = list;
+    totalFacilitiesRes.value = total;
+}
 
 // search form
 const searchForm = reactive({
@@ -259,72 +189,54 @@ watch(
         if (query.q) searchForm.name = query.q;
         if (query.dept) searchForm.deptId = query.dept;
         if (query.cat) searchForm.catId = query.cat;
+        if (query.page) currentPage.value = Number(query.page);
 
         if (facilityType.value) getSearchFacilities();
     },
     { immediate: true }
 );
-function clearSearchFormCatId() {
-    searchForm.catId = "";
+
+// list or select mode
+const selectionMode = ref("redirect");
+const selectedFacilities = ref([]);
+function clearSelectedFacilities() {
+    selectedFacilities.value = [];
 }
-
-// search result
-const facilitiesRes = ref();
-function getSearchFacilities() {
-    if (!facilityType || !facilityType.value) return;
-
-    let params = {};
-    if (searchForm.name) params.name = searchForm.name;
-    if (searchForm.deptId) params.deptId = searchForm.deptId;
-    if (searchForm.catId) params.catId = searchForm.catId;
-
-    getFacilities(facilityType.value, params).then((res) => {
-        facilitiesRes.value = res.data.data.list;
-    });
+function changeSelectionMode() {
+    selectionMode.value =
+        selectionMode.value === "redirect" ? "select" : "redirect";
 }
-
-// facility dropdown
-const departmentsOptions = ref([]);
-function updateDepartments() {
-    getDepartments().then((res) => {
-        departmentsOptions.value = transformToTreeStructure(
-            res.data.data[0]
-        ).children;
-    });
-}
-function transformToTreeStructure(obj) {
-    // Create a new object with the transformed keys
-    const transformedObj = { ...obj };
-
-    // Recursively traverse and update each node
-    if (transformedObj.children && Array.isArray(transformedObj.children)) {
-        transformedObj.children = transformedObj.children.map((child) =>
-            transformToTreeStructure(child)
-        );
+function handleCardClick(changeOption) {
+    if (selectionMode.value === "select") {
+        if (changeOption.isSelected) {
+            selectedFacilities.value.push(changeOption.facilityId);
+        } else {
+            selectedFacilities.value = selectedFacilities.value.filter(
+                (id) => id !== changeOption.facilityId
+            );
+        }
     }
-
-    // Replace 'name' with 'label' and 'id' with 'value'
-    if (transformedObj.name) {
-        transformedObj.label = transformedObj.name;
-    }
-    if (transformedObj.id) {
-        transformedObj.value = transformedObj.id;
-    }
-
-    return transformedObj;
 }
-onMounted(() => {
-    updateDepartments();
-});
-
-// category dropdown
-const categoriesOptions = ref([]);
-function updateCategories(facilityType) {
-    getFacilityCategories(facilityType).then((res) => {
-        categoriesOptions.value = res.data.data.map((item) => ({
-            label: item.name,
-            value: item.id,
-        }));
+function navigateToComparisonPage() {
+    if (selectedFacilities.value.length < 2) {
+        ElMessage({
+            title: "Error",
+            type: "error",
+            message: "Please select at least 2 facilities to compare",
+        });
+        return;
+    } else if (selectedFacilities.value.length > 5) {
+        ElMessage({
+            title: "Error",
+            type: "error",
+            message: "Please select at most 5 facilities to compare",
+        });
+        return;
+    }
+    router.push({
+        name: "schedule-comparison",
+        params: { type: facilityType.value },
+        query: { ids: selectedFacilities.value.join(",") },
     });
 }
 </script>

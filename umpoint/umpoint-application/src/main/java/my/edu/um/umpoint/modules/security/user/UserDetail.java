@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class UserDetail implements Serializable {
+public class UserDetail implements Serializable{
 
     @Serial
     private static final long serialVersionUID = 8470528520565069794L;
@@ -18,6 +18,7 @@ public class UserDetail implements Serializable {
     private String password;
     private String mobile;
     private String email;
+    private String address;
 
     //Admin
     private String realName;
@@ -33,4 +34,8 @@ public class UserDetail implements Serializable {
     private Integer spacePermission;
     private Integer servicePermission;
     private Integer accommodationPermission;
+
+    //Mailing
+    private Integer emailValidated;
+    private Integer receiveEmail;
 }

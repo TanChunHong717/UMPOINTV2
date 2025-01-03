@@ -110,7 +110,7 @@ async function fetchRooms(firstTime = false) {
   try {
     let { rooms: apiRooms, total } = await chatApi.getChatRooms(roomCurrentPage.value, props.roomListType);
     // reverse chronological order
-    rooms.value = apiRooms.toReversed();
+    rooms.value = apiRooms;
 
     if (apiRooms.length == 0 || apiRooms.length == total) {
       roomsFullyLoaded.value = true;

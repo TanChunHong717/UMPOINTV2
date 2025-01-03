@@ -12,6 +12,7 @@ import java.util.Date;
 public class DateUtils {
     public final static String DATE_PATTERN = "yyyy-MM-dd";
     public final static String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    public final static String TEXT_DATE_TIME_PATTERN = "dd MMM yyyy, HH:mm z";
 
     public static String format(Date date) {
         return format(date, DATE_PATTERN);

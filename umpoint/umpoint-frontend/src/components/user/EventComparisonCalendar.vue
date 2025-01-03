@@ -4,11 +4,10 @@
         v-loading="isCalendarLoading"
         v-model:events="bookedEvents"
         :min-date="today"
-        :special-hours="specialHours"
         :disable-views="['years', 'year', 'day']"
         :time-from="facilityStartTimeMinutes"
         :time-to="facilityEndTimeMinutes"
-        :time-step="props.bookingRule?.bookingUnit ?? 30"
+        :time-step="30"
         :editable-events="false"
         :drag-to-create-event="false"
         :min-event-width="100"
@@ -18,36 +17,48 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, ShallowRef, shallowRef, computed } from "vue";
+import { onMounted, ref, ShallowRef, shallowRef, computed, watch } from "vue";
 import { ElMessage } from "element-plus";
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
 import { VueCalEvent } from "@/types/interface";
 import {
-    addDays,
     formatDateToTimezoneDateTimeStr,
     formatDateToTimezoneDateStr,
 } from "@/utils/date";
-import baseService from "@/utils/api.js";
 import { JavaId } from "@/types/interface";
 import { eventStatus, facilityTypes } from "@/constants/app";
 import { getFacilityBookings } from "@/helpers/api-facility";
 
 const props = defineProps<{
     facilityType: keyof typeof facilityTypes;
-    facilityId: JavaId;
-    bookingRule: any;
+    facilityIds: JavaId;
+    facilityProps: Record<string, any>;
 }>();
 
 // variables
 const isCalendarLoading = ref(true);
-const holidays = ref([]);
-const specialHours = ref();
 const bookedEvents: ShallowRef<VueCalEvent[]> = shallowRef([]);
 
+// facility Info
+watch(props.facilityProps, (newVal) => {
+    if (newVal && newVal.length == 0) {
+        isCalendarLoading.value = true;
+    }
+});
+function findFacility(facilityId: JavaId) {
+    const index = props.facilityProps.findIndex(
+        (facility: any) => facility.id == facilityId
+    );
+    if (index !== -1) {
+        return { index, facility: props.facilityProps[index] };
+    }
+    return null; // or handle the case where the facility is not found
+}
+
 // calendar minutes
-const facilityStartTime = ref();
-const facilityEndTime = ref();
+const facilityStartTime = ref("06:00");
+const facilityEndTime = ref("22:00");
 const facilityStartTimeMinutes = computed(() => {
     if (!facilityStartTime.value) return 0;
     return (
@@ -70,36 +81,13 @@ const today = new Date(
 );
 today.setHours(0, 0, 0, 0); // reset to start of day
 
-// default value
-const weekendDays = [6, 7];
-
 // Initialise calendar
 const initialize = () => {
     //getHoliday(today.getFullYear());
     initializeTimeTable();
 };
-const getHoliday = (year: number) => {
-    baseService
-        .get(
-            "https://calendarific.com/api/v2/holidays?&api_key=bjgsLdWRYGYUsxteQAwtxx7uxf9AqKOz&country=MY&year=" +
-                year
-        )
-        .then((res: any) => {
-            holidays.value = res.response.holidays;
-            initializeTimeTable();
-        });
-};
 const initializeTimeTable = () => {
     isCalendarLoading.value = true;
-
-    // set allowed start and end time
-    const startTimeArray = props.bookingRule?.startTime.split(":") ?? [
-        "07",
-        "00",
-    ];
-    facilityStartTime.value = startTimeArray.join(":");
-    const endTimeArray = props.bookingRule?.endTime.split(":") ?? ["19", "00"];
-    facilityEndTime.value = endTimeArray.join(":");
 
     onViewChange(getMondayAndSunday(today));
 
@@ -116,67 +104,29 @@ const getMondayAndSunday = (currentDate: Date) => {
     return { startDate: monday, endDate: sunday };
 };
 const onViewChange = (object: any) => {
-    if (object.view != "month") {
-        specialHours.value = generateWeekendAndHoliday(
-            object.startDate,
-            object.endDate
-        );
-    }
-
     updateEvents(object.startDate, object.endDate);
-};
-const generateWeekendAndHoliday = (startDate: Date, endDate: Date) => {
-    const holidayObject: Record<number, any> = {};
-    const isHolidayAvailable = props.bookingRule?.holidayAvailable === 1;
-    const holidayClass = isHolidayAvailable ? "close" : "info";
-
-    holidays.value.forEach((holiday: any) => {
-        const holidayDate = new Date(holiday.date.iso);
-
-        if (holidayDate >= startDate && holidayDate <= endDate) {
-            const dayOfWeek = ((holidayDate.getDay() + 6) % 7) + 1;
-            holidayObject[dayOfWeek] = {
-                from: 0,
-                to: 24 * 60,
-                label: holiday.name,
-                class: holidayClass,
-            };
-        }
-    });
-
-    if (!isHolidayAvailable) {
-        weekendDays.forEach((day) => {
-            if (!holidayObject[day]) {
-                holidayObject[day] = {
-                    from: 0,
-                    to: 24 * 60,
-                    label: "Weekend",
-                    class: "close",
-                };
-            }
-        });
-    }
-
-    return holidayObject;
 };
 
 const updateEvents = async (startDate: Date, endDate: Date) => {
     try {
         const facilityEvents = await getFacilityBookings(
             props.facilityType as "space" | "service" | "accommodation",
-            props.facilityId,
+            props.facilityIds,
             formatDateToTimezoneDateTimeStr(startDate),
             formatDateToTimezoneDateTimeStr(endDate)
         );
         bookedEvents.value = facilityEvents.data.data.map((event: any) => {
+            let { index, facility: thisFacilityInfo } = findFacility(
+                event[`${props.facilityType}Id`]
+            );
             return {
                 start: new Date(event.startTime),
                 end: new Date(event.endTime),
-                title: event.title,
+                title: thisFacilityInfo.name,
                 class:
                     event.type == eventStatus.CLOSURE
                         ? "closure"
-                        : "booking",
+                        : `booking${index}`,
                 type: event.type,
 
                 // default events that came from system are non-editable
@@ -251,11 +201,6 @@ onMounted(() => {
             }
         }
 
-        &.booking {
-            background-color: var(--el-color-info); /* Blue */
-            border: 1px solid #192f59;
-            color: #fff;
-        }
         &.closure {
             background-color: rgba(255, 102, 102, 0.9);
             border: 1px solid rgb(235, 82, 82);

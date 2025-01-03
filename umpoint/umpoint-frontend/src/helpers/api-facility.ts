@@ -100,7 +100,7 @@ export function getDepartments() {
 
 // Bookings
 
-export function getFacilityBookings(facilityType: keyof typeof facilityTypes, facilityID: JavaId, startTime: string, endTime: string) {
+export function getFacilityBookings(facilityType: keyof typeof facilityTypes, facilityID: JavaId | JavaId[], startTime: string, endTime: string) {
     // TODO: PLACEHOLDER
     if (Number(facilityID) == 2) {
         return {
@@ -121,14 +121,17 @@ export function getFacilityBookings(facilityType: keyof typeof facilityTypes, fa
     }
 
     if (facilityType === facilityTypes.service) {
-        return {data: {code: 0, data: []}};
+        return { data: { code: 0, data: [] } };
     }
 
-    let params = Object.assign(
-        { spaceId: facilityID },
-        startTime && { startTime },
-        endTime && { endTime }
-    );
+    let params = {}
+    if (Array.isArray(facilityID)) {
+        params = { [`${facilityType}Id`]: facilityID.join(",") }
+    } else {
+        params = { [`${facilityType}Id`]: facilityID }
+    }
+    if (startTime) params = { ...params, startTime }
+    if (endTime) params = { ...params, endTime }
 
     return api.get(`/${facilityType}/event`, {
         params,
@@ -182,6 +185,7 @@ export function transformBookingRule(facilityType: keyof typeof facilityTypes, d
             break;
         case facilityTypes.accommodation:
             data.bookingRule = data.accBookingRuleDTO ?? {};
+            break;
         default:
             throw new Error("Invalid facility type");
     }

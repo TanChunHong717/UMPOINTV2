@@ -247,7 +247,7 @@ public class ChatMessageController{
                     })
                     .thenApply(
                         (List<String> options) -> {
-                            if (options.isEmpty()) {
+                            if (options == null || options.isEmpty()) {
                                 // default must have one option
                                 return buildBotOptionsMessage(
                                     roomId,
