@@ -135,11 +135,7 @@
             a.week_price,
             a.booking_rule_id,
             a.create_date,
-            c.name AS category,
-            d.name AS dept_name,
             m.username AS manager_name,
-            cr.username AS creator_name,
-            u.username AS updater_name,
             b.approval_required,
             b.open_for_staff,
             b.open_for_student,
@@ -154,7 +150,7 @@
             m.username AS manager_name
         FROM acc_accommodation a
         LEFT JOIN acc_booking_rule b ON a.booking_rule_id = b.id
-        LEFT JOIN sys_user m ON s.manager = m.id
+        LEFT JOIN sys_user m ON a.manager = m.id
         <where>
             and a.status = 1
             <if test="name != null and name.trim() != ''">
