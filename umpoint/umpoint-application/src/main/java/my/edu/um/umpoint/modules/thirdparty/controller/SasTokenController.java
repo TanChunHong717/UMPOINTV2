@@ -37,8 +37,7 @@ public class SasTokenController {
                 .setCreatePermission(true)
                 .setListPermission(true);
 
-        OffsetDateTime expiryTime = OffsetDateTime.now().plusHours(1);
-
+        OffsetDateTime expiryTime = OffsetDateTime.now().plusMinutes(5);
         BlobServiceSasSignatureValues sasValues = new BlobServiceSasSignatureValues(expiryTime, permission)
                 .setProtocol(SasProtocol.HTTPS_ONLY);
 
