@@ -14,6 +14,7 @@
             t.tag_name
         FROM spc_tag t
         RIGHT JOIN spc_space_tag st ON t.id = st.tag_id
+        RIGHT JOIN spc_space s ON st.space_id = s.id AND s.status = 1
     </select>
 
     <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcTagEntity" id="spcTagMapWithCount">
@@ -26,9 +27,10 @@
         SELECT DISTINCT
             t.id,
             t.tag_name,
-            COUNT(st.space_id) AS space_count
+            COUNT(s.id) AS space_count
         FROM spc_tag t
         LEFT JOIN spc_space_tag st ON t.id = st.tag_id
+        LEFT JOIN spc_space s ON st.space_id = s.id AND s.status = 1
         <where>
             <if test="tagName != null and tagName.trim() != ''">
                 and t.tag_name like #{tagName}

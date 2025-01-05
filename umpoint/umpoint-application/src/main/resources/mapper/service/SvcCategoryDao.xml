@@ -13,7 +13,7 @@
             ct.id,
             ct.name
         FROM svc_category ct
-        RIGHT JOIN svc_service s ON ct.id = s.cat_id
+        RIGHT JOIN svc_service s ON ct.id = s.cat_id AND s.status = 1
     </select>
 
     <resultMap type="my.edu.um.umpoint.modules.service.entity.SvcCategoryEntity" id="svcCategoryMapWithCount">
@@ -28,7 +28,7 @@
         ct.name,
         COUNT(s.id) AS service_count
         FROM svc_category ct
-        LEFT JOIN svc_service s ON ct.id = s.cat_id
+        LEFT JOIN svc_service s ON ct.id = s.cat_id AND s.status = 1
         <where>
             <if test="name != null and name.trim() != ''">
                 and ct.name like #{name}

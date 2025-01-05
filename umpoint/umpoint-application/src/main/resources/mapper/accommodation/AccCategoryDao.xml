@@ -13,7 +13,7 @@
             ct.id,
             ct.name
         FROM acc_category ct
-        RIGHT JOIN acc_accommodation a ON ct.id = a.cat_id
+        RIGHT JOIN acc_accommodation a ON ct.id = a.cat_id AND a.status = 1
     </select>
 
     <resultMap type="my.edu.um.umpoint.modules.accommodation.entity.AccCategoryEntity" id="accCategoryMapWithCount">
@@ -28,7 +28,7 @@
         ct.name,
         COUNT(a.id) AS accommodation_count
         FROM acc_category ct
-        LEFT JOIN acc_accommodation a ON ct.id = a.cat_id
+        LEFT JOIN acc_accommodation a ON ct.id = a.cat_id AND a.status = 1
         <where>
             <if test="name != null and name.trim() != ''">
                 and ct.name like #{name}

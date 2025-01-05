@@ -26,7 +26,7 @@
     </select>
 
 
-    <select id="getOverlapEvent" resultMap="accEventMap">
+    <select id="getEventsBetweenTimeSpan" resultMap="accEventMap">
         SELECT *
         FROM acc_event e
         WHERE accommodation_id = #{accommodationId} AND
