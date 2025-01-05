@@ -13,8 +13,8 @@
             t.id,
             t.tag_name
         FROM spc_tag t
-        RIGHT JOIN spc_space_tag st ON t.id = st.tag_id
-        RIGHT JOIN spc_space s ON st.space_id = s.id AND s.status = 1
+        JOIN spc_space_tag st ON t.id = st.tag_id
+        JOIN spc_space s ON st.space_id = s.id AND s.status = 1
     </select>
 
     <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcTagEntity" id="spcTagMapWithCount">

@@ -13,7 +13,7 @@
             ct.id,
             ct.name
         FROM acc_category ct
-        RIGHT JOIN acc_accommodation a ON ct.id = a.cat_id AND a.status = 1
+        JOIN acc_accommodation a ON ct.id = a.cat_id AND a.status = 1
     </select>
 
     <resultMap type="my.edu.um.umpoint.modules.accommodation.entity.AccCategoryEntity" id="accCategoryMapWithCount">

@@ -13,7 +13,7 @@
             ct.id,
             ct.name
         FROM svc_category ct
-        RIGHT JOIN svc_service s ON ct.id = s.cat_id AND s.status = 1
+        JOIN svc_service s ON ct.id = s.cat_id AND s.status = 1
     </select>
 
     <resultMap type="my.edu.um.umpoint.modules.service.entity.SvcCategoryEntity" id="svcCategoryMapWithCount">

@@ -13,8 +13,8 @@
             t.id,
             t.tag_name
         FROM acc_tag t
-        RIGHT JOIN acc_accommodation_tag at ON t.id = at.tag_id
-        RIGHT JOIN acc_accommodation a ON at.accommodation_id = a.id AND a.status = 1
+        JOIN acc_accommodation_tag at ON t.id = at.tag_id
+        JOIN acc_accommodation a ON at.accommodation_id = a.id AND a.status = 1
     </select>
 
     <resultMap type="my.edu.um.umpoint.modules.accommodation.entity.AccTagEntity" id="accTagMapWithCount">

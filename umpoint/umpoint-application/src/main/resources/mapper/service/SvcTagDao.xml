@@ -13,8 +13,8 @@
             t.id,
             t.tag_name
         FROM svc_tag t
-        RIGHT JOIN svc_service_tag st ON t.id = st.tag_id
-        RIGHT JOIN svc_service s ON st.service_id = s.id AND s.status = 1
+        JOIN svc_service_tag st ON t.id = st.tag_id
+        JOIN svc_service s ON st.service_id = s.id AND s.status = 1
     </select>
 
     <resultMap type="my.edu.um.umpoint.modules.service.entity.SvcTagEntity" id="svcTagMapWithCount">

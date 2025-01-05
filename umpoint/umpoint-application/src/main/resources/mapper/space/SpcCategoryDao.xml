@@ -13,7 +13,7 @@
             ct.id,
             ct.name
         FROM spc_category ct
-        RIGHT JOIN spc_space s ON ct.id = s.cat_id AND s.status = 1
+        JOIN spc_space s ON ct.id = s.cat_id AND s.status = 1
     </select>
 
     <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcCategoryEntity" id="spcCategoryMapWithCount">
