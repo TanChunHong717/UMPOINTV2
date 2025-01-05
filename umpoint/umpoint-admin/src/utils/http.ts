@@ -34,19 +34,12 @@ http.interceptors.request.use(
 );
 http.interceptors.response.use(
   (response) => {
-    // 响应成功
     if (!response.data.code || response.data.code === 0) {
       return response;
     }
-
-    // 错误提示
-    ElMessage.error(response.data.msg);
-
     if (response.data.code === 401) {
-      //自定义业务状态码
       redirectLogin();
     }
-
     return Promise.reject(new Error(response.data.msg || "Error"));
   },
   (error) => {
@@ -58,7 +51,7 @@ http.interceptors.response.use(
       404: `Request url error: ${getValueByKeys(error, "response.config.url", "")}`,
       408: "Request timeout",
       500: "API interface throw error 500",
-      501: "Unimplement service",
+      501: "Unimplemented service",
       502: "Gateway error",
       503: "Service not available",
       504: "Gateway timeout",
@@ -69,6 +62,8 @@ http.interceptors.response.use(
     }
     if (status === 401) {
       redirectLogin();
+    } else if (status == 500) {
+      return Promise.reject(new Error(httpCodeLabel[status] + ":" + error.response.data.msg))
     }
     return Promise.reject(new Error(httpCodeLabel[status] || "Interface error"));
   }
