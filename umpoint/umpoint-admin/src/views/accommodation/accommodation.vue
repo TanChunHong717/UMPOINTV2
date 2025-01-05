@@ -100,7 +100,7 @@
             <el-col :span="24">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-tag"></use></svg>
               Tag:
-              <el-tag v-if="accommodation.accTagDTOList?.length > 0" v-for="tag in accommodation.accTagDTOList" type="primary">{{ tag.tagName }} </el-tag>
+              <el-tag v-if="accommodation.accTagDTOList?.length > 0" v-for="tag in accommodation.accTagDTOList" type="primary" style="margin-right: 5px">{{ tag.tagName }} </el-tag>
               <el-tag v-else type="info">No Tag</el-tag>
             </el-col>
           </el-row>

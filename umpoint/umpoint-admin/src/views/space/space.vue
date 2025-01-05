@@ -100,7 +100,7 @@
             <el-col :span="24">
               <svg class="iconfont" aria-hidden="true"><use xlink:href="#icon-tag"></use></svg>
               Tag:
-              <el-tag v-if="space.spcTagDTOList?.length > 0" v-for="tag in space.spcTagDTOList" type="primary">{{ tag.tagName }} </el-tag>
+              <el-tag v-if="space.spcTagDTOList?.length > 0" v-for="tag in space.spcTagDTOList" type="primary" style="margin-right: 5px">{{ tag.tagName }} </el-tag>
               <el-tag v-else type="info">No Tag</el-tag>
             </el-col>
           </el-row>
@@ -171,6 +171,7 @@ const getCategoryList = async () => {
       return ElMessage.error(res.msg);
     }
     categoryList.value = res.data;
+    console.log(categoryList.value);
   });
 };
 
