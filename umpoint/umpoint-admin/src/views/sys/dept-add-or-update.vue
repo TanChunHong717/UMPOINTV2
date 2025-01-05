@@ -1,11 +1,11 @@
 <template>
   <el-dialog v-model="visible" :title="!dataForm.id ? 'Add' : 'Update'" :close-on-click-modal="false" :close-on-press-escape="false">
-    <el-form :model="dataForm" :rules="rules" ref="dataFormRef" @keyup.enter="dataFormSubmitHandle()" label-width="120px">
+    <el-form :model="dataForm" :rules="rules" ref="dataFormRef" @keyup.enter="dataFormSubmitHandle()" label-width="200px">
       <el-form-item prop="name" label="Name">
         <el-input v-model="dataForm.name" placeholder="Name"></el-input>
       </el-form-item>
       <el-form-item prop="parentName" label="Parent department" class="dept-list">
-        <el-popover :width="400" ref="deptListPopover" placement="bottom-start" trigger="click" popper-class="popover-pop">
+        <el-popover :width="320" ref="deptListPopover" placement="bottom-start" trigger="click" popper-class="popover-pop">
           <template v-slot:reference>
             <el-input v-model="dataForm.parentName" :readonly="true" placeholder="Parent department">
               <template v-slot:suffix>
