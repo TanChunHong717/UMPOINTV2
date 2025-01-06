@@ -462,11 +462,11 @@ const addToCalendar = ({ row }, calendarType) => {
         endTime: row.meta.endTime,
         options: [calendarType],
         timeZone: "Asia/Kuala_Lumpur",
-        location: row.facility,
+        location: `${row.facility}, UM`,
     };
     if (row.meta.startDate !== row.meta.endDate) {
         event.recurrence = "daily";
-        event.recurrence_count = diffDays(new Date(row.meta.startDate), new Date(row.meta.endDate));
+        event.recurrence_count = diffDays(new Date(row.meta.startDate), new Date(row.meta.endDate)) + 1;
         event.iCalFileName = `${row.eventName} - ${row.meta.startDate} to ${row.meta.endDate}`;
     }
 
