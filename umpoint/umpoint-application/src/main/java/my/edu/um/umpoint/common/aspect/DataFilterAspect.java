@@ -71,8 +71,9 @@ public class DataFilterAspect {
         if (CollUtil.isNotEmpty(deptIdList)) {
             sqlFilter.append(tableAlias).append(dataFilter.deptId());
             sqlFilter.append(" in(").append(StringUtils.join(deptIdList, ",")).append(")");
-            sqlFilter.append(" or ");
         }
+        if (CollUtil.isNotEmpty(deptIdList) && !StringUtils.isNullOrEmpty(user.getType()))
+            sqlFilter.append(" or ");
         if (!StringUtils.isNullOrEmpty(user.getType()))
             sqlFilter.append(tableAlias).append(dataFilter.userId()).append("=").append(user.getId());
 
