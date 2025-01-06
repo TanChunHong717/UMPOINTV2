@@ -35,9 +35,9 @@ import java.util.Map;
  * @since 1.0.0 2024-08-20
  */
 @RestController
-@RequestMapping("service/service")
+@RequestMapping("service/public")
 @Tag(name="Service")
-public class SvcServiceController {
+public class SvcPublicController {
     @Autowired
     private SvcServiceService svcServiceService;
 
@@ -53,7 +53,6 @@ public class SvcServiceController {
         @Parameter(name = Constant.CAT_ID, description = "Category ID", in = ParameterIn.QUERY, schema = @Schema(type = "integer")) ,
         @Parameter(name = Constant.TAG_ID, description = "Tag ID", in = ParameterIn.QUERY, schema = @Schema(type = "integer"))
     })
-    @RequiresPermissions("service:service:page")
     public Result<PageData<SvcServiceDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
         PageData<SvcServiceDTO> page = svcServiceService.servicePage(params);
 
@@ -62,94 +61,9 @@ public class SvcServiceController {
 
     @GetMapping("{id}")
     @Operation(summary = "Information")
-    @RequiresPermissions("service:service:info")
     public Result<SvcServiceDTO> get(@PathVariable("id") Long id){
         SvcServiceDTO data = svcServiceService.get(id);
 
         return new Result<SvcServiceDTO>().ok(data);
     }
-
-    @PostMapping
-    @Operation(summary = "Save")
-    @LogOperation("Save")
-    @RequiresPermissions("service:service:save")
-    public Result save(@RequestBody SvcServiceDTO dto){
-        ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
-        validateServiceTagDTO(dto);
-        validateServiceImageDTO(dto);
-
-        svcServiceService.save(dto);
-
-        return new Result();
-    }
-
-    @PutMapping
-    @Operation(summary = "Update")
-    @LogOperation("Update")
-    @RequiresPermissions("service:service:update")
-    public Result update(@RequestBody SvcServiceDTO dto){
-        //Allow to update partial field
-        ValidatorUtils.validateEntity(dto, UpdateGroup.class);
-        validateServiceBookingRuleDTO(dto);
-        validateServiceImageDTO(dto);
-        validateServiceTagDTO(dto);
-
-        svcServiceService.update(dto);
-
-        return new Result();
-    }
-
-    @DeleteMapping
-    @Operation(summary = "Delete")
-    @LogOperation("Delete")
-    @RequiresPermissions("service:service:delete")
-    public Result delete(@RequestBody Long[] ids){
-        AssertUtils.isArrayEmpty(ids, "id");
-
-        svcServiceService.delete(ids);
-
-        return new Result();
-    }
-
-    @GetMapping("export")
-    @Operation(summary = "Export")
-    @LogOperation("Export")
-    @RequiresPermissions("service:service:export")
-    public void export(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletResponse response) throws Exception {
-        List<SvcServiceDTO> list = svcServiceService.list(params);
-
-        ExcelUtils.exportExcelToTarget(response, null, "Service", list, SvcServiceExcel.class);
-    }
-
-    private static void validateServiceBookingRuleDTO(SvcServiceDTO dto) {
-        if (dto.getSvcBookingRuleDTO() != null) {
-            if (dto.getBookingRuleId() == null)
-                ValidatorUtils.validateEntity(dto.getSvcBookingRuleDTO(), AddGroup.class, DefaultGroup.class);
-            else
-                ValidatorUtils.validateEntity(dto.getSvcBookingRuleDTO(), UpdateGroup.class);
-        }
-    }
-
-    private void validateServiceImageDTO(SvcServiceDTO dto) {
-        if (dto.getSvcImageDTOList() != null && !dto.getSvcImageDTOList().isEmpty()) {
-            dto.getSvcImageDTOList().forEach(imageDTO -> {
-                ValidatorUtils.validateEntity(
-                        imageDTO,
-                        InsertGroup.class
-                );
-            });
-        }
-    }
-
-    private void validateServiceTagDTO(SvcServiceDTO dto) {
-        if (dto.getSvcTagDTOList() != null && !dto.getSvcTagDTOList().isEmpty()) {
-            dto.getSvcTagDTOList().forEach(tagDTO -> {
-                ValidatorUtils.validateEntity(
-                        tagDTO,
-                        InsertGroup.class
-                );
-            });
-        }
-    }
-
 }
