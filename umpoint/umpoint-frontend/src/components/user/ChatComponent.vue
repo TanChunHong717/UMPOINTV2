@@ -398,6 +398,7 @@ function roomActionHandler(event) {
         case "markAsResolved":
             chatApi.markAsResolved(roomId).then(() => {
                 ElMessage.success("Chat is resolved");
+                fetchRooms(true);
             });
             break;
         case "reportChat":
