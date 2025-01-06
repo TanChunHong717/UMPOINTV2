@@ -248,7 +248,7 @@ const generateWeekendAndHoliday = (startDate: Date, endDate: Date) => {
     }
   });
 
-  if (space.value.spcBookingRuleDTO.holidayAvailable == 1) {
+  if (space.value.spcBookingRuleDTO.holidayAvailable == 0) {
     weekendDays.forEach((day) => {
       if (!holidayObject[day]) {
         holidayObject[day] = { from:0, to:24*60, label: "Weekend", class: 'close' };
