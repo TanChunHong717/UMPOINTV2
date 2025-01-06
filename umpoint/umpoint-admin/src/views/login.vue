@@ -56,7 +56,6 @@ const state = reactive({
 const login = reactive({ username: "", password: "", captcha: "", uuid: "" });
 
 onMounted(() => {
-  //清理数据
   store.logout();
   getCaptchaUrl();
 });
@@ -89,14 +88,8 @@ const onLogin = () => {
             setCache(CacheToken, res.data, true);
             ElMessage.success("Login success");
             router.push("/");
-          } else {
-            ElMessage.error(res.msg);
           }
         })
-        .catch(() => {
-          state.loading = false;
-          onRefreshCode();
-        });
     }
   });
 };

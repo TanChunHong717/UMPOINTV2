@@ -13,7 +13,7 @@
             ct.id,
             ct.name
         FROM spc_category ct
-        RIGHT JOIN spc_space s ON ct.id = s.cat_id
+        JOIN spc_space s ON ct.id = s.cat_id AND s.status = 1
     </select>
 
     <resultMap type="my.edu.um.umpoint.modules.space.entity.SpcCategoryEntity" id="spcCategoryMapWithCount">
@@ -28,7 +28,7 @@
             ct.name,
             COUNT(s.id) AS space_count
         FROM spc_category ct
-        LEFT JOIN spc_space s ON ct.id = s.cat_id
+        LEFT JOIN spc_space s ON ct.id = s.cat_id AND s.status = 1
         <where>
             <if test="name != null and name.trim() != ''">
                 and ct.name like #{name}

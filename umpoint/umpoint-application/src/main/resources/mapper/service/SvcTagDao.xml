@@ -13,7 +13,8 @@
             t.id,
             t.tag_name
         FROM svc_tag t
-        RIGHT JOIN svc_service_tag st ON t.id = st.tag_id
+        JOIN svc_service_tag st ON t.id = st.tag_id
+        JOIN svc_service s ON st.service_id = s.id AND s.status = 1
     </select>
 
     <resultMap type="my.edu.um.umpoint.modules.service.entity.SvcTagEntity" id="svcTagMapWithCount">
@@ -26,9 +27,10 @@
         SELECT DISTINCT
         t.id,
         t.tag_name,
-        COUNT(st.service_id) AS service_count
+        COUNT(s.id) AS service_count
         FROM svc_tag t
         LEFT JOIN svc_service_tag st ON t.id = st.tag_id
+        LEFT JOIN svc_service s ON st.service_id = s.id AND s.status = 1
         <where>
             <if test="tagName != null and tagName.trim() != ''">
                 and t.tag_name like #{tagName}

@@ -17,6 +17,22 @@
       </el-form-item>
 
       <el-divider content-position="left">Permissions</el-divider>
+      <el-form-item label="Prior Contact with Admin" prop="contactRequired">
+        <el-radio-group v-model="dataForm.contactRequired">
+          <el-radio :value="Number(1)">Required</el-radio>
+          <el-radio :value="Number(0)">Not Needed</el-radio>
+          <el-tooltip
+            class="box-item"
+            placement="bottom-end"
+          >
+            <template #content>
+              Only used to inform if the user needs to contact the manager before booking. <br>
+              No checks are performed during booking.
+            </template>
+            <el-button tabindex="-1" size="small" :icon="InfoFilled" circle />
+          </el-tooltip>
+        </el-radio-group>
+      </el-form-item>
       <el-form-item label="Required Approve" prop="approvalRequired">
         <el-radio-group v-model="dataForm.approvalRequired">
           <el-radio :value="Number(1)">Require Admin Approve</el-radio>
@@ -76,19 +92,25 @@
       <el-form-item label="Min reservation day" prop="minReservationDay">
         <el-input-number v-model="dataForm.minReservationDay" controls-position="right" :min="1"/>
       </el-form-item>
-      <el-form-item label="Max technician number" prop="maxTechnicianNumber">
-        <el-col :span="22">
-          <el-input-number v-model="dataForm.maxTechnicianNumber" controls-position="right" style="width: 100%" :min="0"/>
+      <el-form-item label="Technicians available" prop="maxTechnicianNumber">
+        <el-col :span="2" :xs="4">
+          <el-switch
+            v-model="hasTechnician"
+            inline-prompt
+            :active-icon="Check"
+            :inactive-icon="Close"
+          />
         </el-col>
-        <el-col :span="2" style="padding-left: 6px;">
+        <el-col :span="20" :xs="18" offset="1">
+          <el-input-number v-if="hasTechnician" v-model="dataForm.maxTechnicianNumber" controls-position="right" style="width: 100%" :min="0"/>
+        </el-col>
+        <el-col :span="1" style="padding-left: 6px;">
           <el-tooltip
             class="box-item"
             placement="bottom-end"
           >
             <template #content>
-              • Set to 0 if the space does not provide technicians.<br>
-              • 1 technician is included in every booking by default.<br>
-              • If the number of technicians is set to 1, users may not choose any additional technicians.
+              Each booking includes 1 technician by default if technicians are provided. If set to 1, users cannot add any additional technicians.
             </template>
             <el-button tabindex="-1" size="small" :icon="InfoFilled" circle />
           </el-tooltip>
@@ -102,8 +124,8 @@
       <el-form-item label="Price for a week" prop="weekPrice">
         <el-input-number v-model="dataForm.weekPrice" controls-position="right" :precision="2" :step="0.5" :min="0"/>
       </el-form-item>
-      <el-form-item label="Price per technician" prop="technicianPrice">
-        <el-input-number v-model="dataForm.technicianPrice" controls-position="right" :precision="2" :step="0.5" :min="0"/>
+      <el-form-item v-if="hasTechnician" label="Price per technician" prop="technicianPrice">
+        <el-input-number v-model="dataForm.technicianPrice" controls-position="right" :precision="2" :step="0.5" :min="0" :readonly="!hasTechnician"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -114,16 +136,15 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
+import {computed, reactive, ref} from "vue";
 import baseService from "@/service/baseService";
 import { ElMessage } from "element-plus";
-import {InfoFilled} from "@element-plus/icons-vue";
+import {Check, Close, InfoFilled} from "@element-plus/icons-vue";
 const emit = defineEmits(["refreshData"]);
 
 const visible = ref(false);
 const dataFormRef = ref();
 const userList = ref<{id: number; username: string}[]>([]);
-const defaultBookingRule = ref();
 
 const accommodationId = ref(null);
 const dataForm = reactive({
@@ -141,8 +162,8 @@ const dataForm = reactive({
   minBookingAdvanceDay: null,
   maxReservationDay: null,
   minReservationDay: null,
-  maxTechnicianNumber: null,
-  technicianPrice: null
+  maxTechnicianNumber: 0,
+  technicianPrice: 0
 });
 
 const rules = ref({
@@ -186,6 +207,17 @@ const getUserList = async () => {
     userList.value = res.data;
   });
 };
+
+// switch to set technicians available
+const hasTechnician = computed({
+  get: () => dataForm.maxTechnicianNumber > 0,
+  set: (hasTechnicianValue) => {
+    // only set if maxTechnicianNumber is not set
+    if (hasTechnicianValue && !dataForm.maxTechnicianNumber) dataForm.maxTechnicianNumber = 1;
+    // no technicians available, set to 0
+    else dataForm.maxTechnicianNumber = 0;
+  }
+});
 
 const init = (accommodation?: any) => {
   getUserList();
