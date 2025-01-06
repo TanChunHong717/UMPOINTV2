@@ -2,7 +2,7 @@
   <div class="mod-booking__spc-booking">
     <el-form :inline="true" :model="state.dataForm" @keyup.enter="state.getDataList()">
       <el-form-item>
-        <el-input v-model="state.dataForm.id" placeholder="ID" clearable></el-input>
+        <el-input v-model="state.dataForm.id" placeholder="ID" clearable @clear="state.dataForm.id = null"></el-input>
       </el-form-item>
       <el-form-item>
         <el-select
@@ -66,11 +66,11 @@
       <el-table-column type="expand">
         <template #default="props">
           <div class="expand-row" v-if="props.row.spcPaymentItemDTOList && props.row.spcPaymentItemDTOList.length > 0">
-            <el-table :data="props.row.spcPaymentItemDTOList" size="small">
+            <el-table :data="props.row.spcPaymentItemDTOList" size="small" :default-sort="{ prop: 'id', order: 'ascending' }">
               <el-table-column prop="id" label="ID" header-align="center" align="center"></el-table-column>
-              <el-table-column prop="itemName" label="Name" header-align="center" align="center"></el-table-column>
+              <el-table-column prop="itemName" label="Name" header-align="center" align="center" width="150"></el-table-column>
               <el-table-column prop="itemAmount" label="Amount" header-align="center" align="center"></el-table-column>
-              <el-table-column prop="itemPrice(RM)" label="Price" header-align="center" align="center"></el-table-column>
+              <el-table-column prop="itemPrice" label="Price" header-align="center" align="center"></el-table-column>
               <el-table-column label="Item Total(RM)" header-align="center" align="center">
                 <template v-slot="scope">
                   {{scope.row.itemAmount * scope.row.itemPrice}}
@@ -85,9 +85,9 @@
       <el-table-column prop="status" label="Status" header-align="center" align="center">
         <template v-slot="scope">
           <el-tag v-if="scope.row.status == 0" type="danger">Pending</el-tag>
-          <el-tag v-if="scope.row.status == 1" type="info">Success</el-tag>
-          <el-tag v-if="scope.row.status == 2" type="primary">Failed</el-tag>
-          <el-tag v-if="scope.row.status == 3" type="success">Refunded</el-tag>
+          <el-tag v-if="scope.row.status == 1" type="success">Success</el-tag>
+          <el-tag v-if="scope.row.status == 2" type="warning">Failed</el-tag>
+          <el-tag v-if="scope.row.status == 3" type="info">Refunded</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="method" label="Payment Method" header-align="center" align="center"></el-table-column>
