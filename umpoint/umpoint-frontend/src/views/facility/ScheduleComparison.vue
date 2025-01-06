@@ -17,11 +17,14 @@
             </router-link>
         </div>
 
-        <EventComparisonCalendar
-            :facilityType="facilityType"
-            :facilityIds="facilityIds"
-            :facilityProps="facilityInfos"
-        />
+        <el-card style="--el-card-padding:0">
+            <EventComparisonCalendar
+                v-if="isLoaded"
+                :facilityType="facilityType"
+                :facilityIds="facilityIds"
+                :facilityProps="facilityInfos"
+            />
+        </el-card>
     </BaseLayout>
 </template>
 
@@ -58,6 +61,10 @@ watch(
         }
     },
     { immediate: true }
+);
+
+const isLoaded = computed(
+    () => facilityInfos.value.length === facilityIds.value.length
 );
 </script>
 
