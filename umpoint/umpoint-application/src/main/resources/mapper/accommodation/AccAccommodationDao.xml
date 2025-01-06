@@ -153,8 +153,12 @@
             b.technician_price,
             m.username AS manager_name
         FROM acc_accommodation a
+        LEFT JOIN acc_category c ON a.cat_id = c.id
+        LEFT JOIN sys_dept d ON a.dept_id = d.id
         LEFT JOIN acc_booking_rule b ON a.booking_rule_id = b.id
-        LEFT JOIN sys_user m ON s.manager = m.id
+        LEFT JOIN sys_user m ON a.manager = m.id
+        LEFT JOIN sys_user cr ON a.creator = cr.id
+        LEFT JOIN sys_user u ON a.updater = u.id
         <where>
             and a.status = 1
             <if test="name != null and name.trim() != ''">
