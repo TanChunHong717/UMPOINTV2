@@ -23,7 +23,6 @@ export default defineComponent({
       layout: location.href.includes("pop=true") ? EPageLayoutEnum.fullscreen : EPageLayoutEnum.page
     });
     onMounted(() => {
-      //读取主题色缓存
       const themeCache = getThemeConfigCache();
       const themeColor = themeCache[EThemeSetting.ThemeColor];
       setThemeColor(EThemeColor.ThemeColor, themeColor);

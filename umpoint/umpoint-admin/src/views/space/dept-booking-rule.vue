@@ -10,8 +10,8 @@
     </el-form>
     <el-table v-loading="state.dataListLoading" :data="state.dataList" border @sort-change="state.dataListSortChangeHandle" style="width: 100%">
       <el-table-column prop="name" label="Department" header-align="center" align="center" sortable="custom"></el-table-column>
-      <el-table-column prop="maxUserDailyBooking" label="Maximum booking number" header-align="center" align="center"></el-table-column>
-      <el-table-column prop="maxUserDailyBookingHour" label="Maximum booking hour" header-align="center" align="center"></el-table-column>
+      <el-table-column prop="maxUserDailyBooking" label="Maximum booking number per user (weekly)" header-align="center" align="center"></el-table-column>
+      <el-table-column prop="maxUserDailyBookingHour" label="Maximum booking hour per user (weekly)" header-align="center" align="center"></el-table-column>
       <el-table-column label="Actions" fixed="right" header-align="center" align="center" width="150">
         <template v-slot="scope">
           <el-button v-if="state.hasPermission('space:dept-booking-rule:update')" type="primary" link @click="updateHandle(scope.row.id, scope.row.deptId, scope.row.name)">Update</el-button>

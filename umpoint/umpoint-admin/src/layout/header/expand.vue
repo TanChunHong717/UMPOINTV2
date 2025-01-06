@@ -8,14 +8,12 @@ import { useAppStore } from "@/store";
 import userLogo from "@/assets/images/user.png";
 import "@/assets/css/header.less";
 import { ElMessageBox } from "element-plus";
+import router from "@/router";
 
 interface IExpand {
   userName?: string;
 }
 
-/**
- * 顶部右侧扩展区域
- */
 export default defineComponent({
   name: "Expand",
   components: { SvgIcon },
@@ -36,14 +34,14 @@ export default defineComponent({
         })
           .then(() => {
             baseService.post("/logout").finally(() => {
-              router.push(path);
+              router.replace("/login");
             });
           })
           .catch(() => {
             //
           });
       } else {
-        router.push(path);
+        router.replace("/login");
       }
     };
     return {

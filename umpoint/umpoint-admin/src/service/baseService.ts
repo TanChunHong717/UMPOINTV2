@@ -1,7 +1,6 @@
 import { IHttpResponse, IObject } from "@/types/interface";
 import http from "../utils/http";
 import {ElMessage} from "element-plus";
-import error from "@/views/error.vue";
 
 export default {
   delete(path: string, params: IObject): Promise<IHttpResponse> {
