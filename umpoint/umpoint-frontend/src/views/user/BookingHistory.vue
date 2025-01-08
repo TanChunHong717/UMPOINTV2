@@ -130,6 +130,10 @@ const getBookings = async () => {
                         : activeType.value == "accommodation"
                         ? booking.accommodationId
                         : booking.spaceId,
+                startDate: booking.startDay,
+                endDate: booking.endDay,
+                startTime: booking.startTime,
+                endTime: booking.endTime,
             },
         };
     });

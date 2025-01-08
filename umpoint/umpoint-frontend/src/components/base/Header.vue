@@ -11,7 +11,7 @@
                 </router-link>
             </div>
             <div v-if="isLoggedIn">
-                <el-dropdown placement="bottom-end">
+                <el-dropdown placement="bottom-end" popper-class="header-dropdown">
                     <el-button type="primary" plain class="account">
                         <svg-icon type="mdi" :path="mdiAccount" />
                         <svg-icon type="mdi" :path="mdiMenuDown" />
@@ -116,7 +116,7 @@ const logoutUser = () => {
     padding-inline: 6px 0;
 }
 
-.el-dropdown-menu__item {
+.header-dropdown .el-dropdown-menu__item {
     /* transfer padding to a such that hover box takes effect */
     padding: 0;
     color: var(--el-text-color-regular);

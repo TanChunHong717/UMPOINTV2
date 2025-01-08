@@ -218,9 +218,40 @@
                     prop="action"
                     fixed="right"
                     label="Action"
-                    width="100"
+                    width="140"
                 >
                     <template #default="scope">
+                        <el-dropdown
+                            :hide-on-click="false"
+                            class="action-dropdown"
+                        >
+                            <el-button
+                                link
+                                title="Add to calendar"
+                                type="primary"
+                                size="small"
+                            >
+                                <SvgIcon type="mdi" :path="mdiCalendarEdit" />
+                            </el-button>
+                            <template #dropdown>
+                                <el-dropdown-menu>
+                                    <el-dropdown-item
+                                        @click.prevent="
+                                            addToCalendar(scope, 'Google')
+                                        "
+                                    >
+                                        Google
+                                    </el-dropdown-item>
+                                    <el-dropdown-item
+                                        @click.prevent="
+                                            addToCalendar(scope, 'Microsoft365')
+                                        "
+                                    >
+                                        Outlook
+                                    </el-dropdown-item>
+                                </el-dropdown-menu>
+                            </template>
+                        </el-dropdown>
                         <el-button
                             link
                             title="Start chat"
@@ -306,10 +337,12 @@
 </template>
 
 <script setup>
-import { mdiCurrencyUsd, mdiForum, mdiCancel } from "@mdi/js";
+import { mdiCurrencyUsd, mdiForum, mdiCancel, mdiCalendarEdit } from "@mdi/js";
 import { computed, h } from "vue";
 import { bookingStatus } from "@/constants/app";
 import { ElMessageBox } from "element-plus";
+import { atcb_action as addToCalendarApi } from "add-to-calendar-button";
+import { diffDays } from "@/utils/date";
 
 const emit = defineEmits([
     "changeStatus",
@@ -342,7 +375,13 @@ const eventNameFormatter = (row, column) => {
     return h("div", {}, [
         h("span", {}, row.eventName),
         h("br"),
-        h("span", { style: "font-size: 0.85em; color: var(--el-text-color-secondary)" }, row.facility),
+        h(
+            "span",
+            {
+                style: "font-size: 0.85em; color: var(--el-text-color-secondary)",
+            },
+            row.facility
+        ),
     ]);
 };
 const statusFormatter = (row, column) => {
@@ -413,6 +452,26 @@ const confirmCancelBooking = async (eventName) => {
         () => false
     );
 };
+
+// *** completed actions ***
+const addToCalendar = ({ row }, calendarType) => {
+    let event = {
+        name: row.eventName,
+        startDate: row.meta.startDate,
+        startTime: row.meta.startTime,
+        endTime: row.meta.endTime,
+        options: [calendarType],
+        timeZone: "Asia/Kuala_Lumpur",
+        location: `${row.facility}, UM`,
+    };
+    if (row.meta.startDate !== row.meta.endDate) {
+        event.recurrence = "daily";
+        event.recurrence_count = diffDays(new Date(row.meta.startDate), new Date(row.meta.endDate)) + 1;
+        event.iCalFileName = `${row.eventName} - ${row.meta.startDate} to ${row.meta.endDate}`;
+    }
+
+    addToCalendarApi(event);
+};
 </script>
 
 <style>
@@ -431,5 +490,9 @@ span.status-3 {
 }
 span.status-4 {
     color: var(--el-table-text-color);
+}
+
+.action-dropdown {
+    padding-right: 12px;
 }
 </style>

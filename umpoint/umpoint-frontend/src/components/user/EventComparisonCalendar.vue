@@ -139,7 +139,7 @@ const updateEvents = async (startDate: Date, endDate: Date) => {
             message: e.message ?? "Failed to get facility events",
             type: "error",
         });
-        return;
+        throw e;
     }
 };
 

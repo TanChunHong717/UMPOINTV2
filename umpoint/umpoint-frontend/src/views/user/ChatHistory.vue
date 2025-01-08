@@ -23,5 +23,5 @@ let store = useStore();
 const userId = computed(() => store.state.auth.userId);
 const userToken = computed(() => store.state.auth.token);
 
-const isLoaded = computed(() => userId.value && userToken.value);
+const isLoaded = computed(() => !!userId.value && !!userToken.value);
 </script>
