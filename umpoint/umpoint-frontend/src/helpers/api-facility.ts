@@ -3,7 +3,7 @@ import { facilityTypes } from "@/constants/app";
 import { JavaId } from "@/types/interface";
 
 export function getFacilities(type: keyof typeof facilityTypes, params: any) {
-    return api.get(`/${type}/${type}/page`, {
+    return api.get(`/${type}/public/page`, {
         params
     });
 }
@@ -87,7 +87,7 @@ the space used`,
         };
     }
 
-    return api.get(`/${facilityType}/${facilityType}/${facilityID}`);
+    return api.get(`/${facilityType}/public/${facilityID}`);
 }
 
 export function getFacilityCategories(type: keyof typeof facilityTypes) {

@@ -2,7 +2,7 @@
   <div class="mod-booking__acc-booking">
     <el-form :inline="true" :model="state.dataForm" @keyup.enter="state.getDataList()">
       <el-form-item>
-        <el-input v-model="state.dataForm.id" placeholder="ID" clearable></el-input>
+        <el-input v-model="state.dataForm.id" placeholder="ID" clearable @clear="state.dataForm.id = null"></el-input>
       </el-form-item>
       <el-form-item>
         <el-select

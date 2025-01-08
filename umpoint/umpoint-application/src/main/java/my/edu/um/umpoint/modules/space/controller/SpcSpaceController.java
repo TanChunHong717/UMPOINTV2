@@ -55,6 +55,7 @@ public class SpcSpaceController {
         @Parameter(name = Constant.CAT_ID, description = "Category ID", in = ParameterIn.QUERY, schema = @Schema(type = "integer")) ,
         @Parameter(name = Constant.TAG_ID, description = "Tag ID", in = ParameterIn.QUERY, schema = @Schema(type = "integer"))
     })
+    @RequiresPermissions("space:space:page")
     public Result<PageData<SpcSpaceDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
         PageData<SpcSpaceDTO> page = spcSpaceService.spacePage(params);
 
@@ -63,6 +64,7 @@ public class SpcSpaceController {
 
     @GetMapping("list")
     @Operation(summary = "List out all space with booking rule")
+    @RequiresPermissions("space:space:page")
     public Result<List<SpcSpaceDTO>> list(){
         List<SpcSpaceDTO> data = spcSpaceService.listWithBookingRule();
 
@@ -71,6 +73,7 @@ public class SpcSpaceController {
 
     @GetMapping("{id}")
     @Operation(summary = "Information")
+    @RequiresPermissions("space:space:info")
     public Result<SpcSpaceDTO> get(@PathVariable("id") Long id){
         SpcSpaceDTO data = spcSpaceService.get(id);
 

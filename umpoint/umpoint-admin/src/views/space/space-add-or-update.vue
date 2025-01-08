@@ -60,7 +60,7 @@
       <multi-upload :url="fileList" @upload="imageUploadHandle"></multi-upload>
     </el-form-item>
     <el-row class="bottom-button" justify="end">
-      <el-button @click="emits.emit(EMitt.OnCloseCurrTab)" size="large">Cancel</el-button>
+      <el-button @click="cancelHandle" size="large">Cancel</el-button>
       <el-button type="primary" @click="dataFormSubmitHandle()" size="large">Confirm</el-button>
     </el-row>
   </el-form>
@@ -178,7 +178,6 @@ const init = (id?: bigint) => {
   getDeptList();
   getTagList();
 
-  dataFormRef.value.resetFields();
   selectTagList.value = [];
   fileList.value = [];
 
@@ -211,6 +210,7 @@ const dataFormSubmitHandle = () => {
     });
     dataForm.description = JSON.stringify(dataForm.description);
     (!dataForm.id ? baseService.post : baseService.put)("/space/space", dataForm, {"Contain-HTML": true}).then((res) => {
+      dataFormRef.value.resetFields();
       emits.emit(EMitt.OnCloseCurrTab);
       ElMessage.success({
         message: 'Success',
@@ -219,6 +219,11 @@ const dataFormSubmitHandle = () => {
     });
   });
 };
+
+const cancelHandle = () => {
+  dataFormRef.value.resetFields();
+  emits.emit(EMitt.OnCloseCurrTab);
+}
 
 onMounted(() => {
   initialize();

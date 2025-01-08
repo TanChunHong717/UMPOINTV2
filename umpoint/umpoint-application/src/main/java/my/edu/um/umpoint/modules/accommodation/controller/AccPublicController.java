@@ -35,9 +35,9 @@ import java.util.Map;
  * @since 1.0.0 2024-08-23
  */
 @RestController
-@RequestMapping("accommodation/accommodation")
+@RequestMapping("accommodation/public")
 @Tag(name="Accommodation")
-public class AccAccommodationController {
+public class AccPublicController {
     @Autowired
     private AccAccommodationService accAccommodationService;
 
@@ -53,7 +53,6 @@ public class AccAccommodationController {
         @Parameter(name = Constant.CAT_ID, description = "Category ID", in = ParameterIn.QUERY, schema = @Schema(type = "integer")) ,
         @Parameter(name = Constant.TAG_ID, description = "Tag ID", in = ParameterIn.QUERY, schema = @Schema(type = "integer"))
     })
-    @RequiresPermissions("accommodation:accommodation:page")
     public Result<PageData<AccAccommodationDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
         PageData<AccAccommodationDTO> page = accAccommodationService.accommodationPage(params);
 
@@ -62,93 +61,9 @@ public class AccAccommodationController {
 
     @GetMapping("{id}")
     @Operation(summary = "Information")
-    @RequiresPermissions("accommodation:accommodation:info")
     public Result<AccAccommodationDTO> get(@PathVariable("id") Long id){
         AccAccommodationDTO data = accAccommodationService.get(id);
 
         return new Result<AccAccommodationDTO>().ok(data);
-    }
-
-    @PostMapping
-    @Operation(summary = "Save")
-    @LogOperation("Save")
-    @RequiresPermissions("accommodation:accommodation:save")
-    public Result save(@RequestBody AccAccommodationDTO dto){
-        ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
-        validateAccommodationImageDTO(dto);
-        validateAccommodationTagDTO(dto);
-
-        accAccommodationService.save(dto);
-
-        return new Result();
-    }
-
-    @PutMapping
-    @Operation(summary = "Update")
-    @LogOperation("Update")
-    @RequiresPermissions("accommodation:accommodation:update")
-    public Result update(@RequestBody AccAccommodationDTO dto){
-        //Allow to update partial field
-        ValidatorUtils.validateEntity(dto, UpdateGroup.class);
-        validateAccommodationBookingRuleDTO(dto);
-        validateAccommodationImageDTO(dto);
-        validateAccommodationTagDTO(dto);
-
-        accAccommodationService.update(dto);
-
-        return new Result();
-    }
-
-    @DeleteMapping
-    @Operation(summary = "Delete")
-    @LogOperation("Delete")
-    @RequiresPermissions("accommodation:accommodation:delete")
-    public Result delete(@RequestBody Long[] ids){
-        AssertUtils.isArrayEmpty(ids, "id");
-
-        accAccommodationService.delete(ids);
-
-        return new Result();
-    }
-
-    @GetMapping("export")
-    @Operation(summary = "Export")
-    @LogOperation("Export")
-    @RequiresPermissions("accommodation:accommodation:export")
-    public void export(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletResponse response) throws Exception {
-        List<AccAccommodationDTO> list = accAccommodationService.list(params);
-
-        ExcelUtils.exportExcelToTarget(response, null, "Accommodation", list, AccAccommodationExcel.class);
-    }
-
-    private static void validateAccommodationBookingRuleDTO(AccAccommodationDTO dto) {
-        if (dto.getAccBookingRuleDTO() != null) {
-            if (dto.getBookingRuleId() == null)
-                ValidatorUtils.validateEntity(dto.getAccBookingRuleDTO(), AddGroup.class, DefaultGroup.class);
-            else
-                ValidatorUtils.validateEntity(dto.getAccBookingRuleDTO(), UpdateGroup.class);
-        }
-    }
-
-    private void validateAccommodationImageDTO(AccAccommodationDTO dto) {
-        if (dto != null && dto.getAccImageDTOList() != null && !dto.getAccImageDTOList().isEmpty()) {
-            dto.getAccImageDTOList().forEach(imageDTO -> {
-                ValidatorUtils.validateEntity(
-                        imageDTO,
-                        InsertGroup.class
-                );
-            });
-        }
-    }
-
-    private void validateAccommodationTagDTO(AccAccommodationDTO dto) {
-        if (dto != null && dto.getAccTagDTOList() != null && !dto.getAccTagDTOList().isEmpty()){
-            dto.getAccTagDTOList().forEach(tagDTO -> {
-                ValidatorUtils.validateEntity(
-                        tagDTO,
-                        InsertGroup.class
-                );
-            });
-        }
     }
 }
