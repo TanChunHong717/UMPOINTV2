@@ -138,8 +138,10 @@ export function getFacilityBookings(facilityType: keyof typeof facilityTypes, fa
     });
 }
 
-export function getCurrentUserBookings(facilityType: keyof typeof facilityTypes) {
-    return api.get(`/${facilityType}/booking/page`)
+export function getCurrentUserBookings(facilityType: keyof typeof facilityTypes, params: any) {
+    return api.get(`/${facilityType}/booking/page`, {
+        params
+    })
 }
 
 export function createBooking(facilityType: keyof typeof facilityTypes, formData: any) {
