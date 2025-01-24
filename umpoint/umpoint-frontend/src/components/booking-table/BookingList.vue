@@ -327,9 +327,10 @@
                 />
                 <el-table-column prop="cancelDate" label="Cancelled Date" />
                 <el-table-column
-                    prop="refundAmount"
+                    prop="paymentAmount"
                     label="Refund Amount"
                     width="180"
+                    :formatter="paymentAmountFormatter"
                 />
             </el-table>
         </el-tab-pane>
