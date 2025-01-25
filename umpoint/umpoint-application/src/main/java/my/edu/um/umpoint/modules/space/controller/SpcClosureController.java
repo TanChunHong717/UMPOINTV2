@@ -7,10 +7,12 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import my.edu.um.umpoint.common.annotation.LogOperation;
+import my.edu.um.umpoint.common.config.KafkaConfig;
 import my.edu.um.umpoint.common.constant.Constant;
 import my.edu.um.umpoint.common.exception.RenException;
 import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.utils.DateUtils;
+import my.edu.um.umpoint.common.utils.JsonUtils;
 import my.edu.um.umpoint.common.utils.Result;
 import my.edu.um.umpoint.common.validator.AssertUtils;
 import my.edu.um.umpoint.common.validator.ValidatorUtils;
@@ -20,18 +22,15 @@ import my.edu.um.umpoint.common.validator.group.DefaultGroup;
 import my.edu.um.umpoint.common.validator.group.UpdateGroup;
 import my.edu.um.umpoint.modules.security.user.SecurityUser;
 import my.edu.um.umpoint.modules.space.dto.SpcClosureDTO;
+import my.edu.um.umpoint.modules.space.dto.SpcClosureKafkaMessageDTO;
 import my.edu.um.umpoint.modules.space.service.SpcClosureService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
+import java.util.*;
 
 /**
  * Space Closure Period
@@ -47,7 +46,7 @@ public class SpcClosureController {
     private SpcClosureService spcClosureService;
 
     @Autowired
-    private SimpMessagingTemplate messagingTemplate;
+    private KafkaTemplate<String, String> kafkaTemplate;
 
     @GetMapping("page")
     @Operation(summary = "Pagination")
@@ -97,20 +96,21 @@ public class SpcClosureController {
         ValidatorUtils.validateEntity(dto, BatchUpdateGroup.class, DefaultGroup.class);
         validateEventTime(dto);
 
-        List<CompletableFuture<Void>> completableFutures = Arrays.stream(spaceIdList)
-                .map(spaceId -> CompletableFuture.runAsync(() -> {
-                    SpcClosureDTO dtoCopy = new SpcClosureDTO();
-                    BeanUtils.copyProperties(dto, dtoCopy);
-                    dtoCopy.setSpaceId(spaceId);
-                    spcClosureService.save(dtoCopy);
-                }))
-                .toList();
+        String batchKey = UUID.randomUUID().toString();
+        Set<Long> set = new HashSet<>();
+        for (int i = 0; i < spaceIdList.length; i++) {
+            if (set.contains(spaceIdList[i]))
+                continue;
+            set.add(spaceIdList[i]);
+            dto.setSpaceId(spaceIdList[i]);
 
-        CompletableFuture
-                .allOf(completableFutures.toArray(new CompletableFuture[0]))
-                .thenRunAsync(() -> {
-                    messagingTemplate.convertAndSend("/topic/" + SecurityUser.getUserId() + "/messages", "Successfully save closure");
-                });
+            SpcClosureKafkaMessageDTO messageDTO = new SpcClosureKafkaMessageDTO();
+            messageDTO.setSpcClosureDTO(dto);
+            messageDTO.setUserDetail(SecurityUser.getUser());
+            messageDTO.setIsLast(i == spaceIdList.length - 1);
+
+            kafkaTemplate.send(KafkaConfig.BATCH_ADD_CLOSURE_TOPIC, batchKey, JsonUtils.toJsonString(messageDTO));
+        }
 
         return new Result();
     }
