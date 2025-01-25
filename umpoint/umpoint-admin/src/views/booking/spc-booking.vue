@@ -28,6 +28,26 @@
       </el-form-item>
     </el-form>
     <el-table v-loading="state.dataListLoading" :data="state.dataList" border @sort-change="state.dataListSortChangeHandle" style="width: 100%">
+      <el-table-column type="expand">
+        <template #default="scope">
+          <div class="expand-row">
+            <div v-if="scope.row.spcBookingAttachmentDTOList && scope.row.spcBookingAttachmentDTOList.length > 0">
+              <h1>Attachment:</h1>
+              <ul>
+                <li v-for="attachmentDTO in scope.row.spcBookingAttachmentDTOList"><a :href="attachmentDTO.url" :download="attachmentDTO.name">{{ attachmentDTO.name }}</a></li>
+              </ul>
+            </div>
+            <div v-else style="margin-bottom: 10px">No attachment found for this booking.</div>
+            <div v-if="scope.row.spcBookingTechnicianDTOList && scope.row.spcBookingTechnicianDTOList.length > 0">
+              <h1>Technician:</h1>
+              <ul>
+                <li v-for="technicianDTO in scope.row.spcBookingTechnicianDTOList">{{ technicianDTO.technicianName }}</li>
+              </ul>
+            </div>
+            <div v-else>No technician found for this booking.</div>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column prop="id" label="ID" header-align="center" align="center" sortable="custom"></el-table-column>
       <el-table-column prop="event" label="Event" header-align="center" align="center"></el-table-column>
       <el-table-column label="Status" header-align="center" align="center">
@@ -62,11 +82,12 @@
   </div>
   <spc-approve ref="spcApproveRef" @refreshDataList="state.getDataList">Confirm</spc-approve>
   <el-dialog v-model="dialogTableVisible" title="Payment" width="800">
-    <el-table :data="dialogTableData" size="small">
+    <el-table :data="dialogTableData" size="small" :border="true">
       <el-table-column type="expand">
         <template #default="props">
-          <div class="expand-row" v-if="props.row.spcPaymentItemDTOList && props.row.spcPaymentItemDTOList.length > 0">
-            <el-table :data="props.row.spcPaymentItemDTOList" size="small" :default-sort="{ prop: 'id', order: 'ascending' }">
+          <div class="expand-row" v-if="props.row.spcPaymentItemDTOList && props.row.spcPaymentItemDTOList.length > 0" style="padding: 10px 0 10px 47px">
+            <h1 style="margin-bottom: 10px">Payment Item</h1>
+            <el-table :data="props.row.spcPaymentItemDTOList" size="small" :default-sort="{ prop: 'id', order: 'ascending' }" :border="true">
               <el-table-column prop="id" label="ID" header-align="center" align="center"></el-table-column>
               <el-table-column prop="itemName" label="Name" header-align="center" align="center" width="150"></el-table-column>
               <el-table-column prop="itemAmount" label="Amount" header-align="center" align="center"></el-table-column>
@@ -197,6 +218,13 @@ const refundHandle = (id: number) => {
 </script>
 <style>
 .expand-row {
-  padding: 0 85px 0 47px;
+  padding: 0 30px;
+  h1 {
+    margin: 5px 0;
+  }
+}
+
+ul {
+  margin: 0;
 }
 </style>

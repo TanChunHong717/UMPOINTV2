@@ -39,14 +39,14 @@
         <result property="admin" column="admin"/>
         <result property="username" column="username"/>
         <collection property="spcBookingTechnicianEntityList" javaType="java.util.List" ofType="my.edu.um.umpoint.modules.space.entity.SpcBookingTechnicianEntity">
-            <id property="id" column="payment_id"/>
+            <id property="id" column="technician_record_id"/>
             <result property="bookingId" column="technician_booking_id"/>
             <result property="technicianId" column="technician_id"/>
             <result property="technicianName" column="technician_name"/>
         </collection>
         <collection property="spcBookingAttachmentEntityList" javaType="java.util.List" ofType="my.edu.um.umpoint.modules.space.entity.SpcBookingAttachmentEntity">
             <id property="id" column="attachment_id"/>
-            <result property="bookingId" column="booking_id"/>
+            <result property="bookingId" column="attachment_booking_id"/>
             <result property="name" column="attachment_name"/>
             <result property="type" column="attachment_type"/>
             <result property="url" column="attachment_url"/>
@@ -54,7 +54,7 @@
         <collection property="spcPaymentEntityList" javaType="java.util.List" ofType="my.edu.um.umpoint.modules.payment.entity.SpcPaymentEntity">
             <id property="id" column="payment_id"/>
             <result property="status" column="payment_status"/>
-            <result property="bookingId" column="booking_id"/>
+            <result property="bookingId" column="payment_booking_id"/>
             <result property="methodId" column="method_id"/>
             <result property="amount" column="amount"/>
             <result property="date" column="date"/>
@@ -88,16 +88,18 @@
             s.name AS space,
             a.username AS admin,
             c.username AS username,
+            sbt.id AS technician_record_id,
             sbt.booking_id AS technician_booking_id,
             sbt.technician_id,
             t.username AS technician_name,
             att.id AS attachment_id,
+            att.booking_id AS attachment_booking_id,
             att.name AS attachment_name,
             att.type AS attachment_type,
             att.url AS attachment_url,
             p.id AS payment_id,
             p.status AS payment_status,
-            p.booking_id,
+            p.booking_id AS payment_booking_id,
             p.method_id,
             p.amount,
             p.date,
@@ -154,16 +156,18 @@
             s.name AS space,
             a.username AS admin,
             c.username AS username,
+            sbt.id AS technician_record_id,
             sbt.booking_id AS technician_booking_id,
             sbt.technician_id,
             t.username AS technician_name,
             att.id AS attachment_id,
+            att.booking_id AS attachment_booking_id,
             att.name AS attachment_name,
             att.type AS attachment_type,
             att.url AS attachment_url,
             p.id AS payment_id,
             p.status AS payment_status,
-            p.booking_id,
+            p.booking_id AS payment_booking_id,
             p.method_id,
             p.amount,
             p.date,

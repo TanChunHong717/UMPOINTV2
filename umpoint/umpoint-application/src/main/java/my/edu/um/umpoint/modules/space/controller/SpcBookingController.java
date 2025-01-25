@@ -62,41 +62,16 @@ public class SpcBookingController{
 
     @GetMapping("page")
     @Operation(summary = "Pagination")
-    @Parameters(
-        {
-            @Parameter(
-                name = Constant.PAGE, description = "Current page number, starting from 1", in = ParameterIn.QUERY,
-                schema = @Schema(type = "int")
-            ),
-            @Parameter(
-                name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY,
-                schema = @Schema(type = "int")
-            ),
-            @Parameter(
-                name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY,
-                schema = @Schema(type = "string")
-            ),
-            @Parameter(
-                name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY,
-                schema = @Schema(type = "string")
-            ),
-            @Parameter(
-                name = Constant.ID, description = "Booking ID", in = ParameterIn.QUERY, schema = @Schema(type = "int")
-            ),
-            @Parameter(
-                name = Constant.STATUS, description = "Booking status", in = ParameterIn.QUERY,
-                schema = @Schema(type = "int")
-            ),
-            @Parameter(
-                name = Constant.SPACE, description = "Space name", in = ParameterIn.QUERY,
-                schema = @Schema(type = "string")
-            ),
-            @Parameter(
-                name = Constant.EVENT, description = "Booking purpose description", in = ParameterIn.QUERY,
-                schema = @Schema(type = "string")
-            )
-        }
-    )
+    @Parameters({
+        @Parameter(name = Constant.PAGE, description = "Current page number, starting from 1", in = ParameterIn.QUERY, schema = @Schema(type = "int")),
+        @Parameter(name = Constant.LIMIT, description = "Number of records per page", in = ParameterIn.QUERY, schema = @Schema(type = "int")),
+        @Parameter(name = Constant.ORDER_FIELD, description = "Sort field", in = ParameterIn.QUERY, schema = @Schema(type = "string")),
+        @Parameter(name = Constant.ORDER, description = "Sort order, optional values (asc, desc)", in = ParameterIn.QUERY, schema = @Schema(type = "string")),
+        @Parameter(name = Constant.ID, description = "Booking ID", in = ParameterIn.QUERY, schema = @Schema(type = "int")),
+        @Parameter(name = Constant.STATUS, description = "Booking status", in = ParameterIn.QUERY, schema = @Schema(type = "int")),
+        @Parameter(name = Constant.SPACE, description = "Space name", in = ParameterIn.QUERY, schema = @Schema(type = "string")),
+        @Parameter(name = Constant.EVENT, description = "Booking purpose description", in = ParameterIn.QUERY, schema = @Schema(type = "string"))
+    })
     @RequiresPermissions("space:booking:page")
     public Result<PageData<SpcBookingDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
         PageData<SpcBookingDTO> page = spcBookingService.page(params);
@@ -122,33 +97,30 @@ public class SpcBookingController{
 
         // Check space exist
         SpcSpaceDTO space = spcSpaceService.get(request.getSpaceId());
-        if (space == null) {
+        if (space == null)
             throw new BadHttpRequestException(400, "Space ID does not exist");
-        }
+
         // Validate booking rule
         SpcBookingRuleDTO spcBookingRule = space.getSpcBookingRuleDTO();
         // TODO: Check if account is student, staff or public
 
-        // combine date time to new Java object
-        LocalDate startDate = DateUtils.convertDateToLocalDate(request.getStartDay());
-        LocalDate endDate = DateUtils.convertDateToLocalDate(request.getEndDay());
-        LocalTime startTime = request.getStartTime().toLocalTime();
-        LocalTime endTime = request.getEndTime().toLocalTime();
-
         try {
-            if (endDate.isBefore(startDate)) {
+            // combine date time to new Java object
+            LocalDate startDate = DateUtils.convertDateToLocalDate(request.getStartDay());
+            LocalDate endDate = DateUtils.convertDateToLocalDate(request.getEndDay());
+            LocalTime startTime = request.getStartTime().toLocalTime();
+            LocalTime endTime = request.getEndTime().toLocalTime();
+
+            if (endDate.isBefore(startDate))
                 throw new DateTimeException("Start date must be earlier than end date");
-            }
-            if (endTime.isBefore(startTime)) {
+            if (endTime.isBefore(startTime))
                 throw new DateTimeException("Start time must be earlier than end time");
-            }
 
             validateInAllowedRange(spcBookingRule, startDate, endDate);
             validateReservationLength(spcBookingRule, startDate, endDate, startTime, endTime);
 
-            if (spcBookingRule.getBookingMode() == BookingConstant.BookingUnit.SLOTTED.getValue()) {
+            if (spcBookingRule.getBookingMode() == BookingConstant.BookingUnit.SLOTTED.getValue())
                 validateReservationInSlot(spcBookingRule, startTime, endTime);
-            }
 
             spcBookingService.validateBookingHasOverlap(request);
         } catch (DateTimeException e) {
@@ -158,16 +130,13 @@ public class SpcBookingController{
         // technician available check
         // might be null so coerce to 0
         if (request.getTechnicianNumber() == null) request.setTechnicianNumber(0);
-        if (request.getTechnicianNumber() > spcBookingRule.getMaxTechnicianNumber()) {
+        if (request.getTechnicianNumber() > spcBookingRule.getMaxTechnicianNumber())
             throw new BadHttpRequestException(400, "Number of technicians exceeded limit");
-        }
 
         // attachment check
         validateBookingAttachmentDTO(request);
 
-        // prepare to save
         SpcBookingDTO bookingDto = makeSpcBookingDTO(request, space);
-
         spcBookingService.save(bookingDto);
 
         return new Result();
@@ -241,18 +210,13 @@ public class SpcBookingController{
     @Operation(summary = "Export")
     @LogOperation("Export")
     @RequiresPermissions("space:booking:export")
-    public void export(
-        @Parameter(hidden = true) @RequestParam
-        Map<String, Object> params, HttpServletResponse response
-    ) throws Exception{
+    public void export(@Parameter(hidden = true) @RequestParam Map<String, Object> params, HttpServletResponse response) throws Exception{
         List<SpcBookingDTO> list = spcBookingService.list(params);
 
         ExcelUtils.exportExcelToTarget(response, null, "Space Booking", list, SpcBookingExcel.class);
     }
 
-    private static void validateReservationInSlot(
-        SpcBookingRuleDTO spcBookingRule, LocalTime startTime, LocalTime endTime
-    ) throws DateTimeException{
+    private static void validateReservationInSlot(SpcBookingRuleDTO spcBookingRule, LocalTime startTime, LocalTime endTime) throws DateTimeException{
         List<LocalTime> allowedTimeSlots = new ArrayList<>();
         LocalTime currentAllowTime = spcBookingRule.getStartTime().toLocalTime();
         long slotDiffMinutes = spcBookingRule.getBookingUnit().longValue();
@@ -268,52 +232,31 @@ public class SpcBookingController{
             if (currentAllowTime.isBefore(beforeTime)) break;
 
             // if time equal just break without check
-            if (currentAllowTime == spcBookingRule.getEndTime().toLocalTime()) {
+            if (currentAllowTime == spcBookingRule.getEndTime().toLocalTime())
                 break;
-            }
         }
 
-        if (!allowedTimeSlots.contains(startTime)) {
+        if (!allowedTimeSlots.contains(startTime))
             throw new DateTimeException("Selected start time is not in allowed time slot");
-        }
-
-        if (
-            !(
-                spcBookingRule.getEndTime().toLocalTime() == endTime ||
-                allowedTimeSlots.contains(endTime)
-            )
-        ) {
+        if (spcBookingRule.getEndTime().toLocalTime() != endTime && !allowedTimeSlots.contains(endTime))
             throw new DateTimeException("Selected end time is not in allowed time slot");
-        }
     }
 
-    private static void validateReservationLength(
-        SpcBookingRuleDTO spcBookingRule,
-        LocalDate startDate,
-        LocalDate endDate,
-        LocalTime startTime,
-        LocalTime endTime
-    ) throws DateTimeException{
+    private static void validateReservationLength(SpcBookingRuleDTO spcBookingRule, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) throws DateTimeException {
         long differenceInDays = ChronoUnit.DAYS.between(startDate, endDate) + 1; // 01-01 to 01-01 count as 1 day
-        if (differenceInDays > spcBookingRule.getMaxReservationDay()) {
+        if (differenceInDays > spcBookingRule.getMaxReservationDay())
             throw new DateTimeException("Selected date range is over the maximum number of reservation days");
-        }
-        if (differenceInDays < spcBookingRule.getMinReservationDay()) {
+        if (differenceInDays < spcBookingRule.getMinReservationDay())
             throw new DateTimeException("Selected time range does not reach minimum number of days");
-        }
 
         double differenceInHours = ChronoUnit.MINUTES.between(startTime, endTime) / 60.0; // may have half hour limit
-        if (differenceInHours > spcBookingRule.getMaxBookingHour().doubleValue()) {
+        if (differenceInHours > spcBookingRule.getMaxBookingHour().doubleValue())
             throw new DateTimeException("Selected time range is over the minimum number of hours");
-        }
-        if (differenceInHours < spcBookingRule.getMinBookingHour().doubleValue()) {
+        if (differenceInHours < spcBookingRule.getMinBookingHour().doubleValue())
             throw new DateTimeException("Selected time range does not reach minimum number of hours");
-        }
     }
 
-    private static void validateInAllowedRange(
-        SpcBookingRuleDTO spcBookingRule, LocalDate startDate, LocalDate endDate
-    ) throws DateTimeException{
+    private static void validateInAllowedRange(SpcBookingRuleDTO spcBookingRule, LocalDate startDate, LocalDate endDate) throws DateTimeException {
         // Date time range check
         LocalDate allowedRangeStartDate =
             LocalDate.now()
@@ -325,17 +268,11 @@ public class SpcBookingController{
                      .atTime(LocalTime.MAX)
                      .plusDays(spcBookingRule.getMaxBookingAdvanceDay())
                      .toLocalDate();
-        if (
-            startDate.isBefore(allowedRangeStartDate) ||
-            startDate.isAfter(allowedRangeEndDate)
-        ) {
+
+        if (startDate.isBefore(allowedRangeStartDate) || startDate.isAfter(allowedRangeEndDate))
             throw new DateTimeException("Start date is out of range");
-        } else if (
-            endDate.isBefore(allowedRangeStartDate) ||
-            endDate.isAfter(allowedRangeEndDate)
-        ) {
+        if (endDate.isBefore(allowedRangeStartDate) || endDate.isAfter(allowedRangeEndDate))
             throw new DateTimeException("End date is out of range");
-        }
     }
 
     private static SpcBookingDTO makeSpcBookingDTO(SpcClientBookingDTO request, SpcSpaceDTO space){
@@ -352,13 +289,9 @@ public class SpcBookingController{
     }
 
     private void validateBookingAttachmentDTO(SpcClientBookingDTO dto){
-        if (dto.getAttachments() != null && !dto.getAttachments().isEmpty()) {
-            dto.getAttachments().forEach(attachmentDTO -> {
-                ValidatorUtils.validateEntity(
-                    attachmentDTO,
-                    InsertGroup.class
-                );
-            });
-        }
+        if (dto.getAttachments() != null && !dto.getAttachments().isEmpty())
+            dto.getAttachments().forEach(attachmentDTO ->
+                ValidatorUtils.validateEntity(attachmentDTO, InsertGroup.class)
+            );
     }
 }
