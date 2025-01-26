@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import my.edu.um.umpoint.common.constant.Constant;
+import my.edu.um.umpoint.common.exception.BadHttpRequestException;
 import my.edu.um.umpoint.common.page.PageData;
 import my.edu.um.umpoint.common.utils.DateUtils;
 import my.edu.um.umpoint.common.utils.Result;
@@ -52,10 +53,14 @@ public class SpcPublicController {
     })
     public Result<PageData<SpcSpaceDTO>> page(@Parameter(hidden = true) @RequestParam Map<String, Object> params){
         if (params.containsKey(Constant.START_TIME) && params.containsKey(Constant.END_TIME)) {
+            Date now = new Date();
             Date startTime = DateUtils.parse((String) params.get("startTime"), DateUtils.DATE_TIME_PATTERN);
             Date endTime = DateUtils.parse((String) params.get("endTime"), DateUtils.DATE_TIME_PATTERN);
-            if (startTime != null && endTime != null)
+
+            if (startTime != null && endTime != null && startTime.before(endTime) && startTime.after(now))
                 params.put("ids", spcClosedSpaceService.getClosedSpace(startTime.getTime(), endTime.getTime()));
+            else
+                throw new BadHttpRequestException("Invalid start time or end time.");
         }
 
         PageData<SpcSpaceDTO> page = spcSpaceService.spacePage(params);

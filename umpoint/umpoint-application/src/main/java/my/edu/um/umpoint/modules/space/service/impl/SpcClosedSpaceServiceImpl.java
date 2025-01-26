@@ -6,6 +6,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -53,5 +54,13 @@ public class SpcClosedSpaceServiceImpl implements SpcClosedSpaceService {
         if (resultIds != null)
             return resultIds.stream().map(Long::parseLong).toList();
         return Collections.emptyList();
+    }
+
+    @Override
+    public void clean() {
+        long now = new Date().getTime();
+
+        redisTemplate.opsForZSet().remove(START_ZSET, redisTemplate.opsForZSet().rangeByScore(END_ZSET, Double.NEGATIVE_INFINITY, now));
+        redisTemplate.opsForZSet().removeRangeByScore(END_ZSET, Double.NEGATIVE_INFINITY, now);
     }
 }
