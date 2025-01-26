@@ -30,6 +30,23 @@
                                 :facilityType="facilityType"
                             />
                         </el-form-item>
+                        <el-form-item label="Tag">
+                            <TagsDropdown
+                                v-model="searchForm.tagId"
+                                :facilityType="facilityType"
+                            />
+                        </el-form-item>
+                        <el-form-item v-if="facilityType === 'space'">
+                            <el-date-picker
+                                v-model="searchForm.timeRange"
+                                type="datetimerange"
+                                start-placeholder="Start date"
+                                end-placeholder="End date"
+                                format="YYYY-MM-DD HH:mm:ss"
+                                date-format="YYYY/MM/DD ddd"
+                                time-format="A hh:mm:ss"
+                            />
+                        </el-form-item>
                         <el-button @click.prevent="getSearchFacilities"
                             >Search</el-button
                         >
@@ -112,6 +129,7 @@ import { getFacilities as getFacilitiesAPI } from "@/helpers/api-facility";
 import DepartmentDropdown from "@/components/search/DepartmentDropdown.vue";
 import SearchFacilityCard from "@/components/search/SearchFacilityCard.vue";
 import CategoriesDropdown from "@/components/search/CategoriesDropdown.vue";
+import TagsDropdown from "@/components/search/TagsDropdown.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -152,12 +170,18 @@ async function getSearchFacilities() {
     if (!facilityType || !facilityType.value) return;
 
     let params = {};
-    if (searchForm.name && searchForm.name.trim() != "")
+    if (searchForm.name && searchForm.name.trim() !== "")
         params.name = searchForm.name;
-    if (searchForm.deptId && searchForm.deptId.trim() != "")
+    if (searchForm.deptId && searchForm.deptId.trim() !== "")
         params.deptId = searchForm.deptId;
-    if (searchForm.catId && searchForm.catId.trim() != "")
+    if (searchForm.catId && searchForm.catId.trim() !== "")
         params.catId = searchForm.catId;
+    if (searchForm.tagId && searchForm.tagId.trim() !== "")
+        params.tagId = searchForm.tagId;
+    if (facilityType === 'space' && searchForm.timeRange && searchForm.timeRange.length === 2) {
+        params.startTime = searchForm.timeRange[0];
+        params.endTime = searchForm.timeRange[1];
+    }
     if (currentPage.value) params.page = currentPage.value;
 
     // update url
@@ -182,6 +206,8 @@ const searchForm = reactive({
     name: "",
     deptId: "",
     catId: "",
+    tagId: "",
+    timeRange: []
 });
 watch(
     () => route.query,

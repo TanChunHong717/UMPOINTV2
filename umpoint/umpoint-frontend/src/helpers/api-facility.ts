@@ -94,6 +94,10 @@ export function getFacilityCategories(type: keyof typeof facilityTypes) {
     return api.get(`/${type}/category/list/filter`)
 }
 
+export function getFacilityTags(type: keyof typeof facilityTypes) {
+    return api.get(`/${type}/tag/list/filter`)
+}
+
 export function getDepartments() {
     return api.get(`/sys/dept/public/list`);
 }
