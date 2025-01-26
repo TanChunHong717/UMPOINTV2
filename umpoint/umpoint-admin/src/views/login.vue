@@ -134,7 +134,7 @@ const onLogin = () => {
     float: left;
     width: 50%;
 
-    background-image: url("public/img.png");
+    background-image: url("/img.png");
     background-size: cover;
     background-position: center;
 

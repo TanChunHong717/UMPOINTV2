@@ -8,7 +8,7 @@ import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
 export default (config: UserConfig): UserConfigExport => {
   const mode = config.mode as string;
   return defineConfig({
-    base: "./",
+    base: "/",
     plugins: [
       vue(),
       createHtmlPlugin({
