@@ -41,7 +41,7 @@ spring:
   data:
     redis:
       database: 0
-      host: 192.168.10.10
+      host: 192.168.15.100
       port: 6379
       password:
       timeout: 6000ms  # connect timeout
@@ -83,7 +83,7 @@ spring:
 # enable redis
 renren:
   redis:
-    open: false
+    open: true
 
 #mybatis
 mybatis-plus:

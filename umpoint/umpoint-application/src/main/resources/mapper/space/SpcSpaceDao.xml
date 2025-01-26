@@ -143,6 +143,12 @@
                     #{id}
                 </foreach>
             </if>
+            <if test="ids != null">
+                AND s.id NOT IN
+                <foreach item="id" collection="ids" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
         </where>
     </select>
     <select id="getBookingRuleList" resultMap="spcSpaceSelectMap">

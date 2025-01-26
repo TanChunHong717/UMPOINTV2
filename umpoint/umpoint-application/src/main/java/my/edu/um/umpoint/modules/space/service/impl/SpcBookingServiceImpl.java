@@ -99,6 +99,12 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
     @Override
     @DataFilter(tableAlias = "s")
     public PageData<SpcBookingDTO> page(Map<String, Object> params){
+        long limit = 10L;
+        if (params.get(Constant.LIMIT) != null) {
+            limit = Long.parseLong((String) params.get(Constant.LIMIT));
+            params.put(Constant.LIMIT, String.valueOf(Integer.MAX_VALUE));
+        }
+
         UserDetail user = SecurityUser.getUser();
         if (user.getSuperAdmin() == null)
             params.put("userId", user.getId());
@@ -108,7 +114,7 @@ public class SpcBookingServiceImpl extends CrudServiceImpl<SpcBookingDao, SpcBoo
         IPage<SpcBookingEntity> page = getPage(params, "create_date", false);
         List<SpcBookingEntity> list = baseDao.getList(params);
 
-        return getPageData(list, page.getTotal(), currentDtoClass());
+        return getPageData(list.subList(0, (int) Math.min(limit, list.size())), page.getTotal(), currentDtoClass());
     }
 
     @Override

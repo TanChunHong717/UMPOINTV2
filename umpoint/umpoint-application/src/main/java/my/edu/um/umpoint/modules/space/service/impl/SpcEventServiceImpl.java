@@ -10,8 +10,10 @@ import my.edu.um.umpoint.modules.space.dto.SpcBookingDTO;
 import my.edu.um.umpoint.modules.space.dto.SpcClosureDTO;
 import my.edu.um.umpoint.modules.space.dto.SpcEventDTO;
 import my.edu.um.umpoint.modules.space.entity.SpcEventEntity;
+import my.edu.um.umpoint.modules.space.service.SpcClosedSpaceService;
 import my.edu.um.umpoint.modules.space.service.SpcEventService;
 import my.edu.um.umpoint.modules.utils.SpaceBookingUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,9 @@ import java.util.*;
  */
 @Service
 public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEntity, SpcEventDTO> implements SpcEventService{
+
+    @Autowired
+    private SpcClosedSpaceService spcClosedSpaceService;
 
     @Override
     public QueryWrapper<SpcEventEntity> getWrapper(Map<String, Object> params){
@@ -60,7 +65,10 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void addEvent(SpcBookingDTO bookingDTO, boolean holidayAvailable){
-        insertBatch(SpaceBookingUtils.divideBookingToEvents(bookingDTO, holidayAvailable));
+        List<SpcEventEntity> spcEventEntities = SpaceBookingUtils.divideBookingToEvents(bookingDTO, holidayAvailable);
+        for (SpcEventEntity eventEntity: spcEventEntities)
+            spcClosedSpaceService.addSpace(eventEntity.getStartTime().getTime(), eventEntity.getEndTime().getTime(), bookingDTO.getSpaceId());
+        insertBatch(spcEventEntities);
     }
 
     @Override
@@ -82,6 +90,8 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
                 eventEntity.setEndTime(DateUtils.convertLocalDateTimeToDate(currentDay, closureDTO.getEndTime()));
 
                 eventEntityList.add(eventEntity);
+
+                spcClosedSpaceService.addSpace(eventEntity.getStartTime().getTime(), eventEntity.getEndTime().getTime(), closureDTO.getSpaceId());
             }
             currentDay = currentDay.plusDays(1);
         }
@@ -92,25 +102,41 @@ public class SpcEventServiceImpl extends CrudServiceImpl<SpcEventDao, SpcEventEn
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteByClosureId(Long closureId){
-        baseDao.delete(new QueryWrapper<SpcEventEntity>().eq("closure_id", closureId));
+        QueryWrapper<SpcEventEntity> wrapper = new QueryWrapper<SpcEventEntity>().eq("closure_id", closureId);
+        for (SpcEventEntity eventEntity : baseDao.selectList(wrapper))
+            spcClosedSpaceService.removeSpace(eventEntity.getStartTime().getTime(), eventEntity.getEndTime().getTime(), eventEntity.getSpaceId());
+
+        baseDao.delete(wrapper);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteByClosureId(List<Long> closureIdList){
-        baseDao.delete(new QueryWrapper<SpcEventEntity>().in("closure_id", closureIdList));
+        QueryWrapper<SpcEventEntity> wrapper = new QueryWrapper<SpcEventEntity>().in("closure_id", closureIdList);
+        for (SpcEventEntity eventEntity : baseDao.selectList(wrapper))
+            spcClosedSpaceService.removeSpace(eventEntity.getStartTime().getTime(), eventEntity.getEndTime().getTime(), eventEntity.getSpaceId());
+
+        baseDao.delete(wrapper);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteByBookingId(Long bookingId){
-        baseDao.delete(new QueryWrapper<SpcEventEntity>().eq("booking_id", bookingId));
+        QueryWrapper<SpcEventEntity> wrapper = new QueryWrapper<SpcEventEntity>().eq("booking_id", bookingId);
+        for (SpcEventEntity eventEntity : baseDao.selectList(wrapper))
+            spcClosedSpaceService.removeSpace(eventEntity.getStartTime().getTime(), eventEntity.getEndTime().getTime(), eventEntity.getSpaceId());
+
+        baseDao.delete(wrapper);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteByBookingId(List<Long> bookingIdList){
-        baseDao.delete(new QueryWrapper<SpcEventEntity>().in("booking_id", bookingIdList));
+        QueryWrapper<SpcEventEntity> wrapper = new QueryWrapper<SpcEventEntity>().in("booking_id", bookingIdList);
+        for (SpcEventEntity eventEntity : baseDao.selectList(wrapper))
+            spcClosedSpaceService.removeSpace(eventEntity.getStartTime().getTime(), eventEntity.getEndTime().getTime(), eventEntity.getSpaceId());
+
+        baseDao.delete(wrapper);
     }
 
     private static Boolean needToAddEvent(SpcClosureDTO dto, LocalDate date){
