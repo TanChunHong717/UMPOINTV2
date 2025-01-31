@@ -25,7 +25,6 @@ UMPOINT V2 is an advanced facility reservation system developed to replace the o
   - **Apache Shiro**: Provides secure authentication and authorization for the application.
 
 ## User Interface
-### Client
 ### Admin
 ![UMPOINT V2 Admin Login Page](asset/admin_login.png)
 ![UMPOINT V2 Admin Dashboard Page](asset/admin_dashboard.png)

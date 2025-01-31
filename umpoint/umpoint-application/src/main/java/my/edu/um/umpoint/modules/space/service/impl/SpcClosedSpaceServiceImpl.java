@@ -42,10 +42,10 @@ public class SpcClosedSpaceServiceImpl implements SpcClosedSpaceService {
         String tempEndSet = "close_spaces:temp_end";
 
         redisTemplate.opsForZSet().intersectAndStore(START_ZSET, START_ZSET, tempStartSet);
-        redisTemplate.opsForZSet().removeRangeByScore(tempStartSet, Double.NEGATIVE_INFINITY, startTime - 1);
+        redisTemplate.opsForZSet().removeRangeByScore(tempStartSet,endTime + 1, Double.POSITIVE_INFINITY);
 
         redisTemplate.opsForZSet().intersectAndStore(END_ZSET, END_ZSET, tempEndSet);
-        redisTemplate.opsForZSet().removeRangeByScore(tempEndSet, endTime + 1, Double.POSITIVE_INFINITY);
+        redisTemplate.opsForZSet().removeRangeByScore(tempEndSet, Double.NEGATIVE_INFINITY, startTime - 1);
 
         Set<String> resultIds = redisTemplate.opsForZSet().intersect(tempStartSet, tempEndSet);
         redisTemplate.delete(tempStartSet);
