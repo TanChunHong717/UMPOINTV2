@@ -198,8 +198,13 @@ public class SpcBookingController{
     @RequiresPermissions("space:booking:save")
     public Result pay(@PathVariable("id") Long id){
         UserDetail user = SecurityUser.getUser();
-        if (!Objects.equals(user.getId(), spcBookingService.getUserId(id)))
+        SpcBookingDTO spcBookingDTO = spcBookingService.get(id);
+        if (!Objects.equals(user.getId(), spcBookingDTO.getUserId()))
             throw new UnauthorizedException();
+
+        if (spcBookingDTO.getStatus() != BookingConstant.BookingStatus.APPROVED.getValue())
+            throw new BadHttpRequestException(400, "Invalid ID");
+
 
         spcBookingService.pay(id);
 

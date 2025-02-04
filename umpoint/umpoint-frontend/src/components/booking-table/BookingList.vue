@@ -327,9 +327,10 @@
                 />
                 <el-table-column prop="cancelDate" label="Cancelled Date" />
                 <el-table-column
-                    prop="refundAmount"
+                    prop="paymentAmount"
                     label="Refund Amount"
                     width="180"
+                    :formatter="paymentAmountFormatter"
                 />
             </el-table>
         </el-tab-pane>
@@ -353,6 +354,7 @@ const emit = defineEmits([
 
 const activeStatus = defineModel("activeStatus");
 const bookings = defineModel("bookings");
+const totalBookings = defineModel("totalBookings");
 
 const handleChangeStatus = (tab) => {
     emit("changeStatus", tab.paneName);
@@ -360,6 +362,7 @@ const handleChangeStatus = (tab) => {
 
 const spaceDisplayBookings = computed(() => {
     if (activeStatus.value == "all") {
+        totalBookings.value = bookings.value.length;
         return bookings.value;
     }
 
@@ -367,6 +370,7 @@ const spaceDisplayBookings = computed(() => {
         (booking) =>
             bookingStatus[booking.status].toLowerCase() == activeStatus.value
     );
+    totalBookings.value = displayedBookings.length;
 
     return displayedBookings;
 });

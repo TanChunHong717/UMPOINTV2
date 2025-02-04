@@ -64,53 +64,65 @@
                 </el-text>
                 <br />
                 <br />
-                <SearchFacilityCard
-                    v-for="facilityInfo in facilitiesRes"
-                    :key="facilityInfo.id"
-                    :facilityInfo="facilityInfo"
-                    :facilityType="facilityType"
-                    style="margin-bottom: 8px"
-                    v-model:selectionMode="selectionMode"
-                    :isSelected="selectedFacilities.includes(facilityInfo.id)"
-                    @change="handleCardClick"
-                />
-                <el-pagination
-                    v-model:current-page="currentPage"
-                    @current-change="getSearchFacilities"
-                    :hide-on-single-page="false"
-                    :total="totalFacilitiesRes"
-                    layout="prev, pager, next, jumper,->,slot"
-                    :page-size="pageSize"
-                >
-                    <el-button
-                        v-if="selectionMode == 'select'"
-                        @click="navigateToComparisonPage"
-                        aria-label="Compare schedules for selected facilities"
-                        title="Compare schedules for selected facilities"
+                <template v-if="facilitiesRes && facilitiesRes.length > 0">
+                    <SearchFacilityCard
+                        v-for="facilityInfo in facilitiesRes"
+                        :key="facilityInfo.id"
+                        :facilityInfo="facilityInfo"
+                        :facilityType="facilityType"
+                        style="margin-bottom: 8px"
+                        v-model:selectionMode="selectionMode"
+                        :isSelected="
+                            selectedFacilities.includes(facilityInfo.id)
+                        "
+                        @change="handleCardClick"
+                    />
+                    <el-pagination
+                        v-model:current-page="currentPage"
+                        @current-change="getSearchFacilities"
+                        :hide-on-single-page="false"
+                        :total="totalFacilitiesRes"
+                        layout="prev, pager, next, jumper,->,slot"
+                        :page-size="pageSize"
                     >
-                        Compare schedules
-                    </el-button>
+                        <el-button
+                            v-if="selectionMode == 'select'"
+                            @click="navigateToComparisonPage"
+                            aria-label="Compare schedules for selected facilities"
+                            title="Compare schedules for selected facilities"
+                        >
+                            Compare schedules
+                        </el-button>
 
-                    <el-button
-                        v-if="selectionMode == 'redirect'"
-                        @click="changeSelectionMode"
-                        aria-label="Switch to select facilities for comparison"
-                        title="Switch to select facilities for comparison"
-                    >
-                        <svg-icon
-                            type="mdi"
-                            :path="mdiCheckboxMarkedCirclePlusOutline"
-                        />
-                    </el-button>
-                    <el-button
-                        v-else
-                        @click="changeSelectionMode"
-                        aria-label="Switch to view facility information mode"
-                        title="Switch to view facility information mode"
-                    >
-                        <svg-icon type="mdi" :path="mdiViewCarouselOutline" />
-                    </el-button>
-                </el-pagination>
+                        <el-button
+                            v-if="selectionMode == 'redirect'"
+                            @click="changeSelectionMode"
+                            aria-label="Switch to select facilities for comparison"
+                            title="Switch to select facilities for comparison"
+                        >
+                            <svg-icon
+                                type="mdi"
+                                :path="mdiCheckboxMarkedCirclePlusOutline"
+                            />
+                        </el-button>
+                        <el-button
+                            v-else
+                            @click="changeSelectionMode"
+                            aria-label="Switch to view facility information mode"
+                            title="Switch to view facility information mode"
+                        >
+                            <svg-icon
+                                type="mdi"
+                                :path="mdiViewCarouselOutline"
+                            />
+                        </el-button>
+                    </el-pagination>
+                </template>
+                <template v-else>
+                    <el-card>
+                        <el-empty description="No facility found"></el-empty>
+                    </el-card>
+                </template>
             </el-col>
         </el-row>
     </BaseLayout>

@@ -15,13 +15,19 @@
                     @start-chat="startChatAction"
                     @pay-for-booking="payForBookingAction"
                     @cancel-booking="cancelBookingAction"
+                    v-model:totalBookings="totalBookings"
                 />
+                <el-pagination
+                    v-model:current-page="currentPage"
+                    @current-change="handlePageChange"
+                    :hide-on-single-page="false"
+                    :total="totalBookings"
+                    :page-size="pageSize"
+                >
+                </el-pagination>
             </el-tab-pane>
 
-            <el-tab-pane
-                label="Service"
-                name="service"
-            ></el-tab-pane>
+            <el-tab-pane label="Service" name="service"></el-tab-pane>
             <el-tab-pane
                 label="Accommodation"
                 name="accommodation"
@@ -31,7 +37,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onActivated, h } from "vue";
+import { ref, onMounted, onActivated, h, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
 import BookingList from "@/components/booking-table/BookingList.vue";
@@ -69,6 +75,20 @@ const handleChangeStatus = (tabName) => {
         },
     });
 };
+const handlePageChange = (page) => {
+    if (page < 1 || page > totalBookings.value) {
+        return;
+    }
+    router.push({
+        path: route.path,   
+        query: {
+            ...route.query,
+            page: page,
+        },
+    });
+    currentPage.value = page;
+    getBookings();
+}
 
 const initialize = () => {
     if (route.query.view) {
@@ -83,13 +103,20 @@ const formatResponseTimeWithoutSeconds = (time) => {
 };
 
 // get all bookings for this user
+const pageSize = 10;
+const currentPage = ref(1);
+const totalBookings = ref(0);
 const bookings = ref([]);
 const getBookings = async () => {
-    const response = await getCurrentUserBookings(activeType.value);
+    const response = await getCurrentUserBookings(activeType.value, {
+        page: currentPage.value,
+        limit: pageSize
+    });
     if (response.status !== 200 || response.data.code !== 0) {
         console.error("Error fetching bookings", response);
         return;
     }
+    totalBookings.value = response.data.data.total;
     bookings.value = response.data.data.list.map((booking) => {
         let bookingDateStr = `${booking.startDay}`;
         if (booking.startDay != booking.endDay) {
